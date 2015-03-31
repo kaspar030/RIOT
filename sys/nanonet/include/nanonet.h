@@ -1,0 +1,21 @@
+#ifndef NANONET_H
+#define NANONET_H
+
+#include "mutex.h"
+#include "nano_dev.h"
+#include "nano_ctx.h"
+#include "nano_eth.h"
+#include "nano_arp.h"
+#include "nano_ipv4.h"
+#include "nano_route.h"
+#include "nano_udp.h"
+#include "nano_config.h"
+
+void nanonet_init(void);
+void nanonet_loop(void);
+void nanonet_start_thread(void);
+
+extern char nanonet_rxbuf[NANONET_RX_BUFSIZE];
+extern mutex_t nanonet_mutex;
+
+#endif /* NANONET_H */
