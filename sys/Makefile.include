@@ -82,6 +82,10 @@ ifneq (,$(filter picolibc,$(USEMODULE)))
   include $(RIOTMAKE)/libc/picolibc.mk
 endif
 
+ifneq (,$(filter nanonet,$(USEMODULE)))
+    USEMODULE_INCLUDES += $(RIOTBASE)/sys/nanonet/include
+endif
+
 ifneq (,$(filter arduino,$(USEMODULE)))
   include $(RIOTBASE)/sys/arduino/Makefile.include
 endif
