@@ -57,7 +57,7 @@ then
 
         ./dist/tools/pr_check/pr_check.sh riot/master
         RESULT=$(set_result $? $RESULT)
-        false
+
         exit $RESULT
     fi
     if [ "$BUILDTEST_MCU_GROUP" == "x86" ]
