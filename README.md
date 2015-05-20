@@ -1,4 +1,4 @@
-                          ZZZZZZ
+strider!                          ZZZZZZ
                         ZZZZZZZZZZZZ
                       ZZZZZZZZZZZZZZZZ
                      ZZZZZZZ     ZZZZZZ
