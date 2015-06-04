@@ -1,5 +1,5 @@
 MODULE =$(BOARD)_base
 
-DIRS = drivers
+DIRS = drivers periph
 
 include $(RIOTBASE)/Makefile.base

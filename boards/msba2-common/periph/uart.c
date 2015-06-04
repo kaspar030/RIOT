@@ -19,7 +19,10 @@
 #include "VIC.h"
 #include "kernel.h"
 
-#include "board_uart0.h"
+#include "periph/uart.h"
+
+static uart_rx_cb_t _rx_cb = NULL;
+static void * _rx_cb_arg;
 
 /**
  * @file
@@ -127,18 +130,13 @@ void UART0_IRQHandler(void)
 
         case UIIR_CTI_INT:                // Character Timeout Indicator
         case UIIR_RDA_INT:                // Receive Data Available
-#ifdef MODULE_UART0
-            if (uart0_handler_pid != KERNEL_PID_UNDEF) {
                 do {
                     int c = U0RBR;
-                    uart0_handle_incoming(c);
+                    if (_rx_cb) {
+                        _rx_cb(_rx_cb_arg, c);
+                    }
                 }
                 while (U0LSR & ULSR_RDR);
-
-                uart0_notify_thread();
-            }
-
-#endif
             break;
 
         default:
@@ -150,56 +148,45 @@ void UART0_IRQHandler(void)
     VICVectAddr = 0;                    // Acknowledge Interrupt
 }
 
-int uart0_puts(char *astring, int length)
+int uart_write_blocking(uart_t dev, char c)
 {
-    /*    while (queue_items == (QUEUESIZE-1)) {} ;
-        U0IER = 0;
-        queue[queue_tail] = malloc(length+sizeof(unsigned int));
-        queue[queue_tail]->len = length;
-        memcpy(&queue[queue_tail]->content,astring,length);
-        enqueue();
-        if (!running)
-            push_queue();
-        U0IER |= BIT0 | BIT1;       // enable RX irq
-    */
-    /* alternative without queue:*/
-    int i;
+    while (!(U0LSR & BIT5));
+    U0THR = (char)c;
 
-    for (i = 0; i < length; i++) {
-        while (!(U0LSR & BIT5));
-
-        U0THR = astring[i];
-    }
-
-    /*    */
-
-    return length;
+    return 1;
 }
 
-int
-bl_uart_init(void)
+int uart_init(uart_t dev, uint32_t baudrate, uart_rx_cb_t rx_cb, uart_tx_cb_t tx_cb, void *arg)
 {
-    PCONP |= PCUART0;                               // power on
+    if (!dev) {
+        _rx_cb = rx_cb;
+        _rx_cb_arg = arg;
 
-    // UART0 clock divider is CCLK/8
-    PCLKSEL0 |= BIT6 + BIT7;
+        PCONP |= PCUART0;                               // power on
 
-    U0LCR = 0x83;                                   // 8 bits, no Parity, 1 Stop bit
+        // UART0 clock divider is CCLK/8
+        PCLKSEL0 |= BIT6 + BIT7;
 
-    // TODO: UART Baudrate calculation using uart->config->speed
-    /*
-     * Baudrate calculation
-     * BR = PCLK (9 MHz) / (16 x 256 x DLM + DLL) x (1/(DIVADDVAL/MULVAL))
-     */
-    U0FDR = 0x92;       // DIVADDVAL = 0010 = 2, MULVAL = 1001 = 9
-    U0DLM = 0x00;
-    U0DLL = 0x04;
+        U0LCR = 0x83;                                   // 8 bits, no Parity, 1 Stop bit
 
-    U0LCR = 0x03;       // DLAB = 0
-    U0FCR = 0x07;       // Enable and reset TX and RX FIFO
+        // TODO: UART Baudrate calculation using uart->config->speed
+        /*
+         * Baudrate calculation
+         * BR = PCLK (9 MHz) / (16 x 256 x DLM + DLL) x (1/(DIVADDVAL/MULVAL))
+         */
+        U0FDR = 0x92;       // DIVADDVAL = 0010 = 2, MULVAL = 1001 = 9
+        U0DLM = 0x00;
+        U0DLL = 0x04;
 
-    /* irq */
-    install_irq(UART0_INT, UART0_IRQHandler, 6);
-    U0IER |= BIT0;       // enable only RX irq
-    return 1;
+        U0LCR = 0x03;       // DLAB = 0
+        U0FCR = 0x07;       // Enable and reset TX and RX FIFO
+
+        /* irq */
+        install_irq(UART0_INT, UART0_IRQHandler, 6);
+        U0IER |= BIT0;       // enable only RX irq
+        return 0;
+    }
+    else {
+        return -2;
+    }
 }

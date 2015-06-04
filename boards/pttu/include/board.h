@@ -51,6 +51,15 @@ void init_clks2(void);
 void bl_init_clks(void);
 
 /**
+ * @name Define UART device and baudrate for stdio
+ * @{
+ */
+#define STDIO               UART_0
+#define STDIO_BAUDRATE      (115200U)
+#define STDIO_RX_BUFSIZE    (64U)
+/** @} */
+
+/**
  * @brief   Define the type for the radio packet length for the transceiver
  */
 typedef uint8_t radio_packet_length_t;
