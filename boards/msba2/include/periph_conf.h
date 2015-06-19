@@ -51,7 +51,10 @@ extern "C" {
  */
 #define RTC_NUMOF           (1)
 
-#define GPIO_NUMOF (5*32)
+#define GPIO_NUMOF          (5*32)
+
+#define SPI_NUMOF           (1)
+#define SPI_0_EN            (1)
 
 #ifdef __cplusplus
 }
