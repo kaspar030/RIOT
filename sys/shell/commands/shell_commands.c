@@ -153,9 +153,6 @@ const shell_command_t _shell_command_list[] = {
     {"cur", "Prints current and average power consumption.", _get_current_handler},
     {"rstcur", "Resets coulomb counter.", _reset_current_handler},
 #endif
-#ifdef MODULE_RPL
-    {"route", "Shows the routing table", _rpl_route_handler},
-#endif
 #ifdef MODULE_MCI
     {DISK_READ_SECTOR_CMD, "Reads the specified sector of inserted memory card", _read_sector},
     {DISK_READ_BYTES_CMD, "Reads the specified bytes from inserted memory card", _read_bytes},
