@@ -6,7 +6,3 @@ ifneq (,$(filter cc110x_legacy,$(USEMODULE)))
 	USEMODULE += cc110x_spi
 	USEMODULE += gpioint
 endif
-
-ifneq (,$(filter ltc4150,$(USEMODULE)))
-	USEMODULE += gpioint
-endif
