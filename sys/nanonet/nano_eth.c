@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "byteorder.h"
 
 #include "nanonet.h"
@@ -34,4 +36,20 @@ void nano_eth_handle(nano_dev_t *dev, uint8_t *buf, size_t len)
         DEBUG("nanonet: replying with pkt of len %u\n", res);
         dev->send_raw(dev, buf, res);
     }
+}
+
+int nano_eth_reply(nano_ctx_t *ctx)
+{
+    eth_hdr_t *pkt = (eth_hdr_t *) ctx->buf;
+
+    /* set new dst mac address to old src mac address */
+    memcpy(pkt->dst, pkt->src, 6);
+
+    /* set our address ass src address */
+    memcpy(pkt->src, ctx->dev->mac_addr, 6);
+
+    /* send the packet */
+    ctx->dev->send_raw(ctx->dev, ctx->buf, ctx->len);
+
+    return 0;
 }
