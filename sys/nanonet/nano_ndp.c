@@ -50,6 +50,13 @@ typedef struct {
 
 static cache_entry_t cache[NANO_NDP_CACHE_SIZE];
 
+void nano_ndp_init(void)
+{
+    for (int i = 0; i < NANO_NDP_CACHE_SIZE; i++) {
+        cache[i].flags = 0;
+    }
+}
+
 int nano_ndp_lookup(nano_ctx_t *ctx)
 {
     (void)ctx;
