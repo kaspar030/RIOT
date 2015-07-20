@@ -64,7 +64,7 @@ static void icmp_hdr_set(icmp_hdr_t *hdr, uint8_t type, uint8_t code, uint32_t r
     hdr->chksum = 0;
     hdr->rest = rest;
 
-    hdr->chksum = nano_calcsum((uint16_t*)hdr, len);
+    hdr->chksum = nano_util_calcsum((uint16_t*)hdr, len);
 }
 
 static int icmp_echo_reply(nano_ctx_t *ctx, icmp_hdr_t *request, size_t len)
