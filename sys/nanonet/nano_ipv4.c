@@ -102,7 +102,7 @@ int ipv4_send(uint32_t dest_ip, int protocol, uint8_t *buf, size_t len, size_t u
 
     hdr->hdr_chksum = 0;
 
-    hdr->hdr_chksum = nano_calcsum((uint16_t*)hdr, sizeof(ipv4_hdr_t));
+    hdr->hdr_chksum = nano_util_calcsum((uint16_t*)hdr, sizeof(ipv4_hdr_t));
 
     if (! arp_cache_get(dev, dest_ip, dest_mac)) {
         DEBUG("ipv4: no ARP entry for 0x%08x\n", (unsigned int)dest_ip);
