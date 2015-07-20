@@ -23,6 +23,9 @@ void nano_eth_handle(nano_dev_t *dev, uint8_t *buf, size_t len)
         case 0x0806:
             handler = arp_handle;
             break;
+        case 0x86DD:
+            handler = ipv6_handle;
+            break;
         default:
             DEBUG("unknown ethertype 0x%04x\n", NTOHS(pkt->ethertype));
     }

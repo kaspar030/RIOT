@@ -21,6 +21,13 @@
 #ifndef NANO_ICMPV6_H
 #define NANO_ICMPV6_H
 
+#include <stdint.h>
+#include <stddef.h>
+
+#include "byteorder.h"
+
+#include "nano_ctx.h"
+
 #ifdef __cplusplus
  extern "C" {
 #endif
@@ -31,7 +38,7 @@ enum {
     NANO_ICMPV6_TYPE_TIME_EXCEEDED          = 3,
     NANO_ICMPV6_TYPE_PARAM_PROBLEM          = 4,
     NANO_ICMPV6_TYPE_ECHO_REQ               = 128,
-    NANO_ICMPV6_TYPE_ECHO_REPL              = 129,
+    NANO_ICMPV6_TYPE_ECHO_RESP              = 129,
     NANO_ICMPV6_TYPE_ROUTER_SOL             = 133,
     NANO_ICMPV6_TYPE_ROUTER_ADV             = 134,
     NANO_ICMPV6_TYPE_NEIGHBOR_SOL           = 135,
@@ -43,12 +50,14 @@ typedef struct __attribute__((packed)) {
     uint8_t type;
     uint8_t code;
     network_uint16_t checksum;
-} nano_icmpv6_hdr_t;
+} icmpv6_hdr_t;
 
 typedef struct __attribute__((packed)) {
     network_uint16_t identifier;
     network_uint16_t seq_num;
 } nano_icmpv6_echo_t;
+
+int icmpv6_handle(nano_ctx_t *ctx, size_t offset);
 
 #ifdef __cplusplus
 }
