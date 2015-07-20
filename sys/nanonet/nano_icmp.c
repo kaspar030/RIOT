@@ -55,7 +55,7 @@ int icmp_port_unreachable(nano_ctx_t *ctx)
     /* setup hdr fields */
     icmp_hdr_set(hdr, 3, 3, 0, sizeof(icmp_hdr_t) + send_back_len);
 
-    return ipv4_send(ctx->src_ip, 0x1, buf, sizeof(buf), sizeof(icmp_hdr_t) + send_back_len);
+    return ipv4_send(ctx->src_addr.ipv4, 0x1, buf, sizeof(buf), sizeof(icmp_hdr_t) + send_back_len);
 }
 
 static void icmp_hdr_set(icmp_hdr_t *hdr, uint8_t type, uint8_t code, uint32_t rest, size_t len) {
@@ -82,5 +82,5 @@ static int icmp_echo_reply(nano_ctx_t *ctx, icmp_hdr_t *request, size_t len)
 
     icmp_hdr_set(reply, 0, 0, request->rest, len);
 
-    return ipv4_send(ctx->src_ip, 0x1, buf, sizeof(buf), len);
+    return ipv4_send(ctx->src_addr.ipv4, 0x1, buf, sizeof(buf), len);
 }

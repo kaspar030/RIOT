@@ -23,7 +23,7 @@ int udp_handle(nano_ctx_t *ctx, size_t offset)
     ctx->dst_port = dst_port;
 
     DEBUG("udp: received packet from 0x%08x, src_port %u, dst_port %u\n",
-            (unsigned int) ctx->src_ip, ctx->src_port, ctx->dst_port);
+            (unsigned int) ctx->src_addr.ipv4, ctx->src_port, ctx->dst_port);
 
     nano_udp_handler_t handler = NULL;
     nano_udp_bind_t *bind = &nano_udp_binds[0];
@@ -42,7 +42,7 @@ int udp_handle(nano_ctx_t *ctx, size_t offset)
         return handler(ctx, offset+sizeof(udp_hdr_t));
     }
     else {
-        if (! (ctx->src_ip || (~ctx->dst_ip))) {
+        if (! (ctx->src_addr.ipv4 || (~ctx->dst_addr.ipv4))) {
             /* also filter broadcast */
             DEBUG("udp: unreachable port %u\n", dst_port);
             icmp_port_unreachable(ctx);
