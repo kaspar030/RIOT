@@ -19,9 +19,16 @@
  * @}
  */
 
+#include "nano_config.h"
+#include "nano_ctx.h"
+#include "nano_ipv6.h"
 #include "nano_icmpv6.h"
 
-void nanonet_icmpv6_send();
+#define ENABLE_DEBUG ENABLE_NANONET_DEBUG
+#include "debug.h"
+
+void nanonet_icmpv6_send(void);
+int send_echo_resp(nano_ctx_t *ctx, size_t offset);
 
 int icmpv6_handle(nano_ctx_t *ctx, size_t offset)
 {
@@ -29,18 +36,20 @@ int icmpv6_handle(nano_ctx_t *ctx, size_t offset)
 
     switch (hdr->type) {
         case NANO_ICMPV6_TYPE_ECHO_REQ:
-            return send_echo_resp(nano_ctx_t *ctx, offset);
+            DEBUG("nanonet: icmpv6_handle(): got icmpv6 echo request\n");
+            return send_echo_resp(ctx, offset);
+            /*
         case NANO_ICMPV6_TYPE_ECHO_RESP:
-            /* TODO */
-            break;
         case NANO_ICMPV6_TYPE_ROUTER_SOL:
         case NANO_ICMPV6_TYPE_ROUTER_ADV:
-        case NANO_ICMPV6_TYPE_NEIGHBOR_SOL:
+        */
+/*        case NANO_ICMPV6_TYPE_NEIGHBOR_SOL:
+*/
+            /*
         case NANO_ICMPV6_TYPE_NEIGHBOR_ADV:
-            /* do some NDP stuff */
-            break;
+        */
         default:
-            /* do nothing then */
+            DEBUG("nanonet: icmpv6_handle(): unhandled icmpv6 type=%u\n", (unsigned)hdr->type);
             break;
     }
 
@@ -49,10 +58,8 @@ int icmpv6_handle(nano_ctx_t *ctx, size_t offset)
 
 int send_echo_resp(nano_ctx_t *ctx, size_t offset)
 {
-    uint8_t tmp[NANO_IPV6_ADDR_LEN];
-
     icmpv6_hdr_t *icmp = (icmpv6_hdr_t *)(ctx->buf + offset);
     icmp->type = NANO_ICMPV6_TYPE_ECHO_RESP;
 
-    nano_ipv6_reply(ctx);
+    return ipv6_reply(ctx);
 }
