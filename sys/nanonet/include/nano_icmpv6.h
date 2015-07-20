@@ -37,19 +37,18 @@ enum {
     NANO_ICMPV6_TYPE_NEIGHBOR_SOL           = 135,
     NANO_ICMPV6_TYPE_NEIGHBOR_ADV           = 136,
     NANO_ICMPV6_TYPE_REDIRECT               = 137,
-}
+};
 
-typedef struct __attritbute__((packed)) {
+typedef struct __attribute__((packed)) {
     uint8_t type;
     uint8_t code;
     network_uint16_t checksum;
 } nano_icmpv6_hdr_t;
 
-typedef struct __attritbute__((packed)) {
+typedef struct __attribute__((packed)) {
     network_uint16_t identifier;
     network_uint16_t seq_num;
 } nano_icmpv6_echo_t;
-
 
 #ifdef __cplusplus
 }
