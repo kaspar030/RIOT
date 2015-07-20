@@ -13,13 +13,13 @@
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
 
-int ipv4_handle(nano_ctx_t *ctx, char *buf, int len, int offset) {
-    ipv4_hdr_t *hdr = (ipv4_hdr_t*) (buf+offset);
+int ipv4_handle(nano_ctx_t *ctx, size_t offset) {
+    ipv4_hdr_t *hdr = (ipv4_hdr_t*) (ctx->buf+offset);
     nano_dev_t *dev = ctx->dev;
 
     ctx->l3_hdr_start = (void*) hdr;
 
-    if (len - offset < NTOHS(hdr->total_len)) {
+    if (ctx->len - offset < NTOHS(hdr->total_len)) {
         DEBUG("ipv4: truncated packet received.\n");
         return -1;
     }
@@ -34,10 +34,10 @@ int ipv4_handle(nano_ctx_t *ctx, char *buf, int len, int offset) {
     if (ctx->dst_ip == dev->ipv4 || ctx->dst_ip & 0xff) { /* TODO: fix broadcast stuff */
         switch (hdr->protocol) {
             case 0x1:
-                icmp_handle(ctx, buf, len, offset+hdr_len);
+                icmp_handle(ctx, offset+hdr_len);
                 break;
             case 0x11:
-                udp_handle(ctx, buf, len, offset+hdr_len);
+                udp_handle(ctx, offset+hdr_len);
                 break;
             default:
                 DEBUG("ipv4: unknown protocol.\n");
@@ -68,7 +68,7 @@ ipv4_route_t *ipv4_getroute(uint32_t dest_ip) {
 #endif
 }
 
-int ipv4_send(uint32_t dest_ip, int protocol, char *buf, int len, int used) {
+int ipv4_send(uint32_t dest_ip, int protocol, uint8_t *buf, size_t len, size_t used) {
     ipv4_hdr_t *hdr;
     ipv4_route_t *route;
     nano_dev_t *dev;
@@ -83,7 +83,7 @@ int ipv4_send(uint32_t dest_ip, int protocol, char *buf, int len, int used) {
 
     /* allocate our header, check what l2 needs, bail out if not enough */
     hdr = (ipv4_hdr_t *)(buf + len - used - sizeof(ipv4_hdr_t));
-    if ((char*)hdr < (buf+dev->l2_needed(dev))) {
+    if ((uint8_t*)hdr < (buf+dev->l2_needed(dev))) {
         DEBUG("ipv4: send buffer too small.\n");
         return -1;
     }

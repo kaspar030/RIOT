@@ -1,9 +1,10 @@
 #include <stdint.h>
+#include <stddef.h>
 
 /* calcsum - used to calculate IP and ICMP header checksums using
  * one's compliment of the one's compliment sum of 16 bit words of the header
  */
-uint16_t nano_calcsum(uint16_t *buffer, int length)
+uint16_t nano_calcsum(uint16_t *buffer, size_t length)
 {
     unsigned long sum;
 

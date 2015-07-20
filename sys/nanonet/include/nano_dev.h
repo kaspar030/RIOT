@@ -10,8 +10,8 @@ typedef struct nano_dev {
 /*    uint8_t ipv6_ll[16];
     uint8_t ipv6_global[16];*/
     void*ptr;
-    int (*send)(struct nano_dev *dev, uint8_t* dest_mac, uint16_t ethertype, char* buf, int len, int used);
-    int (*send_raw)(struct nano_dev *dev, char* buf, int len);
+    int (*send)(struct nano_dev *dev, uint8_t* dest_mac, uint16_t ethertype, uint8_t *buf, size_t len, size_t used);
+    int (*send_raw)(struct nano_dev *dev, uint8_t* buf, size_t len);
     int (*l2_needed)(struct nano_dev *dev);
     void (*handle_isr)(void*);
 } nano_dev_t;
