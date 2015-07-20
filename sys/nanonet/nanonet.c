@@ -41,7 +41,7 @@
 kernel_pid_t nanonet_pid = KERNEL_PID_UNDEF;
 volatile unsigned nanonet_iflags;
 mutex_t nanonet_mutex = MUTEX_INIT;
-char nanonet_rxbuf[NANONET_RX_BUFSIZE];
+uint8_t nanonet_rxbuf[NANONET_RX_BUFSIZE];
 
 void nanonet_init(void)
 {

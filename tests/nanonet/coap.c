@@ -81,12 +81,12 @@ static int handle_get_well_known_core(coap_rw_buffer_t *scratch, const coap_pack
     return coap_make_response(scratch, outpkt, (const uint8_t *)rsp, strlen(rsp), id_hi, id_lo, &inpkt->tok, COAP_RSPCODE_CONTENT, COAP_CONTENTTYPE_APPLICATION_LINKFORMAT);
 }
 
-int nano_coap_handler(nano_ctx_t *ctx, char* _buf, int len, int offset) {
+int nano_coap_handler(nano_ctx_t *ctx, size_t offset) {
     DEBUG("nano_coap_handler\n");
     int rc;
 
-    int n = len-offset;
-    uint8_t *buf = (uint8_t*)(_buf+offset);
+    int n = ctx->len-offset;
+    uint8_t *buf = (uint8_t*)(ctx->buf+offset);
 
     coap_packet_t pkt;
     printf("Received packet: ");
@@ -97,8 +97,8 @@ int nano_coap_handler(nano_ctx_t *ctx, char* _buf, int len, int offset) {
         printf("Bad packet rc=%d\n", rc);
     }
     else {
-        int l3_needed = udp_needed(ctx->src_ip);
-        uint8_t *rspbuf = (uint8_t*) (_buf+l3_needed);
+        size_t l3_needed = udp_needed(ctx->src_ip);
+        uint8_t *rspbuf = (uint8_t*) (ctx->buf+l3_needed);
         size_t rsplen = NANONET_RX_BUFSIZE-l3_needed;
 
         printf("rsplen = %u %u %u\n", rsplen, NANONET_RX_BUFSIZE, offset);
@@ -117,7 +117,7 @@ int nano_coap_handler(nano_ctx_t *ctx, char* _buf, int len, int offset) {
             printf("\n");
             printf("content:\n");
             coap_dumpPacket(&rsppkt);
-            udp_send(ctx->src_ip, ctx->src_port, ctx->dst_port, _buf, l3_needed + rsplen, rsplen); 
+            udp_send(ctx->src_ip, ctx->src_port, ctx->dst_port, ctx->buf, l3_needed + rsplen, rsplen);
         }
     }
 

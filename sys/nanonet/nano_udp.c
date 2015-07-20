@@ -8,11 +8,11 @@
 #define ENABLE_DEBUG 1
 #include "debug.h"
 
-int udp_handle(nano_ctx_t *ctx, char *buf, int len, int offset)
+int udp_handle(nano_ctx_t *ctx, size_t offset)
 {
-    udp_hdr_t *hdr = (udp_hdr_t*) (buf+offset);
+    udp_hdr_t *hdr = (udp_hdr_t*) (ctx->buf+offset);
 
-    if ((len-offset) < (int)sizeof(udp_hdr_t)) {
+    if ((ctx->len-offset) < (int)sizeof(udp_hdr_t)) {
         DEBUG("udp: truncated packet received.\n");
         return -1;
     }
@@ -39,7 +39,7 @@ int udp_handle(nano_ctx_t *ctx, char *buf, int len, int offset)
     }
 
     if (handler) {
-        return handler(ctx, buf, len, offset+sizeof(udp_hdr_t));
+        return handler(ctx, offset+sizeof(udp_hdr_t));
     }
     else {
         if (! (ctx->src_ip || (~ctx->dst_ip))) {
@@ -52,7 +52,7 @@ int udp_handle(nano_ctx_t *ctx, char *buf, int len, int offset)
     return 0;
 }
 
-int udp_send(uint32_t dest_ip, uint16_t dst_port, uint16_t src_port, char *buf, int buflen, int used) {
+int udp_send(uint32_t dest_ip, uint16_t dst_port, uint16_t src_port, uint8_t *buf, size_t buflen, size_t used) {
     udp_hdr_t *hdr;
 
     DEBUG("udp: sending packet to 0x%08x\n", (unsigned int) dest_ip);
@@ -60,7 +60,7 @@ int udp_send(uint32_t dest_ip, uint16_t dst_port, uint16_t src_port, char *buf, 
     /* allocate our header at the end of buf, but before used bytes */
     hdr = (udp_hdr_t *)(buf + buflen - used - sizeof(udp_hdr_t));
 
-    if ((char*) hdr < buf) {
+    if ((uint8_t*) hdr < buf) {
         DEBUG("udp_send: buffer too small.\n");
         return -1;
     }

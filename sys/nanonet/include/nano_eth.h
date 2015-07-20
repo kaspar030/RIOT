@@ -9,6 +9,6 @@ typedef struct __attribute__((packed)) eth_hdr {
     uint16_t ethertype;
 } eth_hdr_t;
 
-void nano_eth_handle(nano_dev_t *dev, char *buf, int len);
+void nano_eth_handle(nano_dev_t *dev, uint8_t *buf, size_t len);
 
 #endif /* NANO_ETH_H */

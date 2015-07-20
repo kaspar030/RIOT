@@ -15,7 +15,7 @@ void nanonet_init(void);
 void nanonet_loop(void);
 void nanonet_start_thread(void);
 
-extern char nanonet_rxbuf[NANONET_RX_BUFSIZE];
+extern uint8_t nanonet_rxbuf[NANONET_RX_BUFSIZE];
 extern mutex_t nanonet_mutex;
 
 #endif /* NANONET_H */

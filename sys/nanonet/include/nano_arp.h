@@ -23,8 +23,8 @@ typedef struct arp_cache_entry {
     nano_dev_t* dev;
 } arp_cache_entry_t;
 
-int arp_handle(nano_ctx_t *ctx, char *buf, int len, int offset);
-void arp_reply(nano_ctx_t *ctx, char *buf, int len, int offset);
+int arp_handle(nano_ctx_t *ctx, size_t offset);
+void arp_reply(nano_ctx_t *ctx, size_t offset);
 
 int arp_cache_get(nano_dev_t *dev, uint32_t dest_ip, uint8_t *mac_addr_out);
 void arp_request(nano_dev_t *dev, uint32_t dest_ip);
