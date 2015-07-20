@@ -25,7 +25,6 @@
 #include <stddef.h>
 
 #include "byteorder.h"
-
 #include "nano_ctx.h"
 
 #ifdef __cplusplus
