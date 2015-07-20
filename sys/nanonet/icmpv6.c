@@ -19,6 +19,8 @@
  * @}
  */
 
+#include <stdint.h>
+
 #include "nano_config.h"
 #include "nano_ctx.h"
 #include "nano_ipv6.h"
@@ -27,8 +29,8 @@
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
 
-void nanonet_icmpv6_send(void);
 int send_echo_resp(nano_ctx_t *ctx, size_t offset);
+
 
 int icmpv6_handle(nano_ctx_t *ctx, size_t offset)
 {

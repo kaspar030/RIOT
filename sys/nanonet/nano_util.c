@@ -21,3 +21,21 @@ uint16_t nano_calcsum(uint16_t *buffer, size_t length)
     return ~sum;
 }
 
+void nano_util_addr_dump(uint8_t *addr, size_t len)
+{
+    for (int i = len; i >= 0; i--) {
+        for (int j = 0; i < 2; j++) {
+            char c = (char)((addr[i] >> (4 * j)) & 0x0f)
+            if (c > 9) {
+                c += 'a' - 10;
+            }
+            else {
+                c += '9'
+            }
+            printf("%c", c);
+        }
+        if (i > 1) {
+            printf(":");
+        }
+    }
+}
