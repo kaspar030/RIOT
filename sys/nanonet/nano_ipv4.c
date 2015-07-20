@@ -26,12 +26,12 @@ int ipv4_handle(nano_ctx_t *ctx, size_t offset) {
 
     int hdr_len = ipv4_hdr_len(hdr);
 
-    ctx->dst_ip = NTOHL(hdr->dst);
-    ctx->src_ip = NTOHL(hdr->src);
+    ctx->dst_addr.ipv4 = NTOHL(hdr->dst);
+    ctx->src_addr.ipv4 = NTOHL(hdr->src);
 
     DEBUG("ipv4: got packet with protocol 0x%01x\n", (unsigned int) hdr->protocol);
 
-    if (ctx->dst_ip == dev->ipv4 || ctx->dst_ip & 0xff) { /* TODO: fix broadcast stuff */
+    if (ctx->dst_addr.ipv4 == dev->ipv4 || ctx->dst_addr.ipv4 & 0xff) { /* TODO: fix broadcast stuff */
         switch (hdr->protocol) {
             case 0x1:
                 icmp_handle(ctx, offset+hdr_len);
