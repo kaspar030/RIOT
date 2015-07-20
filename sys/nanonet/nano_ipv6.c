@@ -6,13 +6,17 @@
 #include "nano_icmpv6.h"
 #include "nano_route.h"
 #include "nano_util.h"
-//#include "nano_udp.h"
+#include "nano_udp.h"
 #include "nano_config.h"
 
 #include "net/ng_ipv6/addr.h"
 
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
+
+static uint16_t calcsum(nano_ctx_t *ctx);
+
+static void set_csum(nano_ctx_t *ctx);
 
 static inline int ipv6_is_for_us(nano_ctx_t *ctx)
 {
@@ -68,7 +72,49 @@ int ipv6_reply(nano_ctx_t *ctx)
  //   ipv6_get_src_addr_for(ctx->src_addr.ipv6, ctx->dst_addr.ipv6);
     memcpy(ctx->src_addr.ipv6, ctx->dev->ipv6_ll, 16);
 
+    set_csum(ctx);
+
     return ctx->dev->reply(ctx);
+}
+
+static uint16_t calcsum(nano_ctx_t *ctx)
+{
+    uint16_t csum = 0;
+    ipv6_hdr_t *hdr = (ipv6_hdr_t *)(ctx->l3_hdr_start);
+    /* calculate checksum for IPv6 pseudo header */
+    if (((uint32_t)(hdr->payload_len) + hdr->next_header) > 0xffff) {
+        csum = 1;
+    }
+    csum = nano_util_calcsum(csum + hdr->payload_len + (hdr->next_header << 8),
+                             hdr->src, (2 * IPV6_ADDR_LEN));
+    /* add actual data fields */
+    csum = nano_util_calcsum(csum, (ctx->l3_hdr_start + IPV6_HDR_LEN),
+                             (size_t)NTOHS(hdr->payload_len));
+    return csum;
+}
+
+static void set_csum(nano_ctx_t *ctx)
+{
+    uint16_t csum = ~calcsum(ctx);
+
+    /* calculate the checksum depending on the next header type */
+    switch (((ipv6_hdr_t *)ctx->l3_hdr_start)->next_header) {
+        case IPV6_NEXTHDR_ICMP: {
+            icmpv6_hdr_t *icmp;
+            icmp = (icmpv6_hdr_t *)(ctx->l3_hdr_start + IPV6_HDR_LEN);
+            memcpy(&(icmp->checksum), &csum, 2);
+            break;
+        }
+        case IPV6_NEXTHDR_UDP: {
+            udp_hdr_t *udp;
+            udp = (udp_hdr_t *)(ctx->l3_hdr_start + IPV6_HDR_LEN);
+            memcpy(&(udp->chksum), &csum, 2);
+        }
+        default:
+            /* don't know how to calculate, so we return 0 */
+            csum = 0;
+            break;
+    }
 }
 
 #if 0
