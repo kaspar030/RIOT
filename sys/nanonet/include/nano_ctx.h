@@ -43,7 +43,7 @@ typedef struct nano_ctx {
         uint8_t *ipv6;
     } src_addr;
     union {
-        uint32_t ipv6;
+        uint32_t ipv4;
         uint8_t *ipv6;
     } dst_addr;
 
