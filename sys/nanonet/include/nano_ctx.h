@@ -24,7 +24,7 @@
 #include <stdint.h>
 #include "nano_dev.h"
 
-typedef struct nano_ctx {
+struct nano_ctx {
     char* buf_totalsize;
     nano_dev_t *dev;
 
@@ -51,6 +51,6 @@ typedef struct nano_ctx {
     uint16_t src_port;
     uint16_t dst_port;
 
-} nano_ctx_t;
+};
 
 #endif /* NANO_CTX_H */

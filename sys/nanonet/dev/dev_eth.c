@@ -114,6 +114,7 @@ int nanonet_init_dev_eth(int n)
     nanodev->l2_needed = l2_needed;
     nanodev->ptr = (void*)dev;
     nanodev->handle_isr = (void (*)(void*))dev->driver->isr;
+    nanodev->reply = nano_eth_reply;
 
     dev_eth_init(dev);
 

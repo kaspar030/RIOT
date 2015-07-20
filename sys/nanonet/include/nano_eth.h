@@ -10,5 +10,6 @@ typedef struct __attribute__((packed)) eth_hdr {
 } eth_hdr_t;
 
 void nano_eth_handle(nano_dev_t *dev, uint8_t *buf, size_t len);
+int nano_eth_reply(nano_ctx_t *ctx);
 
 #endif /* NANO_ETH_H */
