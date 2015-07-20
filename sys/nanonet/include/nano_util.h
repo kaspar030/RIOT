@@ -5,7 +5,7 @@
 
 uint16_t nano_calcsum(uint16_t* addr, int count);
 
-static inline char* nano_bufpos(char *buf, int len, int needed) {
+static inline char* nano_bufpos(uint8_t *buf, size_t len, size_t needed) {
     return (char *)(buf + len - needed);
 }
 

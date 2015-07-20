@@ -60,7 +60,7 @@ void dev_eth_isr(dev_eth_t *dev)
 void dev_eth_rx_handler(dev_eth_t *dev)
 {
     /* read packet from device into nanonet's global rx buffer */
-    int nbytes = dev->driver->recv(dev, nanonet_rxbuf, NANONET_RX_BUFSIZE);
+    int nbytes = dev->driver->recv(dev, (char*)nanonet_rxbuf, NANONET_RX_BUFSIZE);
 
 /*    DEBUG("dev_eth_receive_packet_cb(): received packet with len %u, ethertype 0x%04x\n",
             nbytes, (unsigned int) NTOHS(((eth_hdr_t*) nanonet_rxbuf)->ethertype));
@@ -69,12 +69,12 @@ void dev_eth_rx_handler(dev_eth_t *dev)
 }
 
 /* nanonet nano_dev_t implementations */
-static int send(nano_dev_t *dev, uint8_t* dest_mac, uint16_t ethertype, char* buf, int len, int used) {
+static int send(nano_dev_t *dev, uint8_t* dest_mac, uint16_t ethertype, uint8_t *buf, size_t len, size_t used) {
     DEBUG("nanonet_dev_eth_send: Sending packet with len %u\n", used);
     dev_eth_t *ethdev = (dev_eth_t *) dev->ptr;
     eth_hdr_t *hdr = (eth_hdr_t *) (buf + len - used - sizeof(eth_hdr_t));
 
-    if ((char*) hdr < buf) {
+    if ((uint8_t*) hdr < buf) {
         DEBUG("nanonet_dev_eth_send: buffer too small.\n");
         return -1;
     }
@@ -89,9 +89,9 @@ static int send(nano_dev_t *dev, uint8_t* dest_mac, uint16_t ethertype, char* bu
     return 0;
 }
 
-static int send_raw(nano_dev_t *dev, char* buf, int len) {
+static int send_raw(nano_dev_t *dev, uint8_t* buf, size_t len) {
     dev_eth_t *ethdev = (dev_eth_t *) dev->ptr;
-    ethdev->driver->send(ethdev, buf, len);
+    ethdev->driver->send(ethdev, (char*)buf, len);
 
     return 0;
 }

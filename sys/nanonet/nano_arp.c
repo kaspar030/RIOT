@@ -15,17 +15,17 @@ static arp_cache_entry_t arp_cache[NANO_ARP_CACHE_SIZE] = {{0}};
 static void arp_cache_put(nano_dev_t *dev, uint32_t dest_ip, uint8_t *mac_addr);
 static void arp_cache_maybe_add(nano_dev_t *dev, uint32_t dest_ip, uint8_t *mac);
 
-int arp_handle(nano_ctx_t *ctx, char *buf, int len, int offset) {
+int arp_handle(nano_ctx_t *ctx, size_t offset) {
     arp_pkt_t* pkt;
 
-    if ((len - offset) < (int)sizeof(arp_pkt_t)) {
+    if ((ctx->len - offset) < (int)sizeof(arp_pkt_t)) {
         DEBUG("arp_handle(): pkt too short\n");
         return -1;
     }
 
     nano_dev_t *dev = ctx->dev;
 
-    pkt = (arp_pkt_t*) (buf+offset);
+    pkt = (arp_pkt_t*) (ctx->buf+offset);
 
     if (NTOHL(pkt->arp_ipv4_types) != 0x00010800 || NTOHS(pkt->arp_ipv4_lengths) != 0x0604) {
         DEBUG("arp_handle(): invalid types / lengths fields: types: 0x%x lengths: 0x%x\n",
@@ -42,7 +42,7 @@ int arp_handle(nano_ctx_t *ctx, char *buf, int len, int offset) {
             DEBUG("arp: request for 0x%08x\n", (unsigned int) dst_ip);
             if (dst_ip == dev->ipv4) {
                 arp_cache_maybe_add(dev, src_ip, pkt->src_mac);
-                arp_reply(ctx, buf, len, offset);
+                arp_reply(ctx, offset);
             }
             break;
         case 2:
@@ -59,7 +59,7 @@ int arp_handle(nano_ctx_t *ctx, char *buf, int len, int offset) {
 
 void arp_request(nano_dev_t *dev, uint32_t ip) {
     DEBUG("arp_request: requesting MAC for 0x%08x\n", (unsigned int)ip);
-    char buf[sizeof(eth_hdr_t)+sizeof(arp_pkt_t)];
+    uint8_t buf[sizeof(eth_hdr_t)+sizeof(arp_pkt_t)];
     memset(buf, '\0', sizeof(eth_hdr_t)+sizeof(arp_pkt_t));
 
     arp_pkt_t* pkt = (arp_pkt_t*) (buf+sizeof(eth_hdr_t));
@@ -77,13 +77,13 @@ void arp_request(nano_dev_t *dev, uint32_t ip) {
     dev->send(dev, broadcast, 0x0806, buf, sizeof(buf), sizeof(arp_pkt_t));
 }
 
-void arp_reply(nano_ctx_t *ctx, char *buf, int len, int offset)
+void arp_reply(nano_ctx_t *ctx, size_t offset)
 {
     nano_dev_t *dev = ctx->dev;
 
     /* we reuse the request packet, so most of the header is
      * already set up */
-    arp_pkt_t* pkt = (arp_pkt_t*) (buf+offset);
+    arp_pkt_t* pkt = (arp_pkt_t*) (ctx->buf+offset);
 
     /* check if requested IP matches the device it came from */
     if (pkt->dst_ip != HTONL(dev->ipv4)) {
@@ -105,7 +105,7 @@ void arp_reply(nano_ctx_t *ctx, char *buf, int len, int offset)
     pkt->dst_ip = pkt->src_ip;
     pkt->src_ip = HTONL(dev->ipv4);
 
-    dev->send(dev, pkt->dst_mac, 0x0806, buf, len, sizeof(arp_pkt_t));
+    dev->send(dev, pkt->dst_mac, 0x0806, ctx->buf, ctx->len, sizeof(arp_pkt_t));
 }
 
 int arp_cache_find(uint32_t dest_ip) {

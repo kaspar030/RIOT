@@ -10,12 +10,12 @@
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
 
-static int icmp_echo_reply(nano_ctx_t *ctx, icmp_hdr_t *request, int len);
-static void icmp_hdr_set(icmp_hdr_t *hdr, uint8_t type, uint8_t code, uint32_t rest, int len);
+static int icmp_echo_reply(nano_ctx_t *ctx, icmp_hdr_t *request, size_t len);
+static void icmp_hdr_set(icmp_hdr_t *hdr, uint8_t type, uint8_t code, uint32_t rest, size_t len);
 
-int icmp_handle(nano_ctx_t *ctx, char *buf, int len, int offset)
+int icmp_handle(nano_ctx_t *ctx, size_t offset)
 {
-    icmp_hdr_t *hdr = (icmp_hdr_t *) (buf+offset);
+    icmp_hdr_t *hdr = (icmp_hdr_t *) (ctx->buf+offset);
 
     DEBUG("icmp: got packet with type=%u code=%u\n", hdr->type, hdr->code);
 
@@ -25,7 +25,7 @@ int icmp_handle(nano_ctx_t *ctx, char *buf, int len, int offset)
             break;
         case 8:
             DEBUG("icmp echo request.\n");
-            icmp_echo_reply(ctx, hdr, len - offset);
+            icmp_echo_reply(ctx, hdr, ctx->len - offset);
             break;
         default:
             DEBUG("icmp: unknown type %u\n", hdr->type);
@@ -36,7 +36,7 @@ int icmp_handle(nano_ctx_t *ctx, char *buf, int len, int offset)
 
 int icmp_port_unreachable(nano_ctx_t *ctx)
 {
-    char buf[256];
+    uint8_t buf[256];
 
     ipv4_hdr_t *ipv4_hdr = (ipv4_hdr_t *) ctx->l3_hdr_start;
 
@@ -58,7 +58,7 @@ int icmp_port_unreachable(nano_ctx_t *ctx)
     return ipv4_send(ctx->src_ip, 0x1, buf, sizeof(buf), sizeof(icmp_hdr_t) + send_back_len);
 }
 
-static void icmp_hdr_set(icmp_hdr_t *hdr, uint8_t type, uint8_t code, uint32_t rest, int len) {
+static void icmp_hdr_set(icmp_hdr_t *hdr, uint8_t type, uint8_t code, uint32_t rest, size_t len) {
     hdr->type = type;
     hdr->code = code;
     hdr->chksum = 0;
@@ -67,13 +67,13 @@ static void icmp_hdr_set(icmp_hdr_t *hdr, uint8_t type, uint8_t code, uint32_t r
     hdr->chksum = nano_calcsum((uint16_t*)hdr, len);
 }
 
-static int icmp_echo_reply(nano_ctx_t *ctx, icmp_hdr_t *request, int len)
+static int icmp_echo_reply(nano_ctx_t *ctx, icmp_hdr_t *request, size_t len)
 {
-    char buf[256];
+    uint8_t buf[256];
 
     icmp_hdr_t *reply = (icmp_hdr_t *) (buf+sizeof(buf)-len);
 
-    if ((char*)reply < buf) {
+    if ((uint8_t*)reply < buf) {
         DEBUG("icmp_echo_reply(): buffer too small.\n");
         return -1;
     }

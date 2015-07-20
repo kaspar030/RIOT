@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include "nano_ctx.h"
 
-int ipv4_handle(nano_ctx_t *ctx, char *buf, int len, int offset);
-int ipv4_send(uint32_t dest_ip, int protocol, char *buf, int len, int used);
+int ipv4_handle(nano_ctx_t *ctx, size_t offset);
+int ipv4_send(uint32_t dest_ip, int protocol, uint8_t *buf, size_t len, size_t used);
 
 typedef struct __attribute__((packed)) ipv4_hdr {
     uint8_t ver_ihl;
