@@ -25,6 +25,7 @@
 #include "nano_ctx.h"
 #include "nano_ipv6.h"
 #include "nano_icmpv6.h"
+#include "nano_util.h"
 
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
@@ -62,6 +63,9 @@ int send_echo_resp(nano_ctx_t *ctx, size_t offset)
 {
     icmpv6_hdr_t *icmp = (icmpv6_hdr_t *)(ctx->buf + offset);
     icmp->type = NANO_ICMPV6_TYPE_ECHO_RESP;
+    uint16_t csum = nano_util_calcsum((uint16_t *)(ctx->buf + offset),
+                                      ctx->len - offset);
+    icmp->checksum = byteorder_htons(csum);
 
     return ipv6_reply(ctx);
 }
