@@ -5,9 +5,9 @@
 /* calcsum - used to calculate IP and ICMP header checksums using
  * one's compliment of the one's compliment sum of 16 bit words of the header
  */
-uint16_t nano_calcsum(uint16_t *buffer, size_t length)
+uint16_t nano_util_calcsum(uint16_t *buffer, size_t length)
 {
-    unsigned long sum;
+    uint32_t sum;
 
     // initialize sum to zero and loop until length (in words) is 0
     for (sum=0; length>1; length-=2) // sizeof() returns number of bytes, we're interested in number of words
