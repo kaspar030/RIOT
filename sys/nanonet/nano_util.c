@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdio.h>
 #include <stddef.h>
 
 /* calcsum - used to calculate IP and ICMP header checksums using
@@ -25,12 +26,12 @@ void nano_util_addr_dump(uint8_t *addr, size_t len)
 {
     for (int i = len; i >= 0; i--) {
         for (int j = 0; i < 2; j++) {
-            char c = (char)((addr[i] >> (4 * j)) & 0x0f)
+            char c = (char)((addr[i] >> (4 * j)) & 0x0f);
             if (c > 9) {
                 c += 'a' - 10;
             }
             else {
-                c += '9'
+                c += '9';
             }
             printf("%c", c);
         }
