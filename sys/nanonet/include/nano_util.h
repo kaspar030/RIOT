@@ -5,6 +5,8 @@
 
 uint16_t nano_calcsum(uint16_t* addr, int count);
 
+void nano_util_addr_dump(uint8_t *addr, size_t len);
+
 static inline char* nano_bufpos(uint8_t *buf, size_t len, size_t needed) {
     return (char *)(buf + len - needed);
 }
