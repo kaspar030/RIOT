@@ -62,11 +62,9 @@ int icmpv6_handle(nano_ctx_t *ctx, size_t offset)
 int send_echo_resp(nano_ctx_t *ctx, size_t offset)
 {
     icmpv6_hdr_t *icmp = (icmpv6_hdr_t *)(ctx->buf + offset);
+    /* set type to echo response and reset checksum */
     icmp->type = NANO_ICMPV6_TYPE_ECHO_RESP;
     icmp->checksum = byteorder_htons(0);
-    uint16_t csum = nano_util_calcsum((uint16_t *)(ctx->buf + offset),
-                                      ctx->len - offset);
-    icmp->checksum = byteorder_htons(csum);
-
+    /* and send the thing back (for good) */
     return ipv6_reply(ctx);
 }

@@ -7,6 +7,11 @@
 
 #define IPV6_ADDR_LEN   (16)
 
+#define IPV6_HDR_LEN    (40)
+
+#define IPV6_NEXTHDR_UDP        (17U)
+#define IPV6_NEXTHDR_ICMP       (58U)
+
 int ipv6_handle(nano_ctx_t *ctx, size_t offset);
 int ipv6_send(uint8_t *dest_ip, int protocol, uint8_t *buf, size_t len, size_t used);
 int ipv6_reply(nano_ctx_t *ctx);
