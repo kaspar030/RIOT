@@ -7,6 +7,7 @@
 #include "nano_eth.h"
 #include "nano_arp.h"
 #include "nano_ipv4.h"
+#include "nano_ipv6.h"
 #include "nano_route.h"
 #include "nano_udp.h"
 #include "nano_config.h"
