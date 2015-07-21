@@ -57,10 +57,17 @@ void nano_ndp_init(void)
     }
 }
 
-int nano_ndp_lookup(nano_ctx_t *ctx)
+size_t nano_ndp_lookup(uint8_t *l3_addr, uint8_t **l2_addr)
+{
+    (void)l3_addr;
+    (void)l2_addr;
+    return 0;
+}
+
+int nano_ndp_update(nano_ctx_t *ctx)
 {
     (void)ctx;
-    return -1;
+    return 0;
 }
 
 int nano_ndp_add(uint8_t *l3_addr, uint8_t *l2_addr, size_t l2_addr_len)
@@ -77,13 +84,6 @@ int nano_ndp_add(uint8_t *l3_addr, uint8_t *l2_addr, size_t l2_addr_len)
     memcpy(&(cache[i].l3_addr), l3_addr, IPV6_ADDR_LEN);
     memcpy(&(cache[i].l2_addr), l2_addr, l2_addr_len);
     return 0;
-}
-
-int nano_ndp_update(/* TODO: how to identify */ uint8_t state)
-{
-    /* TODO */
-    (void)state;
-    return -1;
 }
 
 int nano_ndp_sync(void)

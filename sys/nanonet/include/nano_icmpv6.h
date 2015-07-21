@@ -31,6 +31,20 @@
  extern "C" {
 #endif
 
+#define NANO_ICMPV6_HDR_LEN                 (4U)
+
+#define NANO_ICMPV6_NA_FLAG_ROUTER          (0x80)
+#define NANO_ICMPV6_NA_FLAG_SOLICITED       (0x40)
+#define NANO_ICMPV6_NA_FLAG_OVERRIDE        (0x20)
+
+enum {
+    NANO_ICMPV6_NDP_OPT_SRC_L2_ADDR         = 1,
+    NANO_ICMPV6_NDP_OPT_DST_L2_ADDR         = 2,
+    NANO_ICMPV6_NDP_OPT_PREFIX_INFO         = 3,
+    NANO_ICMPV6_NDP_OPT_REDIRECT_HDR        = 4,
+    NANO_ICMPV6_NDP_OPT_MTU                 = 5,
+};
+
 enum {
     NANO_ICMPV6_TYPE_DEST_UNREACHABLE       = 1,
     NANO_ICMPV6_TYPE_PKT_TOO_BIG            = 2,
@@ -55,6 +69,23 @@ typedef struct __attribute__((packed)) {
     network_uint16_t identifier;
     network_uint16_t seq_num;
 } nano_icmpv6_echo_t;
+
+typedef struct __attribute__((packed)) {
+    uint32_t reserved;      /**< must be set to zero */
+    uint8_t target_addr[IPV6_ADDR_LEN];
+    uint8_t opt_type;
+    uint8_t opt_length;
+    uint8_t l2_addr[];
+} nano_icmpv6_ns_t;
+
+typedef struct __attribute__((packed)) {
+    uint8_t flags;
+    uint8_t reserved[3];      /**< must be set to zero */
+    uint8_t target_addr[IPV6_ADDR_LEN];
+    uint8_t opt_type;
+    uint8_t opt_len;
+    uint8_t l2_addr[];
+} nano_icmpv6_na_t;
 
 int icmpv6_handle(nano_ctx_t *ctx, size_t offset);
 
