@@ -5,6 +5,7 @@
 #include "nano_icmp.h"
 #include "nano_ipv4.h"
 #include "nano_ipv6.h"
+#include "nano_sndbuf.h"
 
 #include "byteorder.h"
 
@@ -68,13 +69,10 @@ int udp_handle(nano_ctx_t *ctx, size_t offset)
 }
 
 
-static size_t udp_build_hdr(uint16_t dst_port, uint16_t src_port, uint8_t *buf, size_t buflen, size_t used) {
-    udp_hdr_t *hdr;
+static size_t udp_build_hdr(nano_sndbuf_t *buf, uint16_t dst_port, uint16_t src_port) {
+    udp_hdr_t *hdr = (udp_hdr_t *) nano_sndbuf_alloc(buf, sizeof(udp_hdr_t));
 
-    /* allocate our header at the end of buf, but before used bytes */
-    hdr = (udp_hdr_t *)(buf + buflen - used - sizeof(udp_hdr_t));
-
-    if ((uint8_t*) hdr < buf) {
+    if (!hdr) {
         DEBUG("udp_build_hdr: buffer too small.\n");
         return 0;
     }
@@ -82,31 +80,32 @@ static size_t udp_build_hdr(uint16_t dst_port, uint16_t src_port, uint8_t *buf, 
     hdr->src_port = HTONS(src_port);
     hdr->dst_port = HTONS(dst_port);
 
-    hdr->length = HTONS(sizeof(udp_hdr_t) + used);
+    hdr->length = HTONS(buf->used);
 
     /* checksum will be calculated by IP layer */
     hdr->chksum = 0x0;
 
-    return used + sizeof(udp_hdr_t);
+    return sizeof(udp_hdr_t);
 }
 
-int udp_send(uint32_t dst_ip, uint16_t dst_port, uint16_t src_port, uint8_t *buf, size_t buflen, size_t used) {
-
+int udp_send(nano_sndbuf_t *buf, uint32_t dst_ip, uint16_t dst_port, uint16_t src_port)
+{
     DEBUG("udp: sending packet to 0x%08x\n", (unsigned int) dst_ip);
 
-    if (!udp_build_hdr(dst_port, src_port, buf, buflen, used)) {
-            return -ENOSPC;
+    if (!udp_build_hdr(buf, dst_port, src_port)) {
+        return -ENOSPC;
     }
 
-    return ipv4_send(dst_ip, 0x11, buf, buflen, sizeof(udp_hdr_t) + used);
+    return ipv4_send(buf, dst_ip, 0x11);
 }
 
-int udp6_send(uint8_t* dst_ip, uint16_t dst_port, uint16_t src_port, uint8_t *buf, size_t buflen, size_t used) {
+int udp6_send(nano_sndbuf_t *buf, uint8_t* dst_ip, uint16_t dst_port, uint16_t src_port, nano_dev_t *dev)
+{
     DEBUG("udp: sending udpv6 packet packet\n");
 
-    if (!udp_build_hdr(dst_port, src_port, buf, buflen, used)) {
-            return -ENOSPC;
+    if (!udp_build_hdr(buf, dst_port, src_port)) {
+        return -ENOSPC;
     }
 
-    return ipv6_send(dst_ip, IPV6_NEXTHDR_UDP, buf, buflen, sizeof(udp_hdr_t) + used);
+    return ipv6_send(buf, dst_ip, IPV6_NEXTHDR_UDP, dev);
 }

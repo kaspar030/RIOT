@@ -9,6 +9,7 @@
 #include "nano_route.h"
 #include "nano_util.h"
 #include "nano_udp.h"
+#include "nano_ndp.h"
 #include "nano_config.h"
 
 #include "net/ng_ipv6/addr.h"
@@ -137,39 +138,43 @@ static void set_csum(ipv6_hdr_t *hdr)
 
 static ipv6_route_t *ipv6_getroute(uint8_t *dest_ip) {
     (void)dest_ip;
-    ipv6_route_t *entry = &ipv6_routes[0];
+/*    ipv6_route_t *entry = &ipv6_routes[0];
     return entry;
+    */
+    return NULL;
 }
 
-static int ipv6_next_ll_hop(nano_dev_t **dev, uint8_t *mac_buf, uint8_t *dest_ip)
+int ipv6_send(nano_sndbuf_t *buf, uint8_t *dst_ip, int protocol, nano_dev_t *dev)
 {
+    ipv6_hdr_t *hdr;
+    uint8_t *l2_addr;
+    size_t l2_addr_len
+    uint8_t *next_hop = NULL;
 
-    if (!ipv6_addr_is_link_local(dest_ip)) {
+    if (dev && !ipv6_addr_is_link_local(dst_ip)) {
+        DEBUG("ipv6_send(): device given, but address is not link-local.\n");
+        return -EINVAL;
+    }
+
+    if (!ipv6_addr_is_link_local(dst_ip)) {
         ipv6_route_t *route = NULL;
-        if (! (route = ipv6_getroute(dest_ip))) {
+        if (! (route = ipv6_getroute(dst_ip))) {
             DEBUG("ipv6: no route to host\n");
             return -1;
         }
-        dest_ip = route->route;
+        next_hop = route->next_hop;
+        dev = route->dev;
     }
 
-    return nano_ndp_lookup(dev, mac_buf, dest_ip);
-}
-
-int ipv6_send(uint8_t *dest_ip, int protocol, uint8_t *buf, size_t len, size_t used)
-{
-    ipv6_hdr_t *hdr;
-    nano_dev_t *dev;
-    uint8_t dest_mac[6];
-
-    int res = ipv6_next_ll_hop(&dev, dest_mac, dest_ip);
-    if (res < 0) {
-        return res;
+    int l2_addr_len = nano_ndp_lookup(dev, next_hop ? next_hop : dst_ip, &dst_mac);
+    if (!l2_addr_len) {
+        return -EAGAIN;
     }
 
     /* allocate our header, check what l2 needs, bail out if not enough */
-    hdr = (ipv6_hdr_t *)(buf + len - used - sizeof(ipv6_hdr_t));
-    if ((uint8_t*)hdr < (buf+dev->l2_needed(dev))) {
+    hdr = (ipv6_hdr_t *) nano_sndbuf_alloc(buf, sizeof(ipv6_hdr_t));
+
+    if (!hdr) {
         DEBUG("ipv6: send buffer too small.\n");
         return -ENOSPC;
     }
@@ -183,11 +188,11 @@ int ipv6_send(uint8_t *dest_ip, int protocol, uint8_t *buf, size_t len, size_t u
     hdr->hop_limit = 64;
     hdr->next_header = protocol;
 
-    ipv6_get_src_addr(hdr->src, dev, dest_ip);
-    memcpy(hdr->dst, dest_ip, IPV6_ADDR_LEN);
+    ipv6_get_src_addr(hdr->src, dev, dst_ip);
+    memcpy(hdr->dst, dst_ip, IPV6_ADDR_LEN);
 
     /* send packet */
-    return dev->send(dev, dest_mac, 0x86DD, buf, len, sizeof(ipv6_hdr_t) + used);
+    return dev->send(dev, buf, l2_addr, 0x86DD);
 }
 
 void ipv6_addr_print(const uint8_t *addr)
