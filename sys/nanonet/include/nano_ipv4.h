@@ -20,6 +20,12 @@ typedef struct __attribute__((packed)) ipv4_hdr {
     uint32_t dst;
 } ipv4_hdr_t;
 
+static inline int is_ipv4_hdr(uint8_t *buf)
+{
+    ipv4_hdr_t* hdr = (ipv4_hdr_t*)buf;
+    return (hdr->ver_ihl>>4) == 4;
+}
+
 static inline int ipv4_hdr_len(ipv4_hdr_t* hdr)
 {
     /* hdr is split in half.
