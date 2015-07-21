@@ -148,7 +148,7 @@ int ipv6_send(nano_sndbuf_t *buf, uint8_t *dst_ip, int protocol, nano_dev_t *dev
 {
     ipv6_hdr_t *hdr;
     uint8_t *l2_addr;
-    size_t l2_addr_len
+    size_t l2_addr_len;
     uint8_t *next_hop = NULL;
 
     if (dev && !ipv6_addr_is_link_local(dst_ip)) {
@@ -166,7 +166,7 @@ int ipv6_send(nano_sndbuf_t *buf, uint8_t *dst_ip, int protocol, nano_dev_t *dev
         dev = route->dev;
     }
 
-    int l2_addr_len = nano_ndp_lookup(dev, next_hop ? next_hop : dst_ip, &dst_mac);
+    l2_addr_len = nano_ndp_lookup(dev, next_hop ? next_hop : dst_ip, &l2_addr);
     if (!l2_addr_len) {
         return -EAGAIN;
     }
