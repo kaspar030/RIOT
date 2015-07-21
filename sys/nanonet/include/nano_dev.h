@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#include "nano_sndbuf.h"
 #include "dev_eth_autoinit.h"
 
 typedef struct nano_ctx nano_ctx_t;
@@ -14,7 +15,7 @@ typedef struct nano_dev {
     uint8_t ipv6_ll[16];
     uint8_t ipv6_global[16];
     void*ptr;
-    int (*send)(struct nano_dev *dev, uint8_t* dest_mac, uint16_t ethertype, uint8_t *buf, size_t len, size_t used);
+    int (*send)(struct nano_dev *dev, nano_sndbuf_t *buf, uint8_t* dest_mac, uint16_t ethertype);
     int (*send_raw)(struct nano_dev *dev, uint8_t* buf, size_t len);
     int (*reply)(nano_ctx_t *ctx);
     int (*l2_needed)(struct nano_dev *dev);

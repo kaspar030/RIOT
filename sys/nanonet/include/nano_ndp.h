@@ -18,10 +18,9 @@
  * @author      Kaspar Schleiser <kaspar@schleiser.de>
  */
 
-
 void nano_ndp_init(void);
 
-size_t nano_ndp_lookup(uint8_t *l3_addr, uint8_t **l2_addr);
+size_t nano_ndp_lookup(const nano_dev_t *dev, uint8_t *l3_addr, uint8_t **l2_addr);
 
 int nano_ndp_update(nano_ctx_t *ctx);
 

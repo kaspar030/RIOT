@@ -60,6 +60,8 @@ int arp_handle(nano_ctx_t *ctx, size_t offset) {
 void arp_request(nano_dev_t *dev, uint32_t ip) {
     DEBUG("arp_request: requesting MAC for 0x%08x\n", (unsigned int)ip);
     uint8_t buf[sizeof(eth_hdr_t)+sizeof(arp_pkt_t)];
+    nano_sndbuf_t sndbuf = { .buf=buf, .size=sizeof(buf), .used=sizeof(arp_pkt_t)};
+
     memset(buf, '\0', sizeof(eth_hdr_t)+sizeof(arp_pkt_t));
 
     arp_pkt_t* pkt = (arp_pkt_t*) (buf+sizeof(eth_hdr_t));
@@ -74,7 +76,7 @@ void arp_request(nano_dev_t *dev, uint32_t ip) {
 
     uint8_t broadcast[] = { 0xff,0xff,0xff,0xff,0xff,0xff };
 
-    dev->send(dev, broadcast, 0x0806, buf, sizeof(buf), sizeof(arp_pkt_t));
+    dev->send(dev, &sndbuf, broadcast, 0x0806);
 }
 
 void arp_reply(nano_ctx_t *ctx, size_t offset)
@@ -105,7 +107,7 @@ void arp_reply(nano_ctx_t *ctx, size_t offset)
     pkt->dst_ip = pkt->src_ip;
     pkt->src_ip = HTONL(dev->ipv4);
 
-    dev->send(dev, pkt->dst_mac, 0x0806, ctx->buf, ctx->len, sizeof(arp_pkt_t));
+    dev->reply(ctx);
 }
 
 int arp_cache_find(uint32_t dest_ip) {

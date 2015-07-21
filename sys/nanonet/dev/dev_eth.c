@@ -19,6 +19,7 @@
  * @}
  */
 
+#include <errno.h>
 #include <string.h>
 
 #include "byteorder.h"
@@ -28,6 +29,7 @@
 #include "net/dev_eth.h"
 #include "dev_eth_autoinit.h"
 #include "nanonet.h"
+#include "nano_sndbuf.h"
 
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
@@ -69,12 +71,12 @@ void dev_eth_rx_handler(dev_eth_t *dev)
 }
 
 /* nanonet nano_dev_t implementations */
-static int send(nano_dev_t *dev, uint8_t* dest_mac, uint16_t ethertype, uint8_t *buf, size_t len, size_t used) {
-    DEBUG("nanonet_dev_eth_send: Sending packet with len %u\n", used);
+static int send(nano_dev_t *dev, nano_sndbuf_t *buf, uint8_t* dest_mac, uint16_t ethertype) {
+    DEBUG("nanonet_dev_eth_send: Sending packet with len %u\n", buf->used);
     dev_eth_t *ethdev = (dev_eth_t *) dev->ptr;
-    eth_hdr_t *hdr = (eth_hdr_t *) (buf + len - used - sizeof(eth_hdr_t));
+    eth_hdr_t *hdr = (eth_hdr_t *) nano_sndbuf_alloc(buf, sizeof(eth_hdr_t));
 
-    if ((uint8_t*) hdr < buf) {
+    if (!hdr) {
         DEBUG("nanonet_dev_eth_send: buffer too small.\n");
         return -ENOSPC;
     }
@@ -84,7 +86,7 @@ static int send(nano_dev_t *dev, uint8_t* dest_mac, uint16_t ethertype, uint8_t 
 
     hdr->ethertype = HTONS(ethertype);
 
-    ethdev->driver->send(ethdev, (char*)hdr, sizeof(eth_hdr_t)+used);
+    ethdev->driver->send(ethdev, (char*)hdr, buf->used);
 
     return 0;
 }

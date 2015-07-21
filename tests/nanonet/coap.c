@@ -87,7 +87,6 @@ int nano_coap_handler(nano_ctx_t *ctx, size_t offset) {
 
     int n = ctx->len-offset;
     uint8_t *buf = (uint8_t*)(ctx->buf+offset);
-
     coap_packet_t pkt;
     printf("Received packet: ");
     coap_dump(buf, n, true);
@@ -100,8 +99,7 @@ int nano_coap_handler(nano_ctx_t *ctx, size_t offset) {
         size_t l3_needed = udp_needed(ctx->src_addr.ipv4);
         uint8_t *rspbuf = (uint8_t*) (ctx->buf+l3_needed);
         size_t rsplen = NANONET_RX_BUFSIZE-l3_needed;
-
-        printf("rsplen = %u %u %u\n", rsplen, NANONET_RX_BUFSIZE, offset);
+        nano_sndbuf_t sndbuf = { .buf=ctx->buf, .size=ctx->len, .used=rsplen };
 
         coap_packet_t rsppkt;
         printf("content:\n");
@@ -117,7 +115,7 @@ int nano_coap_handler(nano_ctx_t *ctx, size_t offset) {
             printf("\n");
             printf("content:\n");
             coap_dumpPacket(&rsppkt);
-            udp_send(ctx->src_addr.ipv4, ctx->src_port, ctx->dst_port, ctx->buf, l3_needed + rsplen, rsplen);
+            udp_send(&sndbuf, ctx->src_addr.ipv4, ctx->src_port, ctx->dst_port);
         }
     }
 

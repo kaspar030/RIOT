@@ -40,6 +40,11 @@ ipv4_route_t ipv4_routes[] = {
     {0}
 };
 
+ipv6_route_t ipv6_routes[] = {
+    { {0}, 0, {0}, 0}
+};
+
+
 nano_udp_bind_t nano_udp_binds[] = {
     { 5683, nano_coap_handler },
     { 12345, nano_dummy_handler },

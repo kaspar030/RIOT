@@ -1,14 +1,16 @@
+#include <errno.h>
 #include <string.h>
 
 #include "byteorder.h"
 
 #include "nano_arp.h"
-#include "nano_ipv4.h"
-#include "nano_icmp.h"
-#include "nano_route.h"
-#include "nano_util.h"
-#include "nano_udp.h"
 #include "nano_config.h"
+#include "nano_icmp.h"
+#include "nano_ipv4.h"
+#include "nano_route.h"
+#include "nano_sndbuf.h"
+#include "nano_udp.h"
+#include "nano_util.h"
 
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
@@ -68,7 +70,7 @@ ipv4_route_t *ipv4_getroute(uint32_t dest_ip) {
 #endif
 }
 
-int ipv4_send(uint32_t dest_ip, int protocol, uint8_t *buf, size_t len, size_t used) {
+int ipv4_send(nano_sndbuf_t *buf, uint32_t dest_ip, int protocol) {
     ipv4_hdr_t *hdr;
     ipv4_route_t *route;
     nano_dev_t *dev;
@@ -81,11 +83,10 @@ int ipv4_send(uint32_t dest_ip, int protocol, uint8_t *buf, size_t len, size_t u
 
     dev = route->dev;
 
-    /* allocate our header, check what l2 needs, bail out if not enough */
-    hdr = (ipv4_hdr_t *)(buf + len - used - sizeof(ipv4_hdr_t));
-    if ((uint8_t*)hdr < (buf+dev->l2_needed(dev))) {
+    hdr = (ipv4_hdr_t *) nano_sndbuf_alloc(buf, sizeof(ipv4_hdr_t));
+    if (!hdr) {
         DEBUG("ipv4: send buffer too small.\n");
-        return -1;
+        return -ENOSPC;
     }
 
     /* clear header */
@@ -98,11 +99,11 @@ int ipv4_send(uint32_t dest_ip, int protocol, uint8_t *buf, size_t len, size_t u
     hdr->protocol = protocol;
     hdr->src = HTONL(dev->ipv4);
     hdr->dst = HTONL(dest_ip);
-    hdr->total_len = HTONS(sizeof(ipv4_hdr_t) + used);
+    hdr->total_len = HTONS(buf->used);
 
     hdr->hdr_chksum = 0;
 
-    hdr->hdr_chksum = nano_util_calcsum(0, (uint8_t*)hdr, sizeof(ipv4_hdr_t));
+    hdr->hdr_chksum = ~nano_util_calcsum(0, (uint8_t*)hdr, sizeof(ipv4_hdr_t));
 
     if (! arp_cache_get(dev, dest_ip, dest_mac)) {
         DEBUG("ipv4: no ARP entry for 0x%08x\n", (unsigned int)dest_ip);
@@ -110,7 +111,7 @@ int ipv4_send(uint32_t dest_ip, int protocol, uint8_t *buf, size_t len, size_t u
     }
 
     /* send packet */
-    dev->send(dev, dest_mac, 0x0800, buf, len, sizeof(ipv4_hdr_t) + used);
+    dev->send(dev, buf, dest_mac, 0x0800);
 
     return 0;
 }

@@ -19,14 +19,16 @@
  * @}
  */
 
+#include <errno.h>
 #include <stdint.h>
 #include <stdio.h>
 
+#include "nano_config.h"
 #include "nano_ipv6.h"
 #include "nano_ndp.h"
 #include "nano_util.h"
 
-#define ENABLE_DEBUG    (0)
+#define ENABLE_DEBUG    ENABLE_NANONET_DEBUG
 #include "debug.h"
 
 #ifndef NANO_NDP_CACHE_SIZE
@@ -57,8 +59,9 @@ void nano_ndp_init(void)
     }
 }
 
-size_t nano_ndp_lookup(uint8_t *l3_addr, uint8_t **l2_addr)
+size_t nano_ndp_lookup(const nano_dev_t *dev, uint8_t *l3_addr, uint8_t **l2_addr)
 {
+    (void)dev;
     (void)l3_addr;
     (void)l2_addr;
     return 0;
