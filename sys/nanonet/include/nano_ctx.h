@@ -25,12 +25,12 @@
 #include "nano_dev.h"
 
 struct nano_ctx {
-    char* buf_totalsize;
     nano_dev_t *dev;
 
     /* buffer */
     uint8_t *buf;
-    size_t len;
+    size_t buf_size;        /* maximum buffer size */
+    size_t len;             /* actual used memory */
 
     /* l2 */
     uint8_t *src_mac;

@@ -26,11 +26,14 @@
 #include "nano_ipv6.h"
 #include "nano_icmpv6.h"
 #include "nano_util.h"
+#include "nano_ndp.h"
 
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
 
 int send_echo_resp(nano_ctx_t *ctx, size_t offset);
+int handle_neighbor_solicitation(nano_ctx_t *ctx, size_t offset);
+void handle_neighbor_advertisement(nano_ctx_t *ctx, size_t offset);
 
 
 int icmpv6_handle(nano_ctx_t *ctx, size_t offset)
@@ -39,17 +42,20 @@ int icmpv6_handle(nano_ctx_t *ctx, size_t offset)
 
     switch (hdr->type) {
         case NANO_ICMPV6_TYPE_ECHO_REQ:
-            DEBUG("nanonet: icmpv6_handle(): got icmpv6 echo request\n");
+            DEBUG("nanonet: icmpv6_handle(): got ICMPv6 echo request\n");
             return send_echo_resp(ctx, offset);
-            /*
-        case NANO_ICMPV6_TYPE_ECHO_RESP:
-        case NANO_ICMPV6_TYPE_ROUTER_SOL:
-        case NANO_ICMPV6_TYPE_ROUTER_ADV:
-        */
-/*        case NANO_ICMPV6_TYPE_NEIGHBOR_SOL:
-*/
-            /*
+        case NANO_ICMPV6_TYPE_NEIGHBOR_SOL:
+            DEBUG("nanonet: icmpv6_handle(): got ICMPv6 neighbor sol\n");
+            return handle_neighbor_solicitation(ctx, offset);
         case NANO_ICMPV6_TYPE_NEIGHBOR_ADV:
+            DEBUG("nanonet: icmpv6_handle(): got ICMPv6 neighbor adv\n");
+            handle_neighbor_advertisement(ctx, offset);
+            break;
+        /*
+        case NANO_ICMPV6_TYPE_ECHO_RESP:
+        case NANO_ICMPV6_TYPE_ROUTER_ADV:
+        case NANO_ICMPV6_TYPE_ROUTER_SOL:
+        case NANO_ICMPV6_TYPE_NEIGHBOR_SOL:
         */
         default:
             DEBUG("nanonet: icmpv6_handle(): unhandled icmpv6 type=%u\n", (unsigned)hdr->type);
@@ -67,4 +73,45 @@ int send_echo_resp(nano_ctx_t *ctx, size_t offset)
     icmp->checksum = byteorder_htons(0);
     /* and send the thing back (for good) */
     return ipv6_reply(ctx);
+}
+
+int handle_neighbor_solicitation(nano_ctx_t *ctx, size_t offset)
+{
+    icmpv6_hdr_t *icmp = (icmpv6_hdr_t *)(ctx->buf + offset);
+    nano_icmpv6_ns_t *ns = (nano_icmpv6_ns_t *)(ctx->buf + offset +
+                                                NANO_ICMPV6_HDR_LEN);
+
+    /* TODO: move this into the IPv6 module and do it on every received packet */
+    //nano_ndp_update(ctx);
+
+    if (memcmp(ctx->dev->ipv6_ll, ns->target_addr, IPV6_ADDR_LEN) == 0) {
+        if ((ctx->buf_size - ctx->len) < 6) {
+            DEBUG("nanonet: neighbor advertisement handle: no room for l2"
+                  "address in buffer\n");
+            return 0;
+        }
+        icmp->type = NANO_ICMPV6_TYPE_NEIGHBOR_ADV;
+        icmp->checksum = byteorder_htons(0);
+        ns->opt_type = NANO_ICMPV6_NDP_OPT_DST_L2_ADDR;
+        memcpy(ns->l2_addr, ctx->dev->mac_addr, 6);
+        /* TODO: handle neighbor advertisement flags */
+        return ipv6_reply(ctx);
+    }
+    return 0;
+}
+
+void handle_neighbor_advertisement(nano_ctx_t *ctx, size_t offset)
+{
+    size_t l2_addr_len;
+    // nano_icmpv6_na_t *na = (nano_icmpv6_na_t *)(ctx->buf + offset +
+    //                                             NANO_ICMPV6_HDR_LEN);
+
+    /* see if the neighbor advertisement contains a link layer address */
+    l2_addr_len = (ctx->len - offset) + NANO_ICMPV6_HDR_LEN + 4 + IPV6_ADDR_LEN;
+    if (l2_addr_len == 0) {
+        DEBUG("nanonet: neighbor advertisement handle: no l2 address found\n");
+        return;
+    }
+    /* TODO: handle flags! */
+    //nano_ndp_cache_add(na->tartget_addr, na->l2_addr, l2_addr_len);
 }
