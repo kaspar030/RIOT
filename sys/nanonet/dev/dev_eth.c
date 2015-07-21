@@ -76,7 +76,7 @@ static int send(nano_dev_t *dev, uint8_t* dest_mac, uint16_t ethertype, uint8_t 
 
     if ((uint8_t*) hdr < buf) {
         DEBUG("nanonet_dev_eth_send: buffer too small.\n");
-        return -1;
+        return -ENOSPC;
     }
 
     memcpy(hdr->dst, dest_mac, 6);
