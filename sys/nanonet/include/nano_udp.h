@@ -7,6 +7,7 @@
 #include "nano_ctx.h"
 #include "nano_eth.h"
 #include "nano_ipv4.h"
+#include "nano_ipv6.h"
 
 typedef struct __attribute__((packed)) udp_hdr {
     uint16_t src_port;
@@ -25,13 +26,21 @@ typedef struct nano_udp_bind {
 extern nano_udp_bind_t nano_udp_binds[];
 
 int udp_handle(nano_ctx_t *ctx, size_t offset);
-int udp_send(uint32_t dest_ip, uint16_t dst_port, uint16_t src_port, uint8_t *buf, size_t buflen, size_t used);
+int udp6_send(uint8_t *dst_ip, uint16_t dst_port, uint16_t src_port, uint8_t *buf, size_t buflen, size_t used);
+int udp_send(uint32_t dst_ip, uint16_t dst_port, uint16_t src_port, uint8_t *buf, size_t buflen, size_t used);
 
 static inline int udp_needed(uint32_t dest_ip) {
     /* TODO: actually get value from lower layers */
     (void)dest_ip;
 
     return sizeof(eth_hdr_t) + sizeof(ipv4_hdr_t) + sizeof(udp_hdr_t);
+}
+
+static inline int udp6_needed(uint8_t *dest_ip) {
+    /* TODO: actually get value from lower layers */
+    (void)dest_ip;
+
+    return sizeof(eth_hdr_t) + sizeof(ipv6_hdr_t) + sizeof(udp_hdr_t);
 }
 
 #endif /* NANO_UDP_H */
