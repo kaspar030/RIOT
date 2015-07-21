@@ -107,7 +107,7 @@ static uint16_t calcsum(ipv6_hdr_t *hdr)
     csum = nano_util_calcsum(csum + hdr->payload_len + (hdr->next_header << 8),
                              hdr->src, (2 * IPV6_ADDR_LEN));
     /* add actual data fields */
-    csum = nano_util_calcsum(csum, (const uint8_t *)hdr+1,
+    csum = nano_util_calcsum(csum, (const uint8_t *)(hdr + 1),
                              (size_t)NTOHS(hdr->payload_len));
     return csum;
 }
@@ -120,13 +120,13 @@ static void set_csum(ipv6_hdr_t *hdr)
     switch (hdr->next_header) {
         case IPV6_NEXTHDR_ICMP: {
             icmpv6_hdr_t *icmp;
-            icmp = (icmpv6_hdr_t *)(hdr+1);
+            icmp = (icmpv6_hdr_t *)(hdr + 1);
             memcpy(&(icmp->checksum), &csum, 2);
             break;
         }
         case IPV6_NEXTHDR_UDP: {
             udp_hdr_t *udp;
-            udp = (udp_hdr_t *)(hdr+1);
+            udp = (udp_hdr_t *)(hdr + 1);
             memcpy(&(udp->chksum), &csum, 2);
         }
         default:
