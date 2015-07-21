@@ -27,13 +27,22 @@
 #define ENABLE_DEBUG 1
 #include "debug.h"
 
+int nano_dummy_handler(nano_ctx_t *ctx, size_t offset) {
+    DEBUG("udp: packet received\n");
+    (void)ctx;
+    (void)offset;
+
+    return 0;
+}
+
 ipv4_route_t ipv4_routes[] = {
-    { 0xc0a86f00, 0xffffff00, &nanonet_devices[0] }, /* 192.168.111.0/24 for dev 0 */
+    { 0xc0a86f00, 0xffffff00, 0, &nanonet_devices[0] }, /* 192.168.111.0/24 for dev 0 */
     {0}
 };
 
 nano_udp_bind_t nano_udp_binds[] = {
     { 5683, nano_coap_handler },
+    { 12345, nano_dummy_handler },
     {0}
 };
 
