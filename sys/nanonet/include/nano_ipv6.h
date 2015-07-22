@@ -20,7 +20,24 @@ int ipv6_reply(nano_ctx_t *ctx);
 void ipv6_addr_print(const uint8_t *addr);
 
 static inline int ipv6_addr_equal(const uint8_t *a, const uint8_t* b) {
-    return memcmp(a,b,16) == 0;
+    return memcmp(a, b, 16) == 0;
+}
+
+static inline int ipv6_is_for_us(nano_ctx_t *ctx)
+{
+    return ipv6_addr_equal(ctx->dst_addr.ipv6, ctx->dev->ipv6_ll)
+        || ipv6_addr_equal(ctx->dst_addr.ipv6, ctx->dev->ipv6_global)
+        || (ctx->dst_addr.ipv6[0] == 0xFF);
+}
+
+static inline int ipv6_addr_is_link_local(const uint8_t *addr)
+{
+    return addr[0]==0xfe && addr[1]==0x80;
+}
+
+static inline int ipv6_addr_is_multicast(const uint8_t *addr)
+{
+    return addr[0]==0xFF;
 }
 
 typedef struct __attribute__((packed)) ipv6_hdr {
