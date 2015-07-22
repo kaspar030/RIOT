@@ -20,18 +20,6 @@
 static uint16_t calcsum(ipv6_hdr_t *hdr);
 static void set_csum(ipv6_hdr_t *hdr);
 
-static inline int ipv6_is_for_us(nano_ctx_t *ctx)
-{
-    return ipv6_addr_equal(ctx->dst_addr.ipv6, ctx->dev->ipv6_ll)
-        || ipv6_addr_equal(ctx->dst_addr.ipv6, ctx->dev->ipv6_global)
-        || (ctx->dst_addr.ipv6[0] == 0xFF);
-}
-
-static inline int ipv6_addr_is_link_local(const uint8_t *addr)
-{
-    return addr[0]==0xfe && addr[1]==0x80;
-}
-
 int ipv6_handle(nano_ctx_t *ctx, size_t offset) {
     ipv6_hdr_t *hdr = (ipv6_hdr_t*) (ctx->buf+offset);
 
@@ -198,9 +186,10 @@ int ipv6_send(nano_sndbuf_t *buf, uint8_t *dst_ip, int protocol, nano_dev_t *dev
 
 void ipv6_addr_print(const uint8_t *addr)
 {
-    for (int i = 0; i < 16; i++) {
-        printf("%02x", (unsigned)addr[i]);
-        if (i != 15) {
+    const uint16_t* _addr = (const uint16_t*) addr;
+    for (int i = 0; i < 8; i++) {
+        printf("%04x", (unsigned)NTOHS(_addr[i]));
+        if (i != 7) {
             printf(":");
         }
     }
