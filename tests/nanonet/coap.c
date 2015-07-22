@@ -116,6 +116,7 @@ int nano_coap_handler(nano_ctx_t *ctx, size_t offset) {
 
             /* update length in nanonet context */
             ctx->len += rsplen - n;
+            udp_reply(ctx);
         }
     }
 
