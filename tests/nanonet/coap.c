@@ -96,10 +96,8 @@ int nano_coap_handler(nano_ctx_t *ctx, size_t offset) {
         printf("Bad packet rc=%d\n", rc);
     }
     else {
-        size_t l3_needed = udp_needed(ctx->src_addr.ipv4);
-        uint8_t *rspbuf = (uint8_t*) (ctx->buf+l3_needed);
-        size_t rsplen = NANONET_RX_BUFSIZE-l3_needed;
-        nano_sndbuf_t sndbuf = { .buf=ctx->buf, .size=ctx->len, .used=rsplen };
+        uint8_t *rspbuf = (uint8_t*) (ctx->buf+offset);
+        size_t rsplen = NANONET_RX_BUFSIZE - offset;
 
         coap_packet_t rsppkt;
         printf("content:\n");
@@ -115,7 +113,9 @@ int nano_coap_handler(nano_ctx_t *ctx, size_t offset) {
             printf("\n");
             printf("content:\n");
             coap_dumpPacket(&rsppkt);
-            udp_send(&sndbuf, ctx->src_addr.ipv4, ctx->src_port, ctx->dst_port);
+
+            /* update length in nanonet context */
+            ctx->len += rsplen - n;
         }
     }
 

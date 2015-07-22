@@ -115,3 +115,18 @@ int ipv4_send(nano_sndbuf_t *buf, uint32_t dest_ip, int protocol) {
 
     return 0;
 }
+
+int ipv4_reply(nano_ctx_t *ctx)
+{
+    ipv4_hdr_t *hdr = (ipv4_hdr_t *) ctx->l3_hdr_start;
+
+    hdr->dst = hdr->src;
+    hdr->src = HTONL(ctx->dev->ipv4);
+
+    hdr->total_len = HTONS(ctx->len - (((uint8_t*)hdr) - ctx->buf));
+
+    hdr->hdr_chksum = 0;
+    hdr->hdr_chksum = ~nano_util_calcsum(0, (uint8_t*)hdr, sizeof(ipv4_hdr_t));
+
+    return ctx->dev->reply(ctx);
+}

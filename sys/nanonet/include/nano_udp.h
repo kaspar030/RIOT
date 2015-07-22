@@ -28,6 +28,7 @@ extern nano_udp_bind_t nano_udp_binds[];
 int udp_handle(nano_ctx_t *ctx, size_t offset);
 int udp_send(nano_sndbuf_t *buf, uint32_t dst_ip, uint16_t dst_port, uint16_t src_port);
 int udp6_send(nano_sndbuf_t *buf, uint8_t* dst_ip, uint16_t dst_port, uint16_t src_port, nano_dev_t *dev);
+int udp_reply(nano_ctx_t *ctx);
 
 static inline int udp_needed(uint32_t dest_ip) {
     /* TODO: actually get value from lower layers */

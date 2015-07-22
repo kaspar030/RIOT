@@ -29,15 +29,11 @@ static inline int ipv6_is_for_us(nano_ctx_t *ctx)
 
 static inline int ipv6_addr_is_link_local(const uint8_t *addr)
 {
-    (void)addr;
-    printf("%s:%ul:%s(): forcing link-local.\n", RIOT_FILE_RELATIVE, __LINE__, __func__);
-    return 1;
+    return addr[0]==0xfe && addr[1]==0x80;
 }
 
 int ipv6_handle(nano_ctx_t *ctx, size_t offset) {
     ipv6_hdr_t *hdr = (ipv6_hdr_t*) (ctx->buf+offset);
-
-    ctx->l3_hdr_start = (void*) hdr;
 
     if (ctx->len - offset < sizeof(ipv6_hdr_t)) {
         DEBUG("ipv6: truncated packet received.\n");
@@ -89,10 +85,14 @@ int ipv6_get_src_addr(uint8_t *tgt_buf, const nano_dev_t *dev, const uint8_t *tg
 
 int ipv6_reply(nano_ctx_t *ctx)
 {
+    ipv6_hdr_t *hdr = (ipv6_hdr_t*) ctx->l3_hdr_start;
+
+    hdr->payload_len = HTONS(ctx->len - (((uint8_t*)hdr) - ctx->buf) - sizeof(ipv6_hdr_t));
+
     memcpy(ctx->dst_addr.ipv6, ctx->src_addr.ipv6, IPV6_ADDR_LEN);
     ipv6_get_src_addr(ctx->src_addr.ipv6, ctx->dev, ctx->dst_addr.ipv6);
 
-    set_csum((ipv6_hdr_t *)ctx->l3_hdr_start);
+    set_csum(hdr);
 
     return ctx->dev->reply(ctx);
 }

@@ -12,6 +12,8 @@ void nano_eth_handle(nano_dev_t *dev, uint8_t *buf, size_t len)
     /* setup crosslayer context struct */
     nano_ctx_t ctx = { .dev=dev, .buf=buf, .len=len};
 
+    ctx.l3_hdr_start = buf + sizeof(eth_hdr_t);
+
     eth_hdr_t *pkt = (eth_hdr_t *) buf;
 
     int (*handler)(nano_ctx_t *, size_t) = NULL;
