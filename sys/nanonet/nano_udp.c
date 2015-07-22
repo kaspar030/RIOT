@@ -62,6 +62,7 @@ int udp_handle(nano_ctx_t *ctx, size_t offset)
         }
         else {
             puts("udp: UDPv6: not filtering broadcast icmp reply");
+            icmpv6_reply_dst_unreachable(ctx, ICMPV6_DST_UNREACH_PORT);
         }
     }
 
