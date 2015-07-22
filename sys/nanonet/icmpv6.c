@@ -89,7 +89,7 @@ int handle_neighbor_solicitation(nano_ctx_t *ctx, size_t offset)
     /* TODO: move this into the IPv6 module and do it on every received packet */
     //nano_ndp_update(ctx);
 
-    if (memcmp(ctx->dev->ipv6_ll, ns->target_addr, IPV6_ADDR_LEN) == 0) {
+    if (ipv6_addr_equal(ctx->dev->ipv6_ll, ns->target_addr)) {
         if ((ctx->buf_size - ctx->len) < 6) {
             DEBUG("nanonet: neighbor advertisement handle: no room for l2"
                   "address in buffer\n");
@@ -99,6 +99,12 @@ int handle_neighbor_solicitation(nano_ctx_t *ctx, size_t offset)
         icmp->checksum = byteorder_htons(0);
         ns->opt_type = NANO_ICMPV6_NDP_OPT_DST_L2_ADDR;
         memcpy(ns->l2_addr, ctx->dev->mac_addr, 6);
+
+        if (!ipv6_addr_is_multicast(ctx->dst_addr.ipv6)) {
+            nano_icmpv6_na_t *na = (nano_icmpv6_na_t*) ns;
+            na->flags |= NANO_ICMPV6_NA_FLAG_SOLICITED;
+        }
+
         /* TODO: handle neighbor advertisement flags */
         return ipv6_reply(ctx);
     }
