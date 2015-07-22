@@ -58,6 +58,7 @@ int ipv6_handle(nano_ctx_t *ctx, size_t offset) {
                 icmpv6_handle(ctx, offset+hdr_len);
                 break;
             case IPV6_NEXTHDR_UDP:
+                DEBUG("ipv6: got UDP packet\n");
                 udp_handle(ctx, offset+hdr_len);
                 break;
 

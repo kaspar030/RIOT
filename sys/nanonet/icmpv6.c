@@ -65,6 +65,11 @@ int icmpv6_handle(nano_ctx_t *ctx, size_t offset)
     return 0;
 }
 
+void icmpv6_reply_dst_unreachable(nano_ctx_t *ctx, uint8_t code)
+{
+
+}
+
 int send_echo_resp(nano_ctx_t *ctx, size_t offset)
 {
     icmpv6_hdr_t *icmp = (icmpv6_hdr_t *)(ctx->buf + offset);
