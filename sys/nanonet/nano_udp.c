@@ -89,6 +89,31 @@ static size_t udp_build_hdr(nano_sndbuf_t *buf, uint16_t dst_port, uint16_t src_
     return sizeof(udp_hdr_t);
 }
 
+int udp_reply(nano_ctx_t *ctx)
+{
+    udp_hdr_t *hdr;
+    if (is_ipv4_hdr(ctx->l3_hdr_start)) {
+        hdr = (udp_hdr_t *) (ctx->l3_hdr_start + sizeof(ipv4_hdr_t));
+    }
+    else {
+        hdr = (udp_hdr_t *) (ctx->l3_hdr_start + sizeof(ipv6_hdr_t));
+    }
+
+    /* swap ports */
+    uint16_t tmp = hdr->dst_port;
+    hdr->dst_port = hdr->src_port;
+    hdr->src_port = tmp;
+    hdr->length = HTONS(ctx->len - ((uint8_t*)hdr - ctx->buf));
+    hdr->chksum = 0x0;
+
+    if (is_ipv4_hdr(ctx->l3_hdr_start)) {
+        return ipv4_reply(ctx);
+    }
+    else {
+        return ipv6_reply(ctx);
+    }
+}
+
 int udp_send(nano_sndbuf_t *buf, uint32_t dst_ip, uint16_t dst_port, uint16_t src_port)
 {
     DEBUG("udp: sending packet to 0x%08x\n", (unsigned int) dst_ip);

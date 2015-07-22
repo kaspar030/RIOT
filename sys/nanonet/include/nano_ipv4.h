@@ -6,6 +6,7 @@
 
 int ipv4_handle(nano_ctx_t *ctx, size_t offset);
 int ipv4_send(nano_sndbuf_t *buf, uint32_t dest_ip, int protocol);
+int ipv4_reply(nano_ctx_t *ctx);
 
 typedef struct __attribute__((packed)) ipv4_hdr {
     uint8_t ver_ihl;
