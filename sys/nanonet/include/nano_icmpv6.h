@@ -89,6 +89,8 @@ typedef struct __attribute__((packed)) {
 
 int icmpv6_handle(nano_ctx_t *ctx, size_t offset);
 
+void icmpv6_reply_dst_unreachable(nano_ctx_t *ctx, uint8_t code);
+
 #ifdef __cplusplus
 }
 #endif
