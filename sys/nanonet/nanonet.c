@@ -78,10 +78,8 @@ void nanonet_loop(void)
         if ((flags = (unsigned)atomic_set_return((atomic_int_t*)&nanonet_iflags, 0))) {
             for (int i = 0; i < NANO_NUM_DEVS; i++) {
                 if (flags & (0x1 << i)) {
-                    DEBUG("nanonet: shooting handler %i\n", i);
                     dev = (nano_dev_t*) &nanonet_devices[i];
                     dev->handle_isr(dev->ptr);
-                    DEBUG("nanonet: return from handler\n");
                 }
             }
         } else {
