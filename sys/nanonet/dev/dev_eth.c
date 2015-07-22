@@ -92,6 +92,7 @@ static int send(nano_dev_t *dev, nano_sndbuf_t *buf, uint8_t* dest_mac, uint16_t
 }
 
 static int send_raw(nano_dev_t *dev, uint8_t* buf, size_t len) {
+    DEBUG("nanonet_dev_eth_send_raw: Sending packet with len %u\n", len);
     dev_eth_t *ethdev = (dev_eth_t *) dev->ptr;
     ethdev->driver->send(ethdev, (char*)buf, len);
 
@@ -122,13 +123,14 @@ int nanonet_init_dev_eth(int n)
 
     dev->driver->get_mac_addr(dev, (uint8_t*)nanodev->mac_addr);
 
+    /* set link-local address */
     memset(nanodev->ipv6_ll, 0, IPV6_ADDR_LEN);
     nanodev->ipv6_ll[0] = 0xfe;
     nanodev->ipv6_ll[1] = 0x80;
-    nanodev->ipv6_ll[15] = 0x88;
+    nano_eth_get_iid((nanodev->ipv6_ll + 8), nanodev->mac_addr);
 
 #if ENABLE_DEBUG
-    printf("nanonet_init_dev_eth: Setting link-layer address");
+    printf("nanonet_init_dev_eth: Setting link-layer address ");
     ipv6_addr_print(nanodev->ipv6_ll);
     puts("");
 #endif
