@@ -58,3 +58,15 @@ int nano_eth_reply(nano_ctx_t *ctx)
 
     return 0;
 }
+
+void nano_eth_get_iid(uint8_t *eui64, const uint8_t *mac)
+{
+    eui64[0] = mac[0] ^ 0x02;
+    eui64[1] = mac[1];
+    eui64[2] = mac[2];
+    eui64[3] = 0xff;
+    eui64[4] = 0xfe;
+    eui64[5] = mac[3];
+    eui64[6] = mac[4];
+    eui64[7] = mac[5];
+}
