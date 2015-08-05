@@ -25,7 +25,9 @@
 
 #include <inttypes.h>
 
-#include "net_help.h"
+#include <string.h>
+#include "byteorder.h"
+
 #include "inet_ntop.h"
 #include "inet_pton.h"
 
