@@ -1,6 +1,3 @@
-ifneq (,$(filter net_help,$(USEMODULE)))
-    USEMODULE_INCLUDES += $(RIOTBASE)/sys/net/include
-endif
 ifneq (,$(filter nhdp,$(USEMODULE)))
     USEMODULE_INCLUDES += $(RIOTBASE)/sys/net/include
     USEMODULE_INCLUDES += $(RIOTBASE)/sys/net/routing/nhdp

@@ -7,9 +7,6 @@ endif
 ifneq (,$(filter shell_commands,$(USEMODULE)))
     DIRS += shell/commands
 endif
-ifneq (,$(filter net_help,$(USEMODULE)))
-    DIRS += net/crosslayer/net_help
-endif
 ifneq (,$(filter routing,$(USEMODULE)))
     DIRS += net/routing
 endif
