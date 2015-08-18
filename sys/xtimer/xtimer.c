@@ -44,8 +44,7 @@ void _xtimer_sleep(uint32_t offset, uint32_t long_offset)
     mutex_lock(&mutex);
 }
 
-int xtimer_usleep_until(uint32_t *last_wakeup, uint32_t interval) {
-    int ret = 0;
+void xtimer_usleep_until(uint32_t *last_wakeup, uint32_t interval) {
     xtimer_t timer;
     mutex_t mutex = MUTEX_INIT;
 
@@ -81,8 +80,6 @@ int xtimer_usleep_until(uint32_t *last_wakeup, uint32_t interval) {
 
 out:
     *last_wakeup = xtimer_now();
-
-    return ret;
 }
 
 static void _callback_msg(void* arg)

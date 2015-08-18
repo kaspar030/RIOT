@@ -161,9 +161,8 @@ static inline void xtimer_spin(uint32_t microseconds);
  *
  * @param[in] last_wakeup base time for the wakeup
  * @param[in] usecs time in microseconds that will be added to last_wakeup
- * @return 0 on success, < 0 on error
  */
-int xtimer_usleep_until(uint32_t *last_wakeup, uint32_t usecs);
+void xtimer_usleep_until(uint32_t *last_wakeup, uint32_t usecs);
 
 /**
  * @brief Set a timer that sends a message
