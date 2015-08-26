@@ -12,7 +12,6 @@ static gnrc_pktsnip_t *_recv(gnrc_netdev2_t *gnrc_netdev2)
     netdev2_t *dev = gnrc_netdev2->dev;
     int bytes_expected = dev->driver->recv(dev, NULL, 0);
     gnrc_pktsnip_t *pkt = NULL;
-    gnrc_pktsnip_t *whole_pkt = NULL;
 
     if (bytes_expected) {
         pkt = gnrc_pktbuf_add(NULL, NULL,
@@ -24,15 +23,11 @@ static gnrc_pktsnip_t *_recv(gnrc_netdev2_t *gnrc_netdev2)
             goto out;
         }
 
-        whole_pkt = pkt;
-
         int nread = dev->driver->recv(dev, pkt->data, bytes_expected);
         if(nread <= 0) {
             DEBUG("_recv_ethernet_packet: read error.\n");
             goto safe_out;
         }
-
-        size_t data_len = (nread - sizeof(ethernet_hdr_t));
 
         if (nread < bytes_expected) {
             /* we've got less then the expected packet size,
@@ -42,10 +37,17 @@ static gnrc_pktsnip_t *_recv(gnrc_netdev2_t *gnrc_netdev2)
             gnrc_pktbuf_realloc_data(pkt, nread);
         }
 
-        ethernet_hdr_t *hdr = (ethernet_hdr_t *)pkt->data;
+        /* mark ethernet header */
+        gnrc_pktsnip_t *eth_hdr = gnrc_pktbuf_mark(pkt, sizeof(ethernet_hdr_t), GNRC_NETTYPE_UNDEF);
+        if (!eth_hdr) {
+            DEBUG("gnrc_netdev2_eth: no space left in packet buffer\n");
+            goto safe_out;
+        }
 
-        gnrc_nettype_t receive_type =
-            gnrc_nettype_from_ethertype(byteorder_ntohs(hdr->type));
+        ethernet_hdr_t *hdr = (ethernet_hdr_t *)eth_hdr->data;
+
+        /* set payload type from ethertype */
+        pkt->type = gnrc_nettype_from_ethertype(byteorder_ntohs(hdr->type));
 
         /* create netif header */
         gnrc_pktsnip_t *netif_hdr;
@@ -55,6 +57,7 @@ static gnrc_pktsnip_t *_recv(gnrc_netdev2_t *gnrc_netdev2)
 
         if (netif_hdr == NULL) {
             DEBUG("gnrc_netdev2_eth: no space left in packet buffer\n");
+            pkt = eth_hdr;
             goto safe_out;
         }
 
@@ -71,12 +74,8 @@ static gnrc_pktsnip_t *_recv(gnrc_netdev2_t *gnrc_netdev2)
         od_hex_dump(hdr, nread, OD_WIDTH_DEFAULT);
 #endif
 
-        /* Mark netif header and payload for next layer */
-        if ((pkt = gnrc_pktbuf_add(netif_hdr, ((char*)pkt->data) + sizeof(ethernet_hdr_t),
-                                   data_len, receive_type)) == NULL) {
-            DEBUG("gnrc_netdev2_eth: no space left in packet buffer\n");
-            gnrc_pktbuf_release(netif_hdr);
-        }
+        gnrc_pktbuf_remove_snip(pkt, eth_hdr);
+        LL_APPEND(pkt, netif_hdr);
 
         goto out;
     }
@@ -86,9 +85,6 @@ safe_out:
     return NULL;
 
 out:
-    if (whole_pkt) {
-        gnrc_pktbuf_release(whole_pkt);
-    }
     return pkt;
 }
 
