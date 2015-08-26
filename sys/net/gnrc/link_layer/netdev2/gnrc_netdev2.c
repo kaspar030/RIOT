@@ -132,11 +132,11 @@ static void *_gnrc_netdev2_thread(void *args)
     dev->event_callback = _event_cb;
     dev->isr_arg = (void*) gnrc_netdev2;
 
-    /* initialize low-level driver */
-    dev->driver->init(dev);
-
     /* register the device to the network stack*/
     gnrc_netif_add(thread_getpid());
+
+    /* initialize low-level driver */
+    dev->driver->init(dev);
 
     /* start the event loop */
     while (1) {
