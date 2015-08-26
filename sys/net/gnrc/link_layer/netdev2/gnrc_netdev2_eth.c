@@ -76,16 +76,14 @@ static gnrc_pktsnip_t *_recv(gnrc_netdev2_t *gnrc_netdev2)
 
         gnrc_pktbuf_remove_snip(pkt, eth_hdr);
         LL_APPEND(pkt, netif_hdr);
-
-        goto out;
     }
+
+out:
+    return pkt;
 
 safe_out:
     gnrc_pktbuf_release(pkt);
     return NULL;
-
-out:
-    return pkt;
 }
 
 static inline void _addr_set_broadcast(uint8_t *dst)
