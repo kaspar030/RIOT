@@ -169,6 +169,8 @@ int _get(netdev2_t *dev, netopt_t opt, void *value, size_t max_len)
 
 int _set(netdev2_t *dev, netopt_t opt, void *value, size_t value_len)
 {
+    (void)value_len;
+
     if (dev != (netdev2_t *)&netdev2_tap) {
         return -ENODEV;
     }
