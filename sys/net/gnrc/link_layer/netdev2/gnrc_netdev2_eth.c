@@ -167,7 +167,7 @@ static int _send(gnrc_netdev2_t *gnrc_netdev2, gnrc_pktsnip_t *pkt)
           hdr.dst[0], hdr.dst[1], hdr.dst[2],
           hdr.dst[3], hdr.dst[4], hdr.dst[5]);
 
-    unsigned n;
+    size_t n;
     pkt = gnrc_pktbuf_get_iovec(pkt, &n);
     struct iovec *vector = (struct iovec *)pkt->data;
     vector[0].iov_base = (char*)&hdr;
