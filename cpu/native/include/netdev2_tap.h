@@ -27,7 +27,6 @@ extern "C" {
 #include <stdint.h>
 #include "net/netdev2.h"
 
-#include "net/if.h"
 #include "net/ethernet/hdr.h"
 
 #ifdef __MACH__
