@@ -31,6 +31,8 @@ extern "C" {
 
 #ifdef __MACH__
 #include "net/if_var.h"
+#else
+#include "net/if.h"
 #endif
 
 /**
