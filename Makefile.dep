@@ -287,8 +287,7 @@ endif
 
 ifneq (,$(filter fib,$(USEMODULE)))
   USEMODULE += universal_address
-  USEMODULE += timex
-  USEMODULE += vtimer
+  USEMODULE += xtimer
   USEMODULE += net_help
 endif
 
