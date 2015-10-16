@@ -13,4 +13,6 @@ struct _FILE {
 int vfprintf(FILE *restrict f, const char *restrict fmt, va_list ap);
 int printf(const char *restrict fmt, ...);
 
+int puts(const char *s);
+
 #endif /* STDIO_H */
