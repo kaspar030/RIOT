@@ -4,12 +4,21 @@
 typedef struct {
     FILE super;
     int fd;
-} _IO_FILE;
+} _FD_FILE;
 
-ssize_t fdwrite(FILE *restrict f, const char *ptr, size_t n)
+static ssize_t _fdwrite(FILE *restrict f, const char *ptr, size_t n)
 {
-    return write(((_IO_FILE*)f)->fd, ptr, n);
+    return write(((_FD_FILE*)f)->fd, ptr, n);
 }
 
-_IO_FILE _stdout = { .super.out=fdwrite, .fd=0 };
-FILE *stdout = (FILE*)&_stdout;
+static ssize_t _fdread(FILE *restrict f, char *ptr, size_t n)
+{
+    return read(((_FD_FILE*)f)->fd, ptr, n);
+}
+
+
+static const _FD_FILE _stdin = { .super.out=_fdwrite, .super.in=_fdread, .fd=STDIN_FILENO };
+static const _FD_FILE _stdout = { .super.out=_fdwrite, .super.in=_fdread, .fd=STDOUT_FILENO };
+
+FILE *const stdin = (FILE*)&_stdin;
+FILE *const stdout = (FILE*)&_stdout;

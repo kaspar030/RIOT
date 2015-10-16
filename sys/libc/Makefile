@@ -1,2 +1,3 @@
-MODULE = libc_stdio
+MODULE = libc
+DIRS += stdio
 include $(RIOTBASE)/Makefile.base

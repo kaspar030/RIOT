@@ -1,0 +1,8 @@
+ifeq ($(TOOLCHAIN),llvm)
+  INCLUDES += -isystem $(RIOTBASE)/sys/libc/include/clang
+else
+  INCLUDES += -isystem $(RIOTBASE)/sys/libc/include/gcc
+endif
+
+INCLUDES += -isystem $(RIOTBASE)/sys/libc/include
+CFLAGS += -nostdinc

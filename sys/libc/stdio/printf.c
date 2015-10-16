@@ -2,8 +2,6 @@
 
 #include <stdio.h>
 
-extern FILE* stdout;
-
 int printf(const char *restrict fmt, ...)
 {
     int ret;

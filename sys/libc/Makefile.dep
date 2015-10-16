@@ -1,0 +1,3 @@
+USEMODULE += libc_stdio
+USEMODULE += uart_stdio
+USEMODULE += fmt

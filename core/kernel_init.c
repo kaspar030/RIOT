@@ -45,6 +45,10 @@ static void *main_trampoline(void *arg)
 {
     (void) arg;
 
+#ifdef MODULE_LIBC
+    void libc_init(void);
+    libc_init();
+#endif
 #ifdef MODULE_AUTO_INIT
     auto_init();
 #endif
