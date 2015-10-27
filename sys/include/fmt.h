@@ -55,7 +55,7 @@ size_t fmt_byte_hex(char *out, uint8_t byte);
  * @param[in]  ptr  Pointer to bytes to convert
  * @param[in]  n    Number of bytes to convert
  *
- * @return     n
+ * @return     2*n
  */
 size_t fmt_bytes_hex_reverse(char *out, const uint8_t *ptr, size_t n);
 
