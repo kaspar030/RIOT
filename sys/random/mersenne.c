@@ -55,7 +55,7 @@
 static uint32_t mt[N]; /** the array for the state vector  */
 static uint16_t mti = MTI_UNINITIALIZED;
 
-void genrand_init(uint32_t s)
+void random_init(uint32_t s)
 {
     mt[0] = s;
     for (int i = 1; i < N; ++i) {
@@ -71,7 +71,7 @@ void genrand_init(uint32_t s)
 
 void genrand_init_by_array(uint32_t *init_key, int key_length)
 {
-    genrand_init(19650218UL);
+    random_init(19650218UL);
     int i = 1;
     int j = 0;
     for (int k = N > key_length ? N : key_length; k; --k) {
@@ -104,7 +104,7 @@ static void generate_numbers(void)
 {
     if (mti == MTI_UNINITIALIZED) {
         /* if init_genrand() has not been called, a default initial seed is used */
-        genrand_init(5489UL);
+        random_init(5489UL);
     }
 
     for (int k = 0; k < N; ++k) {
@@ -118,7 +118,7 @@ static void generate_numbers(void)
     mti = 0;
 }
 
-uint32_t genrand_uint32(void)
+uint32_t random_u32(void)
 {
     if (mti >= N) {
         generate_numbers();
@@ -142,23 +142,23 @@ uint32_t genrand_uint32(void)
 
 double genrand_real(void)
 {
-    return genrand_uint32() * (1.0 / TWO_POW_32);
+    return random_u32() * (1.0 / TWO_POW_32);
 }
 
 double genrand_real_inclusive(void)
 {
-    return genrand_uint32() * (1.0 / TWO_POW_32_M1);
+    return random_u32() * (1.0 / TWO_POW_32_M1);
 }
 
 double genrand_real_exclusive(void)
 {
-    return ((double) genrand_uint32() + 0.5) * (1.0 / TWO_POW_32);
+    return ((double) random_u32() + 0.5) * (1.0 / TWO_POW_32);
 }
 
 double genrand_res53(void)
 {
-    double a = genrand_uint32() * TWO_POW_26;
-    double b = genrand_uint32() * (1.0 / TWO_POW_6);
+    double a = random_u32() * TWO_POW_26;
+    double b = random_u32() * (1.0 / TWO_POW_6);
     return (a + b) * (1.0 / TWO_POW_53);
 }
 

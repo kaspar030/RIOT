@@ -860,7 +860,7 @@ ssize_t sendto(int socket, const void *buffer, size_t length, int flags,
                                       sport, port);
             }
             else if (address != NULL) {
-                uint16_t sport = (uint16_t)genrand_uint32_range(1LU << 10U, 1LU << 16U);
+                uint16_t sport = (uint16_t)random_u32_range(1LU << 10U, 1LU << 16U);
                 res = conn_udp_sendto(buffer, length, NULL, 0, addr, addr_len, s->domain,
                                       sport, port);
             }
