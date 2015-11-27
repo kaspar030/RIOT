@@ -26,33 +26,18 @@
 extern "C" {
 #endif
 
-#ifndef PRNG_FLOAT
-#  define PRNG_FLOAT (0)
-#endif
-
 /**
  * @brief initializes mt[N] with a seed
  *
  * @param s seed for the PRNG
  */
-void genrand_init(uint32_t s);
-
-/**
- * @brief initialize by an array with array-length
- * init_key is the array for initializing keys
- * key_length is its length
- * slight change for C++, 2004/2/26
- *
- * @param init_key array of keys (seeds) to initialize the PRNG
- * @param key_length number of lements in init_key
- */
-void genrand_init_by_array(uint32_t init_key[], int key_length);
+void random_init(uint32_t seed);
 
 /**
  * @brief generates a random number on [0,0xffffffff]-interval
  * @return a random number on [0,0xffffffff]-interval
  */
-uint32_t genrand_uint32(void);
+uint32_t random_u32(void);
 
 /**
  * @brief   generates a random number r with a <= r < b.
@@ -64,39 +49,25 @@ uint32_t genrand_uint32(void);
  *
  * @return  a random number on [a,b)-interval
  */
-static inline uint32_t genrand_uint32_range(uint32_t a, uint32_t b)
+static inline uint32_t random_u32_range(uint32_t a, uint32_t b)
 {
-    return (genrand_uint32() % (b - a)) + a;
+    return (random_u32() % (b - a)) + a;
 }
 
-#if PRNG_FLOAT
-/* These real versions are due to Isaku Wada, 2002/01/09 added */
-
 /**
- * @brief generates a random number on [0,1)-real-interval
- * @return a random number on [0,1)-real-interval
+ * @brief generates a random double number r (0.0 < r <= 1.0)
+ *
+ * This function outputs double precision floating point number.
+ * The returned value has 32-bit precision.
+ * In other words, this function makes one double precision floating point
+ * number from one 32-bit unsigned integer.
+ *
+ * @return floating point number r (0.0 < r <= 1.0)
  */
-double genrand_real(void);
-
-/**
- * @brief generates a random number on [0,1]-real-interval
- * @return a random number on [0,1]-real-interval
- */
-double genrand_real_inclusive(void);
-
-/**
- * @brief generates a random number on (0,1)-real-interval
- * @return a random number on (0,1)-real-interval
- */
-double genrand_real_exclusive(void);
-
-/**
- * @brief generates a random number on [0,1) with 53-bit resolution
- * @return a random number on [0,1) with 53-bit resolution
- */
-double genrand_res53(void);
-
-#endif /* PRNG_FLOAT */
+inline static double random_double(void)
+{
+    return random_u32() * (1.0 / 4294967296.0);
+}
 
 #ifdef __cplusplus
 }
