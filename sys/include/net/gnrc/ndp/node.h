@@ -45,6 +45,8 @@ kernel_pid_t gnrc_ndp_node_next_hop_l2addr(uint8_t *l2addr, uint8_t *l2addr_len,
                                            kernel_pid_t iface, ipv6_addr_t *dst,
                                            gnrc_pktsnip_t *pkt);
 
+kernel_pid_t gnrc_ndp_node_solicit(uint8_t *l2addr, uint8_t *l2addr_len,
+        kernel_pid_t iface, ipv6_addr_t *dst, gnrc_ipv6_nc_t *nc_entry, gnrc_pktsnip_t *pkt);
 #ifdef __cplusplus
 }
 #endif

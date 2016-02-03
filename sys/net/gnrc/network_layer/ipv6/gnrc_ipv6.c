@@ -36,7 +36,9 @@
 
 #include "net/gnrc/ipv6.h"
 
-#define ENABLE_DEBUG    (0)
+#include "net/ipv6/rt.h"
+
+#define ENABLE_DEBUG    (1)
 #include "debug.h"
 
 #define _MAX_L2_ADDR_LEN    (8U)
@@ -532,30 +534,90 @@ static inline kernel_pid_t _next_hop_l2addr(uint8_t *l2addr, uint8_t *l2addr_len
                                             kernel_pid_t iface, ipv6_addr_t *dst,
                                             gnrc_pktsnip_t *pkt)
 {
-    kernel_pid_t found_iface;
-#if defined(MODULE_GNRC_SIXLOWPAN_ND)
-    (void)pkt;
-    found_iface = gnrc_sixlowpan_nd_next_hop_l2addr(l2addr, l2addr_len, iface, dst);
-    if (found_iface > KERNEL_PID_UNDEF) {
-        return found_iface;
+    kernel_pid_t via_iface = KERNEL_PID_UNDEF;
+    ipv6_addr_t *next_hop = NULL;
+    gnrc_ipv6_nc_t *nc_entry = NULL;
+
+    int dst_is_6lp;
+    int dst_is_linklocal = ipv6_addr_is_link_local(dst);
+
+    if (dst_is_linklocal && (iface == KERNEL_PID_UNDEF)) {
+        /* cannot forward to link-local address without interface */
+        DEBUG("_next_hop_l2addr(): cannot determin link-local target without interface.\n");
+        return KERNEL_PID_UNDEF;
     }
-#endif
-#if defined(MODULE_GNRC_NDP_NODE)
-    found_iface = gnrc_ndp_node_next_hop_l2addr(l2addr, l2addr_len, iface, dst, pkt);
-#elif !defined(MODULE_GNRC_SIXLOWPAN_ND) && defined(MODULE_GNRC_IPV6_NC)
+
+    /* 1. check neighbor cache */
+    nc_entry = gnrc_ipv6_nc_get(iface, dst);
+    /* if NCE found */
+    if (nc_entry) {
+        gnrc_ipv6_netif_t *ipv6_if = gnrc_ipv6_netif_get(nc_entry->iface);
+        dst_is_6lp = ipv6_if->flags & GNRC_IPV6_NETIF_FLAGS_SIXLOWPAN;
+
+        if ( /* and interface is not 6LoWPAN */
+                (!dst_is_6lp)
+                /* or entry is registered */
+                || (gnrc_ipv6_nc_get_type(nc_entry) == GNRC_IPV6_NC_TYPE_REGISTERED)
+           ) {
+            DEBUG("_next_hop_l2addr(): using cached entry\n");
+            /* using neighbor cache entry */
+            next_hop = dst;
+            return gnrc_ipv6_nc_get_l2_addr(l2addr, l2addr_len, nc_entry);
+        }
+    }
+
+    /* 2. check possible RH */
+#ifdef MODULE_GNRC_IPV6_EXT_RH
+    if (!next_hop) {
+        ipv6_hdr_t *hdr;
+        gnrc_pktsnip_t *ipv6;
+        LL_SEARCH_SCALAR(pkt, ipv6, type, GNRC_NETTYPE_IPV6);
+        assert(ipv6);
+        hdr = ipv6->data;
+        next_hop = ipv6_ext_rh_next_hop(hdr);
+    }
+#else
     (void)pkt;
-    gnrc_ipv6_nc_t *nc = gnrc_ipv6_nc_get(iface, dst);
-    found_iface = gnrc_ipv6_nc_get_l2_addr(l2addr, l2addr_len, nc);
-#elif !defined(MODULE_GNRC_SIXLOWPAN_ND)
-    found_iface = KERNEL_PID_UNDEF;
-    (void)l2addr;
-    (void)l2addr_len;
-    (void)iface;
-    (void)dst;
-    (void)pkt;
-    *l2addr_len = 0;
 #endif
-    return found_iface;
+
+    /*  */
+    if (!next_hop) {
+        if (dst_is_linklocal) {
+            if (!nc_entry) {
+                gnrc_ipv6_netif_t *ipv6_if = gnrc_ipv6_netif_get(iface);
+                dst_is_6lp = ipv6_if->flags & GNRC_IPV6_NETIF_FLAGS_SIXLOWPAN;
+            }
+
+            if (dst_is_6lp) {
+                /* dst is link-local, 6lowpan -> send directly */
+                DEBUG("_next_hop_l2addr(): dst is link-local, 6lowpan -> send directly (STUB)\n");
+            }
+            else {
+                DEBUG("_next_hop_l2addr(): dst is link-local, non-6lowpan -> send on-link\n");
+                next_hop = dst;
+                via_iface = iface;
+            }
+        }
+        else {
+            DEBUG("_next_hop_l2addr(): looking up next hop in routing table\n");
+            ipv6_rt_get_next_hop(&next_hop, &via_iface, dst);
+        }
+    }
+
+    if (next_hop) {
+        if (next_hop != dst) {
+            /* We've looked up the original dest address above.
+             * If next_hop is a different address, the entry must be updated. */
+            nc_entry = gnrc_ipv6_nc_get(via_iface, next_hop);
+        }
+
+        /* get next_hop l2addr, possibly triggering NDP solicitation */
+        return gnrc_ndp_node_solicit(l2addr, l2addr_len, via_iface, next_hop, nc_entry, pkt);
+    }
+    else {
+        /* no route to host */
+        return KERNEL_PID_UNDEF;
+    }
 }
 
 static void _send(gnrc_pktsnip_t *pkt, bool prep_hdr)

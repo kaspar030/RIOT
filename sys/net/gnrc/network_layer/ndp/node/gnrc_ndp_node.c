@@ -55,71 +55,9 @@ static gnrc_pktqueue_t *_alloc_pkt_node(gnrc_pktsnip_t *pkt)
     return NULL;
 }
 
-kernel_pid_t gnrc_ndp_node_next_hop_l2addr(uint8_t *l2addr, uint8_t *l2addr_len,
-                                           kernel_pid_t iface, ipv6_addr_t *dst,
-                                           gnrc_pktsnip_t *pkt)
+kernel_pid_t gnrc_ndp_node_solicit(uint8_t *l2addr, uint8_t *l2addr_len,
+        kernel_pid_t iface, ipv6_addr_t *next_hop_ip, gnrc_ipv6_nc_t *nc_entry, gnrc_pktsnip_t *pkt)
 {
-    gnrc_ipv6_nc_t *nc_entry;
-    ipv6_addr_t *next_hop_ip = NULL, *prefix = NULL;
-    bool dst_link_local = ipv6_addr_is_link_local(dst);
-
-#ifdef MODULE_GNRC_IPV6_EXT_RH
-    ipv6_hdr_t *hdr;
-    gnrc_pktsnip_t *ipv6;
-    LL_SEARCH_SCALAR(pkt, ipv6, type, GNRC_NETTYPE_IPV6);
-    assert(ipv6);
-    hdr = ipv6->data;
-    next_hop_ip = ipv6_ext_rh_next_hop(hdr);
-#endif
-#ifdef MODULE_FIB
-    ipv6_addr_t next_hop_actual;    /* FIB copies address into this variable */
-    /* don't look-up link local addresses in FIB */
-    if (!dst_link_local) {
-        size_t next_hop_size = sizeof(ipv6_addr_t);
-        uint32_t next_hop_flags = 0;
-
-        if ((next_hop_ip == NULL) &&
-            (fib_get_next_hop(&gnrc_ipv6_fib_table, &iface, next_hop_actual.u8,
-                              &next_hop_size, &next_hop_flags, (uint8_t *)dst,
-                              sizeof(ipv6_addr_t), 0) >= 0) &&
-            (next_hop_size == sizeof(ipv6_addr_t))) {
-            next_hop_ip = &next_hop_actual;
-        }
-    }
-#endif
-
-    if (next_hop_ip == NULL) {            /* no route to host */
-        if (!dst_link_local) {
-            if (iface == KERNEL_PID_UNDEF) {
-                /* gnrc_ipv6_netif_t doubles as prefix list */
-                iface = gnrc_ipv6_netif_find_by_prefix(&prefix, dst);
-            }
-            else {
-                /* gnrc_ipv6_netif_t doubles as prefix list */
-                prefix = gnrc_ipv6_netif_match_prefix(iface, dst);
-            }
-        }
-
-        if (dst_link_local || ((prefix != NULL) &&
-                               (gnrc_ipv6_netif_addr_get(prefix)->flags & /* prefix is on-link */
-                                GNRC_IPV6_NETIF_ADDR_FLAGS_NDP_ON_LINK))) {
-            next_hop_ip = dst;
-        }
-    }
-
-    /* dst has not an on-link prefix  */
-    if (next_hop_ip == NULL) {
-        next_hop_ip = gnrc_ndp_internal_default_router();
-    }
-
-    if (next_hop_ip == NULL) {
-        next_hop_ip = dst;      /* Just look if it's in the neighbor cache
-                                 * (aka on-link but not registered in prefix list as such) */
-    }
-
-    /* start address resolution */
-    nc_entry = gnrc_ipv6_nc_get(iface, next_hop_ip);
-
     if ((nc_entry != NULL) && gnrc_ipv6_nc_is_reachable(nc_entry)) {
         DEBUG("ndp node: found reachable neighbor (%s => ",
               ipv6_addr_to_str(addr_str, &nc_entry->ipv6_addr, sizeof(addr_str)));
