@@ -93,6 +93,10 @@ extern int _netif_send(int argc, char **argv);
 extern int _fib_route_handler(int argc, char **argv);
 #endif
 
+#ifdef MODULE_IPV6_RT
+int _routing_route_handler(int argc, char **argv);
+#endif
+
 #ifdef MODULE_GNRC_IPV6_NC
 extern int _ipv6_nc_manage(int argc, char **argv);
 extern int _ipv6_nc_routers(int argc, char **argv);
@@ -180,6 +184,9 @@ const shell_command_t _shell_command_list[] = {
 #endif
 #ifdef MODULE_FIB
     {"fibroute", "Manipulate the FIB (info: 'fibroute [add|del]')", _fib_route_handler},
+#endif
+#ifdef MODULE_IPV6_RT
+    {"route", "Manipulate the IPv6 routing table (info: 'route [add|del]')", _routing_route_handler},
 #endif
 #ifdef MODULE_GNRC_IPV6_NC
     {"ncache", "manage neighbor cache by hand", _ipv6_nc_manage },
