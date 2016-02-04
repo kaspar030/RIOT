@@ -180,23 +180,24 @@ void ipv6_rt_print(void)
         }
 
         print_ipv6_addr(ipv6_addrstore_get(entry->prefix_ref));
+
         if (entry->prefix_len) {
             printf("/%i", entry->prefix_len);
         }
 
         if (entry->next_hop_ref != -1) {
-            print_str(" via ");
+            puts(" via ");
             print_ipv6_addr(ipv6_addrstore_get(entry->next_hop_ref));
         }
-        printf(" dev %"PRIkernel_pid" flags 0x%08x", entry->iface, entry->flags);
+        printf(" dev %"PRIkernel_pid" flags 0x%08x", entry->iface, (unsigned)entry->flags);
         if (entry->lifetime != IPV6_RT_LIFETIME_NOEXPIRE) {
-            printf(" expires %us\n", (entry->lifetime - xtimer_now())/SEC_IN_USEC);
+            printf(" expires %us\n", (unsigned)(entry->lifetime - xtimer_now())/SEC_IN_USEC);
         }
         if (_expired(entry)) {
-            print_str(" (expired)\n");
+            puts(" (expired)\n");
         }
         else {
-            print_str("\n");
+            puts("\n");
         }
     }
 }
