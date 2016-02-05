@@ -20,10 +20,11 @@ typedef struct {
 
 extern ipv6_rt_entry_t ipv6_routing_table[IPV6_ROUTING_TABLE_SIZE];
 
-int ipv6_rt_put(ipv6_addr_t *prefix, int prefix_len, ipv6_addr_t *next_hop, kernel_pid_t iface, unsigned lifetime);
-int ipv6_rt_del(ipv6_addr_t *prefix, int prefix_len);
+int ipv6_rt_put(const ipv6_addr_t *prefix, unsigned prefix_len, ipv6_addr_t *next_hop, kernel_pid_t iface, unsigned lifetime);
+int ipv6_rt_del(const ipv6_addr_t *prefix, unsigned prefix_len);
 int ipv6_rt_get_next_hop(ipv6_addr_t **next_hop, kernel_pid_t *via_iface, ipv6_addr_t *dst_addr);
 void ipv6_rt_print(void);
 void print_ipv6_addr(const ipv6_addr_t *addr);
+void ipv6_rt_print_route(ipv6_rt_entry_t *entry);
 
 #endif /* IPV6_RT_H */

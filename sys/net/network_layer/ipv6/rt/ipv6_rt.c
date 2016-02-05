@@ -28,7 +28,7 @@ static int _expired(ipv6_rt_entry_t *entry)
 }
 
 /* returns entry with matching prefix and prefix length or unused entry */
-static int _find(ipv6_addr_t *prefix, int prefix_len)
+static int _find(const ipv6_addr_t *prefix, unsigned prefix_len)
 {
     int res = -1;
     ipv6_rt_entry_t *entry = ipv6_routing_table;
@@ -49,7 +49,7 @@ static int _find(ipv6_addr_t *prefix, int prefix_len)
     return res;
 }
 
-int ipv6_rt_put(ipv6_addr_t *prefix, int prefix_len, ipv6_addr_t *next_hop, kernel_pid_t iface, unsigned lifetime)
+int ipv6_rt_put(const ipv6_addr_t *prefix, unsigned prefix_len, ipv6_addr_t *next_hop, kernel_pid_t iface, unsigned lifetime)
 {
     int pos = _find(prefix, prefix_len);
 
@@ -72,17 +72,27 @@ int ipv6_rt_put(ipv6_addr_t *prefix, int prefix_len, ipv6_addr_t *next_hop, kern
         else {
             entry->lifetime = xtimer_now() + (lifetime*1000);
         }
+#if ENABLE_DEBUG
+        print_str("ipv6_rt_put(): adding (");
+        ipv6_rt_print_route(entry);
+        puts(")");
+#endif
     }
     return pos;
 }
 
-int ipv6_rt_del(ipv6_addr_t *prefix, int prefix_len)
+int ipv6_rt_del(const ipv6_addr_t *prefix, unsigned prefix_len)
 {
     int pos = _find(prefix, prefix_len);
 
     if (pos >= 0) {
         ipv6_rt_entry_t *entry = &ipv6_routing_table[pos];
         if (entry->flags & RT_FLAG_ACTIVE) {
+#if ENABLE_DEBUG
+            print_str("ipv6_rt_del(): deleting (");
+            ipv6_rt_print_route(entry);
+            puts(")");
+#endif
             entry->flags = 0;
             ipv6_addrstore_unref(entry->prefix_ref);
             ipv6_addrstore_unref(entry->next_hop_ref);
@@ -158,6 +168,29 @@ int ipv6_rt_get_next_hop(ipv6_addr_t **next_hop, kernel_pid_t *via_iface, ipv6_a
     return -1;
 }
 
+void ipv6_rt_print_route(ipv6_rt_entry_t *entry)
+{
+    assert(entry);
+
+    print_ipv6_addr(ipv6_addrstore_get(entry->prefix_ref));
+
+    if (entry->prefix_len) {
+        printf("/%i", entry->prefix_len);
+    }
+
+    if (entry->next_hop_ref != -1) {
+        puts(" via ");
+        print_ipv6_addr(ipv6_addrstore_get(entry->next_hop_ref));
+    }
+    printf(" dev %"PRIkernel_pid" flags 0x%08x", entry->iface, (unsigned)entry->flags);
+    if (entry->lifetime != IPV6_RT_LIFETIME_NOEXPIRE) {
+        printf(" expires %us\n", (unsigned)(entry->lifetime - xtimer_now())/SEC_IN_USEC);
+    }
+    if (_expired(entry)) {
+        puts(" (expired)");
+    }
+}
+
 void ipv6_rt_print(void)
 {
     ipv6_rt_entry_t *entry = ipv6_routing_table;
@@ -167,25 +200,7 @@ void ipv6_rt_print(void)
             continue;
         }
 
-        print_ipv6_addr(ipv6_addrstore_get(entry->prefix_ref));
-
-        if (entry->prefix_len) {
-            printf("/%i", entry->prefix_len);
-        }
-
-        if (entry->next_hop_ref != -1) {
-            puts(" via ");
-            print_ipv6_addr(ipv6_addrstore_get(entry->next_hop_ref));
-        }
-        printf(" dev %"PRIkernel_pid" flags 0x%08x", entry->iface, (unsigned)entry->flags);
-        if (entry->lifetime != IPV6_RT_LIFETIME_NOEXPIRE) {
-            printf(" expires %us\n", (unsigned)(entry->lifetime - xtimer_now())/SEC_IN_USEC);
-        }
-        if (_expired(entry)) {
-            puts(" (expired)\n");
-        }
-        else {
-            puts("\n");
-        }
+        ipv6_rt_print_route(entry);
+        puts("\n");
     }
 }
