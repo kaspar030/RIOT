@@ -57,6 +57,10 @@ int ipv6_rt_put(const ipv6_addr_t *prefix, unsigned prefix_len, ipv6_addr_t *nex
         if (!entry->flags) {
             /* _find returned an unused entry */
             entry->prefix_ref = ipv6_addrstore_add(prefix);
+            if (entry->prefix_ref == -1) {
+                /* no space in address store */
+                return -1;
+            }
             entry->prefix_len = prefix_len;
             entry->flags |= RT_FLAG_ACTIVE;
         } else {
@@ -109,7 +113,7 @@ int ipv6_rt_get_next_hop(ipv6_addr_t **next_hop, kernel_pid_t *via_iface, ipv6_a
 
 #if ENABLE_DEBUG
     print_str("ipv6_rt_get_next_hop(): getting next hop for ");
-    print_ipv6_addr(dst_addr);
+    ipv6_addr_print(dst_addr);
     print_str("\n");
 #endif
 
@@ -152,7 +156,7 @@ int ipv6_rt_get_next_hop(ipv6_addr_t **next_hop, kernel_pid_t *via_iface, ipv6_a
 
 #if ENABLE_DEBUG
         print_str("ipv6_rt_get_next_hop(): next hop is ");
-        print_ipv6_addr(*next_hop);
+        ipv6_addr_print(*next_hop);
         print_str(" over interface ");
         print_u32_dec(*via_iface);
         print_str("\n");
@@ -171,23 +175,24 @@ void ipv6_rt_print_route(ipv6_rt_entry_t *entry)
 {
     assert(entry);
 
-    print_ipv6_addr(ipv6_addrstore_get(entry->prefix_ref));
+    ipv6_addr_print(ipv6_addrstore_get(entry->prefix_ref));
 
     if (entry->prefix_len) {
         printf("/%i", entry->prefix_len);
     }
 
     if (entry->next_hop_ref != -1) {
-        puts(" via ");
-        print_ipv6_addr(ipv6_addrstore_get(entry->next_hop_ref));
+        print_str(" via ");
+        ipv6_addr_print(ipv6_addrstore_get(entry->next_hop_ref));
     }
     printf(" dev %"PRIkernel_pid" flags 0x%08x", entry->iface, (unsigned)entry->flags);
     if (entry->lifetime != IPV6_RT_LIFETIME_NOEXPIRE) {
-        printf(" expires %us\n", (unsigned)(entry->lifetime - xtimer_now())/SEC_IN_USEC);
+        printf(" expires %us", (unsigned)(entry->lifetime - xtimer_now())/SEC_IN_USEC);
+        if (_expired(entry)) {
+            puts(" (expired)");
+        }
     }
-    if (_expired(entry)) {
-        puts(" (expired)");
-    }
+    puts("");
 }
 
 void ipv6_rt_print(void)
