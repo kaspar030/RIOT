@@ -40,11 +40,6 @@ static inline uint32_t _binary_exp_backoff(uint32_t base_sec, unsigned int exp)
     return genrand_uint32_range(0, (1 << exp)) * base_sec;
 }
 
-static inline void _revert_iid(uint8_t *iid)
-{
-    iid[0] ^= 0x02;
-}
-
 void gnrc_sixlowpan_nd_init(gnrc_ipv6_netif_t *iface)
 {
     assert(iface->flags & GNRC_IPV6_NETIF_FLAGS_SIXLOWPAN);
@@ -116,117 +111,6 @@ void gnrc_sixlowpan_nd_uc_rtr_sol(gnrc_ipv6_nc_t *nce)
     }
     /* next RS is rescheduled by RA handle function */
     gnrc_ndp_internal_send_rtr_sol(nce->iface, &nce->ipv6_addr);
-}
-
-kernel_pid_t gnrc_sixlowpan_nd_next_hop_l2addr(uint8_t *l2addr, uint8_t *l2addr_len,
-                                               kernel_pid_t iface, ipv6_addr_t *dst)
-{
-    ipv6_addr_t *next_hop = NULL;
-    gnrc_ipv6_nc_t *nc_entry = NULL;
-
-#ifdef MODULE_GNRC_IPV6_EXT_RH
-    ipv6_hdr_t *hdr;
-    gnrc_pktsnip_t *ipv6;
-    LL_SEARCH_SCALAR(pkt, ipv6, type, GNRC_NETTYPE_IPV6);
-    assert(ipv6);
-    hdr = ipv6->data;
-    next_hop = ipv6_ext_rh_next_hop(hdr);
-#endif
-#ifdef MODULE_FIB
-    kernel_pid_t fib_iface;
-    ipv6_addr_t next_hop_actual;    /* FIB copies address into this variable */
-    /* don't look-up link local addresses in FIB */
-    if ((next_hop == NULL) && !ipv6_addr_is_link_local(dst)) {
-        size_t next_hop_size = sizeof(ipv6_addr_t);
-        uint32_t next_hop_flags = 0;
-        if ((next_hop == NULL) &&
-            (fib_get_next_hop(&gnrc_ipv6_fib_table, &fib_iface, next_hop_actual.u8, &next_hop_size,
-                              &next_hop_flags, (uint8_t *)dst,
-                              sizeof(ipv6_addr_t), 0) >= 0) &&
-            (next_hop_size == sizeof(ipv6_addr_t))) {
-            next_hop = &next_hop_actual;
-        }
-    }
-#endif
-#ifdef MODULE_GNRC_SIXLOWPAN_ND_ROUTER
-    /* next hop determination: https://tools.ietf.org/html/rfc6775#section-6.5.4 */
-    nc_entry = gnrc_ipv6_nc_get(iface, dst);
-#ifdef MODULE_FIB
-    if ((next_hop != NULL) && (nc_entry == NULL)) {
-        nc_entry = gnrc_ipv6_nc_get(fib_iface, dst);
-    }
-#endif
-    /* if NCE found */
-    if (nc_entry != NULL) {
-        gnrc_ipv6_netif_t *ipv6_if = gnrc_ipv6_netif_get(nc_entry->iface);
-        /* and interface is not 6LoWPAN */
-        if (!((ipv6_if == NULL) ||
-                (ipv6_if->flags & GNRC_IPV6_NETIF_FLAGS_SIXLOWPAN)) ||
-                /* or entry is registered */
-              (gnrc_ipv6_nc_get_type(nc_entry) == GNRC_IPV6_NC_TYPE_REGISTERED)) {
-            next_hop = dst;
-        }
-    }
-#endif
-    /* next hop determination according to: https://tools.ietf.org/html/rfc6775#section-5.6 */
-    if ((next_hop == NULL) && ipv6_addr_is_link_local(dst)) {   /* prefix is "on-link" */
-        /* multicast is not handled here anyway so we don't need to check that */
-        next_hop = dst;
-    }
-    else if (next_hop == NULL) {                                /* prefix is off-link */
-        next_hop = gnrc_ndp_internal_default_router();
-    }
-
-    /* no routers found */
-    if (next_hop == NULL) {
-        return KERNEL_PID_UNDEF;
-    }
-
-    /* address resolution of next_hop: https://tools.ietf.org/html/rfc6775#section-5.7 */
-    if ((nc_entry == NULL) || (next_hop != dst)) {
-        /* get if not gotten from previous check */
-        nc_entry = gnrc_ipv6_nc_get(iface, next_hop);
-    }
-    /* If a (non-tentative) NCE for this destination exist, we can use even for
-     * link-local addresses. This should be only the case for 6LBRs. */
-    if ((ipv6_addr_is_link_local(next_hop)) &&
-        ((nc_entry == NULL) ||
-         (gnrc_ipv6_nc_get_type(nc_entry) == GNRC_IPV6_NC_TYPE_TENTATIVE))) {
-/* in case of a border router there is no sensible way for address resolution
- * if the interface is not given */
-#ifdef MODULE_GNRC_SIXLOWPAN_ND_BORDER_ROUTER
-        /* if no interface is specified it is impossible to resolve the
-         * link-layer address for a link-local address on a 6LBR */
-        if (iface == KERNEL_PID_UNDEF) {
-            return KERNEL_PID_UNDEF;
-        }
-#endif
-        kernel_pid_t ifs[GNRC_NETIF_NUMOF];
-        size_t ifnum = gnrc_netif_get(ifs);
-        /* we don't need address resolution, the EUI-64 is in next_hop's IID */
-        *l2addr_len = sizeof(eui64_t);
-        memcpy(l2addr, &next_hop->u8[8], sizeof(eui64_t));
-        _revert_iid(l2addr);
-        if (iface == KERNEL_PID_UNDEF) {
-            for (unsigned i = 0; i < ifnum; i++) {
-                gnrc_ipv6_netif_t *ipv6_if = gnrc_ipv6_netif_get(ifs[i]);
-                if ((ipv6_if != NULL) && (ipv6_if->flags & GNRC_IPV6_NETIF_FLAGS_SIXLOWPAN)) {
-                    /* always take the first 6LoWPAN interface we can find */
-                    return ifs[i];
-                }
-            }
-        }
-        return iface;
-    }
-    if ((gnrc_ipv6_nc_get_type(nc_entry) == GNRC_IPV6_NC_TYPE_TENTATIVE)) {
-        return KERNEL_PID_UNDEF;
-    }
-    else {
-        if (gnrc_ipv6_nc_get_state(nc_entry) == GNRC_IPV6_NC_STATE_STALE) {
-            gnrc_ndp_internal_set_state(nc_entry, GNRC_IPV6_NC_STATE_DELAY);
-        }
-    }
-    return gnrc_ipv6_nc_get_l2_addr(l2addr, l2addr_len, nc_entry);
 }
 
 void gnrc_sixlowpan_nd_rtr_sol_reschedule(gnrc_ipv6_nc_t *nce, uint32_t sec_delay)

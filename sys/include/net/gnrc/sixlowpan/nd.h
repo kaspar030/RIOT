@@ -147,24 +147,6 @@ void gnrc_sixlowpan_nd_mc_rtr_sol(gnrc_ipv6_netif_t *iface);
 void gnrc_sixlowpan_nd_uc_rtr_sol(gnrc_ipv6_nc_t *nce);
 
 /**
- * @brief   Get link-layer address and interface for next hop to destination
- *          IPv6 address.
- *
- * @param[out] l2addr           The link-layer for the next hop to @p dst.
- * @param[out] l2addr_len       Length of @p l2addr.
- * @param[in] iface             The interface to search the next hop on.
- *                              May be @ref KERNEL_PID_UNDEF if not specified.
- * @param[in] dst               An IPv6 address to search the next hop for.
- *
- * @return  The PID of the interface, on success.
- * @return  -EHOSTUNREACH, if @p dst is not reachable.
- * @return  -ENOBUFS, if @p l2addr_len was smaller than the resulting @p l2addr
- *          would be long.
- */
-kernel_pid_t gnrc_sixlowpan_nd_next_hop_l2addr(uint8_t *l2addr, uint8_t *l2addr_len,
-                                               kernel_pid_t iface, ipv6_addr_t *dst);
-
-/**
  * @brief   Reschedules the next router advertisement for a neighboring router.
  *
  * @pre nce != NULL && sec_delay != 0U

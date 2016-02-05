@@ -122,5 +122,4 @@ kernel_pid_t gnrc_ndp_node_solicit(uint8_t *l2addr, uint8_t *l2addr_len,
     return KERNEL_PID_UNDEF;
 }
 
-
 /** @} */
