@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2014 Martin Lenders <mlenders@inf.fu-berlin.de>
  * Copyright (C) 2015 Oliver Hahm <oliver.hahm@inria.fr>
+ * Copyright (C) 2016 Kaspar Schleiser <kaspar@schleiser.de>
  *
  * This file is subject to the terms and conditions of the GNU Lesser General
  * Public License v2.1. See the file LICENSE in the top level directory for
@@ -14,6 +15,7 @@
  *
  * @author      Martine Lenders <mlenders@inf.fu-berlin.de>
  * @author      Oliver Hahm <oliver.hahm@inria.fr>
+ * @author      Kaspar Schleiser <kaspar@schleiser.de>
  */
 
 #include <errno.h>
@@ -33,6 +35,7 @@
 #include "net/gnrc/sixlowpan/netif.h"
 
 #include "net/gnrc/ipv6/netif.h"
+#include "net/ipv6/rt.h"
 
 #define ENABLE_DEBUG    (0)
 #include "debug.h"
@@ -77,6 +80,17 @@ static ipv6_addr_t *_add_addr_to_entry(gnrc_ipv6_netif_t *entry, const ipv6_addr
               ipv6_addr_to_str(addr_str, addr, sizeof(addr_str)),
               prefix_len, entry->pid);
         return NULL;
+    }
+
+    /* add routing table entry if needed */
+    if (!(ipv6_addr_is_link_local(addr)) && (prefix_len < 128)) {
+        if (ipv6_rt_put(addr, prefix_len, NULL, entry->pid,
+                    IPV6_RT_LIFETIME_NOEXPIRE) < 0) {
+            DEBUG("ipv6 netif: couldn't add %s/%" PRIu8 " to interface %" PRIkernel_pid "\n: No space left in routing table.",
+                    ipv6_addr_to_str(addr_str, addr, sizeof(addr_str)),
+                    prefix_len, entry->pid);
+            return NULL;
+        }
     }
 
     memcpy(&(tmp_addr->addr), addr, sizeof(ipv6_addr_t));
@@ -163,6 +177,18 @@ static ipv6_addr_t *_add_addr_to_entry(gnrc_ipv6_netif_t *entry, const ipv6_addr
 static void _reset_addr_from_entry(gnrc_ipv6_netif_t *entry)
 {
     DEBUG("ipv6 netif: Reset IPv6 addresses on interface %" PRIkernel_pid "\n", entry->pid);
+
+    gnrc_ipv6_netif_addr_t *tmp_addr = NULL;
+
+    for (int i = 0; i < GNRC_IPV6_NETIF_ADDR_NUMOF; i++) {
+        if (ipv6_addr_is_unspecified(&(entry->addrs[i].addr)) && !tmp_addr) {
+            tmp_addr = &(entry->addrs[i]);
+            if ((!ipv6_addr_is_link_local(&tmp_addr->addr) && (tmp_addr->prefix_len < 128))) {
+                ipv6_rt_del(&tmp_addr->addr, tmp_addr->prefix_len);
+            }
+        }
+    }
+
     memset(entry->addrs, 0, sizeof(entry->addrs));
 }
 
@@ -318,6 +344,12 @@ static void _remove_addr_from_entry(gnrc_ipv6_netif_t *entry, ipv6_addr_t *addr)
         if (ipv6_addr_equal(&(entry->addrs[i].addr), addr)) {
             DEBUG("ipv6 netif: Remove %s to interface %" PRIkernel_pid "\n",
                   ipv6_addr_to_str(addr_str, addr, sizeof(addr_str)), entry->pid);
+
+            /* remove routing table entry */
+            if ((!ipv6_addr_is_link_local(&(entry->addrs[i].addr)) && (entry->addrs[i].prefix_len < 128))) {
+                ipv6_rt_del(&(entry->addrs[i].addr), entry->addrs[i].prefix_len);
+            }
+
             ipv6_addr_set_unspecified(&(entry->addrs[i].addr));
             entry->addrs[i].flags = 0;
 #ifdef MODULE_GNRC_NDP_ROUTER

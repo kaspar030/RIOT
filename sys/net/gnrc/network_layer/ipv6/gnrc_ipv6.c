@@ -394,6 +394,8 @@ static int _fill_ipv6_hdr(kernel_pid_t iface, gnrc_pktsnip_t *ipv6,
             return res;
         }
     }
+    DEBUG("ipv6: pkt_dest=%s\n",
+                      ipv6_addr_to_str(addr_str, &hdr->dst, sizeof(addr_str)));
 
     return 0;
 }
@@ -530,6 +532,12 @@ static void _send_multicast(kernel_pid_t iface, gnrc_pktsnip_t *pkt,
 #endif  /* GNRC_NETIF_NUMOF */
 }
 
+static inline void _revert_iid(uint8_t *iid)
+{
+    iid[0] ^= 0x02;
+}
+
+extern void print_ipv6_addr(const ipv6_addr_t *addr);
 static inline kernel_pid_t _next_hop_l2addr(uint8_t *l2addr, uint8_t *l2addr_len,
                                             kernel_pid_t iface, ipv6_addr_t *dst,
                                             gnrc_pktsnip_t *pkt)
@@ -557,12 +565,11 @@ static inline kernel_pid_t _next_hop_l2addr(uint8_t *l2addr, uint8_t *l2addr_len
         if ( /* and interface is not 6LoWPAN */
                 (!dst_is_6lp)
                 /* or entry is registered */
-                || (gnrc_ipv6_nc_get_type(nc_entry) == GNRC_IPV6_NC_TYPE_REGISTERED)
+                || (dst_is_linklocal || (gnrc_ipv6_nc_get_type(nc_entry) == GNRC_IPV6_NC_TYPE_REGISTERED))
            ) {
-            DEBUG("_next_hop_l2addr(): using cached entry\n");
-            /* using neighbor cache entry */
+            DEBUG("_next_hop_l2addr(): using neighbor cache entry\n");
             next_hop = dst;
-            return gnrc_ipv6_nc_get_l2_addr(l2addr, l2addr_len, nc_entry);
+            via_iface = nc_entry->iface;
         }
     }
 
@@ -583,20 +590,9 @@ static inline kernel_pid_t _next_hop_l2addr(uint8_t *l2addr, uint8_t *l2addr_len
     /*  */
     if (!next_hop) {
         if (dst_is_linklocal) {
-            if (!nc_entry) {
-                gnrc_ipv6_netif_t *ipv6_if = gnrc_ipv6_netif_get(iface);
-                dst_is_6lp = ipv6_if->flags & GNRC_IPV6_NETIF_FLAGS_SIXLOWPAN;
-            }
-
-            if (dst_is_6lp) {
-                /* dst is link-local, 6lowpan -> send directly */
-                DEBUG("_next_hop_l2addr(): dst is link-local, 6lowpan -> send directly (STUB)\n");
-            }
-            else {
-                DEBUG("_next_hop_l2addr(): dst is link-local, non-6lowpan -> send on-link\n");
-                next_hop = dst;
-                via_iface = iface;
-            }
+            DEBUG("_next_hop_l2addr(): dst is link-local\n");
+            next_hop = dst;
+            via_iface = iface;
         }
         else {
             DEBUG("_next_hop_l2addr(): looking up next hop in routing table\n");
@@ -604,20 +600,61 @@ static inline kernel_pid_t _next_hop_l2addr(uint8_t *l2addr, uint8_t *l2addr_len
         }
     }
 
-    if (next_hop) {
-        if (next_hop != dst) {
-            /* We've looked up the original dest address above.
-             * If next_hop is a different address, the entry must be updated. */
-            nc_entry = gnrc_ipv6_nc_get(via_iface, next_hop);
-        }
+#if (GNRC_NETIF_NUMOF == 1)
+    if (!next_hop) {
+        /* TODO: avoid bouncing if two 6lr's can't find route */
+        next_hop = gnrc_ndp_internal_default_router();
 
-        /* get next_hop l2addr, possibly triggering NDP solicitation */
-        return gnrc_ndp_node_solicit(l2addr, l2addr_len, via_iface, next_hop, nc_entry, pkt);
+        kernel_pid_t ifs[GNRC_NETIF_NUMOF];
+        gnrc_netif_get(ifs);
+        via_iface = ifs[0];
+
+        DEBUG("_next_hop_l2addr(): have only one interface, trying default router\n");
     }
-    else {
-        /* no route to host */
-        return KERNEL_PID_UNDEF;
+#endif
+
+    if (next_hop) {
+        gnrc_ipv6_netif_t *ipv6_if = gnrc_ipv6_netif_get(via_iface);
+        dst_is_6lp = ipv6_if->flags & GNRC_IPV6_NETIF_FLAGS_SIXLOWPAN;
+
+        if (ipv6_if->flags & GNRC_IPV6_NETIF_FLAGS_SIXLOWPAN) {
+            if (!ipv6_addr_is_link_local(next_hop)) {
+                /* get NC entry for next_hop */
+                nc_entry = gnrc_ipv6_nc_get(via_iface, next_hop);
+                if (! (nc_entry &&
+                            (gnrc_ipv6_nc_get_type(nc_entry) == GNRC_IPV6_NC_TYPE_REGISTERED))) {
+                    DEBUG("_next_hop_l2addr(): next hop is not a registered neighbor, trying default router\n");
+                    next_hop = gnrc_ndp_internal_default_router();
+                }
+            }
+
+            if (next_hop) {
+                DEBUG("_next_hop_l2addr(): next hop is 6lowpan and link-local or registered neighbor -> sending directly\n");
+                /* we don't need address resolution, the EUI-64 is in next_hop's IID */
+                *l2addr_len = sizeof(eui64_t);
+                memcpy(l2addr, &next_hop->u8[8], sizeof(eui64_t));
+                _revert_iid(l2addr);
+                return via_iface;
+            }
+        }
+        else
+#ifdef MODULE_GNRC_NDP_NODE
+        {
+            if (next_hop != dst) {
+                /* get NC entry for next_hop */
+                nc_entry = gnrc_ipv6_nc_get(via_iface, next_hop);
+            }
+
+            /* get next_hop l2addr, possibly triggering NDP solicitation */
+            return gnrc_ndp_node_solicit(l2addr, l2addr_len, via_iface, next_hop, nc_entry, pkt);
+        }
+#else
+            ;
+#endif
     }
+
+    DEBUG("_next_hop_l2addr(): no route to host\n");
+    return KERNEL_PID_UNDEF;
 }
 
 static void _send(gnrc_pktsnip_t *pkt, bool prep_hdr)
