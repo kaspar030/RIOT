@@ -8,19 +8,7 @@
 #include "debug.h"
 
 #if ENABLE_DEBUG
-
 #include "fmt.h"
-#include "div.h"
-void print_ipv6_addr(const ipv6_addr_t *addr)
-{
-    if (!addr) {
-        print_str("(null)");
-    } else {
-        char addr_str[IPV6_ADDR_MAX_STR_LEN];
-        ipv6_addr_to_str(addr_str, addr, sizeof(addr_str));
-        print_str(addr_str);
-    }
-}
 #endif
 
 ipv6_rt_entry_t ipv6_routing_table[IPV6_ROUTING_TABLE_SIZE];
