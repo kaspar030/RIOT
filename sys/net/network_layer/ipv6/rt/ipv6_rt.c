@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 
 #include "net/ipv6/rt.h"
@@ -7,9 +8,7 @@
 #define ENABLE_DEBUG (1)
 #include "debug.h"
 
-#if ENABLE_DEBUG
 #include "fmt.h"
-#endif
 
 ipv6_rt_entry_t ipv6_routing_table[IPV6_ROUTING_TABLE_SIZE];
 
