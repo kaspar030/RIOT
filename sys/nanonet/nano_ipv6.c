@@ -12,8 +12,6 @@
 #include "nano_ndp.h"
 #include "nano_config.h"
 
-#include "net/ng_ipv6/addr.h"
-
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
 

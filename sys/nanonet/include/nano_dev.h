@@ -5,31 +5,27 @@
 #include <stddef.h>
 
 #include "nano_sndbuf.h"
-#include "dev_eth_autoinit.h"
+#include "net/netdev2.h"
 
 typedef struct nano_ctx nano_ctx_t;
+typedef struct nano_dev nano_dev_t;
 
-typedef struct nano_dev {
-    uint8_t mac_addr[6];
-    uint32_t ipv4;
-    uint8_t ipv6_ll[16];
-    uint8_t ipv6_global[16];
-    void*ptr;
+struct nano_dev {
+    netdev2_t *netdev;
     int (*send)(struct nano_dev *dev, nano_sndbuf_t *buf, uint8_t* dest_mac, uint16_t ethertype);
     int (*send_raw)(struct nano_dev *dev, uint8_t* buf, size_t len);
     int (*reply)(nano_ctx_t *ctx);
-    int (*l2_needed)(struct nano_dev *dev);
-    void (*handle_isr)(void*);
-} nano_dev_t;
-
-enum {
-    NANO_DEV_ETH = NUM_DEV_ETH-1,
-    NANO_NUM_DEVS
+    uint8_t l2_addr[6];
+    uint16_t l2_needed;
+    uint32_t ipv4;
+    uint8_t ipv6_ll[16];
+    uint8_t ipv6_global[16];
+    void (*handle_isr)(nano_dev_t*);
 };
 
-void nanonet_init_devices(void);
-
-extern nano_dev_t nanonet_devices[NANO_NUM_DEVS];
+extern const unsigned nano_dev_numof;
 extern volatile unsigned nanonet_iflags;
+void nanonet_init_devices(void);
+extern nano_dev_t nanonet_devices[];
 
 #endif /* NANO_DEV_H */
