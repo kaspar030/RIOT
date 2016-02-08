@@ -70,7 +70,7 @@ void arp_request(nano_dev_t *dev, uint32_t ip) {
     pkt->arp_ipv4_op = HTONS(0x0001);
 
     pkt->src_ip = HTONL(dev->ipv4);
-    memcpy(pkt->src_mac, dev->mac_addr, 6);
+    memcpy(pkt->src_mac, dev->l2_addr, 6);
 
     pkt->dst_ip = HTONL(ip);
 
@@ -101,7 +101,7 @@ void arp_reply(nano_ctx_t *ctx, size_t offset)
     memcpy(pkt->dst_mac, pkt->src_mac, 6);
 
     /* copy our mac from dev struct to arp hdr */
-    memcpy(pkt->src_mac, dev->mac_addr, 6);
+    memcpy(pkt->src_mac, dev->l2_addr, 6);
 
     /* set IP addresses */
     pkt->dst_ip = pkt->src_ip;

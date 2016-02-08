@@ -1,12 +1,11 @@
 APPLICATION = nanonet
 include ../Makefile.tests_common
 
-USEMODULE += dev_eth_autoinit
-USEMODULE += ng_nativenet
+USEMODULE += netdev2_tap
 USEMODULE += vtimer
 USEMODULE += nanonet
 USEPKG += microcoap
 
-CFLAGS += -DMICROCOAP_DEBUG
+CFLAGS += -DMICROCOAP_DEBUG -g
 
 include $(RIOTBASE)/Makefile.include
