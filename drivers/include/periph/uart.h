@@ -47,50 +47,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "periph_cpu.h"
-#include "periph_conf.h"
-/* TODO: remove once all platforms are ported to this interface */
-#include "periph/dev_enums.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- * @brief   Make sure the number of available UART devices is defined
- * @{
- */
-#ifndef UART_NUMOF
-#error "UART_NUMOF undefined for the target platform"
-#endif
-/** @} */
-
-/**
- * @brief   Define default UART type identifier
- * @{
- */
-#ifndef HAVE_UART_T
-typedef unsigned int uart_t;
-#endif
-/** @} */
-
-/**
- * @brief   Default UART undefined value
- * @{
- */
-#ifndef UART_UNDEF
-#define UART_UNDEF          (-1)
-#endif
-/** @} */
-
-/**
- * @brief   Default UART device access macro
- * @{
- */
-#ifndef UART_DEV
-#define UART_DEV(x)         (x)
-#endif
-/** @} */
 
 /**
  * @brief   Signature for receive interrupt callback
@@ -104,12 +63,24 @@ typedef void(*uart_rx_cb_t)(void *arg, char data);
  * @brief   Interrupt context for a UART device
  * @{
  */
-#ifndef HAVE_UART_ISR_CTX_T
-typedef struct {
+typedef struct uart_isr_ctx {
     uart_rx_cb_t rx_cb;     /**< data received interrupt callback */
     void *arg;              /**< argument to both callback routines */
 } uart_isr_ctx_t;
-#endif
+
+typedef struct uart_driver uart_driver_t;
+
+typedef struct uart {
+    const uart_driver_t *driver;
+} uart_t;
+
+struct uart_driver {
+    int(*init)(uart_t*, uint32_t, uart_rx_cb_t, void*);
+    void(*write)(uart_t*, const uint8_t *, size_t);
+    void(*power_on)(uart_t*);
+    void(*power_off)(uart_t*);
+};
+
 /** @} */
 
 /**
@@ -132,7 +103,7 @@ typedef struct {
  * @return                  -2 on inapplicable baudrate
  * @return                  -3 on other errors
  */
-int uart_init(uart_t uart, uint32_t baudrate, uart_rx_cb_t rx_cb, void *arg);
+static inline int uart_init(uart_t *uart, uint32_t baudrate, uart_rx_cb_t rx_cb, void *arg);
 
 /**
  * @brief   Write data from the given buffer to the specified UART device
@@ -146,21 +117,40 @@ int uart_init(uart_t uart, uint32_t baudrate, uart_rx_cb_t rx_cb, void *arg);
  * @param[in] len           number of bytes to send
  *
  */
-void uart_write(uart_t uart, const uint8_t *data, size_t len);
+static inline void uart_write(uart_t *uart, const uint8_t *data, size_t len);
 
 /**
  * @brief   Power on the given UART device
  *
  * @param[in] uart          the UART device to power on
  */
-void uart_poweron(uart_t uart);
+static inline void uart_poweron(uart_t *uart);
 
 /**
  * @brief Power off the given UART device
  *
  * @param[in] uart          the UART device to power off
  */
-void uart_poweroff(uart_t uart);
+static inline void uart_poweroff(uart_t *uart);
+
+static inline int uart_init(uart_t *uart, uint32_t baudrate, uart_rx_cb_t rx_cb, void *arg) {
+    return uart->driver->init(uart, baudrate, rx_cb, arg);
+}
+
+static inline void uart_write(uart_t *uart, const uint8_t *data, size_t len)
+{
+    uart->driver->write(uart, data, len);
+}
+
+static inline void uart_poweron(uart_t *uart)
+{
+    uart->driver->power_on(uart);
+}
+
+static inline void uart_poweroff(uart_t *uart)
+{
+    uart->driver->power_off(uart);
+}
 
 #ifdef __cplusplus
 }
