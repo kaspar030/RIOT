@@ -42,7 +42,7 @@ extern ethos_t ethos;
 #include "debug.h"
 
 #ifndef STDIO
-#define STDIO               UART_DEV(0)
+#define STDIO               uart_devs[0]
 #endif
 
 #ifndef STDIO_BAUDRATE
