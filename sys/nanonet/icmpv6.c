@@ -55,7 +55,6 @@ int icmpv6_handle(nano_ctx_t *ctx, size_t offset)
         case NANO_ICMPV6_TYPE_ECHO_RESP:
         case NANO_ICMPV6_TYPE_ROUTER_ADV:
         case NANO_ICMPV6_TYPE_ROUTER_SOL:
-        case NANO_ICMPV6_TYPE_NEIGHBOR_SOL:
         */
         default:
             DEBUG("nanonet: icmpv6_handle(): unhandled icmpv6 type=%u\n", (unsigned)hdr->type);
@@ -98,7 +97,7 @@ int handle_neighbor_solicitation(nano_ctx_t *ctx, size_t offset)
         icmp->type = NANO_ICMPV6_TYPE_NEIGHBOR_ADV;
         icmp->checksum = byteorder_htons(0);
         ns->opt_type = NANO_ICMPV6_NDP_OPT_DST_L2_ADDR;
-        memcpy(ns->l2_addr, ctx->dev->mac_addr, 6);
+        memcpy(ns->l2_addr, ctx->dev->l2_addr, 6);
 
         if (!ipv6_addr_is_multicast(ctx->dst_addr.ipv6)) {
             nano_icmpv6_na_t *na = (nano_icmpv6_na_t*) ns;

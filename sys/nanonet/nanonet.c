@@ -24,14 +24,11 @@
 #include "atomic.h"
 #include "board.h"
 #include "byteorder.h"
-#include "hwtimer.h"
 #include "thread.h"
 #include "vtimer.h"
 
 #include "periph/gpio.h"
 #include "periph/spi.h"
-
-#include "net/dev_eth.h"
 
 #include "nanonet.h"
 
@@ -76,10 +73,10 @@ void nanonet_loop(void)
 
     while(1) {
         if ((flags = (unsigned)atomic_set_return((atomic_int_t*)&nanonet_iflags, 0))) {
-            for (int i = 0; i < NANO_NUM_DEVS; i++) {
+            for (unsigned i = 0; i < nano_dev_numof; i++) {
                 if (flags & (0x1 << i)) {
                     dev = (nano_dev_t*) &nanonet_devices[i];
-                    dev->handle_isr(dev->ptr);
+                    dev->netdev->driver->isr(dev->netdev);
                 }
             }
         } else {

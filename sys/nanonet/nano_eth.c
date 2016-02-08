@@ -51,7 +51,7 @@ int nano_eth_reply(nano_ctx_t *ctx)
     memcpy(pkt->dst, pkt->src, 6);
 
     /* set our address ass src address */
-    memcpy(pkt->src, ctx->dev->mac_addr, 6);
+    memcpy(pkt->src, ctx->dev->l2_addr, 6);
 
     /* send the packet */
     ctx->dev->send_raw(ctx->dev, ctx->buf, ctx->len);
