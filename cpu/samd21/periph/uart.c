@@ -24,6 +24,7 @@
 #include "sched.h"
 #include "thread.h"
 
+#include "periph_cpu.h"
 #include "periph/uart.h"
 #include "periph/gpio.h"
 
@@ -39,14 +40,16 @@ static uart_isr_ctx_t uart_ctx[UART_NUMOF];
  *
  * @return              base register address
  */
-static inline SercomUsart *_uart(uart_t dev)
+static inline SercomUsart *_uart(unsigned dev)
 {
     return uart_config[dev].dev;
 }
 
-static int init_base(uart_t uart, uint32_t baudrate);
+static int init_base(unsigned uart, uint32_t baudrate);
+static void _uart_poweron(unsigned uart);
+static void _uart_poweroff(unsigned uart);
 
-int uart_init(uart_t uart, uint32_t baudrate, uart_rx_cb_t rx_cb, void *arg)
+static int _uart_init(unsigned uart, uint32_t baudrate, uart_rx_cb_t rx_cb, void *arg)
 {
     /* initialize basic functionality */
     int res = init_base(uart, baudrate);
@@ -63,7 +66,7 @@ int uart_init(uart_t uart, uint32_t baudrate, uart_rx_cb_t rx_cb, void *arg)
     return 0;
 }
 
-static int init_base(uart_t uart, uint32_t baudrate)
+static int init_base(unsigned uart, uint32_t baudrate)
 {
     uint32_t baud;
     SercomUsart *dev;
@@ -77,7 +80,7 @@ static int init_base(uart_t uart, uint32_t baudrate)
     /* calculate baudrate */
     baud =  ((((uint32_t)CLOCK_CORECLOCK * 10) / baudrate) / 16);
     /* enable sync and async clocks */
-    uart_poweron(uart);
+    _uart_poweron(uart);
     /* configure pins */
     gpio_init(uart_config[uart].rx_pin, GPIO_DIR_IN, GPIO_NOPULL);
     gpio_init_mux(uart_config[uart].rx_pin, uart_config[uart].mux);
@@ -103,7 +106,7 @@ static int init_base(uart_t uart, uint32_t baudrate)
     return 0;
 }
 
-void uart_write(uart_t uart, const uint8_t *data, size_t len)
+static void _uart_write(unsigned uart, const uint8_t *data, size_t len)
 {
     for (size_t i = 0; i < len; i++) {
         while (!(_uart(uart)->INTFLAG.reg & SERCOM_USART_INTFLAG_DRE));
@@ -111,7 +114,7 @@ void uart_write(uart_t uart, const uint8_t *data, size_t len)
     }
 }
 
-void uart_poweron(uart_t uart)
+static void _uart_poweron(unsigned uart)
 {
     PM->APBCMASK.reg |= (PM_APBCMASK_SERCOM0 << _sercom_id(_uart(uart)));
     GCLK->CLKCTRL.reg = (GCLK_CLKCTRL_CLKEN |
@@ -121,7 +124,7 @@ void uart_poweron(uart_t uart)
     while (GCLK->STATUS.reg & GCLK_STATUS_SYNCBUSY);
 }
 
-void uart_poweroff(uart_t uart)
+static void _uart_poweroff(unsigned uart)
 {
     PM->APBCMASK.reg &= ~(PM_APBCMASK_SERCOM0 << _sercom_id(_uart(uart)));
     GCLK->CLKCTRL.reg = ((SERCOM0_GCLK_ID_CORE + _sercom_id(_uart(uart))) <<
@@ -187,3 +190,34 @@ void UART_5_ISR(void)
     irq_handler(5);
 }
 #endif
+
+static int _init(uart_t *_uart, uint32_t baudrate, uart_rx_cb_t rx_cb, void *arg)
+{
+    samd21_uart_t *uart = (samd21_uart_t *) _uart;
+    return _uart_init(uart->dev, baudrate, rx_cb, arg);
+}
+
+static void _write(uart_t *_uart, const uint8_t *data, size_t len)
+{
+    samd21_uart_t *uart = (samd21_uart_t *) _uart;
+    _uart_write(uart->dev, data, len);
+}
+
+static void _poweron(uart_t *_uart)
+{
+    samd21_uart_t *uart = (samd21_uart_t *) _uart;
+    _uart_poweron(uart->dev);
+}
+
+static void _poweroff(uart_t *_uart)
+{
+    samd21_uart_t *uart = (samd21_uart_t *) _uart;
+    _uart_poweroff(uart->dev);
+}
+
+const uart_driver_t samd21_uart_driver = {
+    .init = _init,
+    .write = _write,
+    .power_on = _poweron,
+    .power_off = _poweroff,
+};

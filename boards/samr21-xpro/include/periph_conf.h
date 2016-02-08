@@ -109,6 +109,13 @@ static const uart_conf_t uart_config[] = {
     {&SERCOM5->USART, GPIO_PIN(PA,23), GPIO_PIN(PA,22), GPIO_MUX_D},
 };
 
+static const samd21_uart_t samd21_uart_devs[] = {
+    { .base = {(const uart_driver_t*) &samd21_uart_driver}, .dev=0 },
+    { .base = {(const uart_driver_t*) &samd21_uart_driver}, .dev=2 },
+};
+
+extern uart_t *uart_devs[];
+
 /* interrupt function name mapping */
 #define UART_0_ISR          isr_sercom0
 #define UART_1_ISR          isr_sercom5

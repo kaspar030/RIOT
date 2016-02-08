@@ -21,6 +21,8 @@
 
 #include "cpu.h"
 
+#include "periph/uart.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -125,6 +127,14 @@ static inline int _sercom_id(SercomUsart *sercom)
  * @param[in] mux   Mux value
  */
 int gpio_init_mux(gpio_t dev, gpio_mux_t mux);
+
+/* ... */
+typedef struct {
+    uart_t base;
+    unsigned dev;
+} samd21_uart_t;
+
+extern const uart_driver_t samd21_uart_driver;
 
 /**
  * @brief declare needed generic SPI functions
