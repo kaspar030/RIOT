@@ -27,9 +27,10 @@ then
     if [ "$BUILDTEST_MCU_GROUP" == "static-tests" ]
     then
         RESULT=0
-
-        git rebase master || git rebase --abort
-        RESULT=$(set_result $? $RESULT)
+        if [ "$BUILDTEST_NO_REBASE" != "1" ]; then
+            git rebase master || git rebase --abort
+            RESULT=$(set_result $? $RESULT)
+        fi
 
         ./dist/tools/whitespacecheck/check.sh master
         RESULT=$(set_result $? $RESULT)
