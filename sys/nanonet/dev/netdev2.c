@@ -41,10 +41,16 @@
 extern netdev2_tap_t netdev2_tap;
 #endif
 
+#ifdef MODULE_ETHOS
+#include "ethos.h"
+ethos_t ethos;
+static uint8_t _ethos_inbuf[2048];
+#endif
+
 static void _netdev2_isr(netdev2_t *netdev, netdev2_event_t event, void* arg)
 {
     if (event == NETDEV2_EVENT_ISR) {
-        unsigned n = (unsigned)arg;
+        unsigned n = (unsigned)netdev->isr_arg;
         nanonet_iflags |= 0x1<<n;
         mutex_unlock(&nanonet_mutex);
         return;
@@ -57,9 +63,13 @@ static void _netdev2_isr(netdev2_t *netdev, netdev2_event_t event, void* arg)
             {
                 /* read packet from device into nanonet's global rx buffer */
                 int nbytes = netdev->driver->recv(netdev, (char*)nanonet_rxbuf, NANONET_RX_BUFSIZE);
-                if (nbytes) {
+                if (nbytes > 0) {
                     nano_eth_handle(dev, nanonet_rxbuf, nbytes);
                 }
+                else {
+                    DEBUG("_netdev2_isr(): recv <= 0\n");
+                }
+
             }
             break;
         default:
@@ -99,9 +109,10 @@ static int _send_raw(nano_dev_t *dev, uint8_t* buf, size_t len)
     return 0;
 }
 
-int nanonet_init_netdev2_eth(nano_dev_t *nanodev, netdev2_t *netdev)
+int nanonet_init_netdev2_eth(unsigned devnum, netdev2_t *netdev)
 {
     DEBUG("nanonet_init_netdev2\n");
+    nano_dev_t *nanodev = &nanonet_devices[devnum];
 
     nanodev->send = _send_ethernet;
     nanodev->send_raw = _send_raw;
@@ -115,10 +126,10 @@ int nanonet_init_netdev2_eth(nano_dev_t *nanodev, netdev2_t *netdev)
 
     /* register the event callback with the device driver */
     netdev->event_callback = _netdev2_isr;
-    netdev->isr_arg = (void*) 0;
+    netdev->isr_arg = (void*) devnum;
 
     /* set up addresses */
-    netdev->driver->get(netdev, NETOPT_ADDRESS, (uint8_t*)nanodev->l2_addr, ETHERNET_ADDR_LEN);
+    netdev->driver->get(netdev, NETOPT_ADDRESS, (uint8_t*)nanodev->l2_addr, 6);
 
     memset(nanodev->ipv6_ll, 0, IPV6_ADDR_LEN);
     nanodev->ipv6_ll[0] = 0xfe;
@@ -126,7 +137,7 @@ int nanonet_init_netdev2_eth(nano_dev_t *nanodev, netdev2_t *netdev)
     nano_eth_get_iid((nanodev->ipv6_ll + 8), nanodev->l2_addr);
 
 #if ENABLE_DEBUG
-    printf("nanonet_init_dev_eth: Setting link-layer address ");
+    puts("nanonet_init_dev_eth: Setting link-layer address ");
     ipv6_addr_print(nanodev->ipv6_ll);
     puts("");
 #endif
@@ -138,6 +149,9 @@ static const netdev2_t *_netdevs[] = {
 #ifdef MODULE_NETDEV2_TAP
     (netdev2_t*)&netdev2_tap,
 #endif
+#ifdef MODULE_ETHOS
+    (netdev2_t*)&ethos,
+#endif
 };
 
 const unsigned nano_dev_numof = sizeof(_netdevs)/sizeof(netdev2_t *);
@@ -146,7 +160,11 @@ nano_dev_t nanonet_devices[sizeof(_netdevs)/sizeof(netdev2_t *)];
 
 void nanonet_init_devices(void)
 {
+#ifdef MODULE_ETHOS
+    ethos_setup(&ethos, ETHOS_UART, ETHOS_BAUDRATE, _ethos_inbuf, sizeof(_ethos_inbuf));
+#endif
+
     for (unsigned n = 0; n < nano_dev_numof; n++) {
-        nanonet_init_netdev2_eth(&nanonet_devices[n], (netdev2_t*)_netdevs[n]);
+        nanonet_init_netdev2_eth(n, (netdev2_t*)_netdevs[n]);
     }
 }
