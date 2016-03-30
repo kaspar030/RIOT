@@ -25,7 +25,6 @@
 #include "board.h"
 #include "byteorder.h"
 #include "thread.h"
-#include "vtimer.h"
 
 #include "periph/gpio.h"
 #include "periph/spi.h"
