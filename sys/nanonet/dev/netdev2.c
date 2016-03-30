@@ -28,7 +28,7 @@
 
 #include "sys/uio.h"
 
-#include "net/netdev2_eth.h"
+#include "net/netdev2/eth.h"
 #include "nanonet.h"
 #include "nano_sndbuf.h"
 
@@ -62,7 +62,8 @@ static void _netdev2_isr(netdev2_t *netdev, netdev2_event_t event, void* arg)
         case NETDEV2_EVENT_RX_COMPLETE:
             {
                 /* read packet from device into nanonet's global rx buffer */
-                int nbytes = netdev->driver->recv(netdev, (char*)nanonet_rxbuf, NANONET_RX_BUFSIZE);
+                int nbytes = netdev->driver->recv(netdev, (char*)nanonet_rxbuf,
+                        NANONET_RX_BUFSIZE, NULL);
                 if (nbytes > 0) {
                     nano_eth_handle(dev, nanonet_rxbuf, nbytes);
                 }
@@ -161,7 +162,13 @@ nano_dev_t nanonet_devices[sizeof(_netdevs)/sizeof(netdev2_t *)];
 void nanonet_init_devices(void)
 {
 #ifdef MODULE_ETHOS
-    ethos_setup(&ethos, ETHOS_UART, ETHOS_BAUDRATE, _ethos_inbuf, sizeof(_ethos_inbuf));
+    const ethos_params_t ethos_params = {
+        .uart=ETHOS_UART,
+        .baudrate=ETHOS_BAUDRATE,
+        .buf=_ethos_inbuf,
+        .bufsize=sizeof(_ethos_inbuf) };
+
+    ethos_setup(&ethos, &ethos_params);
 #endif
 
     for (unsigned n = 0; n < nano_dev_numof; n++) {
