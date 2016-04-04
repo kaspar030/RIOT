@@ -25,6 +25,7 @@
 #include "byteorder.h"
 #include "kernel_types.h"
 #include "thread.h"
+#include "thread_flags.h"
 
 #include "sys/uio.h"
 
@@ -51,8 +52,7 @@ static void _netdev2_isr(netdev2_t *netdev, netdev2_event_t event, void* arg)
 {
     if (event == NETDEV2_EVENT_ISR) {
         unsigned n = (unsigned)netdev->isr_arg;
-        nanonet_iflags |= 0x1<<n;
-        mutex_unlock(&nanonet_mutex);
+        thread_flags_set(nanonet_thread, 0x1<<n);
         return;
     }
 

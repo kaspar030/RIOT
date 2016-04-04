@@ -1,7 +1,7 @@
 APPLICATION = nanonet
 include ../Makefile.tests_common
 
-USEMODULE += nanonet
+USEMODULE += nanonet core_thread_flags
 USEMODULE += prng_musl_lcg
 USEPKG += microcoap
 

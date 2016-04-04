@@ -24,7 +24,6 @@ struct nano_dev {
 };
 
 extern const unsigned nano_dev_numof;
-extern volatile unsigned nanonet_iflags;
 void nanonet_init_devices(void);
 extern nano_dev_t nanonet_devices[];
 
