@@ -21,10 +21,10 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "atomic.h"
 #include "board.h"
 #include "byteorder.h"
 #include "thread.h"
+#include "thread_flags.h"
 
 #include "periph/gpio.h"
 #include "periph/spi.h"
@@ -34,9 +34,7 @@
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
 
-kernel_pid_t nanonet_pid = KERNEL_PID_UNDEF;
-volatile unsigned nanonet_iflags;
-mutex_t nanonet_mutex = MUTEX_INIT;
+thread_t *nanonet_thread;
 uint8_t nanonet_rxbuf[NANONET_RX_BUFSIZE];
 
 void nanonet_init(void)
@@ -63,24 +61,17 @@ void nanonet_init(void)
 
 void nanonet_loop(void)
 {
-    nanonet_pid = thread_getpid();
-
     DEBUG("nanonet event loop started.\n");
 
     nano_dev_t *dev;
-    unsigned int flags;
+    thread_flags_t flag;
+
+    nanonet_thread = (thread_t*)sched_active_thread;
 
     while(1) {
-        if ((flags = (unsigned)atomic_set_return((atomic_int_t*)&nanonet_iflags, 0))) {
-            for (unsigned i = 0; i < nano_dev_numof; i++) {
-                if (flags & (0x1 << i)) {
-                    dev = (nano_dev_t*) &nanonet_devices[i];
-                    dev->netdev->driver->isr(dev->netdev);
-                }
-            }
-        } else {
-            mutex_lock(&nanonet_mutex);
-        }
+        flag = thread_flags_wait_one((0x1<<nano_dev_numof)-1);
+        dev = (nano_dev_t*) &nanonet_devices[flag];
+        dev->netdev->driver->isr(dev->netdev);
     }
 }
 
