@@ -1,7 +1,8 @@
 #ifndef NANONET_H
 #define NANONET_H
 
-#include "mutex.h"
+#include "thread.h"
+
 #include "nano_dev.h"
 #include "nano_ctx.h"
 #include "nano_eth.h"
@@ -17,6 +18,6 @@ void nanonet_loop(void);
 void nanonet_start_thread(void);
 
 extern uint8_t nanonet_rxbuf[NANONET_RX_BUFSIZE];
-extern mutex_t nanonet_mutex;
+extern thread_t *nanonet_thread;
 
 #endif /* NANONET_H */
