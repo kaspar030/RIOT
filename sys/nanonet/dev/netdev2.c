@@ -172,7 +172,7 @@ int nanonet_init_netdev2_ieee802154(unsigned devnum)
     memset(nanodev->ipv6_ll, 0, IPV6_ADDR_LEN);
     nanodev->ipv6_ll[0] = 0xfe;
     nanodev->ipv6_ll[1] = 0x80;
-    nano_eth_get_iid((nanodev->ipv6_ll + 8), nanodev->l2_addr);
+    ieee802154_get_iid((eui64_t*)(nanodev->ipv6_ll + 8), nanodev->l2_addr, 8);
 
 #if ENABLE_DEBUG
     puts("nanonet_init_netdev2: Setting link-layer address ");

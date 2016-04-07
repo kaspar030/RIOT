@@ -4,6 +4,8 @@
 
 #include "nanonet.h"
 
+#ifdef NANONET_ETH
+
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
 
@@ -70,3 +72,5 @@ void nano_eth_get_iid(uint8_t *eui64, const uint8_t *mac)
     eui64[6] = mac[4];
     eui64[7] = mac[5];
 }
+
+#endif /* NANONET_ETH */
