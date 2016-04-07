@@ -35,10 +35,12 @@ int nano_dummy_handler(nano_ctx_t *ctx, size_t offset) {
     return 0;
 }
 
+#ifdef NANONET_IPV4
 ipv4_route_t ipv4_routes[] = {
     { 0xc0a86f00, 0xffffff00, 0, &nanonet_devices[0] }, /* 192.168.111.0/24 for dev 0 */
     {0}
 };
+#endif /* NANONET_IPV4 */
 
 ipv6_route_t ipv6_routes[] = {
     { {0}, 0, {0}, 0}
@@ -59,7 +61,9 @@ int main(void)
     nanonet_init();
 
     /* set IP */
+#ifdef NANONET_IPV4
     nanonet_devices[0].ipv4 = 0xc0a86f02; /* 0xc0a86f02 = 192.168.111.2 */
+#endif /* NANONET_IPV4 */
 
     /* start nanonet event loop, will not return */
     nanonet_loop();

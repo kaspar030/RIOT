@@ -3,8 +3,11 @@
 
 #include "byteorder.h"
 
-#include "nano_arp.h"
 #include "nano_config.h"
+
+#ifdef NANONET_IPV4
+
+#include "nano_arp.h"
 #include "nano_icmp.h"
 #include "nano_ipv4.h"
 #include "nano_route.h"
@@ -130,3 +133,5 @@ int ipv4_reply(nano_ctx_t *ctx)
 
     return ctx->dev->reply(ctx);
 }
+
+#endif /* NANONET_IPV4 */

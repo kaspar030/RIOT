@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#include "nano_config.h"
+
 #include "nano_sndbuf.h"
 #include "net/netdev2.h"
 
@@ -23,7 +25,11 @@ struct nano_dev {
     int (*reply)(nano_ctx_t *ctx);
     uint8_t l2_addr[NANO_L2_ADDRLEN];
     uint16_t l2_needed;
+
+#ifdef NANONET_IPV4
     uint32_t ipv4;
+#endif
+
     uint8_t ipv6_ll[16];
     uint8_t ipv6_global[16];
     void (*handle_rx)(nano_dev_t*, uint8_t *buf, size_t nbytes);
