@@ -6,6 +6,7 @@
 #include "nano_dev.h"
 #include "nano_ctx.h"
 #include "nano_eth.h"
+#include "nano_ieee802154.h"
 #include "nano_arp.h"
 #include "nano_ipv4.h"
 #include "nano_ipv6.h"

@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "bitarithm.h"
 #include "board.h"
 #include "byteorder.h"
 #include "thread.h"
@@ -46,19 +47,6 @@ void nanonet_init(void)
     DEBUG("nanonet: initialization complete.\n");
 }
 
-/*static inline unsigned atomic_waitnonzero(unsigned int *val, mutex_t *mutex) {
-    unsigned state = disableIRQ();
-
-    unsigned tmp = *val;
-    *val = 0;
-
-    if(!tmp) {
-        restoreIRQ(state);
-    }
-
-    return tmp;
-}*/
-
 void nanonet_loop(void)
 {
     DEBUG("nanonet event loop started.\n");
@@ -70,7 +58,7 @@ void nanonet_loop(void)
 
     while(1) {
         flag = thread_flags_wait_one((0x1<<nano_dev_numof)-1);
-        dev = (nano_dev_t*) &nanonet_devices[flag];
+        dev = (nano_dev_t*) &nanonet_devices[bitarithm_lsb(flag)];
         dev->netdev->driver->isr(dev->netdev);
     }
 }
