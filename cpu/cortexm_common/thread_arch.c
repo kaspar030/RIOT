@@ -253,13 +253,20 @@ void thread_arch_stack_print(void)
 
 __attribute__((naked)) void NORETURN thread_arch_start_threading(void)
 {
+    /* run scheduler */
+    sched_run();
+
     __asm__ volatile (
-    "bl     irq_arch_enable               \n" /* enable IRQs to make the SVC
-                                           * interrupt is reachable */
-    "svc    #1                            \n" /* trigger the SVC interrupt */
-    "unreachable%=:                       \n" /* this loop is unreachable */
-    "b      unreachable%=                 \n" /* loop indefinitely */
-    :::);
+            "mov r0, %0     \n" /* get sched_active_thread->sp */
+            "add r0, #36    \n" /* skip stuff usually saved by context_save */
+            "msr psp, r0    \n" /* write updated SP to PSP */
+            "movs r0, #2    \n" /* switch to PSP */
+            "msr CONTROL, r0\n"
+            "pop {r0-r5}    \n" /* pop hardware-saved regs */
+            "mov lr, r5     \n" /* move popped LR from R5 to LR */
+            "cpsie i        \n" /* enable interrupts*/
+            "pop {pc}       \n" /* jump into thread*/
+            ::"r" (sched_active_thread->sp), "r" (0xfffffffd):);
 }
 
 void thread_arch_yield(void)
@@ -305,11 +312,6 @@ __attribute__((naked)) void arch_context_switch(void)
     "ldr    r1, =sched_active_thread  \n" /* load address of current tcb */
     "ldr    r1, [r1]                  \n" /* dereference pdc */
     "str    r0, [r1]                  \n" /* write r0 to pdc->sp */
-    /* SVC handler entry point */
-    /* PendSV will continue from above and through this part as well */
-    ".global isr_svc                  \n"
-    ".thumb_func                      \n"
-    "isr_svc:                         \n"
     /* perform scheduling */
     "bl     sched_run                 \n"
     /* restore context and return from exception */
