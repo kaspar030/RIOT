@@ -75,7 +75,7 @@ __attribute__((weak)) void post_startup (void)
 {
 }
 
-void reset_handler_default(void)
+__attribute__((naked)) void reset_handler_default(void)
 {
     uint32_t *dst;
     uint32_t *src = &_etext;
