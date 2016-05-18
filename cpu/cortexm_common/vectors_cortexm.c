@@ -345,3 +345,13 @@ void dummy_handler_default(void)
 {
     core_panic(PANIC_DUMMY_HANDLER, "DUMMY HANDLER");
 }
+
+#ifdef MODULE_CORTEXM_SVC
+void isr_svc(void)
+{
+    __asm__ volatile (
+            "mrs r0, psp    \n" /* copy program stack pointer into r0 */
+            "b svc_dispatch \n" /* call SVC dispatch function */
+            :::);
+}
+#endif /* MODULE_CORTEXM_SVC */
