@@ -72,16 +72,15 @@ const unsigned nano_dev_numof = sizeof(_netdevs)/sizeof(netdev2_t *);
 
 nano_dev_t nanonet_devices[sizeof(_netdevs)/sizeof(netdev2_t *)];
 
-static void _netdev2_isr(netdev2_t *netdev, netdev2_event_t event, void* arg)
+static void _netdev2_isr(netdev2_t *netdev, netdev2_event_t event)
 {
-    (void)arg;
     if (event == NETDEV2_EVENT_ISR) {
-        unsigned n = (unsigned)netdev->isr_arg;
+        unsigned n = (unsigned)netdev->context;
         thread_flags_set(nanonet_thread, 0x1<<n);
         return;
     }
 
-    nano_dev_t *dev = &nanonet_devices[(unsigned)netdev->isr_arg];
+    nano_dev_t *dev = &nanonet_devices[(unsigned)netdev->context];
 
     switch(event) {
         case NETDEV2_EVENT_RX_COMPLETE:
@@ -164,7 +163,7 @@ int nanonet_init_netdev2_ieee802154(unsigned devnum)
 
     /* register the event callback with the device driver */
     netdev->event_callback = _netdev2_isr;
-    netdev->isr_arg = (void*) devnum;
+    netdev->context = (void*) devnum;
 
     /* set up addresses */
     netdev->driver->get(netdev, NETOPT_ADDRESS, (uint8_t*)nanodev->l2_addr, 8);
@@ -201,7 +200,7 @@ int nanonet_init_netdev2_eth(unsigned devnum)
 
     /* register the event callback with the device driver */
     netdev->event_callback = _netdev2_isr;
-    netdev->isr_arg = (void*) devnum;
+    netdev->context = (void*) devnum;
 
     /* set up addresses */
     netdev->driver->get(netdev, NETOPT_ADDRESS, (uint8_t*)nanodev->l2_addr, 6);
