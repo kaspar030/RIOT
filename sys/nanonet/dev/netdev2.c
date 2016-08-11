@@ -100,7 +100,7 @@ static void _netdev2_isr(netdev2_t *netdev, netdev2_event_t event)
         case NETDEV2_EVENT_TX_COMPLETE:
             break;
         default:
-            printf("_netdev2_isr(): unhandled event: %u\n", (unsigned)event);
+            DEBUG("_netdev2_isr(): unhandled event: %u\n", (unsigned)event);
     }
 }
 
