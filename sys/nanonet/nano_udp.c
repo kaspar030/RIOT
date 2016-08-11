@@ -9,7 +9,7 @@
 
 #include "byteorder.h"
 
-#define ENABLE_DEBUG 1
+#define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
 
 int udp_handle(nano_ctx_t *ctx, size_t offset)
@@ -26,7 +26,7 @@ int udp_handle(nano_ctx_t *ctx, size_t offset)
     uint16_t dst_port = NTOHS(hdr->dst_port);
     ctx->dst_port = dst_port;
 
-#if ENABLE_DEBUG == 1
+#if ENABLE_DEBUG
     if (is_ipv4_hdr(ctx->l3_hdr_start)) {
         DEBUG("udp: received packet from 0x%08x, src_port %u, dst_port %u\n",
                 (unsigned int) ctx->src_addr.ipv4, ctx->src_port, ctx->dst_port);
@@ -61,7 +61,7 @@ int udp_handle(nano_ctx_t *ctx, size_t offset)
             }
         }
         else {
-            puts("udp: UDPv6: not filtering broadcast icmp reply");
+            DEBUG("udp: UDPv6: not filtering broadcast icmp reply\n");
             //icmpv6_reply_dst_unreachable(ctx, ICMPV6_DST_UNREACH_PORT);
         }
     }
