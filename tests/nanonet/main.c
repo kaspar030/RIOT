@@ -24,7 +24,9 @@
 #include "nanonet.h"
 #include "nano_coap.h"
 
-#define ENABLE_DEBUG 1
+#include "log.h"
+
+#define ENABLE_DEBUG (0)
 #include "debug.h"
 
 int nano_dummy_handler(nano_ctx_t *ctx, size_t offset) {
@@ -55,7 +57,7 @@ nano_udp_bind_t nano_udp_binds[] = {
 
 int main(void)
 {
-    printf("nanonet test app started.\n");
+    LOG_INFO("nanonet test app started.\n");
 
     /* initialize network stack and devices */
     nanonet_init();

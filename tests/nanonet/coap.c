@@ -3,7 +3,7 @@
 
 #include "nanonet.h"
 
-#define ENABLE_DEBUG 1
+#define ENABLE_DEBUG (0)
 #include "debug.h"
 
 #define BUFSZ 1000
@@ -88,30 +88,30 @@ int nano_coap_handler(nano_ctx_t *ctx, size_t offset) {
     int n = ctx->len-offset;
     uint8_t *buf = (uint8_t*)(ctx->buf+offset);
     coap_packet_t pkt;
-    printf("Received packet: ");
+    DEBUG("Received packet: ");
     coap_dump(buf, n, true);
-    printf("\n");
+    DEBUG("\n");
 
     if (0 != (rc = coap_parse(&pkt, buf, n))) {
-        printf("Bad packet rc=%d\n", rc);
+        DEBUG("Bad packet rc=%d\n", rc);
     }
     else {
         uint8_t *rspbuf = (uint8_t*) (ctx->buf+offset);
         size_t rsplen = NANONET_RX_BUFSIZE - offset;
 
         coap_packet_t rsppkt;
-        printf("content:\n");
+        DEBUG("content:\n");
         coap_dumpPacket(&pkt);
         coap_handle_req(&scratch_buf, &pkt, &rsppkt);
 
         if (0 != (rc = coap_build(rspbuf, &rsplen, &rsppkt)))
-            printf("coap_build failed rc=%d\n", rc);
+            DEBUG("coap_build failed rc=%d\n", rc);
         else
         {
-            printf("Sending packet: ");
+            DEBUG("Sending packet: ");
             coap_dump(rspbuf, rsplen, true);
-            printf("\n");
-            printf("content:\n");
+            DEBUG("\n");
+            DEBUG("content:\n");
             coap_dumpPacket(&rsppkt);
 
             /* update length in nanonet context */
