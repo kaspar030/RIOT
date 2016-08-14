@@ -2,15 +2,24 @@
 #define NANO_CONFIG_H
 
 #ifndef ENABLE_NANONET_DEBUG
-#define ENABLE_NANONET_DEBUG 0
+#define ENABLE_NANONET_DEBUG 1
 #endif
 
 /* should fit the biggest expected packet */
-#define NANONET_RX_BUFSIZE 256
+#define NANONET_RX_BUFSIZE 384
 
 #ifdef MODULE_NETDEV2_ETH
 #define NANONET_IPV4
 #define NANONET_ETH
 #endif
+
+#ifdef MODULE_NETDEV2_IEEE802154
+#define NANONET_IEEE802154
+#define NANONET_6LP
+#define NANONET_IEEE802154_SPARE (128U)
+#endif
+
+/* nanonet currently doesn't compile without IPv4 support */
+#define NANONET_IPV4
 
 #endif /* NANO_CONFIG_H */
