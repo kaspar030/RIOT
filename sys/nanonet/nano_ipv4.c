@@ -102,7 +102,7 @@ int ipv4_send(nano_sndbuf_t *buf, uint32_t dest_ip, int protocol) {
     hdr->protocol = protocol;
     hdr->src = HTONL(dev->ipv4);
     hdr->dst = HTONL(dest_ip);
-    hdr->total_len = HTONS(buf->used);
+    hdr->total_len = HTONS(nano_sndbuf_used(buf));
 
     hdr->hdr_chksum = 0;
 

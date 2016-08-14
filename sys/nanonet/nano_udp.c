@@ -81,7 +81,7 @@ static size_t udp_build_hdr(nano_sndbuf_t *buf, uint16_t dst_port, uint16_t src_
     hdr->src_port = HTONS(src_port);
     hdr->dst_port = HTONS(dst_port);
 
-    hdr->length = HTONS(buf->used);
+    hdr->length = HTONS(nano_sndbuf_used(buf));
 
     /* checksum will be calculated by IP layer */
     hdr->chksum = 0x0;

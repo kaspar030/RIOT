@@ -62,12 +62,13 @@ int arp_handle(nano_ctx_t *ctx, size_t offset) {
 
 void arp_request(nano_dev_t *dev, uint32_t ip) {
     DEBUG("arp_request: requesting MAC for 0x%08x\n", (unsigned int)ip);
-    uint8_t buf[sizeof(eth_hdr_t)+sizeof(arp_pkt_t)];
-    nano_sndbuf_t sndbuf = { .buf=buf, .size=sizeof(buf), .used=sizeof(arp_pkt_t)};
 
+    uint8_t buf[sizeof(eth_hdr_t)+sizeof(arp_pkt_t)];
     memset(buf, '\0', sizeof(eth_hdr_t)+sizeof(arp_pkt_t));
 
-    arp_pkt_t* pkt = (arp_pkt_t*) (buf+sizeof(eth_hdr_t));
+    nano_sndbuf_t sndbuf = NANO_SNDBUF_INIT(buf, sizeof(buf));
+    arp_pkt_t* pkt = (arp_pkt_t*) nano_sndbuf_alloc(&sndbuf, sizeof(arp_pkt_t));
+
     pkt->arp_ipv4_types = HTONL(0x00010800);
     pkt->arp_ipv4_lengths = HTONS(0x0604);
     pkt->arp_ipv4_op = HTONS(0x0001);

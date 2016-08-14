@@ -106,7 +106,7 @@ static void _netdev2_isr(netdev2_t *netdev, netdev2_event_t event)
 
 static int _send_ethernet(nano_dev_t *dev, nano_sndbuf_t *buf, uint8_t* dest_mac, uint16_t ethertype)
 {
-    DEBUG("nanonet_netdev2_send: Sending packet with len %u\n", buf->used);
+    DEBUG("nanonet_netdev2_send: Sending packet with len %u\n", nano_sndbuf_used(buf));
     netdev2_t *netdev = (netdev2_t *) dev->netdev;
     eth_hdr_t *hdr = (eth_hdr_t *) nano_sndbuf_alloc(buf, sizeof(eth_hdr_t));
 
@@ -120,8 +120,7 @@ static int _send_ethernet(nano_dev_t *dev, nano_sndbuf_t *buf, uint8_t* dest_mac
 
     hdr->ethertype = HTONS(ethertype);
 
-    struct iovec vec = { hdr, buf->used };
-    netdev->driver->send(netdev, &vec, 1);
+    netdev->driver->send(netdev, nano_sndbuf_getvec(buf), nano_sndbuf_getcount(buf));
 
     return 0;
 }
