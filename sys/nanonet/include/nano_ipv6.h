@@ -15,9 +15,11 @@
 #define IPV6_NEXTHDR_ICMP       (58U)
 
 int ipv6_handle(nano_ctx_t *ctx, size_t offset);
+void ipv6_dispatch(nano_ctx_t *ctx, size_t l4offset, uint8_t next_header);
 int ipv6_send(nano_sndbuf_t *buf, uint8_t *dest_ip, int protocol, nano_dev_t *dev);
 int ipv6_reply(nano_ctx_t *ctx);
 void ipv6_addr_print(const uint8_t *addr);
+int ipv6_get_src_addr(uint8_t *tgt_buf, const nano_dev_t *dev, const uint8_t *tgt_addr);
 
 static inline int ipv6_addr_equal(const uint8_t *a, const uint8_t* b) {
     return memcmp(a, b, 16) == 0;
