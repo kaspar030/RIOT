@@ -11,12 +11,36 @@
 #include "nano_udp.h"
 #include "nano_ndp.h"
 #include "nano_config.h"
+#include "nano_6lp.h"
+#include "nano_ieee802154.h"
 
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
 
 static uint16_t calcsum(ipv6_hdr_t *hdr);
 static void set_csum(ipv6_hdr_t *hdr);
+
+void ipv6_dispatch(nano_ctx_t *ctx, size_t l4offset, uint8_t next_header)
+{
+    if (ipv6_is_for_us(ctx)) { /* TODO: fix broadcast stuff */
+        switch (next_header) {
+            case IPV6_NEXTHDR_ICMP:
+                DEBUG("ipv6: icmpv6.\n");
+                icmpv6_handle(ctx, l4offset);
+                break;
+            case IPV6_NEXTHDR_UDP:
+                DEBUG("ipv6: got UDP packet\n");
+                udp_handle(ctx, l4offset);
+                break;
+
+            default:
+                DEBUG("ipv6: unknown protocol.\n");
+        }
+    } else {
+        DEBUG("ipv6: packet dropped, it's not for us.\n");
+        // no routing implemented yet
+    }
+}
 
 int ipv6_handle(nano_ctx_t *ctx, size_t offset) {
     ipv6_hdr_t *hdr = (ipv6_hdr_t*) (ctx->buf+offset);
@@ -33,24 +57,8 @@ int ipv6_handle(nano_ctx_t *ctx, size_t offset) {
 
     DEBUG("ipv6: got packet with protocol 0x%01x\n", (unsigned int) hdr->next_header);
 
-    if (ipv6_is_for_us(ctx)) { /* TODO: fix broadcast stuff */
-        switch (hdr->next_header) {
-            case IPV6_NEXTHDR_ICMP:
-                DEBUG("ipv6: icmpv6.\n");
-                icmpv6_handle(ctx, offset+hdr_len);
-                break;
-            case IPV6_NEXTHDR_UDP:
-                DEBUG("ipv6: got UDP packet\n");
-                udp_handle(ctx, offset+hdr_len);
-                break;
+    ipv6_dispatch(ctx, offset+hdr_len, hdr->next_header);
 
-            default:
-                DEBUG("ipv6: unknown protocol.\n");
-        }
-    } else {
-        DEBUG("ipv6: packet dropped, it's not for us.\n");
-        // no routing implemented yet
-    }
     return 0;
 }
 
@@ -69,18 +77,46 @@ int ipv6_get_src_addr(uint8_t *tgt_buf, const nano_dev_t *dev, const uint8_t *tg
     return 0;
 }
 
-int ipv6_reply(nano_ctx_t *ctx)
+static int _ipv6_reply(nano_ctx_t *ctx)
 {
     ipv6_hdr_t *hdr = (ipv6_hdr_t*) ctx->l3_hdr_start;
 
     hdr->payload_len = HTONS(ctx->len - (((uint8_t*)hdr) - ctx->buf) - sizeof(ipv6_hdr_t));
 
-    memcpy(ctx->dst_addr.ipv6, ctx->src_addr.ipv6, IPV6_ADDR_LEN);
-    ipv6_get_src_addr(ctx->src_addr.ipv6, ctx->dev, ctx->dst_addr.ipv6);
-
     set_csum(hdr);
 
     return ctx->dev->reply(ctx);
+}
+
+#ifdef NANONET_6LP
+static int is_6lowpan(nano_ctx_t *ctx)
+{
+    /* TODO: hacky*/
+    return (ctx->dev->handle_rx == nano_ieee802154_handle);
+}
+#else
+static int is_6lowpan(nano_ctx_t *ctx)
+{
+    (void)ctx;
+    return 0;
+}
+#endif
+
+int ipv6_reply(nano_ctx_t *ctx)
+{
+    memcpy(ctx->dst_addr.ipv6, ctx->src_addr.ipv6, IPV6_ADDR_LEN);
+    ipv6_get_src_addr(ctx->src_addr.ipv6, ctx->dev, ctx->dst_addr.ipv6);
+
+    if (is_6lowpan(ctx)) {
+#ifdef NANONET_6LP
+        return nano_6lp_reply(ctx);
+#else
+        return 0;
+#endif
+    }
+    else {
+        return _ipv6_reply(ctx);
+    }
 }
 
 static uint16_t calcsum(ipv6_hdr_t *hdr)
@@ -133,7 +169,6 @@ static ipv6_route_t *ipv6_getroute(uint8_t *dest_ip) {
 
 int ipv6_send(nano_sndbuf_t *buf, uint8_t *dst_ip, int protocol, nano_dev_t *dev)
 {
-    ipv6_hdr_t *hdr;
     uint8_t *l2_addr;
     size_t l2_addr_len;
     uint8_t *next_hop = NULL;
@@ -158,28 +193,42 @@ int ipv6_send(nano_sndbuf_t *buf, uint8_t *dst_ip, int protocol, nano_dev_t *dev
         return -EAGAIN;
     }
 
-    /* allocate our header, check what l2 needs, bail out if not enough */
-    hdr = (ipv6_hdr_t *) nano_sndbuf_alloc(buf, sizeof(ipv6_hdr_t));
-
-    if (!hdr) {
-        DEBUG("ipv6: send buffer too small.\n");
+#ifdef NANONET_IEEE802154
+    if (dev->handle_rx == nano_ieee802154_handle) {
+        DEBUG("ipv6_send(): 6lp send not implemented.\n");
         return -ENOSPC;
     }
+#endif
+#if defined(NANONET_IEEE802154) && defined(NANONET_ETH)
+    else
+#endif
+#ifdef NANONET_ETH
+    if (dev->handle_rx == nano_eth_handle) {
+        /* allocate our header, check what l2 needs, bail out if not enough */
+        ipv6_hdr_t *hdr = (ipv6_hdr_t *) nano_sndbuf_alloc(buf, sizeof(ipv6_hdr_t));
 
-    /* clear header */
-    memset(hdr, '\0', sizeof(ipv6_hdr_t));
+        if (!hdr) {
+            DEBUG("ipv6: send buffer too small.\n");
+            return -ENOSPC;
+        }
 
-    /* set version to 6, traffic class + flow label to 0 */
-    hdr->ver_tc_fl = HTONL(0x60000000U);
+        /* clear header */
+        memset(hdr, '\0', sizeof(ipv6_hdr_t));
 
-    hdr->hop_limit = 64;
-    hdr->next_header = protocol;
+        /* set version to 6, traffic class + flow label to 0 */
+        hdr->ver_tc_fl = HTONL(0x60000000U);
 
-    ipv6_get_src_addr(hdr->src, dev, dst_ip);
-    memcpy(hdr->dst, dst_ip, IPV6_ADDR_LEN);
+        hdr->hop_limit = 64;
+        hdr->next_header = protocol;
 
-    /* send packet */
-    return dev->send(dev, buf, l2_addr, 0x86DD);
+        ipv6_get_src_addr(hdr->src, dev, dst_ip);
+        memcpy(hdr->dst, dst_ip, IPV6_ADDR_LEN);
+
+        /* send packet */
+        return dev->send(dev, buf, l2_addr, 0x86DD);
+    }
+#endif
+    return -ENOTSUP;
 }
 
 void ipv6_addr_print(const uint8_t *addr)

@@ -22,6 +22,8 @@
 #define NANO_CTX_H
 
 #include <stdint.h>
+
+#include "nano_config.h"
 #include "nano_dev.h"
 
 struct nano_ctx {
@@ -36,21 +38,30 @@ struct nano_ctx {
     uint8_t *src_mac;
     uint8_t *dst_mac;
 
+#ifdef NANONET_IEEE802154
+    uint16_t src_pan;
+    uint16_t dst_pan;
+    uint8_t src_mac_len;
+    uint8_t dst_mac_len;
+#endif
+
     /* l3 */
     uint8_t *l3_hdr_start;
+
     union {
         uint32_t ipv4;
         uint8_t *ipv6;
     } src_addr;
+
     union {
         uint32_t ipv4;
         uint8_t *ipv6;
     } dst_addr;
 
     /* l4 */
+    uint8_t *l4_start;
     uint16_t src_port;
     uint16_t dst_port;
-
 };
 
 #endif /* NANO_CTX_H */

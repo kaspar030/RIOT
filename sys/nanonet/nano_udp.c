@@ -69,7 +69,6 @@ int udp_handle(nano_ctx_t *ctx, size_t offset)
     return 0;
 }
 
-
 static size_t udp_build_hdr(nano_sndbuf_t *buf, uint16_t dst_port, uint16_t src_port) {
     udp_hdr_t *hdr = (udp_hdr_t *) nano_sndbuf_alloc(buf, sizeof(udp_hdr_t));
 
@@ -114,6 +113,7 @@ int udp_reply(nano_ctx_t *ctx)
     }
 }
 
+#ifdef NANONET_IPV4
 int udp_send(nano_sndbuf_t *buf, uint32_t dst_ip, uint16_t dst_port, uint16_t src_port)
 {
     DEBUG("udp: sending packet to 0x%08x\n", (unsigned int) dst_ip);
@@ -124,6 +124,7 @@ int udp_send(nano_sndbuf_t *buf, uint32_t dst_ip, uint16_t dst_port, uint16_t sr
 
     return ipv4_send(buf, dst_ip, 0x11);
 }
+#endif
 
 int udp6_send(nano_sndbuf_t *buf, uint8_t* dst_ip, uint16_t dst_port, uint16_t src_port, nano_dev_t *dev)
 {

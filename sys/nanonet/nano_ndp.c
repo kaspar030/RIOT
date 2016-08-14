@@ -99,7 +99,7 @@ int nano_ndp_sync(void)
     return 0;
 }
 
-#if ENABLE_DEBUG
+#if 0
 void nano_ndp_dump(void)
 {
     puts("IPv6 neighbor cache\n");

@@ -30,7 +30,7 @@
 #include "sys/uio.h"
 
 #include "net/netdev2/eth.h"
-#include "net/netdev2/ieee802154.h"
+//#include "net/netdev2/ieee802154.h"
 
 #include "nanonet.h"
 #include "nano_sndbuf.h"
@@ -86,7 +86,7 @@ static void _netdev2_isr(netdev2_t *netdev, netdev2_event_t event)
         case NETDEV2_EVENT_RX_COMPLETE:
             {
                 /* read packet from device into nanonet's global rx buffer */
-                int nbytes = netdev->driver->recv(netdev, (char*)nanonet_rxbuf,
+                int nbytes = netdev->driver->recv(netdev, ((char*)nanonet_rxbuf),
                         NANONET_RX_BUFSIZE, NULL);
                 if (nbytes > 0) {
                     dev->handle_rx(dev, nanonet_rxbuf, nbytes);
@@ -125,15 +125,6 @@ static int _send_ethernet(nano_dev_t *dev, nano_sndbuf_t *buf, uint8_t* dest_mac
     return 0;
 }
 
-static int _send_ieee80154(nano_dev_t *dev, nano_sndbuf_t *buf, uint8_t* dest_l2addr, uint16_t ethertype)
-{
-    (void)dev;
-    (void)dest_l2addr;
-    (void)ethertype;
-    DEBUG("_send_ieee80154(): Sending packet with len %u\n", buf->used);
-    return 0;
-}
-
 static int _send_raw(nano_dev_t *dev, uint8_t* buf, size_t len)
 {
     DEBUG("nanonet_netdev2_send_raw: Sending packet with len %u\n", len);
@@ -141,6 +132,16 @@ static int _send_raw(nano_dev_t *dev, uint8_t* buf, size_t len)
     struct iovec vec = { buf, len };
     netdev->driver->send(netdev, &vec, 1);
 
+    return 0;
+}
+
+#ifdef NANONET_IEEE802154
+static int _send_ieee80154(nano_dev_t *dev, nano_sndbuf_t *buf, uint8_t* dest_l2addr, uint16_t ethertype)
+{
+    (void)dev;
+    (void)dest_l2addr;
+    (void)ethertype;
+    DEBUG("_send_ieee80154(): Sending packet with len %u\n", buf->used);
     return 0;
 }
 
@@ -165,12 +166,12 @@ int nanonet_init_netdev2_ieee802154(unsigned devnum)
     netdev->context = (void*) devnum;
 
     /* set up addresses */
-    netdev->driver->get(netdev, NETOPT_ADDRESS, (uint8_t*)nanodev->l2_addr, 8);
+    netdev->driver->get(netdev, NETOPT_ADDRESS_LONG, (uint8_t*)nanodev->l2_addr, 8);
 
     memset(nanodev->ipv6_ll, 0, IPV6_ADDR_LEN);
     nanodev->ipv6_ll[0] = 0xfe;
     nanodev->ipv6_ll[1] = 0x80;
-    ieee802154_get_iid((eui64_t*)(nanodev->ipv6_ll + 8), nanodev->l2_addr, 8);
+    nano_ieee802154_get_iid(nanodev->l2_addr, 8, (nanodev->ipv6_ll + 8), 0);
 
 #if ENABLE_DEBUG
     puts("nanonet_init_netdev2: Setting link-layer address ");
@@ -180,6 +181,7 @@ int nanonet_init_netdev2_ieee802154(unsigned devnum)
 
     return 1;
 }
+#endif
 
 int nanonet_init_netdev2_eth(unsigned devnum)
 {
