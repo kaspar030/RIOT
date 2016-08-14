@@ -38,7 +38,7 @@ int icmp_handle(nano_ctx_t *ctx, size_t offset)
 int icmp_port_unreachable(nano_ctx_t *ctx)
 {
     uint8_t buf[256];
-    nano_sndbuf_t sndbuf = { .buf=buf, .size=sizeof(buf), .used=0 };
+    nano_sndbuf_t sndbuf = NANO_SNDBUF_INIT(buf, sizeof(buf));
 
     ipv4_hdr_t *ipv4_hdr = (ipv4_hdr_t *) ctx->l3_hdr_start;
 
@@ -72,11 +72,11 @@ static void icmp_hdr_set(icmp_hdr_t *hdr, uint8_t type, uint8_t code, uint32_t r
 static int icmp_echo_reply(nano_ctx_t *ctx, icmp_hdr_t *request, size_t len)
 {
     uint8_t buf[256];
-    nano_sndbuf_t sndbuf = { .buf=buf, .size=sizeof(buf), .used=len};
+    nano_sndbuf_t sndbuf = NANO_SNDBUF_INIT(buf, sizeof(buf));
 
-    icmp_hdr_t *reply = (icmp_hdr_t *) (buf+sizeof(buf)-len);
+    icmp_hdr_t *reply = (icmp_hdr_t *)nano_sndbuf_alloc(&sndbuf, len);
 
-    if ((uint8_t*)reply < buf) {
+    if (!reply) {
         DEBUG("icmp_echo_reply(): buffer too small.\n");
         return -1;
     }
