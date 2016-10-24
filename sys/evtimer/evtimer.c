@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2016 Freie Universität Berlin
  * Copyright (C) 2016 Kaspar Schleiser <kaspar@schleiser.de>
  *
  * This file is subject to the terms and conditions of the GNU Lesser
@@ -14,9 +15,13 @@
  * @brief       event timer implementation
  *
  * @author      Kaspar Schleiser <kaspar@schleiser.de>
+ * @author      Martine Lenders <m.lenders@fu-berlin.de>
  *
  * @}
  */
+
+#include <stdio.h>
+
 #include "evtimer.h"
 #include "div.h"
 #include "irq.h"
@@ -29,6 +34,7 @@
 static void _add_event_to_list(evtimer_event_t *list, evtimer_event_t *event)
 {
     uint32_t delta_sum = 0;
+
     while (list->next) {
         evtimer_event_t *list_entry = list->next;
         if ((list_entry->offset + delta_sum) > event->offset) {
@@ -68,6 +74,7 @@ static void _del_event_from_list(evtimer_event_t *list, evtimer_event_t *event)
 static void _set_timer(xtimer_t *timer, uint32_t offset)
 {
     uint64_t offset_in_us = (uint64_t)offset * 1000;
+
     DEBUG("evtimer: now=%"PRIu32" setting xtimer to %"PRIu32":%"PRIu32"\n",  xtimer_now(),
             (uint32_t)(offset_in_us>>32), (uint32_t)(offset_in_us));
     _xtimer_set64(timer, offset_in_us, offset_in_us>>32);
@@ -111,10 +118,11 @@ static void _update_head_offset(evtimer_t *evtimer)
 void evtimer_add(evtimer_t *evtimer, evtimer_event_t *event)
 {
     unsigned state = irq_disable();
+
     DEBUG("evtimer_add(): adding event with offset %"PRIu32"\n", event->offset);
 
     _update_head_offset(evtimer);
-    _add_event_to_list((evtimer_event_t*)&evtimer->events, event);
+    _add_event_to_list(evtimer->events, event);
 
     if (evtimer->events == event) {
         _set_timer(&evtimer->timer, event->offset);
@@ -125,6 +133,7 @@ void evtimer_add(evtimer_t *evtimer, evtimer_event_t *event)
 void evtimer_del(evtimer_t *evtimer, evtimer_event_t *event)
 {
     unsigned state = irq_disable();
+
     DEBUG("evtimer_del(): removing event with offset %"PRIu32"\n", event->offset);
     _update_head_offset(evtimer);
     _del_event_from_list((evtimer_event_t*)&evtimer->events, event);
@@ -132,9 +141,32 @@ void evtimer_del(evtimer_t *evtimer, evtimer_event_t *event)
     irq_restore(state);
 }
 
+bool evtimer_peek(evtimer_t *evtimer, evtimer_peek_cb_t *peek_cb,
+                  uint64_t limit)
+{
+    bool res = false;
+    unsigned state = irq_disable();
+    evtimer_event_t *event = evtimer->events;
+    uint64_t acc = (event == NULL) ? 0 : event->offset;
+
+    DEBUG("evtimer_peek(): searching events in the next %"PRIu32" ms\n",
+          limit);
+    while((event != NULL) && (acc <= limit)) {
+        if (peek_cb(event)) {
+            res = true;
+            break;
+        }
+        event = event->next;
+        acc += event->offset;
+    }
+    irq_restore(state);
+    return res;
+}
+
 static evtimer_event_t *_get_next(evtimer_t *evtimer)
 {
     evtimer_event_t *event = evtimer->events;
+
     if (event && (event->offset == 0)) {
         evtimer->events = event->next;
         return event;
@@ -172,14 +204,13 @@ void evtimer_init(evtimer_t *evtimer, void(*handler)(void*))
     evtimer->events = NULL;
 }
 
-#if ENABLE_DEBUG == 1
 void evtimer_print(evtimer_t *evtimer)
 {
     evtimer_event_t *list = evtimer->events;
+
     while (list->next) {
         evtimer_event_t *list_entry = list->next;
-        DEBUG("ev offset=%u\n", (unsigned)list_entry->offset);
+        printf("ev offset=%u\n", (unsigned)list_entry->offset);
         list = list->next;
     }
 }
-#endif
