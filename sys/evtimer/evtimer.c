@@ -142,7 +142,7 @@ void evtimer_del(evtimer_t *evtimer, evtimer_event_t *event)
 }
 
 bool evtimer_peek(evtimer_t *evtimer, evtimer_peek_cb_t *peek_cb,
-                  uint64_t limit)
+                  void *peek_ctx, uint64_t limit)
 {
     bool res = false;
     unsigned state = irq_disable();
@@ -152,7 +152,7 @@ bool evtimer_peek(evtimer_t *evtimer, evtimer_peek_cb_t *peek_cb,
     DEBUG("evtimer_peek(): searching events in the next %"PRIu32" ms\n",
           limit);
     while((event != NULL) && (acc <= limit)) {
-        if (peek_cb(event)) {
+        if (peek_cb(event, peek_ctx)) {
             res = true;
             break;
         }

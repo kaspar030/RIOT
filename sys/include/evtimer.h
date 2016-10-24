@@ -54,7 +54,7 @@ extern "C" {
 
 /** forward declaration */
 typedef struct evtimer_event evtimer_event_t;
-typedef bool (*evtimer_peek_cb_t)(evtimer_event_t *event);
+typedef bool (*evtimer_peek_cb_t)(evtimer_event_t *event, void *ctx);
 
 typedef struct {
     xtimer_t timer;
@@ -85,7 +85,7 @@ static inline void evtimer_add_msg(evtimer_t *evtimer,
 
 void evtimer_del(evtimer_t *evtimer, evtimer_event_t *event);
 bool evtimer_peek(evtimer_t *evtimer, evtimer_peek_cb_t *peek_cb,
-                  uint64_t limit);
+                  void *peek_ctx, uint64_t limit);
 void evtimer_msg_handler(void *arg);
 
 static inline void evtimer_init_msg(evtimer_t *evtimer)
