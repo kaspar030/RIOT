@@ -79,7 +79,7 @@ static inline void evtimer_add_msg(evtimer_t *evtimer,
                                    kernel_pid_t target_pid)
 {
     /* use sender_pid field to get target_pid into callback function */
-    event->msg.sender_pid;
+    event->msg.sender_pid = target_pid;
     evtimer_add(evtimer, &event->event);
 }
 
