@@ -16,7 +16,7 @@
  *
  * Compared to xtimer, evtimer offers:
  *
- * - only relative 32bit milisecond timer values
+ * - only relative 32bit millisecond timer values
  *   Events can be scheduled with a relative offset of up to ~49.7 days in the
  *   future.
  *   For time-critical stuff, use xtimer!
@@ -39,8 +39,10 @@
 #ifndef EVTIMER_H
 #define EVTIMER_H
 
+#include <stdbool.h>
 #include <stdint.h>
 
+#include "kernel_types.h"
 #include "msg.h"
 #include "xtimer.h"
 
@@ -48,8 +50,11 @@
 extern "C" {
 #endif
 
+#define EVTIMER_PEEK_LIMIT_INFINITY (UINT64_MAX)
+
 /** forward declaration */
 typedef struct evtimer_event evtimer_event_t;
+typedef bool (*evtimer_peek_cb_t)(evtimer_event_t *event, void *ctx);
 
 typedef struct {
     xtimer_t timer;
@@ -68,8 +73,26 @@ typedef struct {
 
 void evtimer_init(evtimer_t *evtimer, void(*handler)(void*));
 void evtimer_add(evtimer_t *evtimer, evtimer_event_t *event);
+
+static inline void evtimer_add_msg(evtimer_t *evtimer,
+                                   evtimer_msg_event_t *event,
+                                   kernel_pid_t target_pid)
+{
+    /* use sender_pid field to get target_pid into callback function */
+    event->msg.sender_pid = target_pid;
+    evtimer_add(evtimer, &event->event);
+}
+
 void evtimer_del(evtimer_t *evtimer, evtimer_event_t *event);
+bool evtimer_peek(evtimer_t *evtimer, evtimer_peek_cb_t *peek_cb,
+                  void *peek_ctx, uint64_t limit);
 void evtimer_msg_handler(void *arg);
+
+static inline void evtimer_init_msg(evtimer_t *evtimer)
+{
+    evtimer_init(evtimer, evtimer_msg_handler);
+}
+
 void evtimer_print(evtimer_t *evtimer);
 
 #ifdef __cplusplus
