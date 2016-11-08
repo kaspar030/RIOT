@@ -26,9 +26,11 @@
 #define ENABLE_DEBUG (0)
 #include "debug.h"
 
-static void _add_event_to_list(evtimer_event_t *list, evtimer_event_t *event)
+static void _add_event_to_list(evtimer_t *evtimer, evtimer_event_t *event)
 {
     uint32_t delta_sum = 0;
+
+    evtimer_event_t *list = (evtimer_event_t *)&evtimer->events;
 
     while (list->next) {
         evtimer_event_t *list_entry = list->next;
@@ -50,8 +52,10 @@ static void _add_event_to_list(evtimer_event_t *list, evtimer_event_t *event)
     list->next = event;
 }
 
-static void _del_event_from_list(evtimer_event_t *list, evtimer_event_t *event)
+static void _del_event_from_list(evtimer_t *evtimer, evtimer_event_t *event)
 {
+    evtimer_event_t *list = (evtimer_event_t *) &evtimer->events;
+
     while (list->next) {
         evtimer_event_t *list_entry = list->next;
         if (list_entry == event) {
@@ -117,7 +121,7 @@ void evtimer_add(evtimer_t *evtimer, evtimer_event_t *event)
     DEBUG("evtimer_add(): adding event with offset %" PRIu32 "\n", event->offset);
 
     _update_head_offset(evtimer);
-    _add_event_to_list(evtimer->events, event);
+    _add_event_to_list(evtimer, event);
 
     if (evtimer->events == event) {
         _set_timer(&evtimer->timer, event->offset);
@@ -132,7 +136,7 @@ void evtimer_del(evtimer_t *evtimer, evtimer_event_t *event)
     DEBUG("evtimer_del(): removing event with offset %" PRIu32 "\n", event->offset);
 
     _update_head_offset(evtimer);
-    _del_event_from_list(evtimer->events, event);
+    _del_event_from_list(evtimer, event);
     _update_timer(evtimer);
     irq_restore(state);
 }
