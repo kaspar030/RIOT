@@ -2,7 +2,7 @@
 #define NANO_CONFIG_H
 
 #ifndef ENABLE_NANONET_DEBUG
-#define ENABLE_NANONET_DEBUG 1
+#define ENABLE_NANONET_DEBUG 0
 #endif
 
 /* should fit the biggest expected packet */
