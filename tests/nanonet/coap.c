@@ -1,124 +1,48 @@
-#include <coap.h>
+/*
+ * Copyright (C) 2016 Kaspar Schleiser <kaspar@schleiser.de>
+ *
+ * This file is subject to the terms and conditions of the GNU Lesser
+ * General Public License v2.1. See the file LICENSE in the top level
+ * directory for more details.
+ */
+
+#include <stdio.h>
 #include <string.h>
 
+#include "nanocoap.h"
 #include "nanonet.h"
 
 #define ENABLE_DEBUG (0)
 #include "debug.h"
 
-#define BUFSZ 1000
-#define MAX_RESPONSE_LEN 500
-static uint8_t response[MAX_RESPONSE_LEN] = {0};
-
-uint8_t scratch_raw[BUFSZ];
-coap_rw_buffer_t scratch_buf = {scratch_raw, sizeof(scratch_raw)};
-
-static int handle_get_well_known_core(coap_rw_buffer_t *scratch, const coap_packet_t *inpkt, coap_packet_t *outpkt, uint8_t id_hi, uint8_t id_lo);
-
-static int handle_get_riot_board(coap_rw_buffer_t *scratch, const coap_packet_t *inpkt,
-        coap_packet_t *outpkt, uint8_t id_hi, uint8_t id_lo)
+static ssize_t _riot_board_handler(coap_pkt_t *pkt, uint8_t *buf, size_t len)
 {
-    const char *riot_name = RIOT_BOARD;
-    int len = strlen(RIOT_BOARD);
-    memcpy(response, riot_name, len);
-
-    return coap_make_response(scratch, outpkt, (const uint8_t *)response, len, id_hi, id_lo, &inpkt->tok, COAP_RSPCODE_CONTENT, COAP_CONTENTTYPE_TEXT_PLAIN);
+    return coap_reply_simple(pkt, buf, len,
+                             COAP_FORMAT_TEXT, (uint8_t *)RIOT_BOARD, strlen(RIOT_BOARD));
 }
 
-static const coap_endpoint_path_t path_well_known_core = {2, {".well-known", "core"}};
-static const coap_endpoint_path_t path_riot_board = {2, {"riot", "board"}};
-//static const coap_endpoint_path_t path_riot_mcu = {2, {"riot", "mcu"}};
-
-const coap_endpoint_t endpoints[] =
-{
-    {COAP_METHOD_GET, handle_get_well_known_core, &path_well_known_core, "ct=40"},
-    {COAP_METHOD_GET, handle_get_riot_board, &path_riot_board, "ct=0"},
-//    {COAP_METHOD_GET, handle_get_riot_mcu, &path_riot_mcu, "ct=0"},
-    {(coap_method_t)0, NULL, NULL, NULL} /* marks the end of the endpoints array */
+const coap_resource_t coap_resources[] = {
+    COAP_WELL_KNOWN_CORE_DEFAULT_HANDLER,
+    { "/riot/board", COAP_GET, _riot_board_handler },
 };
 
-static int handle_get_well_known_core(coap_rw_buffer_t *scratch, const coap_packet_t *inpkt, coap_packet_t *outpkt, uint8_t id_hi, uint8_t id_lo)
+const unsigned coap_resources_numof = sizeof(coap_resources) / sizeof(coap_resources[0]);
+
+int nano_coap_handler(nano_ctx_t *ctx, size_t offset)
 {
-    char *rsp = (char*)response;
-    int len = sizeof(response);
-    const coap_endpoint_t *ep = endpoints;
-    int i;
+    ssize_t res;
+    int n = ctx->len - offset;
+    uint8_t *buf = (uint8_t *)(ctx->buf + offset);
 
-    len--; // Null-terminated string
+    coap_pkt_t pkt;
 
-    while(NULL != ep->handler)
-    {
-        if (NULL == ep->core_attr) {
-            ep++;
-            continue;
-        }
-
-        if (0 < strlen(rsp)) {
-            strncat(rsp, ",", len);
-            len--;
-        }
-
-        strncat(rsp, "<", len);
-        len--;
-
-        for (i = 0; i < ep->path->count; i++) {
-            strncat(rsp, "/", len);
-            len--;
-
-            strncat(rsp, ep->path->elems[i], len);
-            len -= strlen(ep->path->elems[i]);
-        }
-
-        strncat(rsp, ">;", len);
-        len -= 2;
-
-        strncat(rsp, ep->core_attr, len);
-        len -= strlen(ep->core_attr);
-
-        ep++;
+    if (coap_parse(&pkt, (uint8_t *)buf, n) < 0) {
+        DEBUG("error parsing packet\n");
     }
-
-    return coap_make_response(scratch, outpkt, (const uint8_t *)rsp, strlen(rsp), id_hi, id_lo, &inpkt->tok, COAP_RSPCODE_CONTENT, COAP_CONTENTTYPE_APPLICATION_LINKFORMAT);
-}
-
-int nano_coap_handler(nano_ctx_t *ctx, size_t offset) {
-    DEBUG("nano_coap_handler\n");
-    int rc;
-
-    int n = ctx->len-offset;
-    uint8_t *buf = (uint8_t*)(ctx->buf+offset);
-    coap_packet_t pkt;
-    DEBUG("Received packet: ");
-    coap_dump(buf, n, true);
-    DEBUG("\n");
-
-    if (0 != (rc = coap_parse(&pkt, buf, n))) {
-        DEBUG("Bad packet rc=%d\n", rc);
+    else if ((res = coap_handle_req(&pkt, buf, NANONET_RX_BUFSIZE - offset)) > 0) {
+        /* update length in nanonet context */
+        ctx->len += res - n;
+        udp_reply(ctx);
     }
-    else {
-        uint8_t *rspbuf = (uint8_t*) (ctx->buf+offset);
-        size_t rsplen = NANONET_RX_BUFSIZE - offset;
-
-        coap_packet_t rsppkt;
-        DEBUG("content:\n");
-        coap_dumpPacket(&pkt);
-        coap_handle_req(&scratch_buf, &pkt, &rsppkt);
-
-        if (0 != (rc = coap_build(rspbuf, &rsplen, &rsppkt)))
-            DEBUG("coap_build failed rc=%d\n", rc);
-        else
-        {
-            DEBUG("Sending packet: ");
-            coap_dump(rspbuf, rsplen, true);
-            DEBUG("\n");
-            DEBUG("content:\n");
-            coap_dumpPacket(&rsppkt);
-
-            /* update length in nanonet context */
-            ctx->len += rsplen - n;
-            udp_reply(ctx);
-        }
-    }
-
     return 0;
 }
