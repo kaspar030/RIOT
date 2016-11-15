@@ -26,7 +26,7 @@
 #include "kernel_types.h"
 #include "thread.h"
 #include "thread_flags.h"
-
+#include "xtimer.h"
 #include "sys/uio.h"
 
 #include "net/netdev2/eth.h"
@@ -85,16 +85,15 @@ static void _netdev2_isr(netdev2_t *netdev, netdev2_event_t event)
     switch(event) {
         case NETDEV2_EVENT_RX_COMPLETE:
             {
-                /* read packet from device into nanonet's global rx buffer */
-                int nbytes = netdev->driver->recv(netdev, ((char*)nanonet_rxbuf),
-                        NANONET_RX_BUFSIZE, NULL);
-                if (nbytes > 0) {
-                    dev->handle_rx(dev, nanonet_rxbuf, nbytes);
-                }
-                else {
-                    DEBUG("_netdev2_isr(): recv <= 0\n");
-                }
-
+                int nbytes;
+                do {
+                    /* read packet from device into nanonet's global rx buffer */
+                    nbytes = netdev->driver->recv(netdev, ((char*)nanonet_rxbuf),
+                            NANONET_RX_BUFSIZE, NULL);
+                    if (nbytes > 0) {
+                        dev->handle_rx(dev, nanonet_rxbuf, nbytes);
+                    }
+                } while (nbytes != -1);
             }
             break;
         case NETDEV2_EVENT_TX_COMPLETE:
