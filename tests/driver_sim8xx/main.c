@@ -63,7 +63,7 @@ int main(void)
         goto fail;
     }
 
-    res = sim8xx_http_post(&sim8xx, "http://posttestserver.com/post.php?dump",
+    res = sim8xx_http_post(&sim8xx, "https://posttestserver.com/post.php?dump",
             (const uint8_t *) "TEST", 4, (uint8_t*)buf, sizeof(buf));
 
     printf("http post res: %i\n", res);
