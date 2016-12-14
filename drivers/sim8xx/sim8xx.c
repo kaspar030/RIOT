@@ -75,10 +75,11 @@ int sim8xx_check_pin(sim8xx_t *simdev)
             res = 0;
         }
         else if (!strcmp(linebuf, "+CPIN: READY\r\n")) {
+            /* sim is ready */
             res = 0;
         }
         else if (!strcmp(linebuf, "+CPIN: SIM PIN\r\n")) {
-            /* device needs sim */
+            /* sim needs pin */
             res = 1;
         }
     }
