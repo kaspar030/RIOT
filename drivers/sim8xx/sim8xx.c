@@ -174,6 +174,13 @@ ssize_t sim8xx_http_get(sim8xx_t *simdev, const char *url, uint8_t *resultbuf, s
         goto out;
     }
 
+    if (strncmp(url, "https://", 8) == 0) {
+        res = at_send_cmd_wait_ok(at_dev, "AT+HTTPSSL=1", SIM8XX_SERIAL_TIMEOUT);
+        if (res) {
+            goto out;
+        }
+    }
+
     res = at_send_cmd_wait_ok(at_dev, "AT+HTTPACTION=0", SIM8XX_SERIAL_TIMEOUT);
     if (res) {
         goto out;
@@ -192,6 +199,9 @@ ssize_t sim8xx_http_get(sim8xx_t *simdev, const char *url, uint8_t *resultbuf, s
             at_readline(at_dev, buf, sizeof(buf), SIM8XX_SERIAL_TIMEOUT);
             res = isrpipe_read_all_timeout(&at_dev->isrpipe, (char *)resultbuf, response_len, SIM8XX_SERIAL_TIMEOUT * 5);
             at_expect_bytes(at_dev, "\r\nOK\r\n", 6, SIM8XX_SERIAL_TIMEOUT);
+        }
+        else {
+            return -1;
         }
     }
 
@@ -232,6 +242,13 @@ ssize_t sim8xx_http_post(sim8xx_t *simdev,
     res = at_send_cmd_wait_ok(at_dev, buf, SIM8XX_SERIAL_TIMEOUT);
     if (res) {
         goto out;
+    }
+
+    if (strncmp(url, "https://", 8) == 0) {
+        res = at_send_cmd_wait_ok(at_dev, "AT+HTTPSSL=1", SIM8XX_SERIAL_TIMEOUT);
+        if (res) {
+            goto out;
+        }
     }
 
     pos = buf;
