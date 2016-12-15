@@ -80,11 +80,11 @@ int sim8xx_check_pin(sim8xx_t *simdev)
         if (!strncmp(linebuf, "OK", res)) {
             res = 0;
         }
-        else if (!strcmp(linebuf, "+CPIN: READY\r\n")) {
+        else if (!strcmp(linebuf, "+CPIN: READY")) {
             /* sim is ready */
             res = 0;
         }
-        else if (!strcmp(linebuf, "+CPIN: SIM PIN\r\n")) {
+        else if (!strcmp(linebuf, "+CPIN: SIM PIN")) {
             /* sim needs pin */
             res = 1;
         }
@@ -191,8 +191,7 @@ ssize_t sim8xx_imei_get(sim8xx_t *simdev, char *buf, size_t len)
     mutex_lock(&simdev->mutex);
 
     int res = at_send_cmd_get_resp(&simdev->at_dev, "AT+GSN", buf, len, SIM8XX_SERIAL_TIMEOUT);
-    if (res > 2) {
-        res -= 2;   /* cut off \r\n */
+    if (res > 0) {
         buf[res] = '\0';
     }
     else {
@@ -238,7 +237,7 @@ uint32_t sim8xx_gprs_getip(sim8xx_t *simdev)
 
     int res = at_send_cmd_get_resp(&simdev->at_dev, "AT+SAPBR=2,1", buf, sizeof(buf), SIM8XX_SERIAL_TIMEOUT);
     if ((res > 13) && strncmp(buf, "+SAPBR: 1,1,\"", 13) == 0) {
-        res -= 3;   /* cut off \"\r\n */
+        res -= 1;   /* cut off " */
         buf[res] = '\0';
         pos += 13; /* skip +SAPBR: 1,1," */
 
@@ -291,12 +290,12 @@ ssize_t sim8xx_http_get(sim8xx_t *simdev, const char *url, uint8_t *resultbuf, s
     }
 
     /* skip expected empty line */
-    at_readline(at_dev, buf, sizeof(buf), SIM8XX_SERIAL_TIMEOUT);
-    res = at_readline(at_dev, buf, sizeof(buf), SIM8XX_SERIAL_TIMEOUT * 30);
+    at_readline(at_dev, buf, sizeof(buf), SIM8XX_SERIAL_TIMEOUT * 30);
+    res = at_readline(at_dev, buf, sizeof(buf), SIM8XX_SERIAL_TIMEOUT);
     if (res > 0) {
         if (strncmp(buf, "+HTTPACTION: 0,200,", 19) == 0) {
-            /* read length from buf. substract beginning (19) and \r\n (2) */
-            uint32_t response_len = scn_u32_dec(buf + 19, res - 19 - 2);
+            /* read length from buf. substract beginning (19) */
+            uint32_t response_len = scn_u32_dec(buf + 19, res - 19);
             response_len = response_len > len ? len : response_len;
             at_send_cmd(at_dev, "AT+HTTPREAD", SIM8XX_SERIAL_TIMEOUT);
             /* skip +HTTPREAD: <nbytes> */
@@ -365,7 +364,7 @@ ssize_t sim8xx_http_post(sim8xx_t *simdev,
     if (res <= 0) {
         goto out;
     }
-    else if (strcmp(buf, "DOWNLOAD\r\n")) {
+    else if (strcmp(buf, "DOWNLOAD")) {
         res = -1;
         goto out;
     }
@@ -378,12 +377,12 @@ ssize_t sim8xx_http_post(sim8xx_t *simdev,
     }
 
     /* skip expected empty line */
-    at_readline(at_dev, buf, sizeof(buf), SIM8XX_SERIAL_TIMEOUT * 5);
+    at_readline(at_dev, buf, sizeof(buf), SIM8XX_SERIAL_TIMEOUT * 30);
 
-    res = at_readline(at_dev, buf, sizeof(buf), SIM8XX_SERIAL_TIMEOUT * 30);
+    res = at_readline(at_dev, buf, sizeof(buf), SIM8XX_SERIAL_TIMEOUT);
     if ((res > 0) && (strncmp(buf, "+HTTPACTION: 1,200,", 19) == 0)) {
-        /* read length from buf. substract beginning (19) and \r\n (2) */
-        uint32_t response_len = scn_u32_dec(buf + 19, res - 19 - 2);
+        /* read length from buf. substract beginning (19) */
+        uint32_t response_len = scn_u32_dec(buf + 19, res - 19);
 
         /* min(response_len, result_len) */
         response_len = response_len > result_len ? result_len : response_len;
