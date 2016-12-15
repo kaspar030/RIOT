@@ -32,10 +32,12 @@
 static bool initialized = false;
 static sim8xx_t dev;
 
+static char _http_buf[1024];
+
 int _sim8xx(int argc, char **argv)
 {
     if(argc <= 1) {
-        printf("Usage: %s init|status\n", argv[0]);
+        printf("Usage: %s init|status|http\n", argv[0]);
         return -1;
     }
 
@@ -127,8 +129,29 @@ int _sim8xx(int argc, char **argv)
 
         sim8xx_print_status(&dev);
     }
-    else {
-        puts("sim8xx: unknown command");
+    else if (strcmp(argv[1], "http") == 0) {
+        if (argc != 3 && argc != 4) {
+            printf("Usage: %s httpreq <url> [<POST-data>]\n", argv[0]);
+            return -1;
+        }
+
+
+        int res;
+        if (argc == 3) {
+            res = sim8xx_http_get(&dev, argv[2], (uint8_t *)_http_buf, sizeof(_http_buf));
+        }
+        else {
+            res = sim8xx_http_post(&dev, argv[2], (uint8_t *)argv[3], strlen(argv[3]),
+                    (uint8_t *)_http_buf, sizeof(_http_buf));
+        }
+
+        if (res < 0) {
+            printf("sim8xx: error\n");
+        }
+        else {
+            printf("sim8xx: request ok. data:\n");
+            puts(_http_buf);
+        }
     }
 
     return 0;
