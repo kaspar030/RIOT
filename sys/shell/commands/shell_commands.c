@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2014  INRIA.
+ * Copyright (C) 2016 Kaspar Schleiser <kaspar@schleiser.de>
+ *               2014 INRIA.
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -16,6 +17,7 @@
  * @author      Oliver Hahm <oliver.hahm@inria.fr>
  * @author      Zakaria Kasmi <zkasmi@inf.fu-berlin.de>
  * @author      Ludwig Knüpfer <ludwig.knuepfer@fu-berlin.de>
+ * @author      Kaspar Schleiser <kaspar@schleiser.de>
  *
  * @}
  */
@@ -127,6 +129,10 @@ extern int _ccnl_fib(int argc, char **argv);
 extern int _ntpdate(int argc, char **argv);
 #endif
 
+#ifdef MODULE_SIM8XX
+extern int _sim8xx(int argc, char **argv);
+#endif
+
 const shell_command_t _shell_command_list[] = {
     {"reboot", "Reboot the node", _reboot_handler},
 #ifdef MODULE_CONFIG
@@ -211,6 +217,9 @@ const shell_command_t _shell_command_list[] = {
 #endif
 #ifdef MODULE_SNTP
     { "ntpdate", "synchronizes with a remote time server", _ntpdate },
+#endif
+#ifdef MODULE_SIM8XX
+    {"sim8xx", "configure/use SIM8XX GSM/GPRS modems", _sim8xx },
 #endif
     {NULL, NULL, NULL}
 };
