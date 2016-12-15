@@ -242,7 +242,6 @@ uint32_t sim8xx_gprs_getip(sim8xx_t *simdev)
         buf[res] = '\0';
         pos += 13; /* skip +SAPBR: 1,1," */
 
-        puts(pos);
         ipv4_addr_from_str((ipv4_addr_t *)&ip, pos);
     }
 
