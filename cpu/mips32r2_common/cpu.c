@@ -58,7 +58,6 @@ void software_init_hook(void)
 
 void mips_start(void)
 {
-    cpu_init_early();
     board_init();
 
 #if MODULE_NEWLIB

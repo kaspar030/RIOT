@@ -30,18 +30,6 @@ extern "C" {
 
 #include "irq.h"
 
-
-/**
- * @brief   Early CPU initialisation
- *
- * @todo:   Not supported for generic mips32r2 implementations the bootloader
- * must have initialised the system
- */
-static inline void cpu_init_early(void)
-{
-    /* This function must exist else RIOT won't compile */
-}
-
 /**
  * @brief   Print the last instruction's address
  *
