@@ -51,7 +51,7 @@ int sim8xx_init(sim8xx_t *simdev, const sim8xx_params_t *params);
  * @returns     0 on success
  * @returns     -1 on error
  */
-int sim8xx_set_pin(sim8xx_t *simdev, unsigned pin);
+int sim8xx_set_pin(sim8xx_t *simdev, const char *pin);
 
 /**
  * @brief   Test if SIM card needs PIN
@@ -74,7 +74,21 @@ int sim8xx_check_pin(sim8xx_t *simdev);
  */
 int sim8xx_gprs_init(sim8xx_t *simdev, const char *apn);
 
+/**
+ * @brief   Check if modem is registered to network
+ *
+ * @param[in]   simdev  device to operate on
+ *
+ * @returns     0 if registered
+ * @returns     1 otherwise
+ */
 int sim8xx_reg_check(sim8xx_t *simdev);
+
+size_t sim8xx_reg_get(sim8xx_t *simdev, char *buf, size_t len);
+int sim8xx_signal_get(sim8xx_t *simdev, unsigned *csq, unsigned *ber);
+int sim8xx_imei_get(sim8xx_t *simdev, char *buf, size_t len);
+uint32_t sim8xx_gprs_getip(sim8xx_t *simdev);
+void sim8xx_print_status(sim8xx_t *simdev);
 
 ssize_t sim8xx_http_get(sim8xx_t *simdev, const char *url, uint8_t *resultbuf, size_t len);
 ssize_t sim8xx_http_post(sim8xx_t *simdev,

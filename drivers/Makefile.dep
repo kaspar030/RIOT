@@ -131,6 +131,7 @@ endif
 ifneq (,$(filter sim8xx,$(USEMODULE)))
     USEMODULE += at
     USEMODULE += fmt
+    USEMODULE += ipv4_addr
 endif
 
 ifneq (,$(filter si70xx,$(USEMODULE)))
