@@ -1,5 +1,10 @@
 # driver dependencies (in alphabetical order)
 
+ifneq (,$(filter at,$(USEMODULE)))
+    USEMODULE += fmt
+    USEMODULE += xtimer
+endif
+
 ifneq (,$(filter at30tse75x,$(USEMODULE)))
   USEMODULE += xtimer
   FEATURES_REQUIRED += periph_i2c
