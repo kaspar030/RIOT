@@ -6,12 +6,14 @@
  * directory for more details.
  */
 
+#include <errno.h>
 #include <string.h>
 
 #include "fmt.h"
 #include "log.h"
 #include "sim8xx.h"
 #include "xtimer.h"
+#include "net/ipv4/addr.h"
 
 #define SIMDEV_INIT_MAXTRIES (3)
 
@@ -43,16 +45,20 @@ int sim8xx_init(sim8xx_t *simdev, const sim8xx_params_t *params)
     return 0;
 }
 
-int sim8xx_set_pin(sim8xx_t *simdev, unsigned pin)
+int sim8xx_set_pin(sim8xx_t *simdev, const char *pin)
 {
+    if (strlen(pin) != 4) {
+        return -EINVAL;
+    }
+
     mutex_lock(&simdev->mutex);
 
     xtimer_usleep(100000U);
 
     char buf[16];
     char *pos = buf;
-    pos += fmt_str(buf, "AT+CPIN=");
-    pos += fmt_u32_dec(buf + 8, pin);
+    pos += fmt_str(pos, "AT+CPIN=");
+    pos += fmt_str(pos, pin);
     *pos = '\0';
 
     int res = at_send_cmd_wait_ok(&simdev->at_dev, buf, SIM8XX_SERIAL_TIMEOUT);
@@ -144,6 +150,105 @@ int sim8xx_reg_check(sim8xx_t *simdev)
     mutex_unlock(&simdev->mutex);
 
     return res;
+}
+
+size_t sim8xx_reg_get(sim8xx_t *simdev, char *outbuf, size_t len)
+{
+    char buf[32];
+    char *pos = buf;
+
+    mutex_lock(&simdev->mutex);
+
+    size_t outlen = 0;
+    int res = at_send_cmd_get_resp(&simdev->at_dev, "AT+COPS?", buf, sizeof(buf), SIM8XX_SERIAL_TIMEOUT);
+    if ((res > 12) && (strncmp(pos, "+COPS: 0,", 9) == 0)) {
+        /* skip '+COPS: 0,[01],"' */
+        pos += 12;
+
+        while (*pos != '"' && len--) {
+            *outbuf++ = *pos++;
+            outlen++;
+        }
+        if (len) {
+            *outbuf = '\0';
+            res = outlen;
+        }
+        else {
+            return -ENOSPC;
+        }
+    }
+    else {
+        res = -1;
+    }
+
+    mutex_unlock(&simdev->mutex);
+
+    return res;
+}
+
+ssize_t sim8xx_imei_get(sim8xx_t *simdev, char *buf, size_t len)
+{
+    mutex_lock(&simdev->mutex);
+
+    int res = at_send_cmd_get_resp(&simdev->at_dev, "AT+GSN", buf, len, SIM8XX_SERIAL_TIMEOUT);
+    if (res > 2) {
+        res -= 2;   /* cut off \r\n */
+        buf[res] = '\0';
+    }
+    else {
+        res = -1;
+    }
+
+    mutex_unlock(&simdev->mutex);
+
+    return res;
+}
+
+int sim8xx_signal_get(sim8xx_t *simdev, unsigned *rssi, unsigned *ber)
+{
+    char buf[32];
+    char *pos = buf;
+
+    mutex_lock(&simdev->mutex);
+
+    int res = at_send_cmd_get_resp(&simdev->at_dev, "AT+CSQ", buf, sizeof(buf), SIM8XX_SERIAL_TIMEOUT);
+    if ((res > 2) && strncmp(buf, "+CSQ: ", 6) == 0) {
+        pos += 6; /* skip "+CSQ: " */
+        *rssi = scn_u32_dec(pos, 2);
+        pos += 2 + (*rssi > 9); /* skip rssi value ( n, or nn,) */
+        *ber = scn_u32_dec(pos, 2);
+        res = 0;
+    }
+    else {
+        res = -1;
+    }
+
+    mutex_unlock(&simdev->mutex);
+
+    return res;
+}
+
+uint32_t sim8xx_gprs_getip(sim8xx_t *simdev)
+{
+    char buf[40];
+    char *pos = buf;
+    uint32_t ip = 0;
+
+    mutex_lock(&simdev->mutex);
+
+    int res = at_send_cmd_get_resp(&simdev->at_dev, "AT+SAPBR=2,1", buf, sizeof(buf), SIM8XX_SERIAL_TIMEOUT);
+    if ((res > 13) && strncmp(buf, "+SAPBR: 1,1,\"", 13) == 0) {
+        res -= 3;   /* cut off \"\r\n */
+        buf[res] = '\0';
+        pos += 13; /* skip +SAPBR: 1,1," */
+
+        puts(pos);
+        ipv4_addr_from_str((ipv4_addr_t *)&ip, pos);
+    }
+
+    mutex_unlock(&simdev->mutex);
+
+    return ip;
 }
 
 ssize_t sim8xx_http_get(sim8xx_t *simdev, const char *url, uint8_t *resultbuf, size_t len)
@@ -300,4 +405,58 @@ out:
     mutex_unlock(&simdev->mutex);
 
     return res;
+}
+
+void sim8xx_print_status(sim8xx_t *simdev)
+{
+    char buf[64];
+
+    int res = at_send_cmd_get_resp(&simdev->at_dev, "ATI", buf, sizeof(buf), SIM8XX_SERIAL_TIMEOUT);
+
+    if (res >= 2) {
+        res -= 2;
+        buf[res] = '\0';
+        printf("sim8xx: device type %s\n", buf);
+    }
+    else {
+        printf("sim8xx: error reading device type!\n");
+    }
+
+    res = sim8xx_imei_get(simdev, buf, sizeof(buf));
+    if (res >= 0) {
+        printf("sim8xx: IMEI: \"%s\"\n", buf);
+    }
+    else {
+        printf("sim8xx: error getting IMEI\n");
+    }
+
+    res = sim8xx_reg_get(simdev, buf, sizeof(buf));
+    if (res >= 0) {
+        printf("sim8xx: registered to \"%s\"\n", buf);
+    }
+    else {
+        printf("sim8xx: not registered\n");
+    }
+
+    unsigned rssi;
+    unsigned ber;
+    res = sim8xx_signal_get(simdev, &rssi, &ber);
+    if (res == 0) {
+        printf("sim8xx: RSSI=%u ber=%u%%\n", rssi, ber);
+    }
+    else {
+        printf("sim8xx: error getting signal strength\n");
+    }
+
+    uint32_t ip = sim8xx_gprs_getip(simdev);
+    if (ip) {
+        printf("sim8xx: GPRS connected. IP=");
+        for (unsigned i = 0; i < 4; i++) {
+            uint8_t *_tmp = (uint8_t*) &ip;
+            printf("%u%s", (unsigned)_tmp[i], (i < 3) ? "." : "\n");
+        }
+    }
+    else {
+        printf("sim8xx: error getting GPRS state\n");
+    }
 }
