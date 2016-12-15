@@ -94,7 +94,7 @@ ssize_t at_send_cmd_get_resp(at_dev_t *dev, const char *command, char *resp_buf,
     }
 
     res = at_readline(dev, resp_buf, len, timeout);
-    if (res == 2 && resp_buf[0] == '\r') {
+    if (res == 0) {
         /* skip possible empty line */
         res = at_readline(dev, resp_buf, len, timeout);
     }
@@ -112,7 +112,7 @@ int at_send_cmd_wait_ok(at_dev_t *dev, const char *command, uint32_t timeout)
 
     res = at_send_cmd_get_resp(dev, command, resp_buf, sizeof(resp_buf), timeout);
     if (res > 0) {
-        if (strcmp(resp_buf, "OK\r\n") == 0) {
+        if (strcmp(resp_buf, "OK") == 0) {
             res = 0;
         }
         else {
@@ -135,10 +135,15 @@ ssize_t at_readline(at_dev_t *dev, char *resp_buf, size_t len, uint32_t timeout)
             if (AT_PRINT_INCOMING) {
                 print(resp_pos, read_res);
             }
+            if (*resp_pos == '\r') {
+                continue;
+            }
             if (*resp_pos == '\n') {
-                res = resp_pos - resp_buf + 1;
+                *resp_pos = '\0';
+                res = resp_pos - resp_buf;
                 goto out;
             }
+
             resp_pos += read_res;
             len -= read_res;
         }
