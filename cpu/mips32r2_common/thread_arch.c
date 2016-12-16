@@ -71,7 +71,6 @@ char *thread_arch_stack_init(thread_task_func_t task_func, void *arg,
     p--;
     *p-- = STACK_END_PAINT;
 
-
     /* prepare stack for __exception_restore() */
     fp = p;
     p -= sizeof(struct gpctx) / sizeof(unsigned int);
