@@ -28,13 +28,13 @@ extern "C" {
 #endif
 
 /**
- * @brief Set how many increments of the count register per uS
- *        needed by timer code
+ * @brief       Set how many increments of the count register per uS
+ *              needed by timer code
  */
 #define TICKS_PER_US (15)
 
 /**
- * @brief   Board level initialisation
+ * @brief       Board level initialisation
  */
 void board_init(void);
 
