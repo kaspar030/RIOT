@@ -97,6 +97,10 @@
 
 void auto_init(void)
 {
+#ifdef MODULE_SYSTICK
+    extern void systick_init(void);
+    systick_init();
+#endif
 #ifdef MODULE_TINYMT32
     random_init(0);
 #endif
