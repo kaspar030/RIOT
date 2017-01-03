@@ -32,6 +32,10 @@
 #include "sched.h"
 #endif
 
+#ifdef MODULE_GMON
+#include "gmon.h"
+#endif
+
 #define ENABLE_DEBUG (0)
 #include "debug.h"
 
@@ -46,6 +50,10 @@ static void *main_trampoline(void *arg)
 {
     (void) arg;
 
+#ifdef MODULE_GMON
+    gmon_init();
+#endif
+
 #ifdef MODULE_AUTO_INIT
     auto_init();
 #endif
@@ -58,6 +66,11 @@ static void *main_trampoline(void *arg)
     LOG_INFO("main(): This is RIOT! (Version: " RIOT_VERSION ")\n");
 
     main();
+
+#ifdef MODULE_GMON
+    gmon_flush();
+#endif
+
     return NULL;
 }
 
