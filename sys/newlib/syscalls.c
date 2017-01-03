@@ -96,7 +96,7 @@ void _exit(int n)
  * @return      pointer to the newly allocated memory on success
  * @return      pointer set to address `-1` on failure
  */
-void *_sbrk_r(struct _reent *r, ptrdiff_t incr)
+void __attribute__((no_instrument_function)) *_sbrk_r(struct _reent *r, ptrdiff_t incr)
 {
     unsigned int state = irq_disable();
     void *res = heap_top;
@@ -166,6 +166,8 @@ int _open_r(struct _reent *r, const char *name, int flags, int mode)
     (void) name;
     (void) flags;
     (void) mode;
+    printf("O: %s\n", name);
+    return 10;
     r->_errno = ENODEV;                     /* not implemented yet */
     return -1;
 }
@@ -191,6 +193,9 @@ _ssize_t _read_r(struct _reent *r, int fd, void *buffer, size_t count)
 {
     (void)r;
     (void)fd;
+    if (fd == 10) {
+        return 0;
+    }
     return uart_stdio_read(buffer, count);
 }
 
@@ -213,6 +218,24 @@ _ssize_t _write_r(struct _reent *r, int fd, const void *data, size_t count)
 {
     (void) r;
     (void) fd;
+    if (fd != STDOUT_FILENO) {
+        if (count) {
+
+           size_t _left = count;
+           while (_left--) {
+               printf("W:%02x\n", (unsigned)*(char*)data++);
+           }
+//            printf("W:");
+//            size_t _left = count;
+//            while (_left--) {
+//                printf("%02x", (unsigned)*(char*)data++);
+//                xtimer_usleep(500);
+//            }
+//            puts("");
+        }
+        return count;
+    }
+
     return uart_stdio_write(data, count);
 }
 
@@ -227,6 +250,9 @@ _ssize_t _write_r(struct _reent *r, int fd, const void *data, size_t count)
 int _close_r(struct _reent *r, int fd)
 {
     (void) fd;
+    if (fd != STDOUT_FILENO) {
+        printf("C:%i\n", fd);
+    }
     r->_errno = ENODEV;                     /* not implemented yet */
     return -1;
 }
