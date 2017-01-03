@@ -34,7 +34,7 @@ struct iovec {
     void *iov_base;     /**< Pointer to data.   */
     size_t iov_len;     /**< Length of data.    */
 };
-
+ssize_t writev(int fildes, const struct iovec *iov, int iovcnt);
 #ifdef __cplusplus
 }
 #endif
