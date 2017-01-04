@@ -19,7 +19,7 @@
 #include <string.h>
 #include <stdint.h>
 
-#include "thread.h"
+#include "cpu.h"
 
 /* global profinfo for profil() call */
 static struct profinfo prof = {
@@ -29,10 +29,17 @@ static struct profinfo prof = {
 /* sample the current program counter */
 void isr_systick(void)
 {
-    static size_t pc, idx;
+    static volatile size_t pc, idx;
 
     if (prof.state == PROFILE_ON) {
-        pc = *(unsigned *)(sched_active_thread->sp + (4 * 7));
+        unsigned lr;
+        __asm__ volatile ("mov %0, lr" : "=r" (lr) );
+        if (lr & 4) {
+            pc = ((uint32_t*)__get_PSP())[6];
+        }
+        else {
+            pc = ((uint32_t*)__get_MSP())[6];
+        }
         if (pc >= prof.lowpc && pc < prof.highpc) {
             idx = PROFIDX(pc, prof.lowpc, prof.scale);
             prof.counter[idx]++;
