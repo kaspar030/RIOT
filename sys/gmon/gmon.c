@@ -59,7 +59,7 @@ struct gmonparam _gmonparam /*attribute_hidden*/ = { GMON_PROF_OFF };
 static int	s_scale;
 #define		SCALE_1_TO_1	0x10000L
 
-#define ERR(s) write/*_not_cancel*/ (STDERR_FILENO, s, sizeof (s) - 1)
+#define ERR(s) write/*_not_cancel*/ (STDOUT_FILENO, s, sizeof (s) - 1)
 
 void moncontrol (int mode);
 void __moncontrol (int mode);
@@ -132,7 +132,7 @@ monstartup (u_long lowpc, u_long highpc)
   cp = calloc (p->kcountsize + p->fromssize + p->tossize, 1);
   if (! cp)
     {
-      ERR("monstartup: out of memory\n");
+      printf("monstartup: out of memory (need %lub)\n", (p->kcountsize + p->fromssize + p->tossize));
       p->tos = NULL;
       p->state = GMON_PROF_ERROR;
       return;
@@ -428,5 +428,6 @@ _mcleanup (void)
 
 void gmon_init(void) {
     extern char _etext;
-    monstartup(0x100, (unsigned)&_etext);
+    extern char _sfixed;
+    monstartup((unsigned)&_sfixed + 0x100, (unsigned)&_etext);
 }
