@@ -67,9 +67,39 @@ typedef struct {
 } evtimer_msg_event_t;
 
 void evtimer_init(evtimer_t *evtimer, void(*handler)(void*));
+
 void evtimer_add(evtimer_t *evtimer, evtimer_event_t *event);
+
+/**
+ * @brief   Adds event to an event timer that handles events via IPC
+ *
+ * @param[in] evtimer       An event timer
+ * @param[in] event         An event
+ * @param[in] target_pid    The PID of the thread that should receive the IPC
+ *                          message.
+ */
+static inline void evtimer_add_msg(evtimer_t *evtimer,
+                                   evtimer_msg_event_t *event,
+                                   kernel_pid_t target_pid)
+{
+    /* use sender_pid field to get target_pid into callback function */
+    event->msg.sender_pid = target_pid;
+    evtimer_add(evtimer, &event->event);
+}
+
 void evtimer_del(evtimer_t *evtimer, evtimer_event_t *event);
 void evtimer_msg_handler(void *arg);
+
+/**
+ * @brief   Initializes event timer to handle events via IPC
+ *
+ * @param[in] evtimer   An event timer
+ */
+static inline void evtimer_init_msg(evtimer_t *evtimer)
+{
+    evtimer_init(evtimer, evtimer_msg_handler);
+}
+
 void evtimer_print(const evtimer_t *evtimer);
 
 #ifdef __cplusplus
