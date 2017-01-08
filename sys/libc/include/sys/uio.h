@@ -34,7 +34,18 @@ struct iovec {
     void *iov_base;     /**< Pointer to data.   */
     size_t iov_len;     /**< Length of data.    */
 };
+
+/**
+ * @brief   Write a struct iovec to file descriptor
+ *
+ * @param[in]   fildes  file descriptor to write to
+ * @param[in]   iov     ptr to iovec array to read from
+ * @param[in]   iovcnt  number of entries in @p iov
+ *
+ * @returns     number of bytes actually written
+ */
 ssize_t writev(int fildes, const struct iovec *iov, int iovcnt);
+
 #ifdef __cplusplus
 }
 #endif
