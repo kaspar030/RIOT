@@ -92,7 +92,7 @@ static void _update_timer(evtimer_t *evtimer)
 
 static uint32_t _get_offset(xtimer_t *timer)
 {
-    uint64_t now = xtimer_now64();
+    uint64_t now = xtimer_now_usec64();
     uint64_t target = ((uint64_t)timer->long_target) << 32 | timer->target;
 
     if (target <= now) {
