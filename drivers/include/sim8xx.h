@@ -96,6 +96,9 @@ ssize_t sim8xx_http_post(sim8xx_t *simdev,
                          const uint8_t *data, size_t data_len,
                          uint8_t *resultbuf, size_t result_len);
 
+int sim8xx_gps_get_loc(sim8xx_t *simdev, uint8_t *buf, size_t len);
+size_t sim8xx_cmd(sim8xx_t *simdev, const char *cmd, uint8_t *buf, size_t len);
+
 #ifdef __cplusplus
 }
 #endif

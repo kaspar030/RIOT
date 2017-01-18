@@ -23,11 +23,12 @@
 #include "shell.h"
 #include "shell_commands.h"
 
+static char line_buf[SHELL_DEFAULT_BUFSIZE];
+
 int main(void)
 {
     puts("SIM8XX device driver test");
 
-    char line_buf[SHELL_DEFAULT_BUFSIZE];
 
     shell_run(NULL, line_buf, SHELL_DEFAULT_BUFSIZE);
 

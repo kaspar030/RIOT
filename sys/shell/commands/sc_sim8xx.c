@@ -153,6 +153,34 @@ int _sim8xx(int argc, char **argv)
             puts(_http_buf);
         }
     }
+    else if (strcmp(argv[1], "gps") == 0) {
+        int res = sim8xx_gps_get_loc(&dev, (uint8_t *)_http_buf, sizeof(_http_buf));
+
+        if (res < 0) {
+            printf("sim8xx: error\n");
+        }
+        else {
+            printf("sim8xx: request ok. data:\n");
+            puts(_http_buf);
+        }
+    }
+    else if (strcmp(argv[1], "cmd") == 0) {
+        if (argc != 3) {
+            printf("Usage: %s cmd <command>\n", argv[0]);
+            return -1;
+        }
+
+        int res = sim8xx_cmd(&dev, argv[2], (uint8_t *)_http_buf, sizeof(_http_buf));
+
+        if (res < 0) {
+            printf("sim8xx: error\n");
+        }
+        else {
+            printf("sim8xx: response:\n");
+            puts(_http_buf);
+        }
+    }
+
 
     return 0;
 }

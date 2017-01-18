@@ -458,3 +458,25 @@ void sim8xx_print_status(sim8xx_t *simdev)
         printf("sim8xx: error getting GPRS state\n");
     }
 }
+
+int sim8xx_gps_get_loc(sim8xx_t *simdev, uint8_t *buf, size_t len)
+{
+    mutex_lock(&simdev->mutex);
+
+    int res = at_send_cmd_get_resp(&simdev->at_dev, "AT+CGPSINF=0", (char *)buf, len, SIM8XX_SERIAL_TIMEOUT);
+
+    mutex_unlock(&simdev->mutex);
+
+    return res;
+}
+
+size_t sim8xx_cmd(sim8xx_t *simdev, const char *cmd, uint8_t *buf, size_t len)
+{
+    mutex_lock(&simdev->mutex);
+
+    size_t res = at_send_cmd_get_resp(&simdev->at_dev, cmd, (char *)buf, len, SIM8XX_SERIAL_TIMEOUT * 10);
+
+    mutex_unlock(&simdev->mutex);
+
+    return res;
+}
