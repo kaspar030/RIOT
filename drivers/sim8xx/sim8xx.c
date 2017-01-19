@@ -15,7 +15,7 @@
 #include "xtimer.h"
 #include "net/ipv4/addr.h"
 
-#define SIMDEV_INIT_MAXTRIES (3)
+#define SIMDEV_INIT_MAXTRIES (6)
 
 int sim8xx_init(sim8xx_t *simdev, const sim8xx_params_t *params)
 {
@@ -43,6 +43,24 @@ int sim8xx_init(sim8xx_t *simdev, const sim8xx_params_t *params)
     LOG_INFO("sim8xx: device type %s\n", buf);
 
     return 0;
+}
+
+int sim8xx_cnet_scan(sim8xx_t *simdev, char *buf, size_t len)
+{
+    LOG_INFO("sim800x: scanning sim towers...\n");
+    mutex_lock(&simdev->mutex);
+
+    at_send_cmd_wait_ok(&simdev->at_dev, "AT+CNETSCAN=1", SIM8XX_SERIAL_TIMEOUT);
+    int res = at_send_cmd_get_resp(&simdev->at_dev, "AT+CNETSCAN", buf, len, SIM8XX_SERIAL_TIMEOUT * 120);
+    if (res > 0) {
+        buf[res] = '\0';
+    }
+    else {
+        res = -1;
+    }
+
+    mutex_unlock(&simdev->mutex);
+    return res;
 }
 
 int sim8xx_set_pin(sim8xx_t *simdev, const char *pin)
@@ -223,6 +241,47 @@ int sim8xx_signal_get(sim8xx_t *simdev, unsigned *rssi, unsigned *ber)
     }
 
     mutex_unlock(&simdev->mutex);
+
+    return res;
+}
+
+int sim8xx_gsmloc_get(sim8xx_t *simdev, char *lng, char *lat, int* time)
+{
+    char buf[64];
+    char *pos = buf;
+
+    mutex_lock(&simdev->mutex);
+    int res = at_send_cmd_get_resp(&simdev->at_dev, "AT+CIPGSMLOC=1,1", buf, sizeof(buf), SIM8XX_SERIAL_TIMEOUT * 30);
+    mutex_unlock(&simdev->mutex);
+
+    if ((res > 2) && strncmp(buf, "+CIPGSMLOC",10) == 0) {
+        pos += 12;
+        while (*pos != ',') {
+            if (!*pos) return -1;
+            pos++;
+        }
+        pos++;
+
+        while (*pos != ',') {
+            if (!*pos) return -1;
+            *lng++ = *pos++;
+        }
+        pos++;
+        *lng = 0;
+
+        while (*pos != ',') {
+            if (!*pos) return -1;
+            *lat++ = *pos++;
+        }
+        pos++;
+        *lat = 0;
+
+        *time = 0;
+        res = 0;
+    }
+    else {
+        res = -1;
+    }
 
     return res;
 }

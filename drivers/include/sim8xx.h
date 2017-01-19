@@ -84,6 +84,8 @@ int sim8xx_gprs_init(sim8xx_t *simdev, const char *apn);
  */
 int sim8xx_reg_check(sim8xx_t *simdev);
 
+
+int sim8xx_cnet_scan(sim8xx_t *simdev, char *buf, size_t len);
 size_t sim8xx_reg_get(sim8xx_t *simdev, char *buf, size_t len);
 int sim8xx_signal_get(sim8xx_t *simdev, unsigned *csq, unsigned *ber);
 int sim8xx_imei_get(sim8xx_t *simdev, char *buf, size_t len);
@@ -95,6 +97,9 @@ ssize_t sim8xx_http_post(sim8xx_t *simdev,
                          const char *url,
                          const uint8_t *data, size_t data_len,
                          uint8_t *resultbuf, size_t result_len);
+
+
+int sim8xx_gsmloc_get(sim8xx_t *simdev, char *lng, char *lat, int* time);
 
 #ifdef __cplusplus
 }
