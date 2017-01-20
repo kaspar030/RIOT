@@ -70,6 +70,13 @@ compile() {
 
     BOARD=$board make --no-print-directory -C${appdir} clean clean-intermediates
 
+    [ ! -d tests/pkg_libcoap ] && {
+        echo XXXXXXX
+        pwd
+        ps fauxw
+        ls -la
+        exit 1
+    }
     return $RES
 }
 
