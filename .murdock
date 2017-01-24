@@ -68,7 +68,9 @@ compile() {
         fi
     fi
 
-    BOARD=$board make --no-print-directory -C${appdir} clean clean-intermediates
+    echo "$0: cleaning up"
+    [ -d ${appdir}/bin/${board} ] && rm -Rf ${appdir}/bin/${board}
+    [ -d ${appdir}/bin/pkg/${board} ] && rm -Rf ${appdir}/bin/pkg/${board}
 
     return $RES
 }
