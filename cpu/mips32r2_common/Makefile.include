@@ -23,6 +23,9 @@ export CFLAGS += $(CFLAGS_CPU) $(CFLAGS_LINK) $(CFLAGS_OPT)
 
 ifeq ($(USE_HARD_FLOAT),1)
     export CFLAGS += -mhard-float
+else
+    export CFLAGS += -msoft-float #hard-float is the default so we must set soft-float
+    export LINKFLAGS += -msoft-float
 endif
 
 ifeq ($(USE_DSP),1)
@@ -43,3 +46,4 @@ export CFLAGS += -DCOREIF_NG=1
 #export USEMODULE += newlib
 
 export USEMODULE += periph
+ 
