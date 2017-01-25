@@ -14,7 +14,7 @@ unsigned int irq_arch_enable(void)
 {
     unsigned int status;
 
-    asm volatile ("ei %0" : "=r" (status));
+    __asm__ volatile ("ei %0" : "=r" (status));
     return status;
 }
 
@@ -22,7 +22,7 @@ unsigned int irq_arch_disable(void)
 {
     unsigned int status;
 
-    asm volatile ("di %0" : "=r" (status));
+    __asm__ volatile ("di %0" : "=r" (status));
     return status;
 }
 

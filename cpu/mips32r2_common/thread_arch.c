@@ -78,7 +78,7 @@ char *thread_arch_stack_init(thread_task_func_t task_func, void *arg,
     struct gpctx *initial_ctx = (struct gpctx *)p;
     initial_ctx->a[0] = (reg_t)arg;
     initial_ctx->status = mips32_get_c0(C0_STATUS) | SR_IE; /* Enable interrupts */
-    asm volatile ("sw    $gp, 0(%0)" : : "r" (&initial_ctx->gp));
+    __asm volatile ("sw    $gp, 0(%0)" : : "r" (&initial_ctx->gp));
     initial_ctx->epc = (reg_t)task_func;
     initial_ctx->ra = (reg_t)sched_task_exit;
     initial_ctx->sp = (reg_t)fp;
@@ -153,7 +153,7 @@ void thread_arch_start_threading(void)
 
     sched_run();
 
-    asm volatile ("lw    $sp, 0(%0)" : : "r" (&sched_active_thread->sp));
+    __asm volatile ("lw    $sp, 0(%0)" : : "r" (&sched_active_thread->sp));
 
     __exception_restore();
 
@@ -169,7 +169,7 @@ void thread_arch_yield(void)
      * Note syscall 1 is reserved for UHI see:
      * http://wiki.prplfoundation.org/w/images/4/42/UHI_Reference_Manual.pdf
      */
-    asm volatile ("syscall 2");
+    __asm volatile ("syscall 2");
 }
 
 struct linkctx* exctx_find(reg_t id, struct gpctx *gp)
@@ -336,7 +336,7 @@ _mips_handle_exception(struct gpctx *ctx, int exception)
                 new_ctx->status &= ~SR_CU1;
 #endif
 
-                asm volatile ("lw    $sp, 0(%0)" : : "r" (&sched_active_thread->sp));
+                __asm volatile ("lw    $sp, 0(%0)" : : "r" (&sched_active_thread->sp));
 
                 /*
                  * Jump straight to the exception restore code
