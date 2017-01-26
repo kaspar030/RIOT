@@ -19,9 +19,11 @@
  */
 
 #include <stdio.h>
+#include <stdint.h>
 
 #include "board.h"
 #include "periph_conf.h"
+
 
 #ifdef CLOCK_CORECLOCK
 #define DELAY_SHORT         (CLOCK_CORECLOCK / 50)
