@@ -28,7 +28,7 @@
 #define M32_SYSCALL        (0xC)
 #define M32_SYSCALL_MASK   (0xfc00003f)
 
-/* 
+/*
  * note the major 16bits of a 32bit MicroMIPS opcode appear first in the
  * instruction stream
  */
@@ -385,7 +385,7 @@ _mips_handle_exception(struct gpctx *ctx, int exception)
              * give this knowledge to that future task
              */
             oldfpctx = currentfpctx;
-        
+
         return;
         }
 #endif
