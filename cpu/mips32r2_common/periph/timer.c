@@ -196,4 +196,3 @@ void __attribute__ ((interrupt("vector=hw5"))) _mips_isr_hw5(void)
         spurious_int++;
     }
 }
-

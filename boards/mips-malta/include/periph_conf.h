@@ -57,4 +57,3 @@ extern "C" {
 
 #endif /*_PERIPH_CONF_H_*/
 /** @} */
-

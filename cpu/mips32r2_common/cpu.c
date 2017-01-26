@@ -75,4 +75,3 @@ void panic_arch(void)
     while (1) {
     }
 }
-

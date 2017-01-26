@@ -46,4 +46,3 @@ export CFLAGS += -DCOREIF_NG=1
 #export USEMODULE += newlib
 
 export USEMODULE += periph
-

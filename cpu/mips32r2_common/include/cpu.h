@@ -46,4 +46,3 @@ static inline void cpu_print_last_instruction(void)
 
 #endif
 /** @} */
-

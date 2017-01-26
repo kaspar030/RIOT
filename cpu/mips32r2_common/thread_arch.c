@@ -395,4 +395,3 @@ _mips_handle_exception(struct gpctx *ctx, int exception)
     /* Pass all other exceptions through to the toolchain handler */
     __exception_handle(ctx, exception);
 }
-
