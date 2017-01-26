@@ -64,7 +64,7 @@ char *thread_arch_stack_init(thread_task_func_t task_func, void *arg,
                              void *stack_start, int stack_size)
 {
     /* make sure it is aligned to 8 bytes this is a requirement of the O32 ABI */
-    uintptr_t *p = (uintptr_t *)((long)(stack_start + stack_size) & ~7);
+    uintptr_t *p = (uintptr_t *)(((long)(stack_start) + stack_size) & ~7);
     uintptr_t *fp;
 
     /* paint */
@@ -205,11 +205,9 @@ extern int _dsp_load(struct dspctx *ctx);
 void __attribute__((nomips16))
 _mips_handle_exception(struct gpctx *ctx, int exception)
 {
-    unsigned int syscall_num = 0, return_instruction = 0;
-    struct gpctx *new_ctx;
+    unsigned int syscall_num = 0;
 #ifdef MIPS_DSP
     struct dspctx dsp_ctx; /* intentionally allocated on current stack */
-    struct dspctx *new_dspctx;
 #endif
 
     switch (exception) {
@@ -261,6 +259,11 @@ _mips_handle_exception(struct gpctx *ctx, int exception)
             else
 #endif
             if (syscall_num == 2) {
+                unsigned int return_instruction = 0;
+                struct gpctx *new_ctx;
+#ifdef MIPS_DSP
+                struct dspctx *new_dspctx;
+#endif
                 /*
                  * Syscall 1 is reserved for UHI.
                  */
