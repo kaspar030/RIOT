@@ -24,11 +24,11 @@
 #include <unistd.h>
 #include <string.h>
 
-#ifdef MODULE_NEWLIB
+#if defined(__WITH_AVRLIBC__) || defined(__mips__)
+#include <stdio.h>  /* for fwrite() */
+#else
 /* work around broken sys/posix/unistd.h */
 ssize_t write(int fildes, const void *buf, size_t nbyte);
-#else
-#include <stdio.h>  /* for fwrite() */
 #endif
 
 #include "fmt.h"
@@ -261,8 +261,8 @@ uint32_t scn_u32_dec(const char *str, size_t n)
 
 void print(const char *s, size_t n)
 {
-#ifndef MODULE_NEWLIB
-    /* AVR + MSP430 libc doesn't offer write(), so use fwrite() instead */
+#ifdef __WITH_AVRLIBC__
+    /* AVR's libc doesn't offer write(), so use fwrite() instead */
     fwrite(s, n, 1, stdout);
 #else
     while (n > 0) {
@@ -273,7 +273,7 @@ void print(const char *s, size_t n)
         n -= written;
         s += written;
     }
-#endif /* NOT MODULE_NEWLIB */
+#endif /* __WITH_AVRLIBC__ */
 }
 
 void print_u32_dec(uint32_t val)
