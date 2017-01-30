@@ -19,6 +19,10 @@
 #include "thread.h"
 #include "board.h"
 #include "irq.h"
+#include "timex.h"
+#include "div.h"
+
+#include <sys/time.h>
 
 /*
  * setting TIMER_ACCURACY_SHIFT lower will improve accuracy
@@ -52,6 +56,21 @@ static timer_isr_ctx_t timer_isr_ctx;
 volatile unsigned int counter;
 volatile unsigned int compares[CHANNELS];
 static volatile int spurious_int;
+
+/*
+ * The mips toolchain C library does not implement gettimeofday()
+ *
+ * implement it here using the timer.
+ *
+ */
+int gettimeofday(struct timeval *__restrict __p, void *__restrict __tz)
+{
+    uint64_t now = counter * US_PER_MS;
+    __p->tv_sec = div_u64_by_1000000(now);
+    __p->tv_usec = now - (__p->tv_sec * US_PER_SEC);
+
+    return 0;
+}
 
 int timer_init(tim_t dev, unsigned long freq, timer_cb_t cb, void *arg)
 {
