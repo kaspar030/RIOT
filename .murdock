@@ -63,6 +63,7 @@ compile() {
     local board=$2
 
     [ -n "$DWQ_WORKER" ] && \
+        echo "-- HEAD: $(git describe)" &&
         echo "-- running on worker ${DWQ_WORKER} thread ${DWQ_WORKER_THREAD}, build number $DWQ_WORKER_BUILDNUM."
 
     # sanity checks
@@ -106,6 +107,14 @@ get_jobs() {
     [ "$STATIC_TESTS" = "1" ] && \
         echo "$0 static_tests###{ \"jobdir\" : \"exclusive\" }"
     get_compile_jobs
+}
+
+[ -n "$CI_MERGE_COMMIT" ] && {
+    HEAD=$(git rev-parse HEAD)
+    [ "$CI_MERGE_COMMIT" = "$HEAD" ] || {
+        echo "--- Error: HEAD=$HEAD != CI_MERGE_COMMIT=$CI_MERGE_COMMIT !"
+        exit 1
+    }
 }
 
 $*
