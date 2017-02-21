@@ -11,7 +11,7 @@
  * @{
  *
  * @file
- * @brief       Manual test application for SIM8xx GSM modules
+ * @brief       Manual test application for GSM/GPRS/LTE modems
  *
  * @author      Kaspar Schleiser <kaspar@schleiser.de>
  *
@@ -27,7 +27,7 @@ static char line_buf[SHELL_DEFAULT_BUFSIZE];
 
 int main(void)
 {
-    puts("SIM8XX device driver test");
+    puts("GSM modem driver test");
 
 
     shell_run(NULL, line_buf, SHELL_DEFAULT_BUFSIZE);
