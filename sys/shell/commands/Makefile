@@ -61,8 +61,8 @@ endif
 ifneq (,$(filter sntp,$(USEMODULE)))
   SRC += sc_sntp.c
 endif
-ifneq (,$(filter sim8xx,$(USEMODULE)))
-  SRC += sc_sim8xx.c
+ifneq (,$(filter gsm,$(USEMODULE)))
+  SRC += sc_gsm.c
 endif
 
 # TODO
