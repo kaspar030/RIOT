@@ -6,8 +6,8 @@
  * directory for more details.
  */
 
-#ifndef SIM8XX_H
-#define SIM8XX_H
+#ifndef GSM_H
+#define GSM_H
 
 #include "at.h"
 #include "mutex.h"
@@ -17,90 +17,90 @@
 extern "C" {
 #endif
 
-#define SIM8XX_UART_BUFSIZE (128U)
-#define SIM8XX_SERIAL_TIMEOUT (1000000U)
+#define GSM_UART_BUFSIZE (128U)
+#define GSM_SERIAL_TIMEOUT (1000000U)
 
 typedef struct {
     at_dev_t at_dev;
     mutex_t mutex;
-    char buf[SIM8XX_UART_BUFSIZE];
-} sim8xx_t;
+    char buf[GSM_UART_BUFSIZE];
+} gsm_t;
 
 typedef struct {
     uart_t uart;
     uint32_t baudrate;
-} sim8xx_params_t;
+} gsm_params_t;
 
 /**
- * @brief   Initialize SIM8XX device
+ * @brief   Initialize GSM device
  *
- * @param[in]   simdev  device struct to operate on
- * @param[in]   params  parameter struct used to initialize @p simdev
+ * @param[in]   gsmdev  device struct to operate on
+ * @param[in]   params  parameter struct used to initialize @p gsmdev
  *
  * @returns     0 on success
  * @returns     <0 otherwise
  */
-int sim8xx_init(sim8xx_t *simdev, const sim8xx_params_t *params);
+int gsm_init(gsm_t *gsmdev, const gsm_params_t *params);
 
 /**
  * @brief   Set SIM card PIN
  *
- * @param[in]   simdev  device struct to operate on
+ * @param[in]   gsmdev  device struct to operate on
  * @param[in]   pin     PIN to set
  *
  * @returns     0 on success
  * @returns     -1 on error
  */
-int sim8xx_set_pin(sim8xx_t *simdev, const char *pin);
+int gsm_set_pin(gsm_t *gsmdev, const char *pin);
 
 /**
  * @brief   Test if SIM card needs PIN
  *
- * @param[in]   simdev  device struct to operate on
+ * @param[in]   gsmdev  device struct to operate on
  *
  * @returns     0 if SIM doesn't need pin
  * @returns     1 if SIM needs to be unlocked with PIN
  */
-int sim8xx_check_pin(sim8xx_t *simdev);
+int gsm_check_pin(gsm_t *gsmdev);
 
 /**
  * @brief   Initialize GPRS connection
  *
- * @param[in]   simdev  device struct to operate on
+ * @param[in]   gsmdev  device struct to operate on
  * @param[in]   apn     APN used to connect
  *
  * @returns     0 on success
  * @returns     <0 otherwise
  */
-int sim8xx_gprs_init(sim8xx_t *simdev, const char *apn);
+int gsm_gprs_init(gsm_t *gsmdev, const char *apn);
 
 /**
  * @brief   Check if modem is registered to network
  *
- * @param[in]   simdev  device to operate on
+ * @param[in]   gsmdev  device to operate on
  *
  * @returns     0 if registered
  * @returns     1 otherwise
  */
-int sim8xx_reg_check(sim8xx_t *simdev);
+int gsm_reg_check(gsm_t *gsmdev);
 
-size_t sim8xx_reg_get(sim8xx_t *simdev, char *buf, size_t len);
-int sim8xx_signal_get(sim8xx_t *simdev, unsigned *csq, unsigned *ber);
-int sim8xx_imei_get(sim8xx_t *simdev, char *buf, size_t len);
-uint32_t sim8xx_gprs_getip(sim8xx_t *simdev);
-void sim8xx_print_status(sim8xx_t *simdev);
+size_t gsm_reg_get(gsm_t *gsmdev, char *buf, size_t len);
+int gsm_signal_get(gsm_t *gsmdev, unsigned *csq, unsigned *ber);
+int gsm_imei_get(gsm_t *gsmdev, char *buf, size_t len);
+uint32_t gsm_gprs_getip(gsm_t *gsmdev);
+void gsm_print_status(gsm_t *gsmdev);
 
-ssize_t sim8xx_http_get(sim8xx_t *simdev, const char *url, uint8_t *resultbuf, size_t len);
-ssize_t sim8xx_http_post(sim8xx_t *simdev,
+ssize_t gsm_http_get(gsm_t *gsmdev, const char *url, uint8_t *resultbuf, size_t len);
+ssize_t gsm_http_post(gsm_t *gsmdev,
                          const char *url,
                          const uint8_t *data, size_t data_len,
                          uint8_t *resultbuf, size_t result_len);
 
-int sim8xx_gps_get_loc(sim8xx_t *simdev, uint8_t *buf, size_t len);
-size_t sim8xx_cmd(sim8xx_t *simdev, const char *cmd, uint8_t *buf, size_t len);
+int gsm_gps_get_loc(gsm_t *gsmdev, uint8_t *buf, size_t len);
+size_t gsm_cmd(gsm_t *gsmdev, const char *cmd, uint8_t *buf, size_t len);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* SIM8XX_H */
+#endif /* GSM_H */
