@@ -176,7 +176,7 @@ ifneq (,$(filter sht11,$(USEMODULE)))
     USEMODULE += xtimer
 endif
 
-ifneq (,$(filter sim8xx,$(USEMODULE)))
+ifneq (,$(filter gsm,$(USEMODULE)))
     USEMODULE += at
     USEMODULE += fmt
     USEMODULE += ipv4_addr
