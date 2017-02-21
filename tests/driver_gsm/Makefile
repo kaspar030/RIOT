@@ -1,9 +1,9 @@
-export APPLICATION = driver_sim8xx
+export APPLICATION = driver_gsm
 include ../Makefile.tests_common
 
 FEATURES_REQUIRED = periph_uart
 
-USEMODULE += sim8xx
+USEMODULE += gsm
 USEMODULE += shell shell_commands
 
 include $(RIOTBASE)/Makefile.include

@@ -129,8 +129,8 @@ extern int _ccnl_fib(int argc, char **argv);
 extern int _ntpdate(int argc, char **argv);
 #endif
 
-#ifdef MODULE_SIM8XX
-extern int _sim8xx(int argc, char **argv);
+#ifdef MODULE_GSM
+extern int _gsm(int argc, char **argv);
 #endif
 
 const shell_command_t _shell_command_list[] = {
@@ -218,8 +218,8 @@ const shell_command_t _shell_command_list[] = {
 #ifdef MODULE_SNTP
     { "ntpdate", "synchronizes with a remote time server", _ntpdate },
 #endif
-#ifdef MODULE_SIM8XX
-    {"sim8xx", "configure/use SIM8XX GSM/GPRS modems", _sim8xx },
+#ifdef MODULE_GSM
+    {"gsm", "configure/use GSM GSM/GPRS modems", _gsm },
 #endif
     {NULL, NULL, NULL}
 };
