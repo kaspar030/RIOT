@@ -149,12 +149,7 @@ int gsm_gprs_init(gsm_t *gsmdev, const char *apn)
     mutex_lock(&gsmdev->mutex);
 
     /* detach possibly attached data session, ignore result */
-    res = at_send_cmd_get_resp(at_dev, "AT+CGATT=0", buf, sizeof(buf), GSM_SERIAL_TIMEOUT);
-    if ((res > 0) && (strncmp(buf, "NO CARRIER", 10) == 0)) {
-        /* some modems respond with "NO CARRIER\n\nOK\n" */
-        at_readline(at_dev, buf, sizeof(buf), GSM_SERIAL_TIMEOUT);
-        at_readline(at_dev, buf, sizeof(buf), GSM_SERIAL_TIMEOUT);
-    }
+    at_send_cmd_get_lines(at_dev, "AT+CGATT=0", buf, sizeof(buf), GSM_SERIAL_TIMEOUT);
 
     /* set IP connection and APN name */
     char *pos = buf;
