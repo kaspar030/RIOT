@@ -104,6 +104,56 @@ out:
     return res;
 }
 
+ssize_t at_send_cmd_get_lines(at_dev_t *dev, const char *command, char *resp_buf, size_t len, uint32_t timeout)
+{
+    ssize_t res = -1;
+    size_t bytes_left = len - 1;
+    char *pos = resp_buf;
+
+    memset(resp_buf, '\0', len);
+
+    at_drain(dev);
+
+    res = at_send_cmd(dev, command, timeout);
+    if (res) {
+        goto out;
+    }
+
+    while(1) {
+        res = at_readline(dev, pos, bytes_left, timeout);
+        if (res == 0) {
+            continue;
+        }
+        else if (res > 0) {
+            bytes_left -= res;
+            if ((res == 2) && (strncmp(pos, "OK", 2) == 0)) {
+                res = len - bytes_left;
+                break;
+            }
+            else if ((res == 5) && (strncmp(pos, "ERROR", 5) == 0)) {
+                return -1;
+            }
+            else {
+                pos += res;
+                if (bytes_left) {
+                    *pos++ = '\n';
+                    bytes_left--;
+                }
+                else {
+                    return -1;
+                }
+            }
+        }
+        else {
+            break;
+        }
+    }
+
+out:
+
+    return res;
+}
+
 
 int at_send_cmd_wait_ok(at_dev_t *dev, const char *command, uint32_t timeout)
 {
@@ -129,6 +179,7 @@ ssize_t at_readline(at_dev_t *dev, char *resp_buf, size_t len, uint32_t timeout)
     char *resp_pos = resp_buf;
 
     memset(resp_buf, 0, len);
+
     while (len) {
         int read_res;
         if ((read_res = isrpipe_read_timeout(&dev->isrpipe, resp_pos, 1, timeout)) == 1) {

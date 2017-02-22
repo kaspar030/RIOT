@@ -26,6 +26,7 @@ typedef struct {
 int at_dev_init(at_dev_t *dev, uart_t uart, uint32_t baudrate, char *buf, size_t bufsize);
 int at_send_cmd_wait_ok(at_dev_t *dev, const char *command, uint32_t timeout);
 ssize_t at_send_cmd_get_resp(at_dev_t *dev, const char *command, char *resp_buf, size_t len, uint32_t timeout);
+ssize_t at_send_cmd_get_lines(at_dev_t *dev, const char *command, char *resp_buf, size_t len, uint32_t timeout);
 
 int at_expect_bytes(at_dev_t *dev, const char *bytes, size_t len, uint32_t timeout);
 int at_send_cmd(at_dev_t *dev, const char *command, uint32_t timeout);
