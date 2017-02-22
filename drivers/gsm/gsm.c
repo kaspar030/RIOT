@@ -24,7 +24,7 @@ int gsm_init(gsm_t *gsmdev, const gsm_params_t *params)
     unsigned tries = MODEM_INIT_MAXTRIES;
     int res;
 
-    LOG_INFO("sim800x: initializing...\n");
+    LOG_INFO("gsm: initializing...\n");
 
     at_dev_init(&gsmdev->at_dev, params->uart, params->baudrate, gsmdev->buf, sizeof(gsmdev->buf));
     mutex_init(&gsmdev->mutex);
@@ -337,6 +337,15 @@ void gsm_print_status(gsm_t *gsmdev)
         printf("gsm: error getting IMEI\n");
     }
 
+    res = gsm_iccid_get(gsmdev, buf, sizeof(buf));
+    if (res >= 0) {
+        printf("gsm: ICCID: \"%s\"\n", buf);
+    }
+    else {
+        printf("gsm: error getting ICCID\n");
+    }
+
+
     res = gsm_reg_get(gsmdev, buf, sizeof(buf));
     if (res >= 0) {
         printf("gsm: registered to \"%s\"\n", buf);
@@ -366,6 +375,23 @@ void gsm_print_status(gsm_t *gsmdev)
     else {
         printf("gsm: error getting GPRS state\n");
     }
+}
+
+int gsm_iccid_get(gsm_t *gsmdev, char *buf, size_t len)
+{
+    mutex_lock(&gsmdev->mutex);
+
+    int res = at_send_cmd_get_resp(&gsmdev->at_dev, "AT+CCID", buf, len, GSM_SERIAL_TIMEOUT);
+    if (res > 0) {
+        buf[res] = '\0';
+    }
+    else {
+        res = -1;
+    }
+
+    mutex_unlock(&gsmdev->mutex);
+
+    return res;
 }
 
 int gsm_gps_get_loc(gsm_t *gsmdev, uint8_t *buf, size_t len)

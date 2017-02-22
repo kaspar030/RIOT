@@ -100,6 +100,7 @@ int gsm_reg_check(gsm_t *gsmdev);
 size_t gsm_reg_get(gsm_t *gsmdev, char *buf, size_t len);
 int gsm_signal_get(gsm_t *gsmdev, unsigned *csq, unsigned *ber);
 int gsm_imei_get(gsm_t *gsmdev, char *buf, size_t len);
+int gsm_iccid_get(gsm_t *gsmdev, char *buf, size_t len);
 uint32_t gsm_gprs_getip(gsm_t *gsmdev);
 void gsm_print_status(gsm_t *gsmdev);
 
