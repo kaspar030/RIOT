@@ -29,7 +29,6 @@ int main(void)
 {
     puts("GSM modem driver test");
 
-
     shell_run(NULL, line_buf, SHELL_DEFAULT_BUFSIZE);
 
     return 0;

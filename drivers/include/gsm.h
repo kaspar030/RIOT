@@ -17,19 +17,32 @@
 extern "C" {
 #endif
 
-#define GSM_UART_BUFSIZE (128U)
+#define GSM_UART_BUFSIZE (1024U)
 #define GSM_SERIAL_TIMEOUT (1000000U)
+
+typedef struct gsm_driver gsm_driver_t;
 
 typedef struct {
     at_dev_t at_dev;
     mutex_t mutex;
     char buf[GSM_UART_BUFSIZE];
+    const gsm_driver_t *driver;
 } gsm_t;
 
 typedef struct {
     uart_t uart;
     uint32_t baudrate;
 } gsm_params_t;
+
+struct gsm_driver {
+    int(*get_loc)(gsm_t *dev, char *lon, char *lat);
+    int(*cnet_scan)(gsm_t *dev, char *buf, size_t len);
+    ssize_t(*http_get)(gsm_t *gsmdev, const char *url, uint8_t *resultbuf, size_t len);
+    ssize_t(*http_post)(gsm_t *gsmdev,
+                         const char *url,
+                         const uint8_t *data, size_t data_len,
+                         uint8_t *resultbuf, size_t result_len);
+};
 
 /**
  * @brief   Initialize GSM device
@@ -96,8 +109,11 @@ ssize_t gsm_http_post(gsm_t *gsmdev,
                          const uint8_t *data, size_t data_len,
                          uint8_t *resultbuf, size_t result_len);
 
+int gsm_cnet_scan(gsm_t *gsmdev, char *buf, size_t len);
+
 int gsm_gps_get_loc(gsm_t *gsmdev, uint8_t *buf, size_t len);
-size_t gsm_cmd(gsm_t *gsmdev, const char *cmd, uint8_t *buf, size_t len);
+size_t gsm_cmd(gsm_t *gsmdev, const char *cmd, uint8_t *buf, size_t len, unsigned timeout);
+int gsm_get_loc(gsm_t *gsmdev, char *lon, char *lat);
 
 #ifdef __cplusplus
 }

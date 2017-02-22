@@ -17,6 +17,8 @@
 
 #define MODEM_INIT_MAXTRIES (3)
 
+static int gsm_set_driver(gsm_t *gsmdev);
+
 int gsm_init(gsm_t *gsmdev, const gsm_params_t *params)
 {
     unsigned tries = MODEM_INIT_MAXTRIES;
@@ -35,14 +37,13 @@ int gsm_init(gsm_t *gsmdev, const gsm_params_t *params)
     } while (res != 0 && (tries--));
 
     if (res) {
-        return -1;
+        goto out;
     }
 
-    char buf[16];
-    res = at_send_cmd_get_resp(at_dev, "ATI", buf, sizeof(buf), GSM_SERIAL_TIMEOUT);
-    LOG_INFO("gsm: device type %s\n", buf);
+    res = gsm_set_driver(gsmdev);
 
-    return 0;
+out:
+    return res;
 }
 
 int gsm_set_pin(gsm_t *gsmdev, const char *pin)
@@ -55,16 +56,22 @@ int gsm_set_pin(gsm_t *gsmdev, const char *pin)
 
     xtimer_usleep(100000U);
 
-    char buf[16];
+    char buf[32];
     char *pos = buf;
     pos += fmt_str(pos, "AT+CPIN=");
     pos += fmt_str(pos, pin);
     *pos = '\0';
 
-    int res = at_send_cmd_wait_ok(&gsmdev->at_dev, buf, GSM_SERIAL_TIMEOUT);
-
+    int res = at_send_cmd_get_resp(&gsmdev->at_dev, buf, buf, sizeof(buf), GSM_SERIAL_TIMEOUT);
     mutex_unlock(&gsmdev->mutex);
-    return res;
+
+    if (res > 0) {
+        /* if one matches (equals 0), return 0 */
+        return strncmp(buf, "OK", 2) && strncmp(buf, "+CPIN: READY", 12);
+    }
+    else {
+        return -1;
+    }
 }
 
 int gsm_check_pin(gsm_t *gsmdev)
@@ -142,9 +149,14 @@ int gsm_gprs_init(gsm_t *gsmdev, const char *apn)
     mutex_lock(&gsmdev->mutex);
 
     /* detach possibly attached data session, ignore result */
-    at_send_cmd_get_resp(at_dev, "AT+CGATT=0", buf, sizeof(buf), GSM_SERIAL_TIMEOUT);
+    res = at_send_cmd_get_resp(at_dev, "AT+CGATT=0", buf, sizeof(buf), GSM_SERIAL_TIMEOUT);
+    if ((res > 0) && (strncmp(buf, "NO CARRIER", 10) == 0)) {
+        /* some modems respond with "NO CARRIER\n\nOK\n" */
+        at_readline(at_dev, buf, sizeof(buf), GSM_SERIAL_TIMEOUT);
+        at_readline(at_dev, buf, sizeof(buf), GSM_SERIAL_TIMEOUT);
+    }
 
-    /* set APN */
+    /* set IP connection and APN name */
     char *pos = buf;
     pos += fmt_str(pos, "AT+CGDCONT=1,\"IP\",\"");
     pos += fmt_str(pos, apn);
@@ -307,162 +319,6 @@ uint32_t gsm_gprs_getip(gsm_t *gsmdev)
     return ip;
 }
 
-ssize_t gsm_http_get(gsm_t *gsmdev, const char *url, uint8_t *resultbuf, size_t len)
-{
-    int res;
-    at_dev_t *at_dev = &gsmdev->at_dev;
-
-    at_send_cmd_wait_ok(at_dev, "AT+HTTPTERM", GSM_SERIAL_TIMEOUT);
-
-    res = at_send_cmd_wait_ok(at_dev, "AT+HTTPINIT", GSM_SERIAL_TIMEOUT);
-    if (res) {
-        goto out;
-    }
-
-    res = at_send_cmd_wait_ok(at_dev, "AT+HTTPPARA=\"CID\",1", GSM_SERIAL_TIMEOUT);
-    if (res) {
-        goto out;
-    }
-
-    char buf[128];
-    char *pos = buf;
-    pos += fmt_str(pos, "AT+HTTPPARA=\"URL\",\"");
-    pos += fmt_str(pos, url);
-    pos += fmt_str(pos, "\"");
-    *pos = '\0';
-    res = at_send_cmd_wait_ok(at_dev, buf, GSM_SERIAL_TIMEOUT);
-    if (res) {
-        goto out;
-    }
-
-    if (strncmp(url, "https://", 8) == 0) {
-        res = at_send_cmd_wait_ok(at_dev, "AT+HTTPSSL=1", GSM_SERIAL_TIMEOUT);
-        if (res) {
-            goto out;
-        }
-    }
-
-    res = at_send_cmd_wait_ok(at_dev, "AT+HTTPACTION=0", GSM_SERIAL_TIMEOUT);
-    if (res) {
-        goto out;
-    }
-
-    /* skip expected empty line */
-    at_readline(at_dev, buf, sizeof(buf), GSM_SERIAL_TIMEOUT * 30);
-    res = at_readline(at_dev, buf, sizeof(buf), GSM_SERIAL_TIMEOUT);
-    if (res > 0) {
-        if (strncmp(buf, "+HTTPACTION: 0,200,", 19) == 0) {
-            /* read length from buf. substract beginning (19) */
-            uint32_t response_len = scn_u32_dec(buf + 19, res - 19);
-            response_len = response_len > len ? len : response_len;
-            at_send_cmd(at_dev, "AT+HTTPREAD", GSM_SERIAL_TIMEOUT);
-            /* skip +HTTPREAD: <nbytes> */
-            at_readline(at_dev, buf, sizeof(buf), GSM_SERIAL_TIMEOUT);
-            res = isrpipe_read_all_timeout(&at_dev->isrpipe, (char *)resultbuf, response_len, GSM_SERIAL_TIMEOUT * 5);
-            at_expect_bytes(at_dev, "\r\nOK\r\n", 6, GSM_SERIAL_TIMEOUT);
-        }
-        else {
-            return -1;
-        }
-    }
-
-out:
-    mutex_unlock(&gsmdev->mutex);
-
-    return res;
-}
-
-ssize_t gsm_http_post(gsm_t *gsmdev,
-                         const char *url,
-                         const uint8_t *data, size_t data_len,
-                         uint8_t *resultbuf, size_t result_len)
-{
-    int res;
-    at_dev_t *at_dev = &gsmdev->at_dev;
-
-    mutex_lock(&gsmdev->mutex);
-
-    at_send_cmd_wait_ok(at_dev, "AT+HTTPTERM", GSM_SERIAL_TIMEOUT);
-
-    res = at_send_cmd_wait_ok(at_dev, "AT+HTTPINIT", GSM_SERIAL_TIMEOUT);
-    if (res) {
-        goto out;
-    }
-
-    res = at_send_cmd_wait_ok(at_dev, "AT+HTTPPARA=\"CID\",1", GSM_SERIAL_TIMEOUT);
-    if (res) {
-        goto out;
-    }
-
-    char buf[128];
-    char *pos = buf;
-    pos += fmt_str(pos, "AT+HTTPPARA=\"URL\",\"");
-    pos += fmt_str(pos, url);
-    pos += fmt_str(pos, "\"");
-    *pos = '\0';
-    res = at_send_cmd_wait_ok(at_dev, buf, GSM_SERIAL_TIMEOUT);
-    if (res) {
-        goto out;
-    }
-
-    if (strncmp(url, "https://", 8) == 0) {
-        res = at_send_cmd_wait_ok(at_dev, "AT+HTTPSSL=1", GSM_SERIAL_TIMEOUT);
-        if (res) {
-            goto out;
-        }
-    }
-
-    pos = buf;
-    pos += fmt_str(pos, "AT+HTTPDATA=\"");
-    pos += fmt_u32_dec(pos, data_len);
-    pos += fmt_str(pos, "\",");
-    pos += fmt_u32_dec(pos, 10000);
-    *pos = '\0';
-    res = at_send_cmd_get_resp(at_dev, buf, buf, sizeof(buf), GSM_SERIAL_TIMEOUT);
-    if (res <= 0) {
-        goto out;
-    }
-    else if (strcmp(buf, "DOWNLOAD")) {
-        res = -1;
-        goto out;
-    }
-
-    uart_write(at_dev->uart, data, data_len);
-
-    res = at_send_cmd_wait_ok(at_dev, "AT+HTTPACTION=1", GSM_SERIAL_TIMEOUT);
-    if (res) {
-        goto out;
-    }
-
-    /* skip expected empty line */
-    at_readline(at_dev, buf, sizeof(buf), GSM_SERIAL_TIMEOUT * 30);
-
-    res = at_readline(at_dev, buf, sizeof(buf), GSM_SERIAL_TIMEOUT);
-    if ((res > 0) && (strncmp(buf, "+HTTPACTION: 1,200,", 19) == 0)) {
-        /* read length from buf. substract beginning (19) */
-        uint32_t response_len = scn_u32_dec(buf + 19, res - 19);
-
-        /* min(response_len, result_len) */
-        response_len = response_len > result_len ? result_len : response_len;
-
-        at_send_cmd(at_dev, "AT+HTTPREAD", GSM_SERIAL_TIMEOUT);
-
-        /* skip +HTTPREAD: <nbytes> */
-        at_readline(at_dev, buf, sizeof(buf), GSM_SERIAL_TIMEOUT);
-
-        /* read response directly */
-        res = isrpipe_read_all_timeout(&at_dev->isrpipe, (char *)resultbuf, response_len, GSM_SERIAL_TIMEOUT * 5);
-
-        /* drain expected extra output */
-        at_expect_bytes(at_dev, "\r\nOK\r\n", 6, GSM_SERIAL_TIMEOUT);
-    }
-
-out:
-    mutex_unlock(&gsmdev->mutex);
-
-    return res;
-}
-
 void gsm_print_status(gsm_t *gsmdev)
 {
     char buf[64];
@@ -528,13 +384,77 @@ int gsm_gps_get_loc(gsm_t *gsmdev, uint8_t *buf, size_t len)
     return res;
 }
 
-size_t gsm_cmd(gsm_t *gsmdev, const char *cmd, uint8_t *buf, size_t len)
+size_t gsm_cmd(gsm_t *gsmdev, const char *cmd, uint8_t *buf, size_t len, unsigned timeout)
 {
     mutex_lock(&gsmdev->mutex);
 
-    size_t res = at_send_cmd_get_resp(&gsmdev->at_dev, cmd, (char *)buf, len, GSM_SERIAL_TIMEOUT * 10);
+    size_t res = at_send_cmd_get_lines(&gsmdev->at_dev, cmd, (char *)buf, len, GSM_SERIAL_TIMEOUT * timeout);
 
     mutex_unlock(&gsmdev->mutex);
+
+    return res;
+}
+
+int gsm_get_loc(gsm_t *gsmdev, char *lon, char *lat)
+{
+    return gsmdev->driver->get_loc(gsmdev, lon, lat);
+}
+
+int gsm_cnet_scan(gsm_t *gsmdev, char *buf, size_t len)
+{
+    return gsmdev->driver->cnet_scan(gsmdev, buf, len);
+}
+
+ssize_t gsm_http_get(gsm_t *gsmdev, const char *url, uint8_t *resultbuf, size_t len)
+{
+    return gsmdev->driver->http_get(gsmdev, url, resultbuf, len);
+}
+
+ssize_t gsm_http_post(gsm_t *gsmdev,
+                         const char *url,
+                         const uint8_t *data, size_t data_len,
+                         uint8_t *resultbuf, size_t result_len)
+{
+    return gsmdev->driver->http_post(gsmdev, url, data, data_len, resultbuf, result_len);
+}
+
+extern const gsm_driver_t gsm_driver_mc60;
+extern const gsm_driver_t gsm_driver_sim8xx;
+
+typedef struct {
+    const char *id;
+    const char *name;
+    const gsm_driver_t *driver;
+} gsm_device_id_t;
+
+static const gsm_device_id_t _device_ids[] = {
+    { "Quectel_MC60", "Quectel MC60", &gsm_driver_mc60 },
+    { "SIMTEL", "Simtel SIM8xx", &gsm_driver_sim8xx },
+};
+
+static const unsigned _device_ids_numof = sizeof(_device_ids)/sizeof(gsm_device_id_t);
+
+static int gsm_set_driver(gsm_t *gsmdev)
+{
+    char buf[64];
+    at_dev_t *at_dev = &gsmdev->at_dev;
+
+    int res = at_send_cmd_get_lines(at_dev, "ATI", buf, sizeof(buf), GSM_SERIAL_TIMEOUT);
+    if (res > 0) {
+        for (unsigned i = 0; i < _device_ids_numof; i++) {
+            const gsm_device_id_t *entry = &_device_ids[i];
+            if (strstr(buf, entry->id)) {
+                gsmdev->driver = entry->driver;
+                LOG_INFO("gsm: using driver %s\n", entry->name);
+                return 0;
+            }
+        }
+    }
+
+    if (!gsmdev->driver) {
+        LOG_WARNING("gsm: no driver found\n");
+        res = -1;
+    }
 
     return res;
 }

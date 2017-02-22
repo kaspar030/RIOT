@@ -37,7 +37,7 @@ static char _http_buf[1024];
 int _gsm(int argc, char **argv)
 {
     if(argc <= 1) {
-        printf("Usage: %s init|status|http\n", argv[0]);
+        printf("Usage: %s init|status|http|loc|cmd\n", argv[0]);
         return -1;
     }
 
@@ -165,12 +165,38 @@ int _gsm(int argc, char **argv)
         }
     }
     else if (strcmp(argv[1], "cmd") == 0) {
-        if (argc != 3) {
-            printf("Usage: %s cmd <command>\n", argv[0]);
+        if (argc < 3) {
+            printf("Usage: %s cmd <command> [<timeout>]\n", argv[0]);
             return -1;
         }
 
-        int res = gsm_cmd(&dev, argv[2], (uint8_t *)_http_buf, sizeof(_http_buf));
+        unsigned timeout = 10;
+        if (argc == 4) {
+            timeout = atoi(argv[3]);
+        }
+
+        gsm_cmd(&dev, argv[2], (uint8_t *)_http_buf, sizeof(_http_buf), timeout);
+
+        /* gsm_cmd will internally memset(0) the buffer, so printing here is
+         * safe even if the command errors. */
+        printf("gsm: response:\n");
+        puts(_http_buf);
+    }
+    else if (strcmp(argv[1], "loc") == 0) {
+        char lon[16];
+        char lat[16];
+
+        int res = gsm_get_loc(&dev, lon, lat);
+
+        if (res < 0) {
+            printf("gsm: error\n");
+        }
+        else {
+            printf("gms: location: lontitude=%s latitude=%s\n", lon, lat);
+        }
+    }
+    else if (strcmp(argv[1], "towers") == 0) {
+        int res = gsm_cnet_scan(&dev, _http_buf, sizeof(_http_buf));
 
         if (res < 0) {
             printf("gsm: error\n");
@@ -180,7 +206,6 @@ int _gsm(int argc, char **argv)
             puts(_http_buf);
         }
     }
-
 
     return 0;
 }
