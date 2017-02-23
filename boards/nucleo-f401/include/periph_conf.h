@@ -86,11 +86,12 @@ static const uart_conf_t uart_config[] = {
         .dma_chan   = 4
 #endif
     },
+    /* shares PC7 with PWM 1 !! */
     {
         .dev        = USART6,
         .rcc_mask   = RCC_APB2ENR_USART6EN,
-        .rx_pin     = GPIO_PIN(PORT_A, 12),
-        .tx_pin     = GPIO_PIN(PORT_A, 11),
+        .rx_pin     = GPIO_PIN(PORT_C, 7),
+        .tx_pin     = GPIO_PIN(PORT_C, 6),
         .rx_af      = GPIO_AF8,
         .tx_af      = GPIO_AF8,
         .bus        = APB2,
@@ -125,6 +126,7 @@ static const pwm_conf_t pwm_config[] = {
         .af       = GPIO_AF1,
         .bus      = APB1
     },
+    /* shares PC7 with USART6!! */
     {
         .dev      = TIM3,
         .rcc_mask = RCC_APB1ENR_TIM3EN,
