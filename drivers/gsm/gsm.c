@@ -383,7 +383,10 @@ int gsm_iccid_get(gsm_t *gsmdev, char *buf, size_t len)
 
     int res = at_send_cmd_get_resp(&gsmdev->at_dev, "AT+CCID", buf, len, GSM_SERIAL_TIMEOUT);
     if (res > 0) {
-        buf[res] = '\0';
+        if (!strncmp(buf, "+CCID: ", 7)) {
+            memcpy(buf, buf+8, res-9);
+            buf[res-10] = '\0';
+        }
     }
     else {
         res = -1;
