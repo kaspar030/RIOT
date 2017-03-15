@@ -58,27 +58,35 @@ void board_init(void)
  */
 void SystemInit(void)
 {
-    /* initialize UART_0 for use as stdout */
-    uart_stdio_init();
-
     stdout = &uart_stdout;
     stdin = &uart_stdin;
 
+#ifdef MODULE_UART_STDIO
+    /* initialize UART_0 for use as stdout */
+    uart_stdio_init();
+
     /* Flush stdout */
     puts("\f");
+#endif
 }
 
 static int uart_putchar(char c, FILE *stream)
 {
     (void) stream;
+#ifdef MODULE_UART_STDIO
     uart_stdio_write(&c, 1);
+#endif
     return 0;
 }
 
 int uart_getchar(FILE *stream)
 {
     (void) stream;
+#ifdef MODULE_UART_STDIO
     char c;
     uart_stdio_read(&c, 1);
     return (int)c;
+#else
+    return -1;
+#endif
 }
