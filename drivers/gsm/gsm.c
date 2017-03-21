@@ -154,42 +154,6 @@ int gsm_check_pin(gsm_t *gsmdev)
 //    return res;
 //}
 
-int gsm_gprs_init(gsm_t *gsmdev, const char *apn)
-{
-    char buf[64];
-    int res;
-    at_dev_t *at_dev = &gsmdev->at_dev;
-
-    mutex_lock(&gsmdev->mutex);
-
-    /* detach possibly attached data session, ignore result */
-    at_send_cmd_get_lines(at_dev, "AT+CGATT=0", buf, sizeof(buf), GSM_SERIAL_TIMEOUT);
-
-    /* set IP connection and APN name */
-    char *pos = buf;
-    pos += fmt_str(pos, "AT+CGDCONT=1,\"IP\",\"");
-    pos += fmt_str(pos, apn);
-    pos += fmt_str(pos, "\"");
-    *pos = '\0';
-    res = at_send_cmd_wait_ok(at_dev, buf, GSM_SERIAL_TIMEOUT);
-    if (res) {
-        goto out;
-    }
-
-    /* setup IP session via APN */
-    res = at_send_cmd_wait_ok(at_dev, "AT+CGACT=1,1", 150LLU*(1000000));
-    if (res) {
-        goto out;
-    }
-
-    xtimer_usleep(100000U);
-
-out:
-    mutex_unlock(&gsmdev->mutex);
-
-    return res;
-}
-
 int gsm_reg_check(gsm_t *gsmdev)
 {
     char buf[64];

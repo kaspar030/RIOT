@@ -42,6 +42,7 @@ struct gsm_driver {
                          const char *url,
                          const uint8_t *data, size_t data_len,
                          uint8_t *resultbuf, size_t result_len);
+    int (*gprs_init)(gsm_t *gsmdev, const char *apn);
     int(*time_sync)(gsm_t *dev);
 };
 
@@ -86,7 +87,10 @@ int gsm_check_pin(gsm_t *gsmdev);
  * @returns     0 on success
  * @returns     <0 otherwise
  */
-int gsm_gprs_init(gsm_t *gsmdev, const char *apn);
+static inline int gsm_gprs_init(gsm_t *gsmdev, const char *apn)
+{
+    return gsmdev->driver->gprs_init(gsmdev, apn);
+}
 
 /**
  * @brief   Check if modem is registered to network
