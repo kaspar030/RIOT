@@ -193,6 +193,12 @@ ifneq (,$(filter sht11,$(USEMODULE)))
     USEMODULE += xtimer
 endif
 
+ifneq (,$(filter gsm,$(USEMODULE)))
+    USEMODULE += at
+    USEMODULE += fmt
+    USEMODULE += ipv4_addr
+endif
+
 ifneq (,$(filter si70xx,$(USEMODULE)))
     USEMODULE += xtimer
     FEATURES_REQUIRED += periph_i2c
@@ -243,4 +249,7 @@ endif
 ifneq (,$(filter lsm6dsl,$(USEMODULE)))
   FEATURES_REQUIRED += periph_i2c
   USEMODULE += xtimer
+
+ifneq (,$(filter gsm_%,$(USEMODULE)))
+  USEMODULE += gsm
 endif
