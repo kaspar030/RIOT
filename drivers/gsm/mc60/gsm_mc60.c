@@ -127,7 +127,6 @@ static ssize_t _mc60_http_post(gsm_t *gsmdev,
 
 
 out:
-    at_send_cmd_wait_ok(at_dev, "AT+QIDEACT", GSM_SERIAL_TIMEOUT);
     mutex_unlock(&gsmdev->mutex);
 
     return res;
@@ -207,10 +206,43 @@ static int _mc60_time_sync(gsm_t *gsmdev)
     return res;
 }
 
+static int _mc60_gprs_init(gsm_t *gsmdev, const char *apn)
+{
+    char buf[64];
+    int res;
+    at_dev_t *at_dev = &gsmdev->at_dev;
+
+    mutex_lock(&gsmdev->mutex);
+
+    /* set IP connection and APN name */
+    char *pos = buf;
+    pos += fmt_str(pos, "AT+QICSGP=1,\"");
+    pos += fmt_str(pos, apn);
+    pos += fmt_str(pos, "\"");
+    *pos = '\0';
+    res = at_send_cmd_wait_ok(at_dev, buf, GSM_SERIAL_TIMEOUT);
+    if (res) {
+        goto out;
+    }
+
+    res = at_send_cmd_wait_ok(at_dev, "AT+QIREGAPP", 75LLU*(1000000));
+    /*if (res) {
+        goto out;
+    }*/
+
+    at_send_cmd_wait_ok(at_dev, "AT+QIDEACT", 5LLU*(1000000));
+
+out:
+    mutex_unlock(&gsmdev->mutex);
+
+    return res;
+}
+
 const gsm_driver_t gsm_driver_mc60 = {
     .get_loc=mc60_get_loc,
     .cnet_scan=mc60_cnet_scan,
     .http_get=_mc60_http_get,
     .http_post=_mc60_http_post,
     .time_sync=_mc60_time_sync,
+    .gprs_init=_mc60_gprs_init,
 };
