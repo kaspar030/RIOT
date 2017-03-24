@@ -83,6 +83,8 @@ compile() {
         if [ "$board" = "native" -a "$appdir" = "tests/unittests" ]; then
             make -C${appdir} test
             RES=$?
+        elif [ "$board" = "samr21-xpro" -a "$appdir" = "tests/mutex_order" ]; then
+            make_test_job $appdir $board
         fi
     fi
 
@@ -92,6 +94,22 @@ compile() {
     rm -Rf build
 
     return $RES
+}
+
+make_test_job() {
+    local appdir=$1
+    local board=$2
+    local hexfile="$(ls ${BINDIR}/*.hex | tail -n 1)"
+
+    dwqc -S --file $hexfile:$appdir/bin/$(basename $hexfile) -q $board "BOARD=$board echo make -C$appdir flash-nodep test"
+}
+
+run_test() {
+    local appdir=$1
+    local board=$2
+
+    BOARD=$board RIOT_CI_BUILD=1 \
+        make -C${appdir} test
 }
 
 # execute static tests
