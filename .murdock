@@ -101,7 +101,7 @@ make_test_job() {
     local board=$2
     local hexfile="$(ls ${BINDIR}/*.hex | tail -n 1)"
 
-    dwqc -S --file $hexfile:$appdir/bin/$(basename $hexfile) -q $board "BOARD=$board echo make -C$appdir flash-nodep test"
+    dwqc -S --file $hexfile:$appdir/bin/$(basename $hexfile) -q $board "BOARD=$board make -C$appdir flash-nodep test"
 }
 
 run_test() {
