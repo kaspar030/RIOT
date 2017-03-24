@@ -260,7 +260,7 @@ endif
 BASELIBS += $(BINDIR)/${APPLICATION}.a
 BASELIBS += $(APPDEPS)
 
-.PHONY: all clean flash term doc debug debug-server reset objdump help info-modules
+.PHONY: all clean flash-nodep term doc debug debug-server reset objdump help info-modules
 .PHONY: ..in-docker-container
 
 ELFFILE ?= $(BINDIR)/$(APPLICATION).elf
@@ -345,7 +345,9 @@ distclean:
 	-@for i in $(USEPKG) ; do "$(MAKE)" -C $(RIOTPKG)/$$i distclean ; done
 	-@rm -rf $(BINDIRBASE)
 
-flash: all
+flash: all flash-nodep
+
+flash-nodep:
 	@command -v $(FLASHER) >/dev/null 2>&1 || \
 		{ $(COLOR_ECHO) \
 		'${COLOR_RED}Flash program $(FLASHER) not found. Aborting.${COLOR_RESET}'; \
