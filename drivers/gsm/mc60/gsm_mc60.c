@@ -47,8 +47,6 @@ static ssize_t _mc60_http_post(gsm_t *gsmdev,
     at_dev_t *at_dev = &gsmdev->at_dev;
 
     const char *cmds[] = {
-        "AT+QIFGCNT=0",
-        "AT+QIREGAPP",
         "AT+QSSLCFG=\"https\",0",
     };
     unsigned ncmds = sizeof(cmds)/sizeof(cmds[0]);
@@ -214,6 +212,9 @@ static int _mc60_gprs_init(gsm_t *gsmdev, const char *apn)
 
     mutex_lock(&gsmdev->mutex);
 
+    at_send_cmd_wait_ok(at_dev, "AT+QIFGCNT=0", GSM_SERIAL_TIMEOUT);
+    at_send_cmd_wait_ok(at_dev, "AT+QIDEACT", GSM_SERIAL_TIMEOUT);
+
     /* set IP connection and APN name */
     char *pos = buf;
     pos += fmt_str(pos, "AT+QICSGP=1,\"");
@@ -226,11 +227,14 @@ static int _mc60_gprs_init(gsm_t *gsmdev, const char *apn)
     }
 
     res = at_send_cmd_wait_ok(at_dev, "AT+QIREGAPP", 75LLU*(1000000));
-    /*if (res) {
+    if (res) {
         goto out;
-    }*/
+    }
 
-    at_send_cmd_wait_ok(at_dev, "AT+QIDEACT", 5LLU*(1000000));
+    res = at_send_cmd_wait_ok(at_dev, "AT+QIACT", GSM_SERIAL_TIMEOUT);
+    if (res) {
+        goto out;
+    }
 
 out:
     mutex_unlock(&gsmdev->mutex);
