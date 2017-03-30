@@ -4,6 +4,9 @@ export RIOT_CI_BUILD=1
 export STATIC_TESTS=${STATIC_TESTS:-1}
 export CFLAGS_DBG=""
 
+export BOARDS=samr21-xpro
+export APPS=tests/minimal
+
 error() {
     echo "$@"
     exit 1
