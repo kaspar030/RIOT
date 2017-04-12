@@ -249,6 +249,7 @@ endif
 ifneq (,$(filter lsm6dsl,$(USEMODULE)))
   FEATURES_REQUIRED += periph_i2c
   USEMODULE += xtimer
+endif
 
 ifneq (,$(filter gsm_%,$(USEMODULE)))
   USEMODULE += gsm
