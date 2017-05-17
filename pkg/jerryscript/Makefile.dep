@@ -1,3 +1,5 @@
-ifneq (,$(filter jerryscript,$(USEPKG)))
+ifneq ($(BOARD),native)
+  ifneq (,$(filter jerryscript,$(USEPKG)))
     USEMODULE += jerryport-minimal
+  endif
 endif
