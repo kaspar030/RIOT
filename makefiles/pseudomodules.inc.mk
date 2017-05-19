@@ -17,6 +17,7 @@ PSEUDOMODULES += gnrc_sixlowpan_router
 PSEUDOMODULES += gnrc_sixlowpan_router_default
 PSEUDOMODULES += gnrc_sock_check_reuse
 PSEUDOMODULES += gnrc_txtsnd
+PSEUDOMODULES += gps_%
 PSEUDOMODULES += l2filter_blacklist
 PSEUDOMODULES += l2filter_whitelist
 PSEUDOMODULES += log
