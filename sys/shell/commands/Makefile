@@ -64,6 +64,9 @@ endif
 ifneq (,$(filter vfs,$(USEMODULE)))
   SRC += sc_vfs.c
 endif
+ifneq (,$(filter gsm,$(USEMODULE)))
+  SRC += sc_gsm.c
+endif
 
 # TODO
 # Conditional building not possible at the moment due to
