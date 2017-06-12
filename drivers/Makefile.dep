@@ -107,6 +107,21 @@ ifneq (,$(filter ethos,$(USEMODULE)))
     USEMODULE += tsrb
 endif
 
+ifneq (,$(filter gps_%,$(USEMODULE)))
+  USEMODULE += gps
+endif
+
+ifneq (,$(filter gps,$(USEMODULE)))
+  USEMODULE += fmt
+  USEPKG += minmea
+endif
+
+ifneq (,$(filter gps_serial,$(USEMODULE)))
+  FEATURES_REQUIRED += periph_uart
+  USEMODULE += isrpipe
+  USEMODULE += xtimer
+endif
+
 ifneq (,$(filter hdc1000,$(USEMODULE)))
   USEMODULE += xtimer
 endif
