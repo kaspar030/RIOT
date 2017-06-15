@@ -5,4 +5,10 @@ export CPU_MODEL = samr21g18a
 # set edbg device type
 EDBG_DEVICE_TYPE = atmel_cm0p
 
+#
+ROM_SIZE = 0x20000
+SLOT0_LENGTH = 0x2000
+SLOT1_LENGTH = 0x19000
+SLOT2_LENGTH = 0x19000
+
 include $(RIOTMAKE)/boards/sam0.inc.mk
