@@ -293,6 +293,8 @@ LINKFLAGPREFIX ?= -Wl,
 
 DIRS += $(EXTERNAL_MODULE_DIRS)
 
+_LINK = $(if $(CPPMIX),$(CXX),$(LINK)) $(UNDEF) $(LINKFLAGPREFIX)--start-group $(BASELIBS) -lm $(LINKFLAGPREFIX)--end-group  $(LINKFLAGPREFIX)-Map=$(BINDIR)/$(APPLICATION).map $(LINKFLAGPREFIX)--cref $(LINKFLAGS)
+
 ifeq ($(BUILD_IN_DOCKER),1)
 all: ..in-docker-container
 else
@@ -303,7 +305,7 @@ ifeq (,$(RIOTNOLINK))
 ifeq ($(BUILDOSXNATIVE),1)
 	$(Q)$(if $(CPPMIX),$(CXX),$(LINK)) $(UNDEF) -o $(ELFFILE) $$(find $(BASELIBS) -size +8c) $(LINKFLAGS) $(LINKFLAGPREFIX)-no_pie
 else
-	$(Q)$(if $(CPPMIX),$(CXX),$(LINK)) $(UNDEF) -o $(ELFFILE) $(LINKFLAGPREFIX)--start-group $(BASELIBS) -lm $(LINKFLAGPREFIX)--end-group  $(LINKFLAGPREFIX)-Map=$(BINDIR)/$(APPLICATION).map $(LINKFLAGPREFIX)--cref $(LINKFLAGS)
+	$(Q)$(_LINK) -o $(ELFFILE)
 endif
 	$(Q)$(SIZE) $(ELFFILE)
 	$(Q)$(OBJCOPY) $(OFLAGS) $(ELFFILE) $(HEXFILE)
