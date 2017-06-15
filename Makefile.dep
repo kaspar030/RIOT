@@ -795,12 +795,6 @@ FEATURES_OPTIONAL += periph_gpio
 # always select power management if available
 FEATURES_OPTIONAL += periph_pm
 
-ifneq (,$(filter firmware,$(USEMODULE)))
-  USEMODULE += checksum
-  USEPKG += tweetnacl
-  FEATURES_REQUIRED += multislot
-endif
-
 # include package dependencies
 -include $(USEPKG:%=$(RIOTPKG)/%/Makefile.dep)
 
