@@ -343,6 +343,8 @@ else
   _LINK = $(if $(CPPMIX),$(LINKXX),$(LINK)) $(UNDEF) $(LINKFLAGPREFIX)--start-group $(BASELIBS) -lm $(LINKFLAGPREFIX)--end-group $(LINKFLAGS) $(LINKFLAGPREFIX)-Map=$(BINDIR)/$(APPLICATION).map
 endif # BUILDOSXNATIVE
 
+MAKETARGETS += all
+
 ifeq ($(BUILD_IN_DOCKER),1)
 link: ..in-docker-container
 else
@@ -502,7 +504,7 @@ include $(RIOTMAKE)/vars.inc.mk
 include $(RIOTMAKE)/tools/targets.inc.mk
 
 # Warn if the selected board and drivers don't provide all needed features:
-ifneq (, $(filter all, $(if $(MAKECMDGOALS), $(MAKECMDGOALS), all)))
+ifneq (, $(filter $(MAKETARGETS), $(if $(MAKECMDGOALS), $(MAKECMDGOALS), $(MAKETARGETS))))
   EXPECT_ERRORS :=
   EXPECT_CONFLICT :=
 
@@ -633,6 +635,9 @@ include $(RIOTMAKE)/riotboot.mk
 
 # include Murdock helpers
 include $(RIOTMAKE)/murdock.inc.mk
+
+# Include multislot support
+include $(RIOTMAKE)/multislot.mk
 
 # Sanity check, 'all' should be the default goal
 ifneq (all, $(.DEFAULT_GOAL))
