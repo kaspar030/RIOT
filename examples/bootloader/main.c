@@ -1,9 +1,10 @@
+#include "firmware.h"
 #include "cpu.h"
 #include "panic.h"
 
 void kernel_init(void)
 {
-    cpu_jump_to_image(0x2000);
+    firmware_jump_to_slot(1);
 }
 
 NORETURN void core_panic(core_panic_t crash_code, const char *message)
