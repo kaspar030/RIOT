@@ -121,7 +121,6 @@ static inline void cortexm_isr_end(void)
  *
  * @param[in]   image_address   address in flash of other image
  */
-#if defined(MODULE_BOOTLOADER) || defined(DOXYGEN)
 static inline void cpu_jump_to_image(uint32_t image_address)
 {
     /* Disable IRQ */
@@ -142,7 +141,11 @@ static inline void cpu_jump_to_image(uint32_t image_address)
     /* Branch execution */
     __asm("BX %0" :: "r" (destination_address));
 }
-#endif
+
+static inline unsigned cpu_get_image_baseaddr(void)
+{
+    return (unsigned)SCB->VTOR;
+}
 
 #ifdef __cplusplus
 }
