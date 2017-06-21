@@ -618,6 +618,10 @@ USEPKG += nanocoap
 USEMODULE += gnrc_sock_udp
 endif
 
+ifneq (,$(filter firmware,$(USEMODULE)))
+  USEMODULE += checksum
+endif
+
 # include package dependencies
 -include $(USEPKG:%=$(RIOTPKG)/%/Makefile.dep)
 
