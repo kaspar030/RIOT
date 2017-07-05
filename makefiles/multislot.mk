@@ -1,22 +1,26 @@
-ifneq (,$(filter mcuboot flash-mcuboot, $(MAKECMDGOALS)))
+ifdef SLOT0_SIZE
+
 IMGTOOL ?= $(RIOTBASE)/dist/tools/mcuboot/imgtool.py
 override IMGTOOL := $(abspath $(IMGTOOL))
 
-ifndef SLOT0_SIZE
-$(error Board $(BOARD) does not define multislot parameters!)
+FLASH_OFFSET := $(SLOT0_SIZE)
+BINFILE ?= $(BINDIR)/$(APPLICATION).bin
+SIGN_BINFILE = $(BINDIR)/signed-$(APPLICATION).bin
+MCUBOOT_KEYFILE ?= $(BINDIR)/key.pem
+OFLAGS = -O binary
+MCUBOOT_BIN ?= $(BINDIR)/mcuboot.bin
+MCUBOOT_BIN_URL ?= http://download.riot-os.org/mynewt.mcuboot.bin
+MCUBOOT_BIN_MD5 ?= 0c71a0589bd3709fc2d90f07a0035ce7
+
+create-key: $(MCUBOOT_KEYFILE)
+
+ifeq ($(BINDIR)/key.pem,$(MCUBOOT_KEYFILE))
+$(MCUBOOT_KEYFILE):
+	$(Q)mkdir -p $(BINDIR)
+	$(Q)$(IMGTOOL) keygen -k $@ -t rsa-2048
 endif
 
-export FLASH_OFFSET := $(SLOT0_SIZE)
-export BINFILE ?= $(BINDIR)/$(APPLICATION).bin
-export SIGN_BINFILE = $(BINDIR)/signed-$(APPLICATION).bin
-export OFLAGS = -O binary
-
-create-key: key.pem
-
-key.pem:
-	$(Q)$(IMGTOOL) keygen -k key.pem -t rsa-2048
-
-mcuboot: create-key all
+mcuboot: create-key link
 	@$(COLOR_ECHO)
 	@$(COLOR_ECHO) '${COLOR_PURPLE}Re-linking for MCUBoot at $(SLOT0_SIZE)...${COLOR_RESET}'
 	@$(COLOR_ECHO)
@@ -31,11 +35,21 @@ mcuboot: create-key all
 	${COLOR_RESET}'
 	@$(COLOR_ECHO)
 
-.PHONY: flash-mcuboot
+$(MCUBOOT_BIN):
+	$(Q)$(DLCACHE) $(MCUBOOT_BIN_URL) $(MCUBOOT_BIN_MD5) $@
 
-flash-mcuboot: HEXFILE = $(SIGN_BINFILE)
+.PHONY: flash-bootloader flash-mcuboot
 
-flash-mcuboot: mcuboot $(FLASHDEPS)
+flash-bootloader: HEXFILE = $(MCUBOOT_BIN)
+flash-bootloader: $(MCUBOOT_BIN) $(FLASHDEPS)
 	$(FLASHER) $(FFLAGS)
 
+flash-mcuboot: HEXFILE = $(SIGN_BINFILE)
+flash-mcuboot: mcuboot $(FLASHDEPS) flash-bootloader
+	$(FLASHER) $(FFLAGS)
+
+else
+mcuboot:
+	$(Q)echo "error: mcuboot not supported on board $(BOARD)!"
+	$(Q)false
 endif # mcuboot
