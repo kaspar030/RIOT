@@ -27,12 +27,13 @@ extern "C" {
 #define FIRMWARE_CHECKSUM_LEN       (20)
 #define FIRMWARE_SIGN_BYTES         (FIRMWARE_CHECKSUM_LEN + 4 + SHA256_DIGEST_LENGTH)
 #define FIRMWARE_PADDING            (256-(FIRMWARE_SIGN_BYTES + FIRMWARE_SIG_LEN))
+#define FIRMWARE_METADATA_REALLEN   (sizeof(firmware_metadata_t) - FIRMWARE_PADDING)
 
 /**
  * @brief Structure to store firmware metadata
  * @{
  */
-typedef struct firmware_metadata {
+typedef struct {
     uint32_t magic_number;              /**< metadata magic_number (always "RIOT")  */
     uint32_t appid;                     /**< Integer representing the application ID*/
     uint32_t version;                   /**< Integer representing firmware version  */
@@ -73,7 +74,7 @@ uint32_t firmware_metadata_checksum(firmware_metadata_t *metadata);
  * @brief  Sign metadata
  *
  * @param[in] metadata  ptr to firmware metadata
- * @param[in] metadata  NaCL secret signing key to use
+ * @param[in] sk        NaCL secret signing key to use
  *
  */
 int firmware_sign_metadata(firmware_metadata_t *metadata, unsigned char *sk);
@@ -82,10 +83,10 @@ int firmware_sign_metadata(firmware_metadata_t *metadata, unsigned char *sk);
  * @brief  Validate FW metadata signature
  *
  * @param[in] metadata  ptr to firmware metadata
- * @param[in] metadata  NaCL public signing key to use
+ * @param[in] pk        NaCL public signing key to use
  *
  */
-int firmware_validate_metadata_signature(firmware_metadata_t *metadata, unsigned char *pk);
+int firmware_validate_metadata_signature(firmware_metadata_t *metadata, const unsigned char *pk);
 
 /**
  * @brief  Jump to image
@@ -99,6 +100,7 @@ void firmware_jump_to_image(firmware_metadata_t *metadata);
  * @brief  Get currently running image slot
  */
 int firmware_current_slot(void);
+int firmware_target_slot(void);
 
 /**
  * @brief  Get metadata of firmware slot

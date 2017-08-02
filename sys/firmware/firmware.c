@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <string.h>
 #include <inttypes.h>
 
@@ -47,7 +48,7 @@ int firmware_validate_metadata_checksum(firmware_metadata_t *metadata)
     return res;
 }
 
-int firmware_validate_metadata_signature(firmware_metadata_t *metadata, unsigned char *pk)
+int firmware_validate_metadata_signature(firmware_metadata_t *metadata, const unsigned char *pk)
 {
     if (firmware_validate_metadata_checksum(metadata)) {
         return -1;
@@ -81,6 +82,7 @@ int firmware_sign_metadata(firmware_metadata_t *metadata, unsigned char *sk)
 }
 
 #ifdef RIOT_VERSION
+#ifndef BOARD_NATIVE
 static const unsigned _firmware_slot_start[] = {
     0,
     FIRMWARE_SLOT0_SIZE,
@@ -108,6 +110,12 @@ int firmware_current_slot(void)
     return -1;
 }
 
+int firmware_target_slot(void)
+{
+    /* TODO: find logic for more than one slot */
+    return firmware_current_slot() == 1 ? 2 : 1;
+}
+
 firmware_metadata_t *firmware_get_metadata(unsigned slot) {
     assert (slot < FIRMWARE_NUM_SLOTS);
     return (firmware_metadata_t *)_firmware_slot_start[slot];
@@ -131,4 +139,45 @@ void firmware_dump_slot_addrs(void)
                 (unsigned)_firmware_slot_start[i], firmware_get_image_startaddr(i));
     }
 }
+#else /* BOARD_NATIVE */
+const unsigned firmware_num_slots = 1;
+
+void firmware_jump_to_image(firmware_metadata_t *metadata)
+{
+    (void)metadata;
+    printf("%s native stub\n", __func__);
+}
+
+int firmware_current_slot(void)
+{
+    printf("%s native stub\n", __func__);
+
+    return 1;
+}
+
+firmware_metadata_t *firmware_get_metadata(unsigned slot)
+{
+    (void)slot;
+    printf("%s native stub\n", __func__);
+    return NULL;
+}
+
+unsigned firmware_get_image_startaddr(unsigned slot)
+{
+    (void)slot;
+    printf("%s native stub\n", __func__);
+    return 0;
+}
+
+void firmware_jump_to_slot(unsigned slot)
+{
+    (void)slot;
+    printf("%s native stub\n", __func__);
+}
+
+void firmware_dump_slot_addrs(void)
+{
+    printf("%s native stub\n", __func__);
+}
+#endif
 #endif /* RIOT_VERSION */
