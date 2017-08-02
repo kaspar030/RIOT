@@ -1,8 +1,4 @@
-ifneq (,$(filter multislot combined flash-multislot, $(MAKECMDGOALS)))
-
-ifndef SLOT0_SIZE
-$(error Board $(BOARD) does not define multislot parameters!)
-endif
+ifdef SLOT0_SIZE
 
 ELFSLOT0 := $(ELFFILE:%.elf=%.slot0.elf)
 ELFSLOT1 := $(ELFFILE:%.elf=%.slot1.elf)
@@ -51,7 +47,7 @@ multislot: all $(BOOTLOADER_BIN) $(SECKEY) $(PUBKEY)
 			-o $(ELFSLOT1) && \
 		$(OBJCOPY) -Obinary $(ELFSLOT1) $(BINSLOT1) && \
 		$(GENMETA) genmeta $(BINSLOT1) $(APP_VERSION) $(APP_ID) $$(($(SLOT0_SIZE)+$(FIRMWARE_METADATA_SIZE))) $(SECKEY) $(BINSLOT1).meta && \
-		truncate $(BINSLOT1) --size=$$(($(SLOT1_SIZE))) && \
+		cat $(BINSLOT1).meta $(BINSLOT1) > $(BINSLOT1).img && \
 		\
 		$(_LINK) \
 			$(LINKFLAGPREFIX)--defsym=offset="$(SLOT0_SIZE)+$(SLOT1_SIZE)+$$(($(FIRMWARE_METADATA_SIZE)*2))" \
@@ -59,15 +55,16 @@ multislot: all $(BOOTLOADER_BIN) $(SECKEY) $(PUBKEY)
 			-o $(ELFSLOT2) && \
 		$(OBJCOPY) -Obinary $(ELFSLOT2) $(BINSLOT2) && \
 		$(GENMETA) genmeta $(BINSLOT2) $(APP_VERSION) $(APP_ID) $$(($(SLOT0_SIZE)+$(SLOT1_SIZE)+$(FIRMWARE_METADATA_SIZE)*2)) $(SECKEY) $(BINSLOT2).meta && \
-		truncate $(BINSLOT2) --size=$$(($(SLOT2_SIZE))) ; \
+		cat $(BINSLOT2).meta $(BINSLOT2) > $(BINSLOT2).img \
+		; \
 	}
 
 combined: multislot
-	sh -c 'cat $(BOOTLOADER_BIN) $(BINSLOT1).meta $(BINSLOT1) $(BINSLOT2).meta $(BINSLOT2) > $(COMBINED_BIN)'
+	sh -c 'cat $(BOOTLOADER_BIN) $(BINSLOT1).img > $(COMBINED_BIN)'
 
 .PHONY: flash-multislot
 flash-multislot: HEXFILE = $(COMBINED_BIN)
 flash-multislot: combined $(FLASHDEPS)
 	$(FLASHER) $(FFLAGS)
 
-endif # multislot targets filter
+endif # SLOT0_SIZE
