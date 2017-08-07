@@ -336,6 +336,24 @@ __attribute__((used)) void hard_fault_handler(uint32_t* sp, uint32_t corrupted, 
 
 void hard_fault_default(void)
 {
+    unsigned addr;
+
+    __asm volatile (
+            " movs r0,#4        \n"
+            " movs %0, lr       \n"
+            " tst r0, %0        \n"
+            " beq _MSP          \n"
+            " mrs r0, psp       \n"
+            " b _END            \n"
+            "_MSP:              \n"
+            " mrs r0, msp       \n"
+            "_END:              \n"
+            " ldr %0,[r0,#0x18] \n"
+            : "=r" (addr)
+            );
+
+    printf("\n*** HARD FAULT at 0x%08x\n", addr);
+
     core_panic(PANIC_HARD_FAULT, "HARD FAULT HANDLER");
 }
 
