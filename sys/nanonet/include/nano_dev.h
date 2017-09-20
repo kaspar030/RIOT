@@ -7,19 +7,19 @@
 #include "nano_config.h"
 
 #include "nano_sndbuf.h"
-#include "net/netdev2.h"
+#include "net/netdev.h"
 
 typedef struct nano_ctx nano_ctx_t;
 typedef struct nano_dev nano_dev_t;
 
-#ifdef MODULE_NETDEV2_IEEE80154
+#ifdef MODULE_NETDEV_IEEE80154
 #define NANO_L2_ADDRLEN (8)
 #else
 #define NANO_L2_ADDRLEN (6)
 #endif
 
 struct nano_dev {
-    netdev2_t *netdev;
+    netdev_t *netdev;
     int (*send)(struct nano_dev *dev, nano_sndbuf_t *buf, uint8_t* dest_mac, uint16_t ethertype);
     int (*send_raw)(struct nano_dev *dev, uint8_t* buf, size_t len);
     int (*reply)(nano_ctx_t *ctx);

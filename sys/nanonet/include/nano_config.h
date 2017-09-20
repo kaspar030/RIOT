@@ -8,12 +8,12 @@
 /* should fit the biggest expected packet */
 #define NANONET_RX_BUFSIZE 384
 
-#ifdef MODULE_NETDEV2_ETH
+#ifdef MODULE_NETDEV_ETH
 #define NANONET_IPV4
 #define NANONET_ETH
 #endif
 
-#ifdef MODULE_NETDEV2_IEEE802154
+#ifdef MODULE_NETDEV_IEEE802154
 #define NANONET_IEEE802154
 #define NANONET_6LP
 #define NANONET_IEEE802154_SPARE (128U)
