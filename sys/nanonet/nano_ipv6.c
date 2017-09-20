@@ -151,11 +151,10 @@ static void set_csum(ipv6_hdr_t *hdr)
             udp_hdr_t *udp;
             udp = (udp_hdr_t *)(hdr + 1);
             memcpy(&(udp->chksum), &csum, 2);
+            break;
         }
         default:
-            /* don't know how to calculate, so we return 0 */
-            csum = 0;
-            break;
+            DEBUG("ipv6: don't know how to calculate checksum\n");
     }
 }
 
