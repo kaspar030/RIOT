@@ -30,16 +30,16 @@ int arp_handle(nano_ctx_t *ctx, size_t offset) {
 
     pkt = (arp_pkt_t*) (ctx->buf+offset);
 
-    if (NTOHL(pkt->arp_ipv4_types) != 0x00010800 || NTOHS(pkt->arp_ipv4_lengths) != 0x0604) {
+    if (ntohl(pkt->arp_ipv4_types) != 0x00010800 || ntohs(pkt->arp_ipv4_lengths) != 0x0604) {
         DEBUG("arp_handle(): invalid types / lengths fields: types: 0x%x lengths: 0x%x\n",
-                (unsigned int) NTOHL(pkt->arp_ipv4_types),
-                (unsigned int) NTOHS(pkt->arp_ipv4_lengths));
+                (unsigned int) ntohl(pkt->arp_ipv4_types),
+                (unsigned int) ntohs(pkt->arp_ipv4_lengths));
         return -1;
     }
 
-    uint32_t dst_ip = NTOHL(pkt->dst_ip);
-    uint32_t src_ip = NTOHL(pkt->src_ip);
-    int op = NTOHS(pkt->arp_ipv4_op);
+    uint32_t dst_ip = ntohl(pkt->dst_ip);
+    uint32_t src_ip = ntohl(pkt->src_ip);
+    int op = ntohs(pkt->arp_ipv4_op);
     switch (op) {
         case 1:
             DEBUG("arp: request for 0x%08x\n", (unsigned int) dst_ip);
@@ -69,14 +69,14 @@ void arp_request(nano_dev_t *dev, uint32_t ip) {
     nano_sndbuf_t sndbuf = NANO_SNDBUF_INIT(buf, sizeof(buf));
     arp_pkt_t* pkt = (arp_pkt_t*) nano_sndbuf_alloc(&sndbuf, sizeof(arp_pkt_t));
 
-    pkt->arp_ipv4_types = HTONL(0x00010800);
-    pkt->arp_ipv4_lengths = HTONS(0x0604);
-    pkt->arp_ipv4_op = HTONS(0x0001);
+    pkt->arp_ipv4_types = htonl(0x00010800);
+    pkt->arp_ipv4_lengths = htons(0x0604);
+    pkt->arp_ipv4_op = htons(0x0001);
 
-    pkt->src_ip = HTONL(dev->ipv4);
+    pkt->src_ip = htonl(dev->ipv4);
     memcpy(pkt->src_mac, dev->l2_addr, 6);
 
-    pkt->dst_ip = HTONL(ip);
+    pkt->dst_ip = htonl(ip);
 
     uint8_t broadcast[] = { 0xff,0xff,0xff,0xff,0xff,0xff };
 
@@ -92,14 +92,14 @@ void arp_reply(nano_ctx_t *ctx, size_t offset)
     arp_pkt_t* pkt = (arp_pkt_t*) (ctx->buf+offset);
 
     /* check if requested IP matches the device it came from */
-    if (pkt->dst_ip != HTONL(dev->ipv4)) {
+    if (pkt->dst_ip != htonl(dev->ipv4)) {
         DEBUG("arp_reply: dst addr of request invalid.\n");
     }
 
-    DEBUG("arp_reply: replying to 0x%08x\n", (unsigned int)NTOHL(pkt->src_ip));
+    DEBUG("arp_reply: replying to 0x%08x\n", (unsigned int)ntohl(pkt->src_ip));
 
     /* set reply op */
-    pkt->arp_ipv4_op = HTONS(0x0002);
+    pkt->arp_ipv4_op = htons(0x0002);
 
     /* set new dst mac address to old src mac address */
     memcpy(pkt->dst_mac, pkt->src_mac, 6);
@@ -109,7 +109,7 @@ void arp_reply(nano_ctx_t *ctx, size_t offset)
 
     /* set IP addresses */
     pkt->dst_ip = pkt->src_ip;
-    pkt->src_ip = HTONL(dev->ipv4);
+    pkt->src_ip = htonl(dev->ipv4);
 
     dev->reply(ctx);
 }

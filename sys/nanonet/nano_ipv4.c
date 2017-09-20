@@ -24,15 +24,15 @@ int ipv4_handle(nano_ctx_t *ctx, size_t offset) {
 
     ctx->l3_hdr_start = (void*) hdr;
 
-    if (ctx->len - offset < NTOHS(hdr->total_len)) {
+    if (ctx->len - offset < ntohs(hdr->total_len)) {
         DEBUG("ipv4: truncated packet received.\n");
         return -1;
     }
 
     int hdr_len = ipv4_hdr_len(hdr);
 
-    ctx->dst_addr.ipv4 = NTOHL(hdr->dst);
-    ctx->src_addr.ipv4 = NTOHL(hdr->src);
+    ctx->dst_addr.ipv4 = ntohl(hdr->dst);
+    ctx->src_addr.ipv4 = ntohl(hdr->src);
 
     DEBUG("ipv4: got packet with protocol 0x%01x\n", (unsigned int) hdr->protocol);
 
@@ -96,13 +96,13 @@ int ipv4_send(nano_sndbuf_t *buf, uint32_t dest_ip, int protocol) {
     memset(hdr, '\0', sizeof(ipv4_hdr_t));
 
     /* set version to 4, IHL to 5 */
-    hdr->ver_ihl = HTONS(0x4500);
+    hdr->ver_ihl = htons(0x4500);
 
     hdr->ttl = 64;
     hdr->protocol = protocol;
-    hdr->src = HTONL(dev->ipv4);
-    hdr->dst = HTONL(dest_ip);
-    hdr->total_len = HTONS(nano_sndbuf_used(buf));
+    hdr->src = htonl(dev->ipv4);
+    hdr->dst = htonl(dest_ip);
+    hdr->total_len = htons(nano_sndbuf_used(buf));
 
     hdr->hdr_chksum = 0;
 
@@ -124,9 +124,9 @@ int ipv4_reply(nano_ctx_t *ctx)
     ipv4_hdr_t *hdr = (ipv4_hdr_t *) ctx->l3_hdr_start;
 
     hdr->dst = hdr->src;
-    hdr->src = HTONL(ctx->dev->ipv4);
+    hdr->src = htonl(ctx->dev->ipv4);
 
-    hdr->total_len = HTONS(ctx->len - (((uint8_t*)hdr) - ctx->buf));
+    hdr->total_len = htons(ctx->len - (((uint8_t*)hdr) - ctx->buf));
 
     hdr->hdr_chksum = 0;
     hdr->hdr_chksum = ~nano_util_calcsum(0, (uint8_t*)hdr, sizeof(ipv4_hdr_t));
