@@ -46,7 +46,7 @@ int icmp_port_unreachable(nano_ctx_t *ctx)
      * and the first 8 bytes of a packet.
      */
     int ipv4_hdr_len = (ipv4_hdr->ver_ihl & ~0xF0) * 4;
-    int send_back_len = nano_min(ipv4_hdr_len + 8, NTOHS(ipv4_hdr->total_len));
+    int send_back_len = nano_min(ipv4_hdr_len + 8, ntohs(ipv4_hdr->total_len));
 
     /* allocate icmp header + send_back_len bytes at the end of buf */
     icmp_hdr_t *hdr = (icmp_hdr_t *) nano_sndbuf_alloc(&sndbuf, sizeof(icmp_hdr_t)+send_back_len);

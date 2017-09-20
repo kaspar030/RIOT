@@ -117,7 +117,7 @@ static int _send_ethernet(nano_dev_t *dev, nano_sndbuf_t *buf, uint8_t* dest_mac
     memcpy(hdr->dst, dest_mac, 6);
     memcpy(hdr->src, dev->l2_addr, 6);
 
-    hdr->ethertype = HTONS(ethertype);
+    hdr->ethertype = htons(ethertype);
 
     netdev->driver->send(netdev, nano_sndbuf_getvec(buf), nano_sndbuf_getcount(buf));
 

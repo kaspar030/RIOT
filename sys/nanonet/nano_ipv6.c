@@ -81,7 +81,7 @@ static int _ipv6_reply(nano_ctx_t *ctx)
 {
     ipv6_hdr_t *hdr = (ipv6_hdr_t*) ctx->l3_hdr_start;
 
-    hdr->payload_len = HTONS(ctx->len - (((uint8_t*)hdr) - ctx->buf) - sizeof(ipv6_hdr_t));
+    hdr->payload_len = htons(ctx->len - (((uint8_t*)hdr) - ctx->buf) - sizeof(ipv6_hdr_t));
 
     set_csum(hdr);
 
@@ -131,7 +131,7 @@ static uint16_t calcsum(ipv6_hdr_t *hdr)
                              hdr->src, (2 * IPV6_ADDR_LEN));
     /* add actual data fields */
     csum = nano_util_calcsum(csum, (const uint8_t *)(hdr + 1),
-                             (size_t)NTOHS(hdr->payload_len));
+                             (size_t)ntohs(hdr->payload_len));
     return csum;
 }
 
@@ -216,7 +216,7 @@ int ipv6_send(nano_sndbuf_t *buf, uint8_t *dst_ip, int protocol, nano_dev_t *dev
         memset(hdr, '\0', sizeof(ipv6_hdr_t));
 
         /* set version to 6, traffic class + flow label to 0 */
-        hdr->ver_tc_fl = HTONL(0x60000000U);
+        hdr->ver_tc_fl = htonl(0x60000000U);
 
         hdr->hop_limit = 64;
         hdr->next_header = protocol;
@@ -235,7 +235,7 @@ void ipv6_addr_print(const uint8_t *addr)
 {
     const uint16_t* _addr = (const uint16_t*) addr;
     for (int i = 0; i < 8; i++) {
-        printf("%04x", (unsigned)NTOHS(_addr[i]));
+        printf("%04x", (unsigned)ntohs(_addr[i]));
         if (i != 7) {
             printf(":");
         }
