@@ -21,9 +21,9 @@ int udp_handle(nano_ctx_t *ctx, size_t offset)
         return -1;
     }
 
-    ctx->src_port = NTOHS(hdr->src_port);
+    ctx->src_port = ntohs(hdr->src_port);
 
-    uint16_t dst_port = NTOHS(hdr->dst_port);
+    uint16_t dst_port = ntohs(hdr->dst_port);
     ctx->dst_port = dst_port;
 
 #if ENABLE_DEBUG
@@ -77,10 +77,10 @@ static size_t udp_build_hdr(nano_sndbuf_t *buf, uint16_t dst_port, uint16_t src_
         return 0;
     }
 
-    hdr->src_port = HTONS(src_port);
-    hdr->dst_port = HTONS(dst_port);
+    hdr->src_port = htons(src_port);
+    hdr->dst_port = htons(dst_port);
 
-    hdr->length = HTONS(nano_sndbuf_used(buf));
+    hdr->length = htons(nano_sndbuf_used(buf));
 
     /* checksum will be calculated by IP layer */
     hdr->chksum = 0x0;
@@ -102,7 +102,7 @@ int udp_reply(nano_ctx_t *ctx)
     uint16_t tmp = hdr->dst_port;
     hdr->dst_port = hdr->src_port;
     hdr->src_port = tmp;
-    hdr->length = HTONS(ctx->len - ((uint8_t*)hdr - ctx->buf));
+    hdr->length = htons(ctx->len - ((uint8_t*)hdr - ctx->buf));
     hdr->chksum = 0x0;
 
     if (is_ipv4_hdr(ctx->l3_hdr_start)) {

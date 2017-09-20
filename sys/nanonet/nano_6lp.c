@@ -268,7 +268,7 @@ static size_t _un_iphc(nano_ctx_t *ctx, size_t offset)
     unsigned nh = 0;
 
     memcpy(&dispatch, pktpos, sizeof(dispatch));
-    dispatch = NTOHS(dispatch);
+    dispatch = ntohs(dispatch);
     pktpos += 2;
 
     DEBUG("_un_iphc(): base=0x%04x HL=0x%02x NH=%u CID=%u SAC=%u SAM=0x%02x M=%u DAC=%u DAM=%02x\n",
