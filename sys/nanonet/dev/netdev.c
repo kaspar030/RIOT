@@ -12,7 +12,7 @@
  * @{
  *
  * @file
- * @brief       nanonet netdev2 driver glue
+ * @brief       nanonet netdev driver glue
  *
  * @author      Kaspar Schleiser <kaspar@schleiser.de>
  *
@@ -29,8 +29,8 @@
 #include "xtimer.h"
 #include "sys/uio.h"
 
-#include "net/netdev2/eth.h"
-//#include "net/netdev2/ieee802154.h"
+#include "net/netdev/eth.h"
+//#include "net/netdev/ieee802154.h"
 
 #include "nanonet.h"
 #include "nano_sndbuf.h"
@@ -38,10 +38,10 @@
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
 
-#ifdef MODULE_NETDEV2_TAP
-#include "netdev2_tap.h"
-#include "net/gnrc/netdev2/eth.h"
-extern netdev2_tap_t netdev2_tap;
+#ifdef MODULE_NETDEV_TAP
+#include "netdev_tap.h"
+#include "net/gnrc/netdev/eth.h"
+extern netdev_tap_t netdev_tap;
 #endif
 
 #ifdef MODULE_ETHOS
@@ -56,25 +56,25 @@ static uint8_t _ethos_inbuf[2048];
 static at86rf2xx_t at86rf2xx;
 #endif
 
-static const netdev2_t *_netdevs[] = {
-#ifdef MODULE_NETDEV2_TAP
-    (netdev2_t*)&netdev2_tap,
+static const netdev_t *_netdevs[] = {
+#ifdef MODULE_NETDEV_TAP
+    (netdev_t*)&netdev_tap,
 #endif
 #ifdef MODULE_ETHOS
-    (netdev2_t*)&ethos,
+    (netdev_t*)&ethos,
 #endif
 #ifdef MODULE_AT86RF2XX
-    (netdev2_t*)&at86rf2xx,
+    (netdev_t*)&at86rf2xx,
 #endif
 };
 
-const unsigned nano_dev_numof = sizeof(_netdevs)/sizeof(netdev2_t *);
+const unsigned nano_dev_numof = sizeof(_netdevs)/sizeof(netdev_t *);
 
-nano_dev_t nanonet_devices[sizeof(_netdevs)/sizeof(netdev2_t *)];
+nano_dev_t nanonet_devices[sizeof(_netdevs)/sizeof(netdev_t *)];
 
-static void _netdev2_isr(netdev2_t *netdev, netdev2_event_t event)
+static void _netdev_isr(netdev_t *netdev, netdev_event_t event)
 {
-    if (event == NETDEV2_EVENT_ISR) {
+    if (event == NETDEV_EVENT_ISR) {
         unsigned n = (unsigned)netdev->context;
         thread_flags_set(nanonet_thread, 0x1<<n);
         return;
@@ -83,7 +83,7 @@ static void _netdev2_isr(netdev2_t *netdev, netdev2_event_t event)
     nano_dev_t *dev = &nanonet_devices[(unsigned)netdev->context];
 
     switch(event) {
-        case NETDEV2_EVENT_RX_COMPLETE:
+        case NETDEV_EVENT_RX_COMPLETE:
             {
                 int nbytes;
                 do {
@@ -96,17 +96,17 @@ static void _netdev2_isr(netdev2_t *netdev, netdev2_event_t event)
                 } while (nbytes != -1);
             }
             break;
-        case NETDEV2_EVENT_TX_COMPLETE:
+        case NETDEV_EVENT_TX_COMPLETE:
             break;
         default:
-            DEBUG("_netdev2_isr(): unhandled event: %u\n", (unsigned)event);
+            DEBUG("_netdev_isr(): unhandled event: %u\n", (unsigned)event);
     }
 }
 
 static int _send_ethernet(nano_dev_t *dev, nano_sndbuf_t *buf, uint8_t* dest_mac, uint16_t ethertype)
 {
-    DEBUG("nanonet_netdev2_send: Sending packet with len %u\n", nano_sndbuf_used(buf));
-    netdev2_t *netdev = (netdev2_t *) dev->netdev;
+    DEBUG("nanonet_netdev_send: Sending packet with len %u\n", nano_sndbuf_used(buf));
+    netdev_t *netdev = (netdev_t *) dev->netdev;
     eth_hdr_t *hdr = (eth_hdr_t *) nano_sndbuf_alloc(buf, sizeof(eth_hdr_t));
 
     if (!hdr) {
@@ -126,8 +126,8 @@ static int _send_ethernet(nano_dev_t *dev, nano_sndbuf_t *buf, uint8_t* dest_mac
 
 static int _send_raw(nano_dev_t *dev, uint8_t* buf, size_t len)
 {
-    DEBUG("nanonet_netdev2_send_raw: Sending packet with len %u\n", len);
-    netdev2_t *netdev = (netdev2_t *) dev->netdev;
+    DEBUG("nanonet_netdev_send_raw: Sending packet with len %u\n", len);
+    netdev_t *netdev = (netdev_t *) dev->netdev;
     struct iovec vec = { buf, len };
     netdev->driver->send(netdev, &vec, 1);
 
@@ -144,11 +144,11 @@ static int _send_ieee80154(nano_dev_t *dev, nano_sndbuf_t *buf, uint8_t* dest_l2
     return 0;
 }
 
-int nanonet_init_netdev2_ieee802154(unsigned devnum)
+int nanonet_init_netdev_ieee802154(unsigned devnum)
 {
-    DEBUG("nanonet_init_netdev2\n");
+    DEBUG("nanonet_init_netdev\n");
     nano_dev_t *nanodev = &nanonet_devices[devnum];
-    netdev2_t *netdev = (netdev2_t*)_netdevs[devnum];
+    netdev_t *netdev = (netdev_t*)_netdevs[devnum];
 
     nanodev->send = _send_ieee80154;
     nanodev->send_raw = _send_raw;
@@ -161,7 +161,7 @@ int nanonet_init_netdev2_ieee802154(unsigned devnum)
     netdev->driver->init(netdev);
 
     /* register the event callback with the device driver */
-    netdev->event_callback = _netdev2_isr;
+    netdev->event_callback = _netdev_isr;
     netdev->context = (void*) devnum;
 
     /* set up addresses */
@@ -173,7 +173,7 @@ int nanonet_init_netdev2_ieee802154(unsigned devnum)
     nano_ieee802154_get_iid(nanodev->l2_addr, 8, (nanodev->ipv6_ll + 8), 0);
 
 #if ENABLE_DEBUG
-    puts("nanonet_init_netdev2: Setting link-layer address ");
+    puts("nanonet_init_netdev: Setting link-layer address ");
     ipv6_addr_print(nanodev->ipv6_ll);
     puts("");
 #endif
@@ -182,11 +182,11 @@ int nanonet_init_netdev2_ieee802154(unsigned devnum)
 }
 #endif
 
-int nanonet_init_netdev2_eth(unsigned devnum)
+int nanonet_init_netdev_eth(unsigned devnum)
 {
-    DEBUG("nanonet_init_netdev2\n");
+    DEBUG("nanonet_init_netdev\n");
     nano_dev_t *nanodev = &nanonet_devices[devnum];
-    netdev2_t *netdev = (netdev2_t*)_netdevs[devnum];
+    netdev_t *netdev = (netdev_t*)_netdevs[devnum];
 
     nanodev->send = _send_ethernet;
     nanodev->send_raw = _send_raw;
@@ -199,7 +199,7 @@ int nanonet_init_netdev2_eth(unsigned devnum)
     netdev->driver->init(netdev);
 
     /* register the event callback with the device driver */
-    netdev->event_callback = _netdev2_isr;
+    netdev->event_callback = _netdev_isr;
     netdev->context = (void*) devnum;
 
     /* set up addresses */
@@ -222,8 +222,8 @@ int nanonet_init_netdev2_eth(unsigned devnum)
 void nanonet_init_devices(void)
 {
     unsigned n = 0;
-#ifdef MODULE_NETDEV2_TAP
-    nanonet_init_netdev2_eth(n++);
+#ifdef MODULE_NETDEV_TAP
+    nanonet_init_netdev_eth(n++);
 #endif
 
 #ifdef MODULE_ETHOS
@@ -234,11 +234,11 @@ void nanonet_init_devices(void)
         .bufsize=sizeof(_ethos_inbuf) };
 
     ethos_setup(&ethos, &ethos_params);
-    nanonet_init_netdev2_eth(n++);
+    nanonet_init_netdev_eth(n++);
 #endif
 
 #ifdef MODULE_AT86RF2XX
     at86rf2xx_setup(&at86rf2xx, (at86rf2xx_params_t*) &at86rf2xx_params[0]);
-    nanonet_init_netdev2_ieee802154(n++);
+    nanonet_init_netdev_ieee802154(n++);
 #endif
 }
