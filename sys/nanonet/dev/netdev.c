@@ -41,7 +41,8 @@
 #ifdef MODULE_NETDEV_TAP
 #include "netdev_tap.h"
 #include "net/gnrc/netdev/eth.h"
-extern netdev_tap_t netdev_tap;
+#include "netdev_tap_params.h"
+netdev_tap_t netdev_tap;
 #endif
 
 #ifdef MODULE_ETHOS
@@ -223,6 +224,7 @@ void nanonet_init_devices(void)
 {
     unsigned n = 0;
 #ifdef MODULE_NETDEV_TAP
+    netdev_tap_setup(&netdev_tap, &netdev_tap_params[0]);
     nanonet_init_netdev_eth(n++);
 #endif
 
