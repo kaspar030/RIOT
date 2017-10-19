@@ -212,6 +212,7 @@
 
 #include <stdint.h>
 #include <stdatomic.h>
+#include "clist.h"
 #include "net/sock/udp.h"
 #include "mutex.h"
 #include "nanocoap.h"
@@ -412,7 +413,7 @@ typedef struct gcoap_listener {
     coap_resource_t *resources;     /**< First element in the array of
                                      *   resources; must order alphabetically */
     size_t resources_len;           /**< Length of array */
-    struct gcoap_listener *next;    /**< Next listener in list */
+    clist_node_t next;              /**< Next listener in list */
 } gcoap_listener_t;
 
 /**
@@ -451,7 +452,7 @@ typedef struct {
  */
 typedef struct {
     mutex_t lock;                       /**< Shares state attributes safely */
-    gcoap_listener_t *listeners;        /**< List of registered listeners */
+    clist_node_t listeners;             /**< List of registered listeners */
     gcoap_request_memo_t open_reqs[GCOAP_REQ_WAITING_MAX];
                                         /**< Storage for open requests; if first
                                              byte of an entry is zero, the entry
@@ -481,6 +482,13 @@ kernel_pid_t gcoap_init(void);
  * @param[in] listener  Listener containing the resources.
  */
 void gcoap_register_listener(gcoap_listener_t *listener);
+
+/**
+ * @brief   Stops listening for resource paths
+ *
+ * @param[in] listener  Listener containing the resources.
+ */
+void gcoap_unregister_listener(gcoap_listener_t *listener);
 
 /**
  * @brief   Initializes a CoAP request PDU on a buffer.
