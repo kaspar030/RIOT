@@ -5,6 +5,9 @@ SRC_NOLTO += thread_arch.c
 # see https://github.com/RIOT-OS/RIOT/issues/5775.
 SRC_NOLTO += vectors_cortexm.c
 
+# irq_arch causes trouble with LTO
+SRC_NOLTO += irq_arch.c
+
 DIRS = periph
 
 include $(RIOTBASE)/Makefile.base
