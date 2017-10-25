@@ -31,7 +31,7 @@ export USEMODULE += periph_common
 export USEMODULE += cortexm_common_periph
 
 # all cortex MCU's use newlib as libc
-export USEMODULE += newlib
+DEFAULT_MODULE += newlib
 
 # set default for CPU_MODEL
 export CPU_MODEL ?= $(CPU)
@@ -94,7 +94,7 @@ endif
 include $(RIOTCPU)/cortexm_common/Makefile.include
 
 # use the nano-specs of Newlib when available
-USEMODULE += newlib_nano
+DEFAULT_MODULE += newlib_nano
 export USE_NANO_SPECS = 1
 
 # Avoid overriding the default rule:
