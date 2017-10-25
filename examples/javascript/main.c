@@ -27,6 +27,7 @@
 #include "xtimer.h"
 #include "lwm2m.h"
 #include "js.h"
+#include "thread.h"
 
 /* include headers generated from *.js */
 #include "lib.js.h"
@@ -35,6 +36,7 @@
 static event_queue_t event_queue;
 
 char script[2048];
+char lwm2mkeepalive[100];
 
 #define MAIN_QUEUE_SIZE (4)
 static msg_t _main_msg_queue[MAIN_QUEUE_SIZE];
@@ -72,6 +74,21 @@ void js_restart(void)
     js_shutdown(&js_start_event);
 }
 
+void *lwm2mkeepalive_handler(void *arg)
+{
+    /* remove warning unused parameter arg */
+    (void)arg;
+    
+    lwm2m_init();
+    
+    while(1) {
+        lwm2m_register();
+        xtimer_sleep(180);
+    }
+    return NULL;
+}
+
+
 int main(void)
 {
     printf("You are running RIOT on a(n) %s board.\n", RIOT_BOARD);
@@ -88,8 +105,12 @@ int main(void)
 
     /* register to LWM2M server */
     puts("initializing coap, registering at lwm2m server");
-    lwm2m_init();
-    lwm2m_register();
+    /* launch lwm2m registration & keepalive thread */
+    thread_create(lwm2mkeepalive, sizeof(lwm2mkeepalive),
+                    THREAD_PRIORITY_MAIN - 1,
+                    THREAD_CREATE_STACKTEST,
+                    lwm2mkeepalive_handler,
+                    NULL, "lwm2m keepalive");
 
     puts("setting up event queue");
     event_queue_init(&event_queue);
