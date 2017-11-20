@@ -10,6 +10,4 @@ ifneq (,$(filter openthread_contrib,$(USEMODULE)))
   DIRS += $(OPENTHREAD_DIR)/contrib/netdev
 endif
 
-EXTRA_LIBS += ${BINDIR}/libmbedcrypto.a
-EXTRA_LIBS += ${BINDIR}/libopenthread.a
-EXTRA_LIBS += ${BINDIR}/libopenthread-cli.a
+EXTRA_LIBS += -Wl,--start-group ${BINDIR}/libmbedcrypto.a ${BINDIR}/libopenthread.a ${BINDIR}/libopenthread-cli.a -Wl,--end-group

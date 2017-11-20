@@ -10,7 +10,7 @@ $(info $$OPENTHREAD_ARGS is [${OPENTHREAD_ARGS}])
 
 .PHONY: all
 
-OPENTHREAD_COMMON_FLAGS=-fdata-sections -ffunction-sections -Os
+OPENTHREAD_COMMON_FLAGS=-fdata-sections -ffunction-sections -Os -Wno-implicit-fallthrough
 all: git-download
 	cd $(PKG_BUILDDIR) && PREFIX="/" ./bootstrap
 	cd $(PKG_BUILDDIR) && CPP="$(CPP)" CC="$(CC)" CXX="$(CXX)"\
@@ -22,7 +22,7 @@ all: git-download
 		LDFLAGS="$(OPENTHREAD_COMMON_FLAGS) $(CFLAGS_CPU) -nostartfiles -specs=nano.specs \
 		-specs=nosys.specs -Wl,--gc-sections -Wl,-Map=map.map " \
 		./configure --disable-docs --host=$(TARGET_ARCH) --target=$(TARGET_ARCH) \
-		--prefix=/ --enable-default-logging ${OPENTHREAD_ARGS}
+		--prefix=/ ${OPENTHREAD_ARGS}
 	cd $(PKG_BUILDDIR) &&  DESTDIR=$(PKG_BUILDDIR)/output PREFIX=/ make -j4 --no-print-directory install
 
 	cp $(PKG_BUILDDIR)/output/lib/libmbedcrypto.a ${BINDIR}/libmbedcrypto.a
