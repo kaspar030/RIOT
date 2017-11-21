@@ -7,13 +7,13 @@
  */
 
 /**
- * @defgroup    boards_nucleo-f401 Nucleo-F401
+ * @defgroup    boards_nucleo-f401re Nucleo-F401
  * @ingroup     boards_nucleo
- * @brief       Board specific files for the nucleo-f401 board
+ * @brief       Board specific files for the nucleo-f401re board
  * @{
  *
  * @file
- * @brief       Board specific definitions for the nucleo-f401 board
+ * @brief       Board specific definitions for the nucleo-f401re board
  *
  * @author      Lari Lehtomäki <lari@lehtomaki.fi>
  */

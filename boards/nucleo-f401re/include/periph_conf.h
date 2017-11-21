@@ -7,11 +7,11 @@
  */
 
 /**
- * @ingroup     boards_nucleo-f401
+ * @ingroup     boards_nucleo-f401re
  * @{
  *
  * @file
- * @name        Peripheral MCU configuration for the nucleo-f401 board
+ * @name        Peripheral MCU configuration for the nucleo-f401re board
  *
  * @author      Lari Lehtomäki <lari@lehtomaki.fi>
  */

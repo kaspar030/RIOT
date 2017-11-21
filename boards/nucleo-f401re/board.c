@@ -7,11 +7,11 @@
  */
 
 /**
- * @ingroup     boards_nucleo-f401
+ * @ingroup     boards_nucleo-f401re
  * @{
  *
  * @file
- * @brief       Board specific implementations for the nucleo-f401 board
+ * @brief       Board specific implementations for the nucleo-f401re board
  *
  * @author      Lari Lehtomäki <lari@lehtomaki.fi>
  *
