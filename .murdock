@@ -10,24 +10,33 @@ error() {
     exit 1
 }
 
-_greplist() {
+_filter() {
     if [ $# -eq 0 ]; then
-        echo cat
+        cat
     else
-        echo -n "grep -E ($1"
+        local list="$1"
         shift
         for i in $*; do
-            echo -n "|$i"
+            list="$list -e $1"
+            shift
         done
-        echo ")"
+        grep -wF $list
     fi
+}
+
+filter() {
+    _filter "" $*
+}
+
+filter_out() {
+    _filter "-v" $*
 }
 
 # get list of all app directories
 get_apps() {
     find tests/ examples/ \
         -mindepth 2 -maxdepth 2 -name Makefile -type f \
-        | xargs dirname | $(_greplist $APPS) | sort
+        | xargs dirname | filter $APPS | sort
 }
 
 # take app dir as parameter, print all boards that are supported
@@ -44,7 +53,7 @@ get_supported_boards() {
     for board in $boards
     do
         echo $board
-    done | $(_greplist $BOARDS)
+    done | filter $BOARDS
 }
 
 # given an app dir as parameter, print "$appdir board" for each supported
@@ -54,7 +63,7 @@ get_app_board_pairs() {
     for board in $(get_supported_boards $appdir)
     do
         echo $appdir $board
-    done | $(_greplist $BOARDS)
+    done | filter $BOARDS
 }
 
 # use dwqc to create full "appdir board" compile job list
