@@ -365,6 +365,48 @@ static void test_fmt_lpad(void)
     TEST_ASSERT_EQUAL_STRING((char*)string, "xxxx3333");
 }
 
+#define PTR_STR_LEN     ((sizeof(void *) * 2) + 2)
+
+static void test_fmt_ptr(void)
+{
+    const char *fixtures[] = {
+#if __INTPTR_WIDTH__ == 16
+        "0x0000", "0x0001", "0xFFFF"
+#elif __INTPTR_WIDTH__ == 32
+        "0x00000000", "0x00000001", "0xFFFFFFFF"
+#else
+#error Please adapt unittests to wordsize!
+#endif
+    };
+
+    char buf[PTR_STR_LEN + 1];
+    char *ptr = NULL;
+
+    memset(buf, '\0', sizeof(buf));
+
+    /* testing output when no "out" parameter given */
+    TEST_ASSERT_EQUAL_INT(fmt_ptr(NULL, ptr), PTR_STR_LEN);
+    TEST_ASSERT_EQUAL_STRING((char*)buf, "");
+
+    /* testing null pointer */
+    fmt_ptr(buf, ptr);
+    TEST_ASSERT_EQUAL_STRING((char*)buf, fixtures[0]);
+
+    /* testing first bit set */
+    ptr = (void *)0x1;
+    memset(buf, '\0', sizeof(buf));
+    fmt_ptr(buf, ptr);
+
+    TEST_ASSERT_EQUAL_STRING((char*)buf, fixtures[1]);
+
+    /* testing all bits set*/
+    ptr = (void *)(0x0 - 1);
+    memset(buf, '\0', sizeof(buf));
+    fmt_ptr(buf, ptr);
+
+    TEST_ASSERT_EQUAL_STRING((char*)buf, fixtures[2]);
+}
+
 Test *tests_fmt_tests(void)
 {
     EMB_UNIT_TESTFIXTURES(fixtures) {
@@ -385,6 +427,7 @@ Test *tests_fmt_tests(void)
         new_TestFixture(test_fmt_str),
         new_TestFixture(test_scn_u32_dec),
         new_TestFixture(test_fmt_lpad),
+        new_TestFixture(test_fmt_ptr),
     };
 
     EMB_UNIT_TESTCALLER(fmt_tests, NULL, NULL, fixtures);
