@@ -62,6 +62,21 @@ extern "C" {
 size_t fmt_byte_hex(char *out, uint8_t byte);
 
 /**
+ * @brief Format a pointer value as hex
+ *
+ * E.g., converts the value 0x1234abcd to the string "0x1234abcd".
+ *
+ * If @p out is NULL, will only return the number of bytes that would have
+ * been written.
+ *
+ * @param[out] out  Pointer to output buffer, or NULL
+ * @param[in]  ptr  Pointer value to format
+ *
+ * @return     (sizeof(ptr) * 2) + 2
+ */
+size_t fmt_ptr(char *out, void *ptr);
+
+/**
  * @brief Formats a sequence of bytes as hex bytes, starting with the last byte
  *
  * Will write 2*n bytes to @p out.
@@ -319,6 +334,13 @@ void print_s32_dec(int32_t val);
  * @param[in]  byte Byte value to print
  */
 void print_byte_hex(uint8_t byte);
+
+/**
+ * @brief Print ptr value as hex to stdout
+ *
+ * @param[in]  ptr Pointer value to print
+ */
+void print_ptr(void *ptr);
 
 /**
  * @brief Print uint32 value as hex to stdout

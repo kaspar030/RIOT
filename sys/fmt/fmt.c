@@ -46,7 +46,8 @@ static const uint32_t _tenmap[] = {
     10000000LU,
 };
 
-#define TENMAP_SIZE  (sizeof(_tenmap) / sizeof(_tenmap[0]))
+#define TENMAP_SIZE     (sizeof(_tenmap) / sizeof(_tenmap[0]))
+#define PTR_STR_LEN     ((sizeof(void *) * 2) + 2)
 
 static inline int _is_digit(char c)
 {
@@ -103,6 +104,17 @@ size_t fmt_u32_hex(char *out, uint32_t val)
 size_t fmt_u64_hex(char *out, uint64_t val)
 {
     return fmt_bytes_hex_reverse(out, (uint8_t*) &val, 8);
+}
+
+size_t fmt_ptr(char *out, void *ptr)
+{
+    if (out) {
+        *out++ = '0';
+        *out++ = 'x';
+        fmt_bytes_hex_reverse(out, (uint8_t *) &ptr, sizeof(ptr));
+    }
+
+    return PTR_STR_LEN;
 }
 
 size_t fmt_u64_dec(char *out, uint64_t val)
@@ -400,4 +412,11 @@ void print_float(float f, unsigned precision)
 void print_str(const char* str)
 {
     print(str, fmt_strlen(str));
+}
+
+void print_ptr(void *ptr)
+{
+    char buf[PTR_STR_LEN];
+    size_t len = fmt_ptr(buf, ptr);
+    print(buf, len);
 }
