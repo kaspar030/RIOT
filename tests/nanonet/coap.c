@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "nanocoap.h"
+#include "net/nanocoap.h"
 #include "nanonet.h"
 
 #define ENABLE_DEBUG (0)
