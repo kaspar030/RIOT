@@ -1,8 +1,8 @@
-APPLICATION = test_nanonet
 include ../Makefile.tests_common
 
-USEMODULE += nanonet core_thread_flags
-USEPKG += nanocoap
+USEMODULE += nanonet
+USEMODULE += core_thread_flags
+USEMODULE += nanocoap
 
 USEMODULE += netdev_default
 #USEMODULE += ethos
