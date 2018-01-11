@@ -18,9 +18,11 @@ typedef struct nano_dev nano_dev_t;
 #define NANO_L2_ADDRLEN (6)
 #endif
 
+typedef int (*nano_dev_send_t)(struct nano_dev *dev, nano_sndbuf_t *buf, uint8_t* dest_mac, ...);
+
 struct nano_dev {
     netdev_t *netdev;
-    int (*send)(struct nano_dev *dev, nano_sndbuf_t *buf, uint8_t* dest_mac, uint16_t ethertype);
+    int (*send)(struct nano_dev *dev, nano_sndbuf_t *buf, uint8_t* dest_mac, ...);
     int (*send_raw)(struct nano_dev *dev, uint8_t* buf, size_t len);
     int (*reply)(nano_ctx_t *ctx);
     uint8_t l2_addr[NANO_L2_ADDRLEN];

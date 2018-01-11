@@ -40,7 +40,6 @@
 
 #ifdef MODULE_NETDEV_TAP
 #include "netdev_tap.h"
-#include "net/gnrc/netdev/eth.h"
 #include "netdev_tap_params.h"
 netdev_tap_t netdev_tap;
 #endif
@@ -136,11 +135,10 @@ static int _send_raw(nano_dev_t *dev, uint8_t* buf, size_t len)
 }
 
 #ifdef NANONET_IEEE802154
-static int _send_ieee80154(nano_dev_t *dev, nano_sndbuf_t *buf, uint8_t* dest_l2addr, uint16_t ethertype)
+static int _send_ieee80154(nano_dev_t *dev, nano_sndbuf_t *buf, uint8_t* dest_l2addr)
 {
     (void)dev;
     (void)dest_l2addr;
-    (void)ethertype;
     DEBUG("_send_ieee80154(): Sending packet with len %u\n", buf->used);
     return 0;
 }
@@ -151,7 +149,7 @@ int nanonet_init_netdev_ieee802154(unsigned devnum)
     nano_dev_t *nanodev = &nanonet_devices[devnum];
     netdev_t *netdev = (netdev_t*)_netdevs[devnum];
 
-    nanodev->send = _send_ieee80154;
+    nanodev->send = (nano_dev_send_t) _send_ieee80154;
     nanodev->send_raw = _send_raw;
     nanodev->l2_needed = sizeof(eth_hdr_t);
     nanodev->netdev = (void*)netdev;
@@ -189,7 +187,7 @@ int nanonet_init_netdev_eth(unsigned devnum)
     nano_dev_t *nanodev = &nanonet_devices[devnum];
     netdev_t *netdev = (netdev_t*)_netdevs[devnum];
 
-    nanodev->send = _send_ethernet;
+    nanodev->send = (nano_dev_send_t) _send_ethernet;
     nanodev->send_raw = _send_raw;
     nanodev->l2_needed = sizeof(eth_hdr_t);
     nanodev->netdev = (void*)netdev;
