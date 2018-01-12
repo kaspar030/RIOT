@@ -97,7 +97,7 @@ void thread_yield(void)
 {
     unsigned old_state = irq_disable();
     thread_t *me = (thread_t *)sched_active_thread;
-    if (me->status >= STATUS_ON_RUNQUEUE) {
+    if (thread_status_on_runqueue(me->status)) {
         clist_lpoprpush(&sched_runqueues[me->priority]);
     }
     irq_restore(old_state);
@@ -107,7 +107,7 @@ void thread_yield(void)
 
 void thread_add_to_list(list_node_t *list, thread_t *thread)
 {
-    assert (thread->status < STATUS_ON_RUNQUEUE);
+    assert (!thread_status_on_runqueue(thread->status));
 
     uint16_t my_prio = thread->priority;
     list_node_t *new_node = (list_node_t*)&thread->rq_entry;

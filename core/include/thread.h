@@ -160,10 +160,11 @@
  * @name Queued thread states
  * @{
  */
-#define STATUS_ON_RUNQUEUE      STATUS_RUNNING  /**< to check if on run queue:
-                                                 `st >= STATUS_ON_RUNQUEUE`             */
-#define STATUS_RUNNING          9               /**< currently running                  */
-#define STATUS_PENDING         10               /**< waiting to be scheduled to run     */
+#define STATUS_ON_RUNQUEUE      (0x80)  /**< to check if on run queue:
+                                                 `st & STATUS_ON_RUNQUEUE`      */
+#define STATUS_RUNNING          (STATUS_ON_RUNQUEUE)    /**< currently running  */
+#define STATUS_PENDING          (STATUS_ON_RUNQUEUE + 1) /**< waiting to be     
+                                                              scheduled to run  */
 /** @} */
 
 /**
@@ -446,6 +447,19 @@ char *thread_stack_init(thread_task_func_t task_func, void *arg, void *stack_sta
  * @param[in] thread    thread to add
  */
 void thread_add_to_list(list_node_t *list, thread_t *thread);
+
+/**
+ * @brief   Return if thread status is on runqueue
+ *
+ * @param[in]   status      Status to be checked
+ *
+ * @returns     != 0 if thread status indicates being on runqueue
+ * @returns     0 otherwise
+ */
+static inline unsigned thread_status_on_runqueue(unsigned status)
+{
+    return (status & STATUS_ON_RUNQUEUE);
+}
 
 #ifdef DEVELHELP
 /**

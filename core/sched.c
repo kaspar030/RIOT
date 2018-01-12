@@ -160,8 +160,8 @@ void sched_register_cb(void (*callback)(uint32_t, uint32_t))
 
 void sched_set_status(thread_t *process, unsigned int status)
 {
-    if (status >= STATUS_ON_RUNQUEUE) {
-        if (!(process->status >= STATUS_ON_RUNQUEUE)) {
+    if (thread_status_on_runqueue(status)) {
+        if (!thread_status_on_runqueue(process->status)) {
             DEBUG("sched_set_status: adding thread %" PRIkernel_pid " to runqueue %" PRIu16 ".\n",
                   process->pid, process->priority);
             clist_rpush(&sched_runqueues[process->priority], &(process->rq_entry));
@@ -169,7 +169,7 @@ void sched_set_status(thread_t *process, unsigned int status)
         }
     }
     else {
-        if (process->status >= STATUS_ON_RUNQUEUE) {
+        if (thread_status_on_runqueue(process->status)) {
             DEBUG("sched_set_status: removing thread %" PRIkernel_pid " to runqueue %" PRIu16 ".\n",
                   process->pid, process->priority);
             clist_lpop(&sched_runqueues[process->priority]);
@@ -187,7 +187,7 @@ void sched_switch(uint16_t other_prio)
 {
     thread_t *active_thread = (thread_t *) sched_active_thread;
     uint16_t current_prio = active_thread->priority;
-    int on_runqueue = (active_thread->status >= STATUS_ON_RUNQUEUE);
+    int on_runqueue = thread_status_on_runqueue(active_thread->status);
 
     DEBUG("sched_switch: active pid=%" PRIkernel_pid" prio=%" PRIu16 " on_runqueue=%i "
           ", other_prio=%" PRIu16 "\n",
