@@ -93,7 +93,7 @@ static void _ble_mac_callback(ble_mac_event_enum_t event, void* arg)
 {
     msg_t m = { .type=event, .content.ptr=arg };
 
-    if ((_ble_netif != NULL) || !msg_send_int(&m, _ble_netif->pid)) {
+    if ((_ble_netif == NULL) || !msg_send_int(&m, _ble_netif->pid)) {
         puts("_ble_mac_callback(): possibly lost interrupt");
     }
 }
