@@ -4,7 +4,6 @@
 
 #include "nano_icmp.h"
 #include "nano_ipv4.h"
-#include "nano_sndbuf.h"
 #include "nano_util.h"
 #include "nano_config.h"
 
@@ -37,27 +36,28 @@ int icmp_handle(nano_ctx_t *ctx, size_t offset)
 
 int icmp_port_unreachable(nano_ctx_t *ctx)
 {
-    uint8_t buf[256];
-    nano_sndbuf_t sndbuf = NANO_SNDBUF_INIT(buf, sizeof(buf));
-
-    ipv4_hdr_t *ipv4_hdr = (ipv4_hdr_t *) ctx->l3_hdr_start;
+    ipv4_hdr_t *ipv4_hdr = (ipv4_hdr_t *)ctx->l3_hdr_start;
 
     /* we have to send back the ipv4 header
      * and the first 8 bytes of a packet.
      */
-    int ipv4_hdr_len = (ipv4_hdr->ver_ihl & ~0xF0) * 4;
+    int ipv4_hdr_len = (ipv4_hdr->ver_ihl & ~0xF0) * 4; /* max 60 bytes */
     int send_back_len = nano_min(ipv4_hdr_len + 8, ntohs(ipv4_hdr->total_len));
 
-    /* allocate icmp header + send_back_len bytes at the end of buf */
-    icmp_hdr_t *hdr = (icmp_hdr_t *) nano_sndbuf_alloc(&sndbuf, sizeof(icmp_hdr_t)+send_back_len);
-
+    /* allocate icmp header + send_back_len bytes */
+    uint8_t buf[sizeof(icmp_hdr_t) + 68];
     /* copy sendback bytes behind header */
-    memcpy(((char*)hdr) + sizeof(icmp_hdr_t), (char*)ipv4_hdr, send_back_len);
+    memcpy((buf + sizeof(icmp_hdr_t)), ipv4_hdr, send_back_len);
 
     /* setup hdr fields */
-    icmp_hdr_set(hdr, 3, 3, 0, sizeof(icmp_hdr_t) + send_back_len);
+    icmp_hdr_t *hdr = (icmp_hdr_t *)buf;
+    icmp_hdr_set(hdr, ICMP4_TYPE_DST_UNREACH, ICMP4_CODE_PORT_UNREACH,
+                 ICMP4_NO_DATA, sizeof(icmp_hdr_t) + send_back_len);
 
-    return ipv4_send(&sndbuf, ctx->src_addr.ipv4, 0x1);
+    /* setup iolist */
+    iolist_t iolist = { NULL, buf, (sizeof(icmp_hdr_t) + send_back_len) };
+
+    return ipv4_send(&iolist, ctx->src_addr.ipv4, 0x1);
 }
 
 static void icmp_hdr_set(icmp_hdr_t *hdr, uint8_t type, uint8_t code, uint32_t rest, size_t len) {
@@ -71,19 +71,9 @@ static void icmp_hdr_set(icmp_hdr_t *hdr, uint8_t type, uint8_t code, uint32_t r
 
 static int icmp_echo_reply(nano_ctx_t *ctx, icmp_hdr_t *request, size_t len)
 {
-    uint8_t buf[256];
-    nano_sndbuf_t sndbuf = NANO_SNDBUF_INIT(buf, sizeof(buf));
+    iolist_t iolist = { NULL, request, len };
 
-    icmp_hdr_t *reply = (icmp_hdr_t *)nano_sndbuf_alloc(&sndbuf, len);
+    icmp_hdr_set(request, ICMP4_TYPE_ECHO_REPLY, ICMP4_CODE_ECHO_REPLY, request->rest, len);
 
-    if (!reply) {
-        DEBUG("icmp_echo_reply(): buffer too small.\n");
-        return -1;
-    }
-
-    memcpy(reply, request, len);
-
-    icmp_hdr_set(reply, 0, 0, request->rest, len);
-
-    return ipv4_send(&sndbuf, ctx->src_addr.ipv4, 0x1);
+    return ipv4_send(&iolist, ctx->src_addr.ipv4, 0x1);
 }

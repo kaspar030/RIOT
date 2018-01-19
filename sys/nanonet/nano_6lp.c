@@ -97,7 +97,7 @@ void nano_ieee802154_get_iid(const uint8_t *addr_in,
         case 4:
             addr_out[0] = addr_in[i++] ^ 0x02;
             addr_out[1] = addr_in[i++];
-
+            /* falls through */
         case 2:
             addr_out[2] = 0;
             addr_out[3] = 0xff;
@@ -190,6 +190,7 @@ static unsigned _stateless_mcast(uint8_t *addr_out, uint8_t *pktpos, unsigned ad
 
 static unsigned _stateful(uint8_t *addr_out, uint8_t *pktpos, unsigned addr_mode, unsigned multicast)
 {
+    (void)pktpos;
     DEBUG("_stateful(): addr_mode=0x%02x (%u)\n", addr_mode, (multicast != 0));
     if (!multicast) {
         return SIXLP_BADADDR;
@@ -333,7 +334,7 @@ static inline int _is_iphc(nano_ctx_t *ctx, size_t offset)
     return ((*(ctx->buf + offset)) & 0xe0) == 0x60;
 }
 
-int nano_6lp_send(nano_sndbuf_t *sndbuf, uint8_t *dst_ip, int protocol, nano_dev_t *dev)
+int nano_6lp_send(const iolist_t *iolist, uint8_t *dst_ip, int protocol, nano_dev_t *dev)
 {
     if (dev && !ipv6_addr_is_link_local(dst_ip)) {
         DEBUG("nano_6lp_send(): device given, but address is not link-local.\n");
@@ -349,19 +350,13 @@ int nano_6lp_send(nano_sndbuf_t *sndbuf, uint8_t *dst_ip, int protocol, nano_dev
     uint8_t buf[2 + 1 + (2*IPV6_ADDR_LEN)];
     uint8_t *hdr = buf;
 
-    /* insert hdr into sndbuf */
-    sndbuf->vec[sndbuf->count].iov_base = buf;
-    sndbuf->vec[sndbuf->count].iov_len = sizeof(buf);
-    sndbuf->count--;
-    sndbuf->used += sizeof(buf);
-
-    puts("c");
+    /* insert hdr into iolist */
+    iolist_t _iolist = { (iolist_t *)iolist, buf, sizeof(buf) };
 
     *hdr++ = 0x7b;  /* IPHC, TF elided, HL255, inline NH, no CI */
     hdr++; /* no address compression */
     *hdr++ = protocol;
 
-    puts("d");
     ipv6_get_src_addr(hdr, dev, dst_ip);
     hdr += IPV6_ADDR_LEN;
 
@@ -372,9 +367,7 @@ int nano_6lp_send(nano_sndbuf_t *sndbuf, uint8_t *dst_ip, int protocol, nano_dev
     memcpy(l2addr, dst_ip + 8, 8);
     l2addr[0] ^= 0x2;
 
-    puts("e");
-
-    return dev->send(dev, sndbuf, l2addr, 0);
+    return dev->send(dev, &_iolist, l2addr, 0);
 }
 
 int nano_6lp_reply(nano_ctx_t *ctx)
@@ -383,14 +376,11 @@ int nano_6lp_reply(nano_ctx_t *ctx)
     /* uint8_t nh = _get_nh(ctx->l3_hdr_start); */
     uint8_t nh=0x3b;
 
-    /* wrap sndbuf around ctx buf */
-    nano_sndbuf_t sndbuf = NANO_SNDBUF_INIT(ctx->buf, ctx->len);
-
-    /* allocate L4 data (will not overwrite, just mark as used within the sndbuf) */
-    nano_sndbuf_alloc(&sndbuf, ctx->buf + ctx->len - ctx->l4_start);
+    /* create iolist with l4 data */
+    iolist_t iolist = { NULL, ctx->l4_start, (ctx->buf + ctx->len - ctx->l4_start) };
 
     /* send L4 data */
-    nano_6lp_send(&sndbuf, ctx->src_addr.ipv6, nh, ctx->dev);
+    nano_6lp_send(&iolist, ctx->src_addr.ipv6, nh, ctx->dev);
 
     return 0;
 }

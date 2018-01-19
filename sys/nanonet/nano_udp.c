@@ -1,13 +1,13 @@
 #include <errno.h>
 
+#include "byteorder.h"
+#include "iolist.h"
+
 #include "nano_udp.h"
 #include "nano_ctx.h"
 #include "nano_icmp.h"
 #include "nano_ipv4.h"
 #include "nano_ipv6.h"
-#include "nano_sndbuf.h"
-
-#include "byteorder.h"
 
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
@@ -69,23 +69,16 @@ int udp_handle(nano_ctx_t *ctx, size_t offset)
     return 0;
 }
 
-static size_t udp_build_hdr(nano_sndbuf_t *buf, uint16_t dst_port, uint16_t src_port) {
-    udp_hdr_t *hdr = (udp_hdr_t *) nano_sndbuf_alloc(buf, sizeof(udp_hdr_t));
-
-    if (!hdr) {
-        DEBUG("udp_build_hdr: buffer too small.\n");
-        return 0;
-    }
+static void udp_build_hdr(udp_hdr_t *hdr, uint16_t dst_port, uint16_t src_port, size_t len)
+{
 
     hdr->src_port = htons(src_port);
     hdr->dst_port = htons(dst_port);
 
-    hdr->length = htons(nano_sndbuf_used(buf));
+    hdr->length = htons(len);
 
     /* checksum will be calculated by IP layer */
     hdr->chksum = 0x0;
-
-    return sizeof(udp_hdr_t);
 }
 
 int udp_reply(nano_ctx_t *ctx)
@@ -114,25 +107,25 @@ int udp_reply(nano_ctx_t *ctx)
 }
 
 #ifdef NANONET_IPV4
-int udp_send(nano_sndbuf_t *buf, uint32_t dst_ip, uint16_t dst_port, uint16_t src_port)
+int udp_send(const iolist_t *iolist, uint32_t dst_ip, uint16_t dst_port, uint16_t src_port)
 {
-    DEBUG("udp: sending packet to 0x%08x\n", (unsigned int) dst_ip);
+    DEBUG("udp: sending packet to 0x%08x\n", (unsigned int)dst_ip);
 
-    if (!udp_build_hdr(buf, dst_port, src_port)) {
-        return -ENOSPC;
-    }
+    udp_hdr_t hdr;
+    udp_build_hdr(&hdr, dst_port, src_port, iolist_size(iolist) + sizeof(hdr));
+    iolist_t _iolist = { (iolist_t *)iolist, &hdr, sizeof(hdr) };
 
-    return ipv4_send(buf, dst_ip, 0x11);
+    return ipv4_send(&_iolist, dst_ip, 0x11);
 }
 #endif
 
-int udp6_send(nano_sndbuf_t *buf, uint8_t* dst_ip, uint16_t dst_port, uint16_t src_port, nano_dev_t *dev)
+int udp6_send(const iolist_t *iolist, uint8_t *dst_ip, uint16_t dst_port, uint16_t src_port, nano_dev_t *dev)
 {
     DEBUG("udp: sending udpv6 packet packet\n");
 
-    if (!udp_build_hdr(buf, dst_port, src_port)) {
-        return -ENOSPC;
-    }
+    udp_hdr_t hdr;
+    udp_build_hdr(&hdr, dst_port, src_port, iolist_size(iolist) + sizeof(hdr));
+    iolist_t _iolist = { (iolist_t *)iolist, &hdr, sizeof(hdr) };
 
-    return ipv6_send(buf, dst_ip, IPV6_NEXTHDR_UDP, dev);
+    return ipv6_send(&_iolist, dst_ip, IPV6_NEXTHDR_UDP, dev);
 }

@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "byteorder.h"
+#include "iolist.h"
 
 #include "nano_config.h"
 
@@ -11,7 +12,6 @@
 #include "nano_icmp.h"
 #include "nano_ipv4.h"
 #include "nano_route.h"
-#include "nano_sndbuf.h"
 #include "nano_udp.h"
 #include "nano_util.h"
 
@@ -73,8 +73,8 @@ ipv4_route_t *ipv4_getroute(uint32_t dest_ip) {
 #endif
 }
 
-int ipv4_send(nano_sndbuf_t *buf, uint32_t dest_ip, int protocol) {
-    ipv4_hdr_t *hdr;
+int ipv4_send(const iolist_t *iolist, uint32_t dest_ip, int protocol)
+{
     ipv4_route_t *route;
     nano_dev_t *dev;
     uint8_t dest_mac[6];
@@ -84,37 +84,32 @@ int ipv4_send(nano_sndbuf_t *buf, uint32_t dest_ip, int protocol) {
         return -1;
     }
 
+    unsigned payload_len = iolist_size(iolist);
+
     dev = route->dev;
 
-    hdr = (ipv4_hdr_t *) nano_sndbuf_alloc(buf, sizeof(ipv4_hdr_t));
-    if (!hdr) {
-        DEBUG("ipv4: send buffer too small.\n");
-        return -ENOSPC;
-    }
+    ipv4_hdr_t hdr = {
+        /* set version to 4, IHL to 5 */
+        .ver_ihl = htons(0x4500),
+        .ttl = 64,
+        .protocol = protocol,
+        .src = htonl(dev->ipv4),
+        .dst = htonl(dest_ip),
+        .total_len = htons(sizeof(hdr) + payload_len)
+    };
 
-    /* clear header */
-    memset(hdr, '\0', sizeof(ipv4_hdr_t));
-
-    /* set version to 4, IHL to 5 */
-    hdr->ver_ihl = htons(0x4500);
-
-    hdr->ttl = 64;
-    hdr->protocol = protocol;
-    hdr->src = htonl(dev->ipv4);
-    hdr->dst = htonl(dest_ip);
-    hdr->total_len = htons(nano_sndbuf_used(buf));
-
-    hdr->hdr_chksum = 0;
-
-    hdr->hdr_chksum = ~nano_util_calcsum(0, (uint8_t*)hdr, sizeof(ipv4_hdr_t));
+    hdr.hdr_chksum = ~nano_util_calcsum(0, (uint8_t *)&hdr, sizeof(ipv4_hdr_t));
 
     if (! arp_cache_get(dev, dest_ip, dest_mac)) {
         DEBUG("ipv4: no ARP entry for 0x%08x\n", (unsigned int)dest_ip);
         return -2;
     }
 
+    /* prepend header to iolist */
+    iolist_t _iolist = { (iolist_t *)iolist, &hdr, sizeof(hdr) };
+
     /* send packet */
-    dev->send(dev, buf, dest_mac, 0x0800);
+    dev->send(dev, &_iolist, dest_mac, 0x0800);
 
     return 0;
 }

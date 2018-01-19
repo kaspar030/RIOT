@@ -5,7 +5,6 @@
 #include <string.h>
 
 #include "nano_ctx.h"
-#include "nano_sndbuf.h"
 #include "nano_ipv6.h"
 
 #define IPV6_NEXTHDR_UDP        (17U)

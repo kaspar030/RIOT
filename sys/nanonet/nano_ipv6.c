@@ -12,6 +12,7 @@
 #include "nano_ndp.h"
 #include "nano_config.h"
 #include "nano_6lp.h"
+#include "nano_eth.h"
 #include "nano_ieee802154.h"
 
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
@@ -166,7 +167,7 @@ static ipv6_route_t *ipv6_getroute(uint8_t *dest_ip) {
     return NULL;
 }
 
-int ipv6_send(nano_sndbuf_t *buf, uint8_t *dst_ip, int protocol, nano_dev_t *dev)
+int ipv6_send(const iolist_t *iolist, uint8_t *dst_ip, int protocol, nano_dev_t *dev)
 {
     uint8_t *l2_addr;
     size_t l2_addr_len;
@@ -192,42 +193,34 @@ int ipv6_send(nano_sndbuf_t *buf, uint8_t *dst_ip, int protocol, nano_dev_t *dev
         return -EAGAIN;
     }
 
+    if (0) {}
 #ifdef NANONET_IEEE802154
-    if (dev->handle_rx == nano_ieee802154_handle) {
+    else if (dev->handle_rx == nano_ieee802154_handle) {
         DEBUG("ipv6_send(): 6lp send not implemented.\n");
+        (void)iolist;
+        (void)protocol;
         return -ENOSPC;
     }
 #endif
-#if defined(NANONET_IEEE802154) && defined(NANONET_ETH)
-    else
-#endif
 #ifdef NANONET_ETH
-    if (dev->handle_rx == nano_eth_handle) {
-        /* allocate our header, check what l2 needs, bail out if not enough */
-        ipv6_hdr_t *hdr = (ipv6_hdr_t *) nano_sndbuf_alloc(buf, sizeof(ipv6_hdr_t));
+    else if (dev->handle_rx == nano_eth_handle) {
+        ipv6_hdr_t hdr = {
+            /* set version to 6, traffic class + flow label to 0 */
+            .ver_tc_fl = htonl(0x60000000U),
+            .hop_limit = 64,
+            .next_header = protocol
+        };
 
-        if (!hdr) {
-            DEBUG("ipv6: send buffer too small.\n");
-            return -ENOSPC;
-        }
-
-        /* clear header */
-        memset(hdr, '\0', sizeof(ipv6_hdr_t));
-
-        /* set version to 6, traffic class + flow label to 0 */
-        hdr->ver_tc_fl = htonl(0x60000000U);
-
-        hdr->hop_limit = 64;
-        hdr->next_header = protocol;
-
-        ipv6_get_src_addr(hdr->src, dev, dst_ip);
-        memcpy(hdr->dst, dst_ip, IPV6_ADDR_LEN);
+        ipv6_get_src_addr(hdr.src, dev, dst_ip);
+        memcpy(hdr.dst, dst_ip, IPV6_ADDR_LEN);
 
         /* send packet */
-        return dev->send(dev, buf, l2_addr, 0x86DD);
+        return dev->send(dev, iolist, l2_addr, 0x86DD);
     }
 #endif
-    return -ENOTSUP;
+    else {
+        return -ENOTSUP;
+    }
 }
 
 void ipv6_addr_print(const uint8_t *addr)
