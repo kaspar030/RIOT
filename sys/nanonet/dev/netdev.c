@@ -102,7 +102,7 @@ static void _netdev_isr(netdev_t *netdev, netdev_event_t event)
                     if (nbytes > 0) {
                         dev->handle_rx(dev, nanonet_rxbuf, nbytes);
                     }
-                } while (nbytes != -1);
+                } while (nbytes >= 0);
             }
             break;
         case NETDEV_EVENT_TX_COMPLETE:
