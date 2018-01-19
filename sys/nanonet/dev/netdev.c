@@ -28,6 +28,7 @@
 #include "thread_flags.h"
 #include "xtimer.h"
 #include "sys/uio.h"
+#include "log.h"
 
 #include "net/netdev/eth.h"
 //#include "net/netdev/ieee802154.h"
@@ -87,7 +88,8 @@ static void _netdev_isr(netdev_t *netdev, netdev_event_t event)
         return;
     }
 
-    nano_dev_t *dev = &nanonet_devices[(unsigned)netdev->context];
+    unsigned devnum = (unsigned)netdev->context;
+    nano_dev_t *dev = &nanonet_devices[devnum];
 
     switch(event) {
         case NETDEV_EVENT_RX_COMPLETE:
@@ -105,6 +107,14 @@ static void _netdev_isr(netdev_t *netdev, netdev_event_t event)
             break;
         case NETDEV_EVENT_TX_COMPLETE:
             break;
+        case NETDEV_EVENT_LINK_UP:
+            /* falls through */
+        case NETDEV_EVENT_LINK_DOWN:
+            {
+                unsigned up = (event == NETDEV_EVENT_LINK_UP);
+                LOG_INFO("nanonet: link %s on dev %u\n", up ? "up" : "down", devnum);
+                break;
+            }
         default:
             DEBUG("_netdev_isr(): unhandled event: %u\n", (unsigned)event);
     }
