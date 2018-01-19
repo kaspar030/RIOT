@@ -33,7 +33,6 @@
 //#include "net/netdev/ieee802154.h"
 
 #include "nanonet.h"
-#include "nano_sndbuf.h"
 
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
@@ -103,43 +102,36 @@ static void _netdev_isr(netdev_t *netdev, netdev_event_t event)
     }
 }
 
-static int _send_ethernet(nano_dev_t *dev, nano_sndbuf_t *buf, uint8_t* dest_mac, uint16_t ethertype)
+static int _send_ethernet(nano_dev_t *dev, const iolist_t *iolist, uint8_t* dest_mac, uint16_t ethertype)
 {
-    DEBUG("nanonet_netdev_send: Sending packet with len %u\n", nano_sndbuf_used(buf));
+    DEBUG("nanonet_netdev_send: Sending packet with len %u\n", (unsigned)iolist_size(iolist));
     netdev_t *netdev = (netdev_t *) dev->netdev;
-    eth_hdr_t *hdr = (eth_hdr_t *) nano_sndbuf_alloc(buf, sizeof(eth_hdr_t));
+    eth_hdr_t hdr = { .ethertype = htons(ethertype) };
 
-    if (!hdr) {
-        DEBUG("_send_ethernet: buffer too small.\n");
-        return -ENOSPC;
-    }
+    memcpy(hdr.dst, dest_mac, 6);
+    memcpy(hdr.src, dev->l2_addr, 6);
 
-    memcpy(hdr->dst, dest_mac, 6);
-    memcpy(hdr->src, dev->l2_addr, 6);
-
-    hdr->ethertype = htons(ethertype);
-
-    netdev->driver->send(netdev, nano_sndbuf_getvec(buf), nano_sndbuf_getcount(buf));
+    iolist_t _iolist = { (iolist_t *)iolist, &hdr, sizeof(hdr) };
+    netdev->driver->send(netdev, &_iolist);
 
     return 0;
 }
 
-static int _send_raw(nano_dev_t *dev, uint8_t* buf, size_t len)
+static int _send_raw(nano_dev_t *dev, uint8_t *buf, size_t len)
 {
     DEBUG("nanonet_netdev_send_raw: Sending packet with len %u\n", len);
     netdev_t *netdev = (netdev_t *) dev->netdev;
-    struct iovec vec = { buf, len };
-    netdev->driver->send(netdev, &vec, 1);
-
+    iolist_t iolist = { NULL, buf, len };
+    netdev->driver->send(netdev, &iolist);
     return 0;
 }
 
 #ifdef NANONET_IEEE802154
-static int _send_ieee80154(nano_dev_t *dev, nano_sndbuf_t *buf, uint8_t* dest_l2addr)
+static int _send_ieee80154(nano_dev_t *dev, const iolist_t *iolist, uint8_t* dest_l2addr)
 {
     (void)dev;
     (void)dest_l2addr;
-    DEBUG("_send_ieee80154(): Sending packet with len %u\n", buf->used);
+    DEBUG("_send_ieee80154(): Sending packet with len %u\n", (unsigned)iolist_size(iolist));
     return 0;
 }
 
