@@ -55,6 +55,11 @@ static uint8_t _ethos_inbuf[2048];
 static at86rf2xx_t at86rf2xx;
 #endif
 
+#ifdef MODULE_ENCX24J600
+#include "encx24j600.h"
+static encx24j600_t encx24j600;
+#endif
+
 static const netdev_t *_netdevs[] = {
 #ifdef MODULE_NETDEV_TAP
     (netdev_t*)&netdev_tap,
@@ -64,6 +69,9 @@ static const netdev_t *_netdevs[] = {
 #endif
 #ifdef MODULE_AT86RF2XX
     (netdev_t*)&at86rf2xx,
+#endif
+#ifdef MODULE_ENCX24J600
+    (netdev_t*)&encx24j600,
 #endif
 };
 
@@ -186,12 +194,12 @@ int nanonet_init_netdev_eth(unsigned devnum)
     nanodev->reply = nano_eth_reply;
     nanodev->handle_rx = nano_eth_handle;
 
-    /* initialize low-level driver */
-    netdev->driver->init(netdev);
-
     /* register the event callback with the device driver */
     netdev->event_callback = _netdev_isr;
     netdev->context = (void*) devnum;
+
+    /* initialize low-level driver */
+    netdev->driver->init(netdev);
 
     /* set up addresses */
     netdev->driver->get(netdev, NETOPT_ADDRESS, (uint8_t*)nanodev->l2_addr, 6);
@@ -202,7 +210,7 @@ int nanonet_init_netdev_eth(unsigned devnum)
     nano_eth_get_iid((nanodev->ipv6_ll + 8), nanodev->l2_addr);
 
 #if ENABLE_DEBUG
-    puts("nanonet_init_dev_eth: Setting link-layer address ");
+    printf("nanonet_init_dev_eth: Setting link-layer address ");
     ipv6_addr_print(nanodev->ipv6_ll);
     puts("");
 #endif
@@ -232,5 +240,15 @@ void nanonet_init_devices(void)
 #ifdef MODULE_AT86RF2XX
     at86rf2xx_setup(&at86rf2xx, (at86rf2xx_params_t*) &at86rf2xx_params[0]);
     nanonet_init_netdev_ieee802154(n++);
+#endif
+
+#ifdef MODULE_ENCX24J600
+    encx24j600_params_t encx24j600_params = {
+        .spi       = ENCX24J600_SPI,
+        .cs_pin    = ENCX24J600_CS,
+        .int_pin   = ENCX24J600_INT
+    };
+    encx24j600_setup(&encx24j600, &encx24j600_params);
+    nanonet_init_netdev_eth(n++);
 #endif
 }
