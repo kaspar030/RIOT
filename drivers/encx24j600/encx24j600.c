@@ -119,8 +119,8 @@ static void _isr(netdev_t *netdev)
         uint16_t estat = reg_get(dev, ENC_ESTAT);
 
         netdev_event_t event = (estat & ENC_PHYLNK) ?
-            NETDEV_EVENT_LINK_DOWN :
-            NETDEV_EVENT_LINK_UP;
+            NETDEV_EVENT_LINK_UP :
+            NETDEV_EVENT_LINK_DOWN;
 
         netdev->event_callback(netdev, event);
     }
