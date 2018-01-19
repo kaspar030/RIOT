@@ -345,6 +345,11 @@ static int _recv(netdev_t *netdev, void *buf, size_t len, void *info)
     (void)info;
     lock(dev);
 
+    if (!_packets_available(dev)) {
+        unlock(dev);
+        return -1;
+    }
+
     /* read frame header */
     sram_op(dev, ENC_RRXDATA, dev->rx_next_ptr, (char*)&hdr, sizeof(hdr));
 
