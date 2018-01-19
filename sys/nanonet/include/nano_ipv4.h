@@ -2,10 +2,12 @@
 #define NANO_IPV4_H
 
 #include <stdint.h>
+
+#include "iolist.h"
 #include "nano_ctx.h"
 
 int ipv4_handle(nano_ctx_t *ctx, size_t offset);
-int ipv4_send(nano_sndbuf_t *buf, uint32_t dest_ip, int protocol);
+int ipv4_send(const iolist_t *iolist, uint32_t dest_ip, int protocol);
 int ipv4_reply(nano_ctx_t *ctx);
 
 typedef struct __attribute__((packed)) ipv4_hdr {
@@ -38,6 +40,5 @@ static inline int ipv4_hdr_len(ipv4_hdr_t* hdr)
      */
     return (hdr->ver_ihl & ~0xF0) * 4;
 }
-
 
 #endif /* NANO_IPV4_H */
