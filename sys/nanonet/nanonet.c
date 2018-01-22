@@ -42,6 +42,8 @@ void nanonet_init(void)
 {
     DEBUG("nanonet: initializing...\n");
 
+    nanonet_thread = (thread_t *)sched_active_thread;
+
     nanonet_init_devices();
 
     DEBUG("nanonet: initialization complete.\n");
@@ -53,8 +55,6 @@ void nanonet_loop(void)
 
     nano_dev_t *dev;
     thread_flags_t flag;
-
-    nanonet_thread = (thread_t*)sched_active_thread;
 
     while(1) {
         flag = thread_flags_wait_one((0x1<<nano_dev_numof)-1);
