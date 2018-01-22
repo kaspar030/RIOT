@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "fmt.h"
 #include "msg.h"
 #include "xtimer.h"
 #include "lwm2m.h"
@@ -103,20 +104,34 @@ void check_script_handler(event_t *event)
 
     puts("checking received script...");
 
+    if (length >= sizeof(script)) {
+        puts("script too long");
+        return;
+    }
+
+    script[length - 1] = '\0';
+
+    const unsigned hexlen = crypto_sign_BYTES * 2;
+
+    char *sigstart = &script[length - hexlen - 1];
+
     uint8_t sm[crypto_sign_BYTES + SHA256_DIGEST_LENGTH];
     uint8_t m[crypto_sign_BYTES + SHA256_DIGEST_LENGTH];
-    if (length < (crypto_sign_BYTES + 1)) {
+    /* make sure the buffer contains enough bytes for "// <signature>\n" */
+    if (length < ((hexlen + 4))) {
         puts("received script too short (no sig?)");
         *script = '\0';
         return;
     }
 
-    memcpy(sm, script + length - crypto_sign_BYTES, crypto_sign_BYTES);
-    script[length - crypto_sign_BYTES] = '\0';
+    printf("signature: \"%s\"\n", sigstart);
+    fmt_hex_bytes(sm, sigstart);
+
+    script[length - (hexlen + 4)] = '\0';
 
     sha256_context_t sha256;
     sha256_init(&sha256);
-    sha256_update(&sha256, script, length - crypto_sign_BYTES);
+    sha256_update(&sha256, script, length - (hexlen + 4));
     sha256_final(&sha256, sm + crypto_sign_BYTES);
 
     puts("verifying script...");
