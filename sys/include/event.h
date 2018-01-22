@@ -153,6 +153,14 @@ void event_queue_init(event_queue_t *queue);
 void event_post(event_queue_t *queue, event_t *event);
 
 /**
+ * @brief   Post event to front of list
+ *
+ * @param[in]   queue   event queue to queue event in
+ * @param[in]   event   event to queue in event queue
+ */
+void event_post_first(event_queue_t *queue, event_t *event);
+
+/**
  * @brief   Cancel a queued event
  *
  * This will remove a queued event from an event queue.
