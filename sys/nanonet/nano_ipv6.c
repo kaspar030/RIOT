@@ -122,17 +122,20 @@ int ipv6_reply(nano_ctx_t *ctx)
 
 static uint16_t calcsum(ipv6_hdr_t *hdr)
 {
-    uint16_t csum = 0;
+    uint16_t csum;
 
     /* calculate checksum for IPv6 pseudo header */
-    if (((uint32_t)(hdr->payload_len) + hdr->next_header) > 0xffff) {
-        csum = 1;
-    }
-    csum = nano_util_calcsum(csum + hdr->payload_len + (hdr->next_header << 8),
-                             hdr->src, (2 * IPV6_ADDR_LEN));
+    uint32_t payload_len = htonl(ntohs(hdr->payload_len));
+    uint8_t nh[2] = { 0, hdr->next_header };
+
+    csum = nano_util_calcsum(0, (uint8_t *)&payload_len, 4);
+    csum = nano_util_calcsum(csum, nh, sizeof(nh));
+    csum = nano_util_calcsum(csum, hdr->src, (2 * IPV6_ADDR_LEN));
+
     /* add actual data fields */
-    csum = nano_util_calcsum(csum, (const uint8_t *)(hdr + 1),
+    csum = nano_util_calcsum(csum, (uint8_t *)(hdr + 1),
                              (size_t)ntohs(hdr->payload_len));
+
     return csum;
 }
 

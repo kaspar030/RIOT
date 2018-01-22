@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-uint16_t nano_util_calcsum(uint16_t csum, const uint8_t *buffer, size_t len);
+uint16_t nano_util_calcsum(uint32_t csum, const uint8_t *buffer, size_t len);
 
 void nano_util_addr_dump(uint8_t *addr, size_t len);
 
