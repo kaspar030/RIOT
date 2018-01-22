@@ -10,8 +10,8 @@ RIOT_INCLUDE   := $(RIOTBASE)/sys/include
 SHA256_DIR     := $(RIOTBASE)/sys/hashes
 SHA256_INCLUDE := $(RIOT_INCLUDE)/hashes
 TWEETNACL_DIR  := $(PKG_BUILDDIR)
-TWEETNACL_SRC  := #$(TWEETNACL_DIR)/tweetnacl.c randombytes.c
-TWEETNACL_HDR  := #$(TWEETNACL_DIR)/tweetnacl.h
+TWEETNACL_SRC  := $(TWEETNACL_DIR)/tweetnacl.c randombytes.c
+TWEETNACL_HDR  := $(TWEETNACL_DIR)/tweetnacl.h
 COMMON_SRC     := common.c
 COMMON_HDR     := common.h
 
