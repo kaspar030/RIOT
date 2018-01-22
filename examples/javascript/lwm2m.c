@@ -42,9 +42,9 @@ static char lwm2m_server_port[] = "6683";
 static char device_id[10];
 
 extern char script[];
-extern void js_restart(void);
+extern void check_script(unsigned len);
 
-ssize_t _blockwise_script_handler(coap_pkt_t* pkt, uint8_t *buf, size_t len)
+static ssize_t _blockwise_script_handler(coap_pkt_t* pkt, uint8_t *buf, size_t len)
 {
     printf("_blockwise_script_handler()\n");
 
@@ -63,24 +63,12 @@ ssize_t _blockwise_script_handler(coap_pkt_t* pkt, uint8_t *buf, size_t len)
             result = COAP_CODE_231;
         }
         else {
-            script[offset + pkt->payload_len] = '\0';
-            puts("script received (blockwise):");
-            puts("-----");
-            puts(script);
-            puts("-----");
-            puts("restarting js.");
-            js_restart();
+            check_script(offset + pkt->payload_len);
         }
     }
     else {
         memcpy(script, (char *)pkt->payload, pkt->payload_len);
-        script[pkt->payload_len] = '\0';
-        puts("script received:");
-        puts("-----");
-        puts(script);
-        puts("-----");
-        puts("restarting js.");
-        js_restart();
+        check_script(pkt->payload_len);
     }
 
     ssize_t reply_len = coap_build_reply(pkt, result, buf, len, 0);

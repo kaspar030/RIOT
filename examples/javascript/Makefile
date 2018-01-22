@@ -22,8 +22,7 @@ BOARD_BLACKLIST := arduino-duemilanove arduino-mega2560 arduino-uno chronos \
 CFLAGS += -DDEVELHELP
 
 # Set stack size to something (conservatively) enormous
-CFLAGS += -DTHREAD_STACKSIZE_MAIN=4096 -g 
-#-DGCOAP_STACK_SIZE=2560
+CFLAGS += -DTHREAD_STACKSIZE_MAIN=6132 -g -DGCOAP_STACK_SIZE=2048
 export JERRYHEAP=9
 
 USEMODULE += js
@@ -37,6 +36,10 @@ USEMODULE += gnrc_ipv6_router_default
 USEMODULE += gnrc_icmpv6_echo
 USEMODULE += gcoap
 USEMODULE += sock_util
+
+USEMODULE += hashes
+USEPKG += tweetnacl
+USEMODULE += ps
 
 CFLAGS += -DGCOAP_PDU_BUF_SIZE=128 -DGNRC_PKTBUF_SIZE=2048
 

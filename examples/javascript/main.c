@@ -31,10 +31,19 @@
 /* include headers generated from *.js */
 #include "lib.js.h"
 #include "local.js.h"
+#include "ps.h"
+#include "hashes/sha256.h"
+#include "tweetnacl.h"
+
+static const unsigned char pk[] = {
+  0xf4, 0x53, 0x44, 0x70, 0x3e, 0x71, 0x84, 0xe2, 0x8f, 0x75, 0x4d, 0x72,
+  0x71, 0xb4, 0x3a, 0xd1, 0x9e, 0x45, 0x10, 0x5f, 0x71, 0xc3, 0x85, 0x59,
+  0x20, 0xe3, 0x84, 0x6a, 0x21, 0x60, 0x3c, 0xe2
+};
 
 static event_queue_t event_queue;
 
-char script[2048];
+char script[512];
 
 #define MAIN_QUEUE_SIZE (4)
 static msg_t _main_msg_queue[MAIN_QUEUE_SIZE];
@@ -72,6 +81,60 @@ void js_restart(void)
     js_shutdown(&js_start_event);
 }
 
+typedef struct {
+    event_t super;
+    unsigned length;
+} check_script_event_t;
+
+void check_script_handler(event_t *event);
+static check_script_event_t _check_script_event = { .super.handler = check_script_handler };
+
+void check_script(unsigned length)
+{
+    _check_script_event.length = length;
+    event_post_first(&event_queue, (event_t *)&_check_script_event);
+}
+
+void check_script_handler(event_t *event)
+{
+    check_script_event_t *check_script_event = (check_script_event_t *)event;
+
+    unsigned length = check_script_event->length;
+
+    puts("checking received script...");
+
+    uint8_t sm[crypto_sign_BYTES + SHA256_DIGEST_LENGTH];
+    uint8_t m[crypto_sign_BYTES + SHA256_DIGEST_LENGTH];
+    if (length < (crypto_sign_BYTES + 1)) {
+        puts("received script too short (no sig?)");
+        *script = '\0';
+        return;
+    }
+
+    memcpy(sm, script + length - crypto_sign_BYTES, crypto_sign_BYTES);
+    script[length - crypto_sign_BYTES] = '\0';
+
+    sha256_context_t sha256;
+    sha256_init(&sha256);
+    sha256_update(&sha256, script, length - crypto_sign_BYTES);
+    sha256_final(&sha256, sm + crypto_sign_BYTES);
+
+    puts("verifying script...");
+    unsigned long long mlen;
+    if (crypto_sign_open(m, &mlen, sm, sizeof(sm), pk)) {
+        puts("script verification failed");
+        *script='\0';
+    }
+    else {
+        puts("script received:");
+        puts("-----");
+        puts(script);
+        puts("-----");
+        puts("restarting js.");
+        js_restart();
+    }
+}
+
 int main(void)
 {
     printf("You are running RIOT on a(n) %s board.\n", RIOT_BOARD);
@@ -95,6 +158,7 @@ int main(void)
     event_queue_init(&event_queue);
     js_event_queue = &event_queue;
 
+    ps();
     puts("Entering event loop...");
     event_loop(&event_queue);
 
