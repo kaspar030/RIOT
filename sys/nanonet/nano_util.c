@@ -5,23 +5,27 @@
 /* calcsum - used to calculate IP and ICMP header checksums using
  * one's compliment of the one's compliment sum of 16 bit words of the header
  */
-uint16_t nano_util_calcsum(uint16_t csum, const uint8_t *buffer, size_t len)
+uint16_t nano_util_calcsum(uint32_t sum, const uint8_t *buffer, size_t len)
 {
-    uint32_t sum = csum;
-    uint16_t *data = (uint16_t *)buffer;
-
     /* add all even 16-bit words to the checksum */
-    for (size_t i = 0; i < (len / 2); i++) {
-        sum += data[i];
+    while (len > 1) {
+        sum += *(uint16_t *)buffer;
+        len -= 2;
+        buffer += 2;
     }
+
     /* add the last missing byte in case of an un-even byte-count */
-    if (len & 0x01) {
-        sum += (buffer[len - 1] << 8);
+    if (len) {
+        uint8_t tmp[2] = { *buffer, 0 };
+        sum += *(uint16_t *)tmp;
     }
-    /* add the upper 16 bit to the lower 16 bit and add the eventual carry */
-    sum = (sum >> 16) + (sum & 0xffff);
-    sum += (sum >> 16);
-    return (uint16_t)sum;
+
+    /* Fold 32-bit sum to 16 bits */
+    while (sum >> 16) {
+        sum = (sum & 0xffff) + (sum >> 16);
+    }
+
+    return sum;
 }
 
 #if ENABLE_DEBUG
