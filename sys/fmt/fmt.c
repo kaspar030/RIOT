@@ -258,52 +258,55 @@ size_t fmt_s16_dfp(char *out, int16_t val, int fp_digits)
 
 size_t fmt_s32_dfp(char *out, int32_t val, int fp_digits)
 {
-    assert(fp_digits > -(int)TENMAP_SIZE);
-
-    unsigned  pos = 0;
-
-    if (fp_digits == 0) {
-        pos = fmt_s32_dec(out, val);
-    }
-    else if (fp_digits > 0) {
-        pos = fmt_s32_dec(out, val);
+    unsigned negative = 0;
+    if (val < 0) {
+        val = -val;
         if (out) {
-            memset(&out[pos], '0', fp_digits);
+            *out++ = '-';
         }
-        pos += fp_digits;
+        negative++;
     }
-    else {
-        fp_digits *= -1;
-        uint32_t e = _tenmap[fp_digits];
-        int32_t abs = (val / (int32_t)e);
-        int32_t div = val - (abs * e);
+    return fmt_u32_dfp(out, val, fp_digits) + negative;
+}
 
-        /* the divisor should never be negative */
-        if (div < 0) {
-            div *= -1;
-        }
-        /* handle special case for negative number with zero as absolute value */
-        if ((abs == 0) && (val < 0)) {
+size_t fmt_u32_dfp(char *out, uint32_t val, int _fp_digits)
+{
+    char buf[13];
+    size_t len = fmt_u32_dec(buf, val);
+
+    if (_fp_digits < 0) {
+        unsigned fp_digits = -_fp_digits;
+        if (len <= fp_digits) {
+            /* add "0.0..." */
+            unsigned outlen = fp_digits + 2;
             if (out) {
-                out[pos] = '-';
+                memset(out, '0', outlen);
+                memcpy(out + (outlen - len), buf, len);
+                out[1] = '.';
             }
-            pos++;
-        }
-
-        if (!out) {
-            /* compensate for the decimal point character... */
-            pos += fmt_s32_dec(NULL, abs) + 1;
+            return fp_digits + 2;
         }
         else {
-            pos += fmt_s32_dec(&out[pos], abs);
-            out[pos++] = '.';
-            unsigned div_len = fmt_s32_dec(&out[pos], div);
-            fmt_lpad(&out[pos], div_len, (size_t)fp_digits, '0');
+            /* insert "." */
+            if (out) {
+                unsigned predot = len - fp_digits;
+                memcpy(out, buf, predot);
+                out += predot;
+                *out++ = '.';
+                memcpy(out, buf + predot, fp_digits);
+            }
+            return len + 1;
         }
-        pos += fp_digits;
     }
-
-    return pos;
+    else {
+        if (out) {
+            memcpy(out, buf, len);
+            if (_fp_digits) {
+                memset(out + len, '0', _fp_digits);
+            }
+        }
+        return len + _fp_digits;
+    }
 }
 
 /* this is very probably not the most efficient implementation, as it at least

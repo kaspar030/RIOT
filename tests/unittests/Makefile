@@ -1,5 +1,5 @@
 include ../Makefile.tests_common
-
+#CFLAGS += -g
 BOARD_INSUFFICIENT_MEMORY := airfy-beacon \
                              arduino-duemilanove \
                              arduino-mega2560 \

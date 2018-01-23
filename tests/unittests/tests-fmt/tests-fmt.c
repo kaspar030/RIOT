@@ -427,10 +427,10 @@ static void test_fmt_s16_dfp(void)
     out[act_len] = '\0';
     TEST_ASSERT_EQUAL_STRING("17000000000", (char *)out);
 }
-
+#include <stdio.h>
 static void test_fmt_s32_dfp(void)
 {
-    char out[28] = "-------------";
+    char out[30] = "-------------";
     int32_t val;
     unsigned fpp;
     size_t len;
@@ -552,6 +552,15 @@ static void test_fmt_s32_dfp(void)
     TEST_ASSERT_EQUAL_INT(10, act_len);
     out[act_len] = '\0';
     TEST_ASSERT_EQUAL_STRING("-0.0000001", (char *)out);
+
+    /*val = -1;
+    fpp = -25;
+    len = fmt_s32_dfp(NULL, val, fpp);
+    TEST_ASSERT_EQUAL_INT(28, len);
+    act_len = fmt_s32_dfp(out, val, fpp);
+    TEST_ASSERT_EQUAL_INT(28, act_len);
+    out[act_len] = '\0';
+    TEST_ASSERT_EQUAL_STRING("-0.0000000000000000000000001", (char *)out);*/
 }
 
 static void test_fmt_strlen(void)

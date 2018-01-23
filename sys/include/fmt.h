@@ -246,6 +246,7 @@ size_t fmt_s16_dfp(char *out, int16_t val, int fp_digits);
  *
  * @return      Length of the resulting string
  */
+size_t fmt_u32_dfp(char *out, uint32_t val, int fp_digits);
 size_t fmt_s32_dfp(char *out, int32_t val, int fp_digits);
 
 /**
