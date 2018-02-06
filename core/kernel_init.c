@@ -65,7 +65,9 @@ static void *idle_thread(void *arg)
     (void) arg;
 
     while (1) {
+#ifdef MODULE_PERIPH_PM
         pm_set_lowest();
+#endif
     }
 
     return NULL;

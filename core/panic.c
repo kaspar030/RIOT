@@ -73,12 +73,16 @@ NORETURN void core_panic(core_panic_t crash_code, const char *message)
     /* disable watchdog and all possible sources of interrupts */
     irq_disable();
     panic_arch();
+#ifdef MODULE_PERIPH_PM
 #ifndef DEVELHELP
     /* DEVELHELP not set => reboot system */
     pm_reboot();
 #else
     /* DEVELHELP set => power off system */
     pm_off();
+#endif
+#else
+    while (1) {}
 #endif
 
     /* tell the compiler that we won't return from this function
