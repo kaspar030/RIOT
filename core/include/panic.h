@@ -52,6 +52,8 @@ typedef enum {
     PANIC_UNDEFINED
 } core_panic_t;
 
+#if defined(MODULE_CORE_PANIC) || defined(DOXYGEN)
+
 /**
  * @brief Handle an unrecoverable error by halting or rebooting the system
  *
@@ -81,6 +83,15 @@ NORETURN void core_panic(core_panic_t crash_code, const char *message);
  * dependent code in case of a severe error.
  */
 void panic_arch(void);
+
+#else
+static inline void core_panic(core_panic_t crash_code, const char *message)
+{
+    (void) crash_code;
+    (void) message;
+    while(1) {};
+}
+#endif
 
 #ifdef __cplusplus
 }
