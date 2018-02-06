@@ -689,10 +689,13 @@ ifneq (,$(filter fatfs_vfs,$(USEMODULE)))
 endif
 
 # always select gpio (until explicit dependencies are sorted out)
-FEATURES_OPTIONAL += periph_gpio
+FEATURES_DEFAULT += periph_gpio
 
 # always select power management if available
-FEATURES_OPTIONAL += periph_pm
+FEATURES_DEFAULT += periph_pm
+
+# handle opt-out for features enabled by default
+FEATURES_OPTIONAL += $(filter-out $(FEATURES_DISABLED),$(FEATURES_DEFAULT))
 
 # include package dependencies
 -include $(USEPKG:%=$(RIOTPKG)/%/Makefile.dep)
