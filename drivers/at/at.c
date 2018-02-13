@@ -60,7 +60,7 @@ void at_send_bytes(at_dev_t *dev, const char *bytes, size_t len)
 
 int at_send_cmd(at_dev_t *dev, const char *command, uint32_t timeout)
 {
-    unsigned cmdlen = strlen(command);
+    size_t cmdlen = strlen(command);
 
     uart_write(dev->uart, (const uint8_t *)command, cmdlen);
     uart_write(dev->uart, (const uint8_t *)AT_EOL, AT_EOL_LEN);
@@ -82,6 +82,7 @@ void at_drain(at_dev_t *dev)
     int res;
 
     do {
+        /* consider no character within 10ms "drained" */
         res = isrpipe_read_timeout(&dev->isrpipe, _tmp, sizeof(_tmp), 10000U);
     } while (res > 0);
 }
@@ -141,6 +142,9 @@ ssize_t at_send_cmd_get_lines(at_dev_t *dev, const char *command,
             else if (strncmp(pos, "+CME ERROR:", 11) == 0) {
                 return -1;
             }
+            else if (strncmp(pos, "+CMS ERROR:", 11) == 0) {
+                return -1;
+            }
             else {
                 pos += res;
                 if (bytes_left) {
@@ -163,19 +167,11 @@ out:
 
 int at_send_cmd_wait_prompt(at_dev_t *dev, const char *command, uint32_t timeout)
 {
-    unsigned cmdlen = strlen(command);
-
     at_drain(dev);
 
-    uart_write(dev->uart, (const uint8_t *)command, cmdlen);
-    uart_write(dev->uart, (const uint8_t *)AT_EOL, AT_EOL_LEN);
-
-    if (at_expect_bytes(dev, command, timeout)) {
-        return -1;
-    }
-
-    if (at_expect_bytes(dev, AT_EOL "\n", timeout)) {
-        return -2;
+    int res = at_send_cmd(dev, command, timeout);
+    if (res < 0) {
+        return res;
     }
 
     if (at_expect_bytes(dev, ">", timeout)) {
