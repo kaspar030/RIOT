@@ -99,7 +99,7 @@ int adc_sample(adc_t line, adc_res_t res)
     int sample;
 
     /* check if resolution is applicable */
-    if (res < 0xff) {
+    if (res & 0xff) {
         return -1;
     }
 
@@ -119,4 +119,29 @@ int adc_sample(adc_t line, adc_res_t res)
     done(line);
 
     return sample;
+}
+
+int adc_sample_prepare(adc_t line, adc_res_t res)
+{
+    /* check if resolution is applicable */
+    if (res & 0xff) {
+        return -1;
+    }
+
+    /* lock and power on the ADC device  */
+    prep(line);
+
+    /* set resolution and conversion channel */
+    dev(line)->CR1 = res;
+    dev(line)->SQR3 = adc_config[line].chan;
+    return 0;
+}
+
+unsigned adc_sample_fast(adc_t line)
+{
+    /* start conversion and wait for results */
+    dev(line)->CR2 |= ADC_CR2_SWSTART;
+    while (!(dev(line)->SR & ADC_SR_EOC)) {}
+    /* finally read sample and reset the STRT bit in the status register */
+    return dev(line)->DR;
 }
