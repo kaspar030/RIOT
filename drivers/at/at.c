@@ -167,11 +167,19 @@ out:
 
 int at_send_cmd_wait_prompt(at_dev_t *dev, const char *command, uint32_t timeout)
 {
+    unsigned cmdlen = strlen(command);
+
     at_drain(dev);
 
-    int res = at_send_cmd(dev, command, timeout);
-    if (res < 0) {
-        return res;
+    uart_write(dev->uart, (const uint8_t *)command, cmdlen);
+    uart_write(dev->uart, (const uint8_t *)AT_EOL, AT_EOL_LEN);
+
+    if (at_expect_bytes(dev, command, timeout)) {
+        return -1;
+    }
+
+    if (at_expect_bytes(dev, AT_EOL "\n", timeout)) {
+        return -2;
     }
 
     if (at_expect_bytes(dev, ">", timeout)) {
