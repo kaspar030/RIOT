@@ -21,15 +21,19 @@ void nano_eth_handle(nano_dev_t *dev, uint8_t *buf, size_t len)
     int (*handler)(nano_ctx_t *, size_t) = NULL;
 
     switch (ntohs(pkt->ethertype)) {
+#ifdef NANONET_IPV4
         case 0x0800:
             handler = ipv4_handle;
             break;
         case 0x0806:
             handler = arp_handle;
             break;
+#endif
+#ifdef NANONET_IPV6
         case 0x86DD:
             handler = ipv6_handle;
             break;
+#endif
         default:
             DEBUG("unknown ethertype 0x%04x\n", ntohs(pkt->ethertype));
     }
