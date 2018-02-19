@@ -54,11 +54,13 @@ int udp_handle(nano_ctx_t *ctx, size_t offset)
     }
     else {
         if (is_ipv4_hdr(ctx->l3_hdr_start)) {
+#ifdef NANONET_IPV4
             if (! (ctx->src_addr.ipv4 || (~ctx->dst_addr.ipv4))) {
                 /* also filter broadcast */
                 DEBUG("udp: unreachable port %u\n", dst_port);
                 icmp_port_unreachable(ctx);
             }
+#endif
         }
         else {
             DEBUG("udp: UDPv6: not filtering broadcast icmp reply\n");
@@ -98,11 +100,17 @@ int udp_reply(nano_ctx_t *ctx)
     hdr->length = htons(ctx->len - ((uint8_t*)hdr - ctx->buf));
     hdr->chksum = 0x0;
 
-    if (is_ipv4_hdr(ctx->l3_hdr_start)) {
-        return ipv4_reply(ctx);
-    }
-    else {
-        return ipv6_reply(ctx);
+    switch (is_ipv4_hdr(ctx->l3_hdr_start)) {
+#ifdef NANONET_IPV4
+        case 1:
+            return ipv4_reply(ctx);
+#endif
+#ifdef NANONET_IPV6
+        case 0:
+            return ipv6_reply(ctx);
+#endif
+        default:
+            return 0;
     }
 }
 
@@ -119,6 +127,7 @@ int udp_send(const iolist_t *iolist, uint32_t dst_ip, uint16_t dst_port, uint16_
 }
 #endif
 
+#ifdef NANONET_IPV6
 int udp6_send(const iolist_t *iolist, uint8_t *dst_ip, uint16_t dst_port, uint16_t src_port, nano_dev_t *dev)
 {
     DEBUG("udp: sending udpv6 packet packet\n");
@@ -129,3 +138,4 @@ int udp6_send(const iolist_t *iolist, uint8_t *dst_ip, uint16_t dst_port, uint16
 
     return ipv6_send(&_iolist, dst_ip, IPV6_NEXTHDR_UDP, dev);
 }
+#endif
