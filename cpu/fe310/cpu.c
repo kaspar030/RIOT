@@ -166,11 +166,12 @@ void handle_trap(unsigned int mcause)
     if ((mcause & MCAUSE_INT) == MCAUSE_INT) {
         /* Cause is an interrupt - determine type */
         switch (mcause & MCAUSE_CAUSE) {
+#ifdef MODULE_PERIPH_TIMER
             case IRQ_M_TIMER:
                 /* Handle timer interrupt */
                 timer_isr();
                 break;
-
+#endif
             case IRQ_M_EXT:
                 /* Handle external interrupt */
                 external_isr();
