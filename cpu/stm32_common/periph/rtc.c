@@ -161,7 +161,7 @@ static int bcd2val(uint32_t val, int shift, uint32_t mask)
     return (((tmp >> 4) * 10) + (tmp & 0x0f));
 }
 
-static inline void rtc_unlock(void)
+void rtc_unlock(void)
 {
     /* enable backup clock domain */
     stmclk_dbp_unlock();
@@ -173,7 +173,7 @@ static inline void rtc_unlock(void)
     while (!(RTC->ISR & RTC_ISR_INITF)) {}
 }
 
-static inline void rtc_lock(void)
+void rtc_lock(void)
 {
     /* exit RTC init mode */
     RTC->ISR &= ~RTC_ISR_INIT;
@@ -184,7 +184,7 @@ static inline void rtc_lock(void)
     stmclk_dbp_lock();
 }
 
-void rtc_init(void)
+void rtc_enable(void)
 {
     /* enable low frequency clock */
     stmclk_enable_lfclk();
@@ -197,7 +197,11 @@ void rtc_init(void)
 #else
     EN_REG |= (CLKSEL_LSI | EN_BIT);
 #endif
+}
 
+void rtc_init(void)
+{
+    rtc_enable();
     rtc_unlock();
     /* reset configuration */
     RTC->CR = 0;
