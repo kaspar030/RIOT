@@ -121,16 +121,14 @@ int adc_sample(adc_t line, adc_res_t res)
     return sample;
 }
 
+void adc_poweron(adc_t line)
+{
+    /* lock power on the ADC device  */
+    periph_clk_en(APB2, (RCC_APB2ENR_ADC1EN << adc_config[line].dev));
+}
+
 int adc_sample_prepare(adc_t line, adc_res_t res)
 {
-    /* check if resolution is applicable */
-    if (res & 0xff) {
-        return -1;
-    }
-
-    /* lock and power on the ADC device  */
-    prep(line);
-
     /* set resolution and conversion channel */
     dev(line)->CR1 = res;
     dev(line)->SQR3 = adc_config[line].chan;
