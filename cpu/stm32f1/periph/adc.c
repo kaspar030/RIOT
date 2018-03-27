@@ -56,7 +56,6 @@ static inline ADC_TypeDef *dev(adc_t line)
 static inline void prep(adc_t line)
 {
     mutex_lock(&locks[adc_config[line].dev]);
-    periph_clk_en(APB2, (RCC_APB2ENR_ADC1EN << adc_config[line].dev));
 }
 
 static inline void done(adc_t line)
@@ -123,6 +122,29 @@ int adc_init(adc_t line)
     /* free the device again */
     done(line);
     return 0;
+}
+
+void adc_poweron(adc_t line)
+{
+    /* lock power on the ADC device  */
+    periph_clk_en(APB2, (RCC_APB2ENR_ADC1EN << adc_config[line].dev));
+}
+
+int adc_sample_prepare(adc_t line, adc_res_t res)
+{
+    (void)res;
+    /* set conversion channel */
+    dev(line)->SQR3 = adc_config[line].chan;
+    return 0;
+}
+
+int adc_sample_fast(adc_t line)
+{
+    /* start conversion and wait for results */
+    dev(line)->CR2 |= ADC_CR2_SWSTART;
+    while (!(dev(line)->SR & ADC_SR_EOC)) {}
+    /* finally read sample */
+    return (int)dev(line)->DR;
 }
 
 int adc_sample(adc_t line, adc_res_t res)
