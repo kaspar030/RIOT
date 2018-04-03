@@ -228,3 +228,27 @@ void mma8x5x_read(const mma8x5x_t *dev, mma8x5x_data_t *data)
     data->y = ((int16_t)(buf[3] << 8 | buf[4])) / (16 >> dev->params.range);
     data->z = ((int16_t)(buf[5] << 8 | buf[6])) / (16 >> dev->params.range);
 }
+
+void mma8x5x_enable_orientation(const mma8x5x_t *dev)
+{
+    mma8x5x_set_standby(dev);
+    _reg_setbits(dev, MMA8X5X_PL_CFG, MMA8X5X_PL_CFG_PL_EN);
+    mma8x5x_set_active(dev);
+}
+
+static const char *_lapo2str[] = {
+    [MMA8X5X_PL_STATUS_LAPO_P_UP] = "portrait up",
+    [MMA8X5X_PL_STATUS_LAPO_P_DOWN] = "portrait down",
+    [MMA8X5X_PL_STATUS_LAPO_L_LEFT] = "landscape left",
+    [MMA8X5X_PL_STATUS_LAPO_L_RIGHT] = "landscape right"
+};
+
+unsigned mma8x5x_get_orientation(const mma8x5x_t *dev)
+{
+    return _get_reg(dev, MMA8X5X_PL_STATUS) ;
+}
+
+const char *mma8x5x_orientation2str(unsigned status)
+{
+    return _lapo2str[(status & MMA8X5X_PL_STATUS_LAPO_MASK) >> 1];
+}
