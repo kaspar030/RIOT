@@ -91,7 +91,7 @@ ssize_t at_send_cmd_get_resp(at_dev_t *dev, const char *command,
                              char *resp_buf, size_t len, uint32_t timeout)
 {
     ssize_t res;
-
+  
     at_drain(dev);
 
     res = at_send_cmd(dev, command, timeout);
@@ -113,6 +113,7 @@ ssize_t at_send_cmd_get_lines(at_dev_t *dev, const char *command,
                               char *resp_buf, size_t len, uint32_t timeout)
 {
     ssize_t res;
+
     size_t bytes_left = len - 1;
     char *pos = resp_buf;
 
