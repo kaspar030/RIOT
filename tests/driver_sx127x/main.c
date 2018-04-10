@@ -104,11 +104,11 @@ int lora_setup_cmd(int argc, char **argv) {
     /* Configure radio device */
     netdev_t *netdev = (netdev_t*) &sx127x;
     netdev->driver->set(netdev, NETOPT_BANDWIDTH,
-                        &lora_bw, sizeof(uint8_t));
+                        &lora_bw, sizeof(lora_bw));
     netdev->driver->set(netdev, NETOPT_SPREADING_FACTOR,
-                        &lora_sf, 1);
+                        &lora_sf, sizeof(lora_sf));
     netdev->driver->set(netdev, NETOPT_CODING_RATE,
-                        &lora_cr, sizeof(uint8_t));
+                        &lora_cr, sizeof(lora_cr));
 
     puts("[Info] setup: configuration set with success");
 
@@ -224,10 +224,12 @@ int send_cmd(int argc, char **argv)
     printf("sending \"%s\" payload (%d bytes)\n",
            argv[1], strlen(argv[1]) + 1);
 
-    struct iovec vec[1];
-    vec[0].iov_base = argv[1];
-    vec[0].iov_len = strlen(argv[1]) + 1;
-    if (netdev->driver->send(netdev, vec, 1) == -ENOTSUP) {
+    iolist_t iolist = {
+        .iol_base = argv[1],
+        .iol_len = (strlen(argv[1]) + 1)
+    };
+
+    if (netdev->driver->send(netdev, &iolist) == -ENOTSUP) {
         puts("Cannot send: radio is still transmitting");
     }
 
@@ -240,12 +242,14 @@ int listen_cmd(int argc, char **argv)
     (void)argv;
 
     /* Switch to continuous listen mode */
-    netdev->driver->set(netdev, NETOPT_SINGLE_RECEIVE, false, sizeof(uint8_t));
-    netdev->driver->set(netdev, NETOPT_RX_TIMEOUT, 0, sizeof(uint8_t));
+    const netopt_enable_t single = false;
+    netdev->driver->set(netdev, NETOPT_SINGLE_RECEIVE, &single, sizeof(single));
+    const uint32_t timeout = 0;
+    netdev->driver->set(netdev, NETOPT_RX_TIMEOUT, &timeout, sizeof(timeout));
 
     /* Switch to RX state */
     uint8_t state = NETOPT_STATE_RX;
-    netdev->driver->set(netdev, NETOPT_STATE, &state, sizeof(uint8_t));
+    netdev->driver->set(netdev, NETOPT_STATE, &state, sizeof(state));
 
     printf("Listen mode set\n");
 
@@ -261,7 +265,7 @@ int channel_cmd(int argc, char **argv)
 
     uint32_t chan;
     if (strstr(argv[1], "get") != NULL) {
-        netdev->driver->get(netdev, NETOPT_CHANNEL, &chan, sizeof(uint32_t));
+        netdev->driver->get(netdev, NETOPT_CHANNEL_FREQUENCY, &chan, sizeof(chan));
         printf("Channel: %i\n", (int) chan);
         return 0;
     }
@@ -272,7 +276,7 @@ int channel_cmd(int argc, char **argv)
             return -1;
         }
         chan = atoi(argv[2]);
-        netdev->driver->set(netdev, NETOPT_CHANNEL, &chan, sizeof(uint32_t));
+        netdev->driver->set(netdev, NETOPT_CHANNEL_FREQUENCY, &chan, sizeof(chan));
         printf("New channel set\n");
     }
     else {

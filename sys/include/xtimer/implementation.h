@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2015 Kaspar Schleiser <kaspar@schleiser.de>
- * Copyright (C) 2016 Eistec AB
+ *               2016 Eistec AB
+ *               2018 Josua Arndt
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -13,8 +14,11 @@
  * @{
  * @file
  * @brief   xtimer implementation
+ *
  * @author  Kaspar Schleiser <kaspar@schleiser.de>
  * @author  Joakim Nohlgård <joakim.nohlgard@eistec.se>
+ * @author  Josua Arndt <jarndt@ias.rwth-aachen.de>
+ *
  */
 #ifndef XTIMER_IMPLEMENTATION_H
 #define XTIMER_IMPLEMENTATION_H
@@ -63,14 +67,13 @@ static inline uint32_t _xtimer_lltimer_mask(uint32_t val)
  */
 uint64_t _xtimer_now64(void);
 int _xtimer_set_absolute(xtimer_t *timer, uint32_t target);
-void _xtimer_set64(xtimer_t *timer, uint32_t offset, uint32_t long_offset);
 void _xtimer_set(xtimer_t *timer, uint32_t offset);
+void _xtimer_set64(xtimer_t *timer, uint32_t offset, uint32_t long_offset);
 void _xtimer_periodic_wakeup(uint32_t *last_wakeup, uint32_t period);
 void _xtimer_set_msg(xtimer_t *timer, uint32_t offset, msg_t *msg, kernel_pid_t target_pid);
 void _xtimer_set_msg64(xtimer_t *timer, uint64_t offset, msg_t *msg, kernel_pid_t target_pid);
 void _xtimer_set_wakeup(xtimer_t *timer, uint32_t offset, kernel_pid_t pid);
 void _xtimer_set_wakeup64(xtimer_t *timer, uint64_t offset, kernel_pid_t pid);
-void _xtimer_set(xtimer_t *timer, uint32_t offset);
 int _xtimer_msg_receive_timeout(msg_t *msg, uint32_t ticks);
 int _xtimer_msg_receive_timeout64(msg_t *msg, uint64_t ticks);
 
@@ -216,6 +219,12 @@ static inline void xtimer_set_wakeup64(xtimer_t *timer, uint64_t offset, kernel_
 static inline void xtimer_set(xtimer_t *timer, uint32_t offset)
 {
     _xtimer_set(timer, _xtimer_ticks_from_usec(offset));
+}
+
+static inline void xtimer_set64(xtimer_t *timer, uint64_t period_us)
+{
+    uint64_t ticks = _xtimer_ticks_from_usec64(period_us);
+    _xtimer_set64(timer, ticks, ticks >> 32);
 }
 
 static inline int xtimer_msg_receive_timeout(msg_t *msg, uint32_t timeout)

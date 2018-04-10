@@ -44,9 +44,10 @@
  * this by uncommenting the appropriate lines in gcoap's make file.
  *
  * gcoap allows an application to specify a collection of request resource paths
- * it wants to be notified about. Create an array of resources, coap_resource_t
- * structs. Use gcoap_register_listener() at application startup to pass in
- * these resources, wrapped in a gcoap_listener_t.
+ * it wants to be notified about. Create an array of resources (coap_resource_t
+ * structs). Note that the elements must be ordered alphabetically with respect
+ * to the resource path. Use gcoap_register_listener() at application startup
+ * to pass in these resources, wrapped in a gcoap_listener_t.
  *
  * gcoap itself defines a resource for `/.well-known/core` discovery, which
  * lists all of the registered paths.
@@ -92,9 +93,11 @@
  *
  * Allocate a buffer and a coap_pkt_t for the request.
  *
- * If there is a payload, follow the three steps below.
+ * If there is a payload, follow the steps below.
  *
  * -# Call gcoap_req_init() to initialize the request.
+ *    -# Optionally, mark the request confirmable by calling
+ *       coap_hdr_set_type() with COAP_TYPE_CON.
  * -# Write the request payload, starting at the updated _payload_ pointer
  *    in the coap_pkt_t.
  * -# Call gcoap_finish(), which updates the packet for the payload.
@@ -211,11 +214,9 @@
 #define NET_GCOAP_H
 
 #include <stdint.h>
-#include <stdatomic.h>
 
 #include "net/ipv6/addr.h"
 #include "net/sock/udp.h"
-#include "mutex.h"
 #include "net/nanocoap.h"
 #include "xtimer.h"
 
@@ -413,6 +414,13 @@ extern "C" {
 #endif
 
 /**
+ * @brief   Count of PDU buffers available for resending confirmable messages
+ */
+#ifndef GCOAP_RESEND_BUFS_MAX
+#define GCOAP_RESEND_BUFS_MAX      (1)
+#endif
+
+/**
  * @brief   A modular collection of resources for a server
  */
 typedef struct gcoap_listener {
@@ -467,24 +475,6 @@ typedef struct {
     uint8_t token[GCOAP_TOKENLEN_MAX];  /**< Client token for notifications */
     unsigned token_len;                 /**< Actual length of token attribute */
 } gcoap_observe_memo_t;
-
-/**
- * @brief   Container for the state of gcoap itself
- */
-typedef struct {
-    mutex_t lock;                       /**< Shares state attributes safely */
-    gcoap_listener_t *listeners;        /**< List of registered listeners */
-    gcoap_request_memo_t open_reqs[GCOAP_REQ_WAITING_MAX];
-                                        /**< Storage for open requests; if first
-                                             byte of an entry is zero, the entry
-                                             is available */
-    atomic_uint next_message_id;        /**< Next message ID to use */
-    sock_udp_ep_t observers[GCOAP_OBS_CLIENTS_MAX];
-                                        /**< Observe clients; allows reuse for
-                                             observe memos */
-    gcoap_observe_memo_t observe_memos[GCOAP_OBS_REGISTRATIONS_MAX];
-                                        /**< Observed resource registrations */
-} gcoap_state_t;
 
 /**
  * @brief   Initializes the gcoap thread and device
@@ -561,7 +551,7 @@ static inline ssize_t gcoap_request(coap_pkt_t *pdu, uint8_t *buf, size_t len,
  * @param[in] buf           Buffer containing the PDU
  * @param[in] len           Length of the buffer
  * @param[in] remote        Destination for the packet
- * @param[in] resp_handler  Callback when response received
+ * @param[in] resp_handler  Callback when response received, may be NULL
  *
  * @return  length of the packet
  * @return  0 if cannot send
@@ -579,7 +569,7 @@ size_t gcoap_req_send2(const uint8_t *buf, size_t len,
  * @param[in] len           Length of the buffer
  * @param[in] addr          Destination for the packet
  * @param[in] port          Port at the destination
- * @param[in] resp_handler  Callback when response received
+ * @param[in] resp_handler  Callback when response received, may be NULL
  *
  * @return  length of the packet
  * @return  0 if cannot send

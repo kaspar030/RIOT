@@ -31,6 +31,7 @@ PSEUDOMODULES += gnrc_sock_check_reuse
 PSEUDOMODULES += gnrc_txtsnd
 PSEUDOMODULES += l2filter_blacklist
 PSEUDOMODULES += l2filter_whitelist
+PSEUDOMODULES += lis2dh12_spi
 PSEUDOMODULES += log
 PSEUDOMODULES += log_printfnoformat
 PSEUDOMODULES += lora
@@ -63,6 +64,7 @@ PSEUDOMODULES += pktqueue
 PSEUDOMODULES += printf_float
 PSEUDOMODULES += prng
 PSEUDOMODULES += prng_%
+PSEUDOMODULES += rdcli_simple_standalone
 PSEUDOMODULES += saul_adc
 PSEUDOMODULES += saul_default
 PSEUDOMODULES += saul_gpio
@@ -92,11 +94,20 @@ PSEUDOMODULES += adc121c
 PSEUDOMODULES += sx1272
 PSEUDOMODULES += sx1276
 
+# include variants of Si114x drivers as pseudo modules
+PSEUDOMODULES += si1145
+PSEUDOMODULES += si1146
+PSEUDOMODULES += si1147
+
 # include variants of Si70xx drivers as pseudo modules
 PSEUDOMODULES += si7006
 PSEUDOMODULES += si7013
 PSEUDOMODULES += si7020
 PSEUDOMODULES += si7021
+
+# include variants of RN2XX3 drivers as pseudo modules
+PSEUDOMODULES += rn2483
+PSEUDOMODULES += rn2903
 
 # add all pseudo random number generator variants as pseudomodules
 PSEUDOMODULES += prng_%
@@ -107,3 +118,8 @@ PSEUDOMODULES += stm32_periph_%
 # declare periph submodules as pseudomodules, but exclude periph_common
 PSEUDOMODULES += periph_%
 NO_PSEUDOMODULES += periph_common
+
+# Submodules and auto-init code provided by Skald
+PSEUDOMODULES += auto_init_skald
+PSEUDOMODULES += skald_ibeacon
+PSEUDOMODULES += skald_eddystone

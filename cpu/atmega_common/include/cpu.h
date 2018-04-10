@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2015 Kaspar Schleiser <kaspar@schleiser.de>
  *               2014 Freie Universität Berlin, Hinnerk van Bruinehsen
+ *               2018 RWTH Aachen, Josua Arndt <jarndt@ias.rwth-aachen.de>
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -22,6 +23,8 @@
  * @author      Hauke Petersen <hauke.petersen@fu-berlin.de>
  * @author      Hinnerk van Bruinehsen <h.v.bruinehsen@fu-berlin.de>
  * @author      Kaspar Schleiser <kaspar@schleiser.de>
+ * @author      Josua Arndt <jarndt@ias.rwth-aachen.de>
+ *
  */
 
 #ifndef CPU_H
@@ -71,13 +74,28 @@ void cpu_init(void);
 
 /**
  * @brief   Print the last instruction's address
- *
- * @todo:   Not supported
  */
-static inline void cpu_print_last_instruction(void)
+__attribute__((always_inline)) static inline void cpu_print_last_instruction(void)
 {
-    puts("n/a");
+    uint8_t hi;
+    uint8_t lo;
+    uint16_t ptr;
+
+    __asm__ volatile( "in __tmp_reg__, __SP_H__  \n\t"
+                      "mov %0, __tmp_reg__       \n\t"
+                      : "=g"(hi) );
+
+    __asm__ volatile( "in __tmp_reg__, __SP_L__  \n\t"
+                      "mov %0, __tmp_reg__       \n\t"
+                      : "=g"(lo) );
+    ptr = hi<<8 | lo;
+    printf("Stack Pointer: 0x%04x\n", ptr);
 }
+
+/**
+ * @brief   Initializes avrlibc stdio
+ */
+void atmega_stdio_init(void);
 
 #ifdef __cplusplus
 }

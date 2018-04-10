@@ -201,3 +201,4 @@ void at_drain(at_dev_t *dev);
 #endif
 
 #endif /* AT_H */
+/** @} */

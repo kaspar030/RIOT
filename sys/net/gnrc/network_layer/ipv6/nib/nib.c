@@ -39,9 +39,7 @@
 #include "xtimer.h"
 #endif
 
-#if ENABLE_DEBUG
 static char addr_str[IPV6_ADDR_MAX_STR_LEN];
-#endif
 
 #if GNRC_IPV6_NIB_CONF_QUEUE_PKT
 static gnrc_pktqueue_t _queue_pool[GNRC_IPV6_NIB_NUMOF];
@@ -198,6 +196,12 @@ int gnrc_ipv6_nib_get_next_hop_l2addr(const ipv6_addr_t *dst,
             if ((netif == NULL) ||
                 !_resolve_addr(dst, netif, pkt, nce, node)) {
                 DEBUG("nib: host unreachable\n");
+                /* _resolve_addr releases pkt only if not queued (in which case
+                 * we also shouldn't release), but if netif is not defined we
+                 * should release in any case. */
+                if (netif == NULL) {
+                    gnrc_pktbuf_release_error(pkt, EHOSTUNREACH);
+                }
                 res = -EHOSTUNREACH;
                 break;
             }
@@ -219,6 +223,7 @@ int gnrc_ipv6_nib_get_next_hop_l2addr(const ipv6_addr_t *dst,
                 }
                 else {
                     res = -ENETUNREACH;
+                    gnrc_pktbuf_release_error(pkt, ENETUNREACH);
                     break;
                 }
             }
@@ -243,6 +248,8 @@ int gnrc_ipv6_nib_get_next_hop_l2addr(const ipv6_addr_t *dst,
 #endif  /* GNRC_IPV6_NIB_CONF_DC */
             }
             else {
+                /* _resolve_addr releases pkt if not queued (in which case
+                 * we also shouldn't release */
                 res = -EHOSTUNREACH;
             }
         }
@@ -418,8 +425,8 @@ static void _handle_rtr_sol(gnrc_netif_t *netif, const ipv6_hdr_t *ipv6,
               netif->pid);
         DEBUG("     - IP Hop Limit: %u (should be 255)\n", ipv6->hl);
         DEBUG("     - ICMP code: %u (should be 0)\n", rtr_sol->code);
-        DEBUG("     - ICMP length: %u (should > %u)\n", icmpv6_len,
-              sizeof(ndp_rtr_sol_t));
+        DEBUG("     - ICMP length: %u (should > %u)\n", (unsigned)icmpv6_len,
+              (unsigned)sizeof(ndp_rtr_sol_t));
         return;
     }
     /* pre-check option length */
@@ -529,7 +536,7 @@ static void _handle_rtr_adv(gnrc_netif_t *netif, const ipv6_hdr_t *ipv6,
         DEBUG("     - IP Hop Limit: %u (should be 255)\n", ipv6->hl);
         DEBUG("     - ICMP code: %u (should be 0)\n", rtr_adv->code);
         DEBUG("     - ICMP length: %u (should > %u)\n", (unsigned)icmpv6_len,
-              sizeof(ndp_rtr_adv_t));
+              (unsigned)sizeof(ndp_rtr_adv_t));
         DEBUG("     - Source address: %s (should be link-local)\n",
               ipv6_addr_to_str(addr_str, &ipv6->src, sizeof(addr_str)));
         DEBUG("     - Router lifetime: %u (should be <= 9000 on non-6LN)\n",
@@ -640,15 +647,14 @@ static void _handle_rtr_adv(gnrc_netif_t *netif, const ipv6_hdr_t *ipv6,
     }
 #if GNRC_IPV6_NIB_CONF_6LN
     if ((dr != NULL) && gnrc_netif_is_6ln(netif) &&
-        !gnrc_netif_is_6lbr(netif) &&
-        !(netif->flags & GNRC_NETIF_FLAGS_6LO_ADDRS_REG)) {
-        /* (register addresses already assigned)*/
+        !gnrc_netif_is_6lbr(netif)) {
+        /* (register addresses already assigned but not valid yet)*/
         for (int i = 0; i < GNRC_NETIF_IPV6_ADDRS_NUMOF; i++) {
-            if ((netif->ipv6.addrs_flags[i] != 0)) {
+            if ((netif->ipv6.addrs_flags[i] != 0) &&
+                (netif->ipv6.addrs_flags[i] != GNRC_NETIF_IPV6_ADDRS_FLAGS_STATE_VALID)) {
                 _handle_rereg_address(&netif->ipv6.addrs[i]);
             }
         }
-        netif->flags |= GNRC_NETIF_FLAGS_6LO_ADDRS_REG;
     }
 #endif  /* GNRC_IPV6_NIB_CONF_6LN */
     tmp_len = icmpv6_len - sizeof(ndp_rtr_adv_t);
@@ -793,8 +799,8 @@ static void _handle_nbr_sol(gnrc_netif_t *netif, const ipv6_hdr_t *ipv6,
         DEBUG("nib: Received neighbor solicitation is invalid. Discarding silently\n");
         DEBUG("     - IP Hop Limit: %u (should be 255)\n", ipv6->hl);
         DEBUG("     - ICMP code: %u (should be 0)\n", nbr_sol->code);
-        DEBUG("     - ICMP length: %u (should > %u)\n", icmpv6_len,
-              sizeof(ndp_nbr_sol_t));
+        DEBUG("     - ICMP length: %u (should > %u)\n", (unsigned)icmpv6_len,
+              (unsigned)sizeof(ndp_nbr_sol_t));
         DEBUG("     - Target address: %s (should not be multicast)\n",
               ipv6_addr_to_str(addr_str, &nbr_sol->tgt, sizeof(addr_str)));
         DEBUG("     - Source address: %s\n",
@@ -905,8 +911,8 @@ static void _handle_nbr_adv(gnrc_netif_t *netif, const ipv6_hdr_t *ipv6,
         DEBUG("nib: Received neighbor advertisement is invalid. Discarding silently\n");
         DEBUG("     - IP Hop Limit: %u (should be 255)\n", ipv6->hl);
         DEBUG("     - ICMP code: %u (should be 0)\n", nbr_adv->code);
-        DEBUG("     - ICMP length: %u (should > %u)\n", icmpv6_len,
-              sizeof(ndp_nbr_adv_t));
+        DEBUG("     - ICMP length: %u (should > %u)\n", (unsigned)icmpv6_len,
+              (unsigned)sizeof(ndp_nbr_adv_t));
         DEBUG("     - Target address: %s (should not be multicast)\n",
               ipv6_addr_to_str(addr_str, &nbr_adv->tgt, sizeof(addr_str)));
         DEBUG("     - Destination address: %s\n",
@@ -1316,7 +1322,8 @@ static void _auto_configure_addr(gnrc_netif_t *netif, const ipv6_addr_t *pfx,
     }
 
 #if GNRC_IPV6_NIB_CONF_6LN
-    if (gnrc_netif_is_6ln(netif)) {
+    /* mark link-local addresses as valid on 6LN */
+    if (gnrc_netif_is_6ln(netif) && ipv6_addr_is_link_local(pfx)) {
         /* don't do this beforehand or risk a deadlock:
          *  * gnrc_netif_ipv6_addr_add_internal() adds VALID (i.e. manually configured
          *    addresses to the prefix list locking the NIB's mutex which is already
@@ -1325,7 +1332,6 @@ static void _auto_configure_addr(gnrc_netif_t *netif, const ipv6_addr_t *pfx,
         netif->ipv6.addrs_flags[idx] |= GNRC_NETIF_IPV6_ADDRS_FLAGS_STATE_VALID;
     }
 #endif  /* GNRC_IPV6_NIB_CONF_6LN */
-    (void)idx;
     /* TODO: make this line conditional on 6LN when there is a SLAAC
      * implementation */
 #if GNRC_IPV6_NIB_CONF_6LN
@@ -1333,6 +1339,8 @@ static void _auto_configure_addr(gnrc_netif_t *netif, const ipv6_addr_t *pfx,
         !gnrc_netif_is_6lbr(netif)) {
         _handle_rereg_address(&netif->ipv6.addrs[idx]);
     }
+#else   /* GNRC_IPV6_NIB_CONF_6LN */
+    (void)idx;
 #endif  /* GNRC_IPV6_NIB_CONF_6LN */
 #if GNRC_IPV6_NIB_CONF_SLAAC
     /* TODO send NS to solicited nodes and wait netif->ipv6.retrans_time to

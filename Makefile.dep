@@ -68,7 +68,16 @@ ifneq (,$(filter nordic_softdevice_ble,$(USEPKG)))
   USEMODULE += ble_6lowpan
   USEMODULE += gnrc_sixlowpan
   USEMODULE += gnrc_sixlowpan_iphc
+  USEMODULE += gnrc_ipv6_nib_6ln
   USEMODULE += gnrc_ipv6_default
+  # prevent application from being a router
+  # TODO: maybe find a nicer solution in future build system update
+  _ROUTER_MODULES = gnrc_ipv6_router% gnrc_rpl netstats_rpl auto_init_gnrc_rpl
+  ifneq (,$(filter $(_ROUTER_MODULES),$(USEMODULE)))
+    $(warning nordic_softdevice_ble: Disabling router modules:\
+      $(filter $(_ROUTER_MODULES),$(USEMODULE)))
+  endif
+  USEMODULE := $(filter-out $(_ROUTER_MODULES),$(USEMODULE))
 endif
 
 ifneq (,$(filter gnrc_%,$(filter-out gnrc_netapi gnrc_netreg gnrc_netif% gnrc_pkt%,$(USEMODULE))))
@@ -101,6 +110,7 @@ endif
 ifneq (,$(filter netdev_tap,$(USEMODULE)))
   USEMODULE += netif
   USEMODULE += netdev_eth
+  USEMODULE += iolist
 endif
 
 ifneq (,$(filter gnrc_tftp,$(USEMODULE)))
@@ -113,7 +123,8 @@ ifneq (,$(filter gnrc_rpl_p2p,$(USEMODULE)))
 endif
 
 ifneq (,$(filter gnrc_rpl,$(USEMODULE)))
-  USEMODULE += gnrc_ipv6_router_default
+  USEMODULE += gnrc_icmpv6
+  USEMODULE += gnrc_ipv6_nib
   USEMODULE += trickle
   USEMODULE += xtimer
 endif
@@ -123,7 +134,7 @@ ifneq (,$(filter trickle,$(USEMODULE)))
   USEMODULE += xtimer
 endif
 
-ifneq (,$(filter ieee802154,$(USEMODULE)))
+ifneq (,$(filter ieee802154 nrfmin,$(USEMODULE)))
   ifneq (,$(filter gnrc_ipv6, $(USEMODULE)))
     USEMODULE += gnrc_sixlowpan
   endif
@@ -532,6 +543,10 @@ ifneq (,$(filter xtimer,$(USEMODULE)))
   USEMODULE += div
 endif
 
+ifneq (,$(filter saul,$(USEMODULE)))
+  USEMODULE += phydat
+endif
+
 ifneq (,$(filter saul_reg,$(USEMODULE)))
   USEMODULE += saul
 endif
@@ -646,6 +661,12 @@ ifneq (,$(filter spiffs,$(USEMODULE)))
   USEMODULE += spiffs_fs
   USEMODULE += mtd
 endif
+ifneq (,$(filter littlefs,$(USEMODULE)))
+  USEPKG += littlefs
+  USEMODULE += vfs
+  USEMODULE += littlefs_fs
+  USEMODULE += mtd
+endif
 
 ifneq (,$(filter l2filter_%,$(USEMODULE)))
   USEMODULE += l2filter
@@ -666,6 +687,41 @@ endif
 
 ifneq (,$(filter ccn-lite,$(USEPKG)))
   USEMODULE += ccn-lite-utils
+endif
+
+ifneq (,$(filter fatfs_vfs,$(USEMODULE)))
+  USEPKG += fatfs
+  USEMODULE += vfs
+endif
+
+ifneq (,$(filter benchmark,$(USEMODULE)))
+  USEMODULE += xtimer
+endif
+
+ifneq (,$(filter skald_%,$(USEMODULE)))
+  USEMODULE += skald
+endif
+
+ifneq (,$(filter skald,$(USEMODULE)))
+  FEATURES_REQUIRED += radio_ble
+  USEMODULE += xtimer
+  USEMODULE += random
+endif
+
+ifneq (,$(filter rdcli_simple_standalone,$(USEMODULE)))
+  USEMODULE += rdcli_simple
+  USEMODULE += xtimer
+endif
+
+ifneq (,$(filter rdcli_simple,$(USEMODULE)))
+  USEMODULE += rdcli_common
+  USEMODULE += fmt
+endif
+
+ifneq (,$(filter rdcli_common,$(USEMODULE)))
+  USEMODULE += fmt
+  USEMODULE += gcoap
+  USEMODULE += luid
 endif
 
 # always select gpio (until explicit dependencies are sorted out)

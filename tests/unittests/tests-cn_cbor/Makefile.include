@@ -1,0 +1,2 @@
+﻿USEPKG += cn-cbor
+USEMODULE += fmt

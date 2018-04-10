@@ -3,7 +3,7 @@
         info-features-provided info-features-required
 
 info-objsize:
-	@case "${SORTROW}" in \
+	@case "$(SORTROW)" in \
 	  text) SORTROW=1 ;; \
 	  data) SORTROW=2 ;; \
 	  bss) SORTROW=3 ;; \
@@ -18,7 +18,7 @@ info-objsize:
 	  sort -rnk$${SORTROW}
 
 info-buildsize:
-	@$(SIZE) -d -B $(BINDIR)/$(APPLICATION).elf || echo ''
+	@$(SIZE) -d -B $(ELFFILE) || echo ''
 
 info-build:
 	@echo 'APPLICATION: $(APPLICATION)'
@@ -55,6 +55,8 @@ info-build:
 	@echo ''
 	@echo 'FEATURES_CONFLICT:     $(FEATURES_CONFLICT)'
 	@echo 'FEATURES_CONFLICT_MSG: $(FEATURES_CONFLICT_MSG)'
+	@echo ''
+	@echo -e 'INCLUDES:$(patsubst %, \n\t%, $(INCLUDES))'
 	@echo ''
 	@echo 'CC:      $(CC)'
 	@echo -e 'CFLAGS:$(patsubst %, \n\t%, $(CFLAGS))'

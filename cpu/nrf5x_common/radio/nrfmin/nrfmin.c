@@ -31,6 +31,10 @@
 #include "nrfmin.h"
 #include "net/netdev.h"
 
+#ifdef MODULE_GNRC_SIXLOWPAN
+#include "net/gnrc/nettype.h"
+#endif
+
 #define ENABLE_DEBUG            (0)
 #include "debug.h"
 
@@ -321,11 +325,11 @@ void isr_radio(void)
     cortexm_isr_end();
 }
 
-static int nrfmin_send(netdev_t *dev, const struct iovec *vector, unsigned count)
+static int nrfmin_send(netdev_t *dev, const iolist_t *iolist)
 {
     (void)dev;
 
-    assert((vector != NULL) && (count > 0) && (state != STATE_OFF));
+    assert((iolist) && (state != STATE_OFF));
 
     /* wait for any ongoing transmission to finish and go into idle state */
     while (state == STATE_TX) {}
@@ -333,17 +337,17 @@ static int nrfmin_send(netdev_t *dev, const struct iovec *vector, unsigned count
 
     /* copy packet data into the transmit buffer */
     int pos = 0;
-    for (unsigned i = 0; i < count; i++) {
-        if ((pos + vector[i].iov_len) > NRFMIN_PKT_MAX) {
+    for (const iolist_t *iol = iolist; iol; iol = iol->iol_next) {
+        if ((pos + iol->iol_len) > NRFMIN_PKT_MAX) {
             DEBUG("[nrfmin] send: unable to do so, packet is too large!\n");
             return -EOVERFLOW;
         }
-        memcpy(&tx_buf.raw[pos], vector[i].iov_base, vector[i].iov_len);
-        pos += vector[i].iov_len;
+        memcpy(&tx_buf.raw[pos], iol->iol_base, iol->iol_len);
+        pos += iol->iol_len;
     }
 
     /* set output buffer and destination address */
-    nrfmin_hdr_t *hdr = (nrfmin_hdr_t *)vector[0].iov_base;
+    nrfmin_hdr_t *hdr = (nrfmin_hdr_t *)iolist->iol_base;
     NRF_RADIO->PACKETPTR = (uint32_t)(&tx_buf);
     NRF_RADIO->BASE0 = (CONF_ADDR_BASE | hdr->dst_addr);
 
@@ -352,7 +356,7 @@ static int nrfmin_send(netdev_t *dev, const struct iovec *vector, unsigned count
     state = STATE_TX;
     NRF_RADIO->TASKS_TXEN = 1;
 
-    return (int)count;
+    return (int)pos;
 }
 
 static int nrfmin_recv(netdev_t *dev, void *buf, size_t len, void *info)
@@ -495,9 +499,12 @@ static int nrfmin_get(netdev_t *dev, netopt_t opt, void *val, size_t max_len)
             assert(max_len >= sizeof(uint16_t));
             *((uint16_t*)val) = CONF_PSEUDO_NID;
             return sizeof(uint16_t);
+#ifdef MODULE_GNRC_SIXLOWPAN
         case NETOPT_PROTO:
-            *((uint16_t *)val) = 809; /* TODO */
-            return 2;
+            assert(max_len >= sizeof(uint16_t));
+            *((uint16_t *)val) = GNRC_NETTYPE_SIXLOWPAN;
+            return sizeof(uint16_t);
+#endif
         case NETOPT_DEVICE_TYPE:
             assert(max_len >= sizeof(uint16_t));
             *((uint16_t *)val) = NETDEV_TYPE_NRFMIN;

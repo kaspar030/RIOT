@@ -80,6 +80,10 @@
 #include "net/gnrc/ipv6/nib.h"
 #endif
 
+#ifdef MODULE_SKALD
+#include "net/skald.h"
+#endif
+
 
 #define ENABLE_DEBUG (0)
 #include "debug.h"
@@ -151,6 +155,20 @@ void auto_init(void)
     DEBUG("Auto init gnrc_ipv6_nib module.\n");
     gnrc_ipv6_nib_init();
 #endif
+#ifdef MODULE_SKALD
+    DEBUG("Auto init Skald\n");
+    skald_init();
+#endif
+#ifdef MODULE_RDCLI_COMMON
+    DEBUG("Auto init rdcli_common module\n");
+    extern void rdcli_common_init(void);
+    rdcli_common_init();
+#endif
+#ifdef MODULE_RDCLI_SIMPLE_STANDALONE
+    DEBUG("Auto init rdcli_simple module\n");
+    extern void rdcli_simple_run(void);
+    rdcli_simple_run();
+#endif
 
 /* initialize network devices */
 #ifdef MODULE_AUTO_INIT_GNRC_NETIF
@@ -213,6 +231,11 @@ void auto_init(void)
 #ifdef MODULE_NETDEV_TAP
     extern void auto_init_netdev_tap(void);
     auto_init_netdev_tap();
+#endif
+
+#ifdef MODULE_SOCKET_ZEP
+    extern void auto_init_socket_zep(void);
+    auto_init_socket_zep();
 #endif
 
 #ifdef MODULE_NORDIC_SOFTDEVICE_BLE
@@ -306,6 +329,10 @@ auto_init_mpu9150();
     extern void auto_init_bmp180(void);
     auto_init_bmp180();
 #endif
+#ifdef MODULE_BMX055
+    extern void auto_init_bmx055(void);
+    auto_init_bmx055();
+#endif
 #if defined(MODULE_BME280) || defined(MODULE_BMP280)
     extern void auto_init_bmx280(void);
     auto_init_bmx280();
@@ -317,6 +344,10 @@ auto_init_mpu9150();
 #ifdef MODULE_TSL2561
     extern void auto_init_tsl2561(void);
     auto_init_tsl2561();
+#endif
+#ifdef MODULE_PULSE_COUNTER
+    extern void auto_init_pulse_counter(void);
+    auto_init_pulse_counter();
 #endif
 #ifdef MODULE_HDC1000
     extern void auto_init_hdc1000(void);
@@ -357,6 +388,14 @@ auto_init_mpu9150();
 #ifdef MODULE_ADCXX1C
     extern void auto_init_adcxx1c(void);
     auto_init_adcxx1c();
+#endif
+#ifdef MODULE_LIS2DH12
+    extern void auto_init_lis2dh12(void);
+    auto_init_lis2dh12();
+#endif
+#ifdef MODULE_SI114X
+    extern void auto_init_si114x(void);
+    auto_init_si114x();
 #endif
 
 #endif /* MODULE_AUTO_INIT_SAUL */
