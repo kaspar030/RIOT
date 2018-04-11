@@ -41,7 +41,7 @@ def _check_startup(child):
 
 def _check_help(child):
     child.expect("> ")
-    time.sleep(0.1)
+    time.sleep(1)
     child.sendline('help')
     child.expect_exact('Command              Description')
     child.expect_exact('---------------------------------------')
@@ -52,7 +52,7 @@ def _check_help(child):
 
 def _check_ps(child):
     child.expect("> ")
-    time.sleep(0.1)
+    time.sleep(1)
     child.sendline('ps')
     for line in PS_EXPECTED:
         child.expect(line)
