@@ -43,6 +43,11 @@ def _check_help(child):
     child.expect("> ")
     time.sleep(1)
     child.sendline('help')
+    try:
+        child.expect_exact('help')
+    except pexpect.TIMEOUT:
+        print("timeout")
+        child.sendline('help')
     child.expect_exact('Command              Description')
     child.expect_exact('---------------------------------------')
     child.expect_exact('reboot               Reboot the node')
