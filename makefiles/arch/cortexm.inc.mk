@@ -37,8 +37,16 @@ export USEMODULE += periph
 export USEMODULE += periph_common
 export USEMODULE += cortexm_common_periph
 
-# all cortex MCU's use newlib as libc
+# choose C library
+ifeq (libc,$(RIOT_LIBC))
+USEMODULE += libc
+else
+# all cortex MCU's use newlib as default libc
 export USEMODULE += newlib
+# use the nano-specs of Newlib when available
+USEMODULE += newlib_nano
+export USE_NANO_SPECS = 1
+endif
 
 # set default for CPU_MODEL
 export CPU_MODEL ?= $(CPU)
@@ -142,10 +150,6 @@ endif
 
 # CPU depends on the cortex-m common module, so include it:
 include $(RIOTCPU)/cortexm_common/Makefile.include
-
-# use the nano-specs of Newlib when available
-USEMODULE += newlib_nano
-export USE_NANO_SPECS = 1
 
 # Avoid overriding the default rule:
 all:

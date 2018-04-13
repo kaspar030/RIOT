@@ -21,6 +21,8 @@
  * @author Joakim Nohlgård <joakim.nohlgard@eistec.se>
  */
 
+#ifndef MODULE_LIBC
+
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -233,5 +235,6 @@ TEMPLATE_SYNC_OP_AND_FETCH_N(nand, &, 1, ~) /* __sync_nand_and_fetch_1 */
 TEMPLATE_SYNC_OP_AND_FETCH_N(nand, &, 2, ~) /* __sync_nand_and_fetch_2 */
 TEMPLATE_SYNC_OP_AND_FETCH_N(nand, &, 4, ~) /* __sync_nand_and_fetch_4 */
 TEMPLATE_SYNC_OP_AND_FETCH_N(nand, &, 8, ~) /* __sync_nand_and_fetch_8 */
+#endif
 #endif
 /** @} */
