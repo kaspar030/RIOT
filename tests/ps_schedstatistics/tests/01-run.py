@@ -57,7 +57,6 @@ def _check_ps(child):
 
 def testfunc(child):
     _check_startup(child)
-    _check_help(child)
     _check_ps(child)
 
 
