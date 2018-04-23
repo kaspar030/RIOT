@@ -13,7 +13,7 @@
  * @file
  * @brief       Over the air (OTA) update module
  *
- * This module provides an API to verify and write an updated firmware to flash.
+ * This module provides an API to write an firmware to flash.
  *
  * The API is similar to stream hashing functions:
  *
@@ -25,9 +25,9 @@
  * The module will *not* automatically reboot after an image has been
  * successfully written.
  *
- * Under the hood, the module tries to abstract verification of the
- * cryptographic image signature and writing to flash.
- * Should the metadata or its signature be invalid, firmware_put_bytes() will
+ * Under the hood, the module tries to abstract image writing to flash.
+ * Verification of the image is left to the caller.
+ * If the data is not correctly written, firmware_put_bytes() will
  * return -1.
  *
  * The module makes sure that at no point in time an invalid image is bootable.
@@ -36,11 +36,10 @@
  *
  * 1. erase first block (making its checksum invalid)
  * 2. write image
- * 3. as soon as the whole metadata has been received, check it, abort on error
- * 4. check hash of (first block + image), abort on error
- * 5. write first block
+ * 3. write first block
  *
  * @author      Kaspar Schleiser <kaspar@schleiser.de>
+ * @author      Koen Zandberg <koen@bergzand.net>
  *
  * @}
  */
@@ -56,25 +55,13 @@ extern "C" {
 #include "periph/flashpage.h"
 
 /**
- * @brief   Possible firmware update states
- */
-enum {
-    FIRMWARE_UPDATE_IDLE,           /**< no firmware update in progress         */
-    FIRMWARE_UPDATE_INITIALIZED,    /**< firmware update in progress, awaiting
-                                         verification                           */
-    FIRMWARE_UPDATE_VERIFIED,       /**< firmware update in progress & verified */
-};
-
-/**
  * @brief   firmware update state structure
  */
 typedef struct {
-    unsigned state;                         /**< state (see above enum)         */
-    int target_slot;                        /**< update targets this slot       */
-    size_t offset;                          /**< update is at this position     */
-    size_t size;                            /**< total size of the update       */
-    unsigned flashpage;                     /**< update is at this flashpage    */
-    uint8_t flashpage_buf[FLASHPAGE_SIZE];  /**< flash writing buffer           */
+    int target_slot;                        /**< update targets this slot     */
+    size_t offset;                          /**< update is at this position   */
+    unsigned flashpage;                     /**< update is at this flashpage  */
+    uint8_t flashpage_buf[FLASHPAGE_SIZE];  /**< flash writing buffer         */
 } firmware_update_t;
 
 /**
@@ -88,7 +75,7 @@ typedef struct {
 int firmware_update_init(firmware_update_t *state, int target_slot);
 
 /**
- * @brief   Feed bytes into update process
+ * @brief   Feed bytes into the firmware writer
  *
  * @param[in/out]   state   ptr to previously used update state
  * @param[in]       offset  offset of @p bytes (from image start)
@@ -97,17 +84,20 @@ int firmware_update_init(firmware_update_t *state, int target_slot);
  *
  * @returns         0 on success, <0 otherwise
  */
-int firmware_update_putbytes(firmware_update_t *state, size_t offset,
+int firmware_update_putbytes(firmware_update_t *state,
                              const uint8_t *bytes, size_t len);
 
 /**
  * @brief   Finish a firmware update
  *
- * @param[in]   state   ptr to previously used state structure
+ * @param[in]   state       ptr to previously used state structure
+ * @param[in]   metadata    Metadata to write on the first page
+ * @param[in]   len         Size of the metadata in bytes
  *
  * @returns     0 on success, <0 otherwise
  */
-int firmware_update_finish(firmware_update_t *state);
+int firmware_update_finish(firmware_update_t *state,
+        firmware_metadata_t *metadata, size_t len);
 
 #ifdef __cplusplus
 }

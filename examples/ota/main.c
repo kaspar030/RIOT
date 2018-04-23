@@ -23,6 +23,7 @@
 #include "net/nanocoap_sock.h"
 #include "net/ota/coap.h"
 #include "firmware.h"
+#include "firmware/riotboot.h"
 #include "periph/pm.h"
 
 #include "xtimer.h"
@@ -49,9 +50,9 @@ int main(void)
 
     /* print some information about the running image */
     unsigned current_slot = firmware_current_slot();
-    firmware_metadata_t *metadata = firmware_get_metadata(current_slot);
+    firmware_riotboot_t *metadata = (firmware_riotboot_t*)firmware_get_metadata(current_slot);
     printf("firmware: running from slot %u\n", current_slot);
-    firmware_metadata_print(metadata);
+    firmware_riotboot_print(metadata);
 
     /* nanocoap_server uses gnrc sock which uses gnrc which needs a msg queue */
     msg_init_queue(_main_msg_queue, MAIN_QUEUE_SIZE);

@@ -12,7 +12,7 @@
  * @{
  *
  * @file
- * @brief       Firmware module
+ * @brief       Generic firmware module
  *
  * @author      Kaspar Schleiser <kaspar@schleiser.de>
  * @author      Francisco Acosta <francisco.acosta@inria.fr>
@@ -32,29 +32,8 @@
 
 #include "firmware.h"
 #include "checksum/fletcher32.h"
-#include "tweetnacl.h"
 
-void firmware_metadata_print(firmware_metadata_t *metadata)
-{
-    printf("Firmware magic_number: 0x%08x\n", (unsigned)metadata->magic_number);
-    printf("Firmware Size: %" PRIu32 "\n", metadata->size);
-    printf("Firmware APPID: %#x\n", (unsigned)metadata->appid);
-    printf("Firmware Version: %#x\n", (unsigned)metadata->version);
-    printf("Firmware start address: 0x%08x\n", (unsigned)metadata->start_addr);
-    printf("Firmware HASH: ");
-    for (unsigned long i = 0; i < sizeof(metadata->hash); i++) {
-        printf("%02x ", metadata->hash[i]);
-    }
-    printf("\n");
-    printf("Firmware chksum: 0x%08x\n", (unsigned)metadata->chksum);
-    printf("Firmware signature: ");
-    for (unsigned long i = 0; i < sizeof(metadata->sig); i++) {
-        printf("%02x ", metadata->sig[i]);
-    }
-    printf("\n");
-}
-
-int firmware_validate_metadata_checksum(firmware_metadata_t *metadata)
+int firmware_validate_metadata_checksum(const firmware_metadata_t *metadata)
 {
     if (memcmp(metadata, "RIOT", 4)) {
         LOG_INFO("%s: metadata magic number invalid\n", __func__);
@@ -69,38 +48,9 @@ int firmware_validate_metadata_checksum(firmware_metadata_t *metadata)
     return res;
 }
 
-int firmware_validate_metadata_signature(firmware_metadata_t *metadata, const unsigned char *pk)
-{
-    if (firmware_validate_metadata_checksum(metadata)) {
-        return -1;
-    }
-
-    unsigned char sm[FIRMWARE_SIGN_BYTES + crypto_sign_BYTES];
-    memcpy(sm, ((unsigned char *)metadata) + FIRMWARE_SIGN_BYTES, crypto_sign_BYTES);
-    memcpy(sm + crypto_sign_BYTES, metadata, FIRMWARE_SIGN_BYTES);
-
-    unsigned char m[FIRMWARE_SIGN_BYTES + crypto_sign_BYTES];
-    unsigned long long mlen;
-    int res = crypto_sign_open(m, &mlen, sm, FIRMWARE_SIGN_BYTES + crypto_sign_BYTES, pk);
-    if (res) {
-        LOG_INFO("%s: metadata signature invalid\n", __func__);
-    }
-    return res;
-}
-
-uint32_t firmware_metadata_checksum(firmware_metadata_t *metadata)
+uint32_t firmware_metadata_checksum(const firmware_metadata_t *metadata)
 {
     return fletcher32((uint16_t *)metadata, FIRMWARE_CHECKSUM_LEN / 2);
-}
-
-int firmware_sign_metadata(firmware_metadata_t *metadata, unsigned char *sk)
-{
-    unsigned char sm[FIRMWARE_SIGN_BYTES + crypto_sign_BYTES];
-    unsigned long long smlen;
-
-    crypto_sign(sm, &smlen, (unsigned char *)metadata, FIRMWARE_SIGN_BYTES, sk);
-    memcpy(metadata->sig, sm, crypto_sign_BYTES);
-    return 0;
 }
 
 #ifdef RIOT_VERSION
@@ -113,8 +63,9 @@ static const unsigned _firmware_slot_start[] = {
 
 const unsigned firmware_num_slots = sizeof(_firmware_slot_start) / sizeof(unsigned);
 
-void firmware_jump_to_image(firmware_metadata_t *metadata)
+void firmware_jump_to_image(const firmware_metadata_t *metadata)
 {
+
     uint32_t addr = (unsigned)metadata + FIRMWARE_METADATA_SIZE;
 
     cpu_jump_to_image(addr);
@@ -166,7 +117,7 @@ void firmware_dump_slot_addrs(void)
 #else /* BOARD_NATIVE */
 const unsigned firmware_num_slots = 1;
 
-void firmware_jump_to_image(firmware_metadata_t *metadata)
+void firmware_jump_to_image(const firmware_metadata_t *metadata)
 {
     (void)metadata;
     printf("%s native stub\n", __func__);
