@@ -29,7 +29,7 @@
 #define ENABLE_DEBUG (0)
 #include "debug.h"
 
-int nano_dummy_handler(nano_ctx_t *ctx, size_t offset) {
+int nano_dummy_handler(nano_ctx_t *ctx, size_t offset, ...) {
     DEBUG("udp: packet received\n");
     (void)ctx;
     (void)offset;
@@ -48,11 +48,8 @@ ipv6_route_t ipv6_routes[] = {
     { {0}, 0, {0}, 0}
 };
 
-nano_udp_bind_t nano_udp_binds[] = {
-    { 5683, nano_coap_handler },
-    { 12345, nano_dummy_handler },
-    {0}
-};
+nano_udp_bind_t _coap_bind = { .port=5683, .handler=nano_coap_handler };
+nano_udp_bind_t _dummy_bind = { .port=12345, .handler=nano_dummy_handler };
 
 int main(void)
 {
@@ -60,6 +57,9 @@ int main(void)
 
     /* initialize network stack and devices */
     nanonet_init();
+
+    clist_rpush(&nano_udp_binds, &_coap_bind.next);
+    clist_rpush(&nano_udp_binds, &_dummy_bind.next);
 
     /* set IP */
 #ifdef NANONET_IPV4
