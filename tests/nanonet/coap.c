@@ -28,7 +28,7 @@ const coap_resource_t coap_resources[] = {
 
 const unsigned coap_resources_numof = sizeof(coap_resources) / sizeof(coap_resources[0]);
 
-int nano_coap_handler(nano_ctx_t *ctx, size_t offset)
+int nano_coap_handler(nano_ctx_t *ctx, size_t offset, ...)
 {
     ssize_t res;
     int n = ctx->len - offset;
