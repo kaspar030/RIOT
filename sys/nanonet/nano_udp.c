@@ -12,6 +12,28 @@
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
 
+clist_node_t nano_udp_binds;
+
+/*static int _cmp_bind(clist_node_t *a, clist_node_t *b)
+{
+    nano_udp_bind_t *_a = (void *)a;
+    nano_udp_bind_t *_b = (void *)b;
+    return (int)(_a->port - _b->port);
+}
+*/
+
+static int _find_udp_bind_helper(clist_node_t *bind, void *arg)
+{
+    uint16_t port = *(uint16_t *)arg;
+    nano_udp_bind_t *_bind = (void *)bind;
+    return port == _bind->port;
+}
+
+static nano_udp_bind_t *_find_udp_bind(uint16_t port)
+{
+    return (void *)clist_foreach(&nano_udp_binds, _find_udp_bind_helper, &port);
+}
+
 int udp_handle(nano_ctx_t *ctx, size_t offset)
 {
     udp_hdr_t *hdr = (udp_hdr_t*) (ctx->buf+offset);
@@ -36,21 +58,9 @@ int udp_handle(nano_ctx_t *ctx, size_t offset)
     }
 #endif
 
-    nano_udp_handler_t handler = NULL;
-    nano_udp_bind_t *bind = &nano_udp_binds[0];
-    while (bind) {
-        if (bind->port == dst_port) {
-            handler = bind->handler;
-            break;
-        }
-        else if (bind->port > dst_port) {
-            break;
-        }
-        bind++;
-    }
-
-    if (handler) {
-        return handler(ctx, offset+sizeof(udp_hdr_t));
+    nano_udp_bind_t *bind = _find_udp_bind(dst_port);
+    if (bind) {
+        return bind->handler(ctx, offset+sizeof(udp_hdr_t), bind);
     }
     else {
         if (is_ipv4_hdr(ctx->l3_hdr_start)) {
