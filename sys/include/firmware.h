@@ -12,103 +12,37 @@
  * @ingroup     sys
  * @{
  *
- * # riotboot minimal firmware update infrastructure
- *
- * ## Overview
- *
- * riotboot is the name of a minimal bootloader application and infrastructure.
- * It consists of
- *
- * - the application "riotboot" in "dist/riotboot" which serves as
- *   minimal bootloader
- *
- * - the modules "firmware" and "firmware_update" that are used
- *   in an image to handle verification and flash-writing
- *
- * - the module "ota_coap" which serves as transport for the updates
- *
- * - a tool in dist/tools/firmware which handles key generation
- *   and firmware image signing.
- *
- * - a couple of make targets to glue everything together
+ * This module contains functions for reading and manipulating firmware metadata
+ * as used with the riotboot bootloader.
  *
  * ## Concept
  *
- * riotboot expects the flash to be split in three parts: one for the
- * bootloader itself, and two slots for images.
- * Of the latter, one slot holds the running (or latest) image, while the other is
- * used to write a newer image.
+ * The riotboot bootloader expects the flash to be split in three parts: one for
+ * the bootloader itself, and two slots for images.
+ * Of the latter, one slot holds the running (or latest) image, while the other
+ * is used to write a newer image.
  *
  * The bootloader will, on reset, verify the checksum of the image slots, then
  * choose the one with the highest version number that has a valid checksum.  If
- * all slots have the same version number, the first one will be booted.  If none
+ * all slots have the same version number, the first one will be booted. If none
  * of the slots has a valid checksum, no image will be booted and the bootloader
  * will enter "while(1);".
  *
- * Any image that the bootloader can load is supposed to be signed by the firmware
- * tool, which will take an image, sign it using tweetnacl prefixes the image with
- * corresponding metadata.
- *
- * The metadata contains
+ * The bootloader metadata contains
  *
  * - "RIOT" as magic number
  * - an application version
  * - Start address
  * - a checksum
  *
- * The bootloader only cares about checksum and application version. It expects a
- * running image to verify the metadata.
+ * The bootloader only cares about checksum and application version. It expects
+ * a running image to cryptographically verify the metadata of a new image.
  *
- * All image transportation and verification is supposed to be done by a running
- * image.
- *
- * The user must update using a binary that has been linked & signed for the
- * desired target slot.
- * The slot that contains the running image cannot be overwritten.
- *
- * The module "firmware_update" provides a simple API that can be fed image data
- * in arbitrary block sizes.  The API is similar to stream hashing. There's
- * "firmware_update_init()", "firmware_update_put_bytes()" and
- * "firmware_update_finish()".  The module transparently handles image
- * verification and flash writing.
- *
- * A tool in dist/tools/firmware can create the necessary keys using tweetnacl,
- * and also sign/verify firmware images.
- *
- * A module in sys/firmware contains common code for firmware metadata handling.
- *
- * ## Threat vector
- *
- * If properly used, riotboot allows secure updates of running firmware.
- * Only update requests that have a valid signature will cause a write to flash.
- * Only updates with a higher version number will be considered, protecting from
- * replay or downgrade attacks, given a node is running the latest version.
- * Updates cannot put the node in undefined state if an upgrade is aborted at any
- * time or otherwise invalid.
- * Only correctly written and verified updates are considered by the bootloader.
- *
- * ## Usage
- *
- * riotboot needs a public key to be compiled in the image for verification purposes.
- * Create a keypair using dist/tools/firmware.
- *
- * riotboot needs some board specific support, mainly slot size configuration, in
- * order to work for a specific board.
- *
- * If that support is in place, it is easiest to use the riotboot specific make
- * targets in order to get the support on the device.
- *
- * See README.md in examples/ota for examples.
- *
- * @file
- * @brief       Firmware Updates
- *
- * @author      Kaspar Schleiser <kaspar@schleiser.de>
- * @author      Francisco Acosta <francisco.acosta@inria.fr>
+ * riotboot needs some board specific support, mainly slot size configuration,
+ * in order to work for a specific board.
  *
  * @}
  */
-
 #ifndef FIRMWARE_H
 #define FIRMWARE_H
 
@@ -126,34 +60,32 @@ extern "C" {
 #define FIRMWARE_CHECKSUM_LEN       (12)
 
 /**
- *  @brief Length of metadata prefixed to firmware binaries
+ *  @brief Fixed size space for metadata prefixed to firmware binaries
  */
 #ifndef FIRMWARE_METADATA_SIZE
 #define FIRMWARE_METADATA_SIZE      (256)
 #endif
 
 /**
- *  @brief Real length of metadata without padding
- */
-#define FIRMWARE_METADATA_REALLEN   (sizeof(firmware_metadata_t) - FIRMWARE_PADDING)
-
-/**
  * @brief Structure to store firmware metadata
  * @{
  */
 typedef struct {
-    uint32_t magic_number;              /**< metadata magic_number (always "RIOT")  */
-    uint32_t version;                   /**< Integer representing firmware version  */
-    uint32_t start_addr;                /**< Start address in flash                 */
-    uint32_t chksum;                    /**< checksum of metadata                   */
+    uint32_t magic_number;      /**< metadata magic_number (always "RIOT")  */
+    uint32_t version;           /**< Integer representing firmware version  */
+    uint32_t start_addr;        /**< Start address in flash                 */
+    uint32_t chksum;            /**< checksum of metadata                   */
 } firmware_metadata_t;
 /** @} */
 
 /**
- * @brief  Validate FW image metadata
+ * @brief  Validate firmware image metadata
+ *
+ * Checks both the magic number and the checksum
  *
  * @param[in] metadata  ptr to firmware metadata
  *
+ * @returns zero if the @p metadata is valid
  */
 int firmware_validate_metadata_checksum(firmware_metadata_t *metadata);
 
@@ -162,44 +94,49 @@ int firmware_validate_metadata_checksum(firmware_metadata_t *metadata);
  *
  * @param[in] metadata  ptr to firmware metadata
  *
+ * @return  The calculated checksum of the @p metadata
  */
 uint32_t firmware_metadata_checksum(firmware_metadata_t *metadata);
 
 /**
- * @brief  Jump to image
+ * @brief  Jump to image of the metadata struct.
+ *
+ * Jumps to the start_address of the @p metadata.
  *
  * @param[in] metadata  ptr to firmware metadata
- *
  */
 void firmware_jump_to_image(firmware_metadata_t *metadata);
 
 /**
  * @brief  Get currently running image slot
  *
- * returns nr of currently active slot
+ * @returns number of currently active slot
  */
 int firmware_current_slot(void);
 
 /**
  * @brief  Get next (to be empty) image slot
  *
- * returns free target slot
+ * @returns free target slot
  */
 int firmware_target_slot(void);
 
 /**
  * @brief  Get metadata of firmware slot
  *
- * @param[in]   slot    slot nr to work on
+ * @param[in]   slot    slot number to work on
  *
- * returns metadata of image slot nr @p slot
+ * returns metadata of image slot number @p slot
  */
 firmware_metadata_t *firmware_get_metadata(unsigned slot);
 
 /**
- * @brief  Get jump-to address of firmware slot
+ * @brief  Get jump-to address of firmware slot.
  *
- * @param[in]   slot    slot nr to work on
+ * This function returns the first actual firmware address of the slot, start
+ * address of the slot metadata + FIRMWARE_METADATA_SIZE
+ *
+ * @param[in]   slot    slot number to work on
  *
  * @returns address of first byte of @p slot
  */
@@ -208,7 +145,7 @@ unsigned firmware_get_image_startaddr(unsigned slot);
 /**
  * @brief  Boot into image in slot @p slot
  *
- * @param[in]   slot    slot nr to jump to
+ * @param[in]   slot    slot number to jump to
  */
 void firmware_jump_to_slot(unsigned slot);
 

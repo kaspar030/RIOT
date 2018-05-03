@@ -27,16 +27,20 @@
  *
  * Under the hood, the module tries to abstract page sizes for writing the image
  * to flash. Verification of the image is left to the caller.
- * If the data is not correctly written, firmware_put_bytes() will
+ * If the data is not correctly written, firmware_flashwrite_putbytes() will
  * return -1.
  *
- * The module makes sure that at no point in time an invalid image is bootable.
+ * This module makes sure that at no point in time an invalid image is bootable.
  * The algorithm for that makes use of the bootloader verifying checksum and
  * works as follows:
  *
  * 1. erase first block (making its checksum invalid)
  * 2. write image
  * 3. write first block
+ *
+ * It is left to the caller to verify the written image in a proper way. After
+ * the image is verified, firmware_flashwrite_finish() must be called to write
+ * the first block with a proper metadata struct.
  *
  * @author      Kaspar Schleiser <kaspar@schleiser.de>
  * @author      Koen Zandberg <koen@bergzand.net>
@@ -67,27 +71,27 @@ typedef struct {
 /**
  * @brief   Initialize firmware update
  *
- * @param[in/out]   state       ptr to preallocated state structure
+ * @param[inout]    state       ptr to preallocated state structure
  * @param[in]       target_slot slot to write update into
  * @param[in]       offset      Bytes offset to start write at
  *
  * @returns         0 on success, <0 otherwise
  */
-int firmware_flashwrite_init(firmware_flashwrite_t *state, int target_slot, size_t offset);
+int firmware_flashwrite_init(firmware_flashwrite_t *state, int target_slot,
+        size_t offset);
 
 /**
  * @brief   Feed bytes into the firmware writer
  *
- * @param[in/out]   state   ptr to previously used update state
- * @param[in]       offset  offset of @p bytes (from image start)
+ * @param[inout]    state   ptr to previously used update state
  * @param[in]       bytes   ptr to data
- * @param[in]       len     len of data
- * @param[in]       more    Whether more data is comming
+ * @param[in]       len     length of data
+ * @param[in]       more    Must be set to false if this is the last data
  *
  * @returns         0 on success, <0 otherwise
  */
 int firmware_flashwrite_putbytes(firmware_flashwrite_t *state,
-                             const uint8_t *bytes, size_t len, bool more);
+        const uint8_t *bytes, size_t len, bool more);
 
 /**
  * @brief   Finish a firmware update

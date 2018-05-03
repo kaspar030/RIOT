@@ -86,7 +86,7 @@ int sign(int argc, char *argv[])
     /* calculate metadata checksum */
     metadata.metadata.chksum = firmware_metadata_checksum(&metadata.metadata);
 
-    metadata.metadata_type = FIRMWARE_METADATA_RIOTBOOT;
+    metadata.metadata_type = FIRMWARE_METADATA_TYPE_SIMPLE;
 
     /* sign */
     firmware_simple_sign(&metadata, sk);
