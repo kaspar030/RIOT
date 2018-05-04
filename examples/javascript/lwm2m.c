@@ -209,7 +209,7 @@ void lwm2m_register(void)
     gcoap_req_init(&pdu, &buf[0], GCOAP_PDU_BUF_SIZE, 2, "/rd");
     gcoap_add_qstring(&pdu, "b", "U");
     gcoap_add_qstring(&pdu, "lwm2m", "1.0");
-    gcoap_add_qstring(&pdu, "lt", "7200");
+    gcoap_add_qstring(&pdu, "lt", "200");
     gcoap_add_qstring(&pdu, "ep", device_id);
     memcpy(pdu.payload, lwm2m_resources, strlen(lwm2m_resources));
     len = gcoap_finish(&pdu, strlen(lwm2m_resources), COAP_FORMAT_TEXT);
