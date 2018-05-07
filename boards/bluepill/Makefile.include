@@ -20,8 +20,8 @@ ifeq ($(PROGRAMMER),dfu-util)
   export DEBUGGER = # no debugger
   export RESET = # dfu-util has no support for resetting the device
 
-  HEXFILE = $(BINFILE)
-  export FFLAGS = -d 1d50:6017 -s 0x08002000:leave -D "$(HEXFILE)"
+  FLASHFILE = $(BINFILE)
+  FFLAGS = -d 1d50:6017 -s 0x08002000:leave -D $(FLASHFILE)
 else
 
 # this board uses openocd by default

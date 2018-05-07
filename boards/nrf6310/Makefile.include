@@ -12,8 +12,8 @@ export DEBUGGER = $(RIOTBOARD)/$(BOARD)/dist/debug.sh
 export DEBUGSERVER = JLinkGDBServer -device nrf51822 -if SWD
 export RESET = $(RIOTBOARD)/$(BOARD)/dist/reset.sh
 
-HEXFILE = $(BINFILE)
-export FFLAGS = $(BINDIR) $(HEXFILE)
+FLASHFILE = $(BINFILE)
+FFLAGS = $(BINDIR) $(FLASHFILE)
 export DEBUGGER_FLAGS = $(BINDIR) $(ELFFILE)
 export RESET_FLAGS = $(BINDIR)
 

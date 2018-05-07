@@ -4,4 +4,4 @@ export INCLUDES += -I$(RIOTBOARD)/$(BOARD)/include/
 export USE_DSP = 1
 export USE_UHI_SYSCALLS = 1
 
-HEXFILE = $(BINFILE)
+FLASHFILE = $(ELFFILE)

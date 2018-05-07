@@ -10,5 +10,6 @@ export BAUD ?= 9600
 include $(RIOTMAKE)/tools/serial.inc.mk
 
 # flash tool configuration
+FLASHFILE = $(HEXFILE)
 export FLASHER = $(RIOTBASE)/dist/tools/goodfet/goodfet.bsl
-export FFLAGS = --telosb -c $(PORT) -r -e -I -p $(HEXFILE)
+FFLAGS = --telosb -c $(PORT) -r -e -I -p $(FLASHFILE)

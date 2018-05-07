@@ -1,7 +1,7 @@
 export FLASHER ?= $(RIOTBASE)/dist/tools/bossa/bossac
-export FFLAGS  ?= -p $(PORT) -e -i -w -v -b -R $(HEXFILE)
+FFLAGS  ?= -p $(PORT) -e -i -w -v -b -R $(FLASHFILE)
 
-HEXFILE = $(BINFILE)
+FLASHFILE ?= $(BINFILE)
 
 # some arduino boards need to toggle the serial interface a little bit to get
 # them ready for flashing...

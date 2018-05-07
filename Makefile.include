@@ -322,6 +322,9 @@ ELFFILE ?= $(BINDIR)/$(APPLICATION).elf
 HEXFILE ?= $(ELFFILE:.elf=.hex)
 BINFILE ?= $(ELFFILE:.elf=.bin)
 
+# File used by the flasher (can be overwritten to $(HEXFILE), $(BINFILE))
+FLASHFILE ?= $(ELFFILE)
+
 # Targets to get given file
 elffile: $(ELFFILE)
 hexfile: $(HEXFILE)
@@ -347,7 +350,7 @@ ifeq ($(BUILD_IN_DOCKER),1)
 link: ..in-docker-container
 else
 ifeq (,$(RIOTNOLINK))
-link: ..compiler-check ..build-message $(ELFFILE) $(HEXFILE) print-size
+link: ..compiler-check ..build-message $(ELFFILE) $(FLASHFILE) print-size
 else
 link: ..compiler-check ..build-message $(BASELIBS)
 endif # RIOTNOLINK
@@ -438,9 +441,10 @@ distclean:
 	-@for i in $(USEPKG) ; do "$(MAKE)" -C $(RIOTPKG)/$$i distclean ; done
 	-@rm -rf $(BINDIRBASE)
 
-# if make target != 'flash-only', add target 'all' to ensure build before flash
+# if make target != 'flash-only', add target '$(FLASHFILE)' before flashing.
+# It forces rebuilding as it has `.PHONY` dependencies.
 ifeq (,$(filter flash-only, $(MAKECMDGOALS)))
-  BUILD_BEFORE_FLASH = all
+  BUILD_BEFORE_FLASH = $(FLASHFILE)
 endif
 
 flash: $(BUILD_BEFORE_FLASH) $(FLASHDEPS)

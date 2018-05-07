@@ -22,6 +22,7 @@ export AS ?= $(PREFIX)as
 export LINK ?= $(PREFIX)gcc
 export SIZE ?= $(PREFIX)size
 
+FLASHFILE = $(ELFFILE)
 ifneq ($(shell uname -s),Darwin)
   export OBJCOPY ?= $(PREFIX)objcopy
 else

@@ -12,7 +12,8 @@ include $(RIOTMAKE)/tools/serial.inc.mk
 # we support flashing through plain fscopy or using JLink
 PROGRAMMER ?= fscopy
 ifeq (fscopy,$(PROGRAMMER))
-  export FFLAGS =
+  FLASHFILE = $(HEXFILE)
+  FFLAGS = $(FLASHFILE)
   export DEBUGGER_FLAGS =
 
   export FLASHER = $(RIOTBOARD)/$(BOARD)/dist/flash.sh

@@ -51,7 +51,7 @@ export ASFLAGS               # Flags for the assembler.
 export LINK                  # The command used to link the files. Must take the same parameters as GCC, i.e. "ld" won't work.
 export LINKFLAGS             # Flags to supply in the linking step.
 export LTOFLAGS              # extra CFLAGS for compiling with link time optimization
-export OBJCOPY               # The command used to create the HEXFILE.
+export OBJCOPY               # The command used to create the HEXFILE and BINFILE.
 export OFLAGS                # The parameter for OBJCOPY, e.g. to strip the debug information.
 export OBJDUMP               # The command used to create the assembly listing.
 export OBJDUMPFLAGS          # The parameter for OBJDUMP.
@@ -68,7 +68,9 @@ export TERMPROG              # The command to call on "make term".
 export TERMFLAGS             # Additional parameters to supply to TERMPROG.
 export PORT                  # The port to connect the TERMPROG to.
 export ELFFILE               # The unstripped result of the compilation.
-export HEXFILE               # The stripped result of the compilation.
+export HEXFILE               # The 'ihex' result of compilation.
+export BINFILE               # The 'binary' result of compilation.
+export FLASHFILE             # The output file used for flashing.
 export DEBUGGER              # The command to call on "make debug", usually a script starting the GDB front-end.
 export DEBUGGER_FLAGS        # The parameters to supply to DEBUGGER.
 export DEBUGSERVER           # The command to call on "make debug-server", usually a script starting the GDB server.

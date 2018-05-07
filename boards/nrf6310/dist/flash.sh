@@ -9,13 +9,13 @@
 # @author Hauke Petersen <hauke.petersen@fu-berlin.de>
 
 BINDIR=$1
-HEXFILE=$2
+BINFILE=$2
 
 # setup JLink command file
 echo "device nrf51822" > $BINDIR/burn.seg
 echo "speed 1000" >> $BINDIR/burn.seg
 echo "w4 4001e504 1" >> $BINDIR/burn.seg
-echo "loadbin $HEXFILE 0" >> $BINDIR/burn.seg
+echo "loadbin $BINFILE 0" >> $BINDIR/burn.seg
 echo "r" >> $BINDIR/burn.seg
 echo "g" >> $BINDIR/burn.seg
 echo "exit" >> $BINDIR/burn.seg

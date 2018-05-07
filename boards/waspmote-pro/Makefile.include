@@ -34,4 +34,5 @@ ifeq ($(PROGRAMMER), stk500v1)
 endif
 
 OFLAGS += -j .text -j .data
-export FFLAGS += -p m1281 -c $(PROGRAMMER) $(PROGRAMMER_FLAGS) -F -U flash:w:$(HEXFILE)
+FLASHFILE = $(HEXFILE)
+FFLAGS += -p m1281 -c $(PROGRAMMER) $(PROGRAMMER_FLAGS) -F -U flash:w:$(FLASHFILE)

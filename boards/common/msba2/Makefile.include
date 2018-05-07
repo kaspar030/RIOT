@@ -24,7 +24,8 @@ USEMODULE += newlib_nano
 ifeq ($(PORT),)
   export PORT = /dev/ttyUSB0
 endif
-export FFLAGS = $(PORT) $(HEXFILE)
+FLASHFILE = $(HEXFILE)
+FFLAGS = $(PORT) $(FLASHFILE)
 
 INCLUDES += -I$(RIOTBOARD)/common/msba2/include
 INCLUDES += -I$(RIOTBOARD)/common/msba2/drivers/include
