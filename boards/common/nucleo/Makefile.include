@@ -16,4 +16,11 @@ include $(RIOTMAKE)/tools/serial.inc.mk
 export DEBUG_ADAPTER ?= stlink
 
 # nucleo boards use openocd
+PROGRAMMER ?= openocd
+
+ifeq (st-flash,$(PROGRAMMER))
+  include $(RIOTMAKE)/tools/st-flash.inc.mk
+endif
+
+# this board uses openocd
 include $(RIOTMAKE)/tools/openocd.inc.mk
