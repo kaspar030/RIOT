@@ -37,11 +37,11 @@
 #define BUS                 (dev->params.i2c)
 #define ADDR                (dev->params.addr)
 
-int mma8x5x_init(mma8x5x_t *dev, const mma8x5x_params_t *params)
+int mma8x5x_init_prepare(mma8x5x_t *dev, const mma8x5x_params_t *params)
 {
-    uint8_t reg = 0;
-
     assert(dev && params);
+
+    uint8_t reg;
 
     /* write device descriptor */
     dev->params = *params;
@@ -65,7 +65,26 @@ int mma8x5x_init(mma8x5x_t *dev, const mma8x5x_params_t *params)
             return MMA8X5X_NODEV;
     }
 
+    /* finally release the bus */
+    i2c_release(BUS);
+
+    return MMA8X5X_OK;
+}
+
+int mma8x5x_init(mma8x5x_t *dev, const mma8x5x_params_t *params)
+{
+    uint8_t reg;
+
+    assert(dev && params);
+
+    /* initialize the I2C bus */
+    int res = mma8x5x_init_prepare(dev, params);
+    if (res != MMA8X5X_OK) {
+        return res;
+    }
+
     /* reset the device */
+    i2c_acquire(BUS);
     i2c_write_reg(BUS, ADDR, MMA8X5X_CTRL_REG2, MMA8X5X_CTRL_REG2_RST, 0);
     do {
         i2c_read_reg(BUS, ADDR, MMA8X5X_CTRL_REG2, &reg, 0);
