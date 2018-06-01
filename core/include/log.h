@@ -16,6 +16,17 @@
  * This header offers a bunch of "LOG_*" functions that, with the default
  * implementation, just use printf, but honour a verbosity level.
  *
+ * It is possible to define "LOG_PREFIX" to a string, before including "log.h".
+ * That string will be prepended to any log message, e.g.:
+ *    
+ *    #define LOG_PREFI "my_module: "
+ *    #include "log.h"
+ *    [...]
+ *    LOG_WARNING("situation normal, all fucked up\n");
+ *
+ * ... will result in "my_module: situation normal, all fucked up\n" to be
+ * printed.
+ *
  * If desired, it is possible to implement a log module which then will be used
  * instead the default printf-based implementation.  In order to do so, the log
  * module has to
@@ -84,11 +95,11 @@ enum {
 #define LOG(level, ...) do { \
     _Pragma("clang diagnostic push") \
     _Pragma("clang diagnostic ignored \"-Wtautological-compare\"") \
-    if ((level) <= LOG_LEVEL) log_write((level), __VA_ARGS__); } while (0U) \
+    if ((level) <= LOG_LEVEL) log_write((level), LOG_PREFIX __VA_ARGS__); } while (0U) \
     _Pragma("clang diagnostic pop")
 #else
 #define LOG(level, ...) do { \
-    if ((level) <= LOG_LEVEL) log_write((level), __VA_ARGS__); } while (0U)
+    if ((level) <= LOG_LEVEL) log_write((level), LOG_PREFIX __VA_ARGS__); } while (0U)
 #endif /* __clang__ */
 
 /**
@@ -109,7 +120,7 @@ enum {
 /**
  * @brief Default log_write function, just maps to printf
  */
-#define log_write(level, ...) printf(LOG_PREFIX __VA_ARGS__)
+#define log_write(level, ...) printf(__VA_ARGS__)
 #endif
 
 #ifdef __cplusplus
