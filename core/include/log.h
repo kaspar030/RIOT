@@ -71,6 +71,13 @@ enum {
 #endif
 
 /**
+ * @brief Prefix to prepend to each message
+ */
+#ifndef LOG_PREFIX
+#define LOG_PREFIX ""
+#endif
+
+/**
  * @brief Log message if level <= LOG_LEVEL
  */
 #ifdef __clang__    /* following pragmas required for clang 3.8.0 */
@@ -102,7 +109,7 @@ enum {
 /**
  * @brief Default log_write function, just maps to printf
  */
-#define log_write(level, ...) printf(__VA_ARGS__)
+#define log_write(level, ...) printf(LOG_PREFIX __VA_ARGS__)
 #endif
 
 #ifdef __cplusplus
