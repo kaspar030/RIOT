@@ -80,3 +80,7 @@ int smbus_battery_cycle_count(const smbus_t *dev, uint16_t *out)
     return smbus_read_reg(dev, CYCLE_COUNT, (uint8_t *)out);
 }
 
+int smbus_battery_temp(const smbus_t *dev, uint16_t *out)
+{
+    return smbus_read_reg(dev, TEMPERATURE, (uint8_t *)out);
+}
