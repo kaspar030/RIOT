@@ -88,3 +88,7 @@ endif
 ifneq (,$(filter libc,$(USEMODULE)))
   include $(RIOTBASE)/sys/libc/Makefile.include
 endif
+
+ifneq (,$(filter newlib,$(USEMODULE)))
+  USEMODULE_INCLUDES += $(RIOTBASE)/sys/newlib-extra/include
+endif
