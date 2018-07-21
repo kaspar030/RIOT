@@ -1272,6 +1272,7 @@ static void *_gnrc_netif_thread(void *args)
     gnrc_netif_t *netif;
     netdev_t *dev;
     int res;
+
     msg_t reply = { .type = GNRC_NETAPI_MSG_TYPE_ACK };
     msg_t msg, msg_queue[GNRC_NETIF_MSG_QUEUE_SIZE];
 
