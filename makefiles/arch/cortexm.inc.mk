@@ -40,6 +40,8 @@ export USEMODULE += cortexm_common_periph
 # choose C library
 ifeq (libc,$(RIOT_LIBC))
 USEMODULE += libc
+CFLAGS += -nostdinc
+LINKFLAGS += -nostdlib
 else
 # all cortex MCU's use newlib as default libc
 export USEMODULE += newlib
