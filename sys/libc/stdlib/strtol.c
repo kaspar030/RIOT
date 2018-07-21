@@ -4,7 +4,17 @@
 
 long int strtol(const char *nptr, char **endptr, int base)
 {
-    uint8_t buf[16] = { 0 };
-    memcpy(buf, nptr, endptr);
-    return scn_u32_dec(buf);
+    (void)base;
+
+    unsigned neg = 0;
+
+    switch (*nptr) {
+        case '-':neg = 1;
+        case '+':nptr++;
+    }
+
+    size_t n = *endptr - nptr;
+    uint32_t res = scn_u32_dec(nptr, n);
+
+    return neg ? res : -res;
 }
