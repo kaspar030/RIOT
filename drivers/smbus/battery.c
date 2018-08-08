@@ -84,3 +84,23 @@ int smbus_battery_temp(const smbus_t *dev, uint16_t *out)
 {
     return smbus_read_reg(dev, TEMPERATURE, (uint8_t *)out);
 }
+
+int smbus_battery_relative_soc(const smbus_t *dev, uint16_t *out)
+{
+    return smbus_read_reg(dev, RELATIVE_STATE_OF_CHARGE, (uint8_t *)out);
+}
+
+int smbus_battery_runtime_to_empty(const smbus_t *dev, uint16_t *out)
+{
+    return smbus_read_reg(dev, RUNTIME_TO_EMPTY, (uint8_t *)out);
+}
+
+int smbus_battery_at_rate_time_to_full(const smbus_t *dev, uint16_t *out)
+{
+    return smbus_read_reg(dev, AT_RATE_TIME_TO_FULL, (uint8_t *)out);
+}
+
+int smbus_battery_full_charge_capacity(const smbus_t *dev, uint16_t *out)
+{
+    return smbus_read_reg(dev, FULL_CHARGE_CAPACITY, (uint8_t *)out);
+}
