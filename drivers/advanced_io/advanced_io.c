@@ -5,22 +5,22 @@ typedef enum {
     LSBFIRST
 } advanced_io_bit_order_t;
 
-uint8_t advanced_io_shift_in(gpio_t dataPin, gpio_t clockPin, advanced_io_bit_order_t bitOrder){
+uint8_t advanced_io_shift_in(gpio_t data_pin, gpio_t clock_pin, advanced_io_bit_order_t bit_order){
     uint8_t byte = 0x00;
 
     for(int i = 0; i <= 8; i++){
-        gpio_set(clockPin);
-        if(gpio_read(dataPin) > 0){
-            if(bitOrder == MSBFIRST){
+        gpio_set(clock_pin);
+        if(gpio_read(data_pin) > 0){
+            if(bit_order == MSBFIRST){
                 byte = byte | 0x01 << (8 - i);
             }
-            else if(bitOrder == LSBFIRST){
+            else if(bit_order == LSBFIRST){
                 byte = byte | 0x01 << i;
             } else {
                 return '\0';
             }
         }
-        gpio_clear(clockPin);
+        gpio_clear(clock_pin);
     }
 
     return byte;
