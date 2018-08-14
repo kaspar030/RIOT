@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2017 Philipp-Alexander Blum <philipp-blum@jakiku.de>
+ *
+ * This file is subject to the terms and conditions of the GNU Lesser
+ * General Public License v2.1. See the file LICENSE in the top level
+ * directory for more details.
+ */
+
 #include "periph/gpio.h"
 
 typedef enum {
