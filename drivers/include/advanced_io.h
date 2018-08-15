@@ -20,16 +20,13 @@
  * @author     Philipp-Alexander Blum <philipp-blum@jakiku.de>
  */
 
+#include "periph/gpio.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef enum {
-    MSBFIRST,
-    LSBFIRST
-} advanced_io_bit_order_t;
-
-uint8_t advanced_io_shift_in(gpio_t dataPin, gpio_t clockPin, advanced_io_bit_order_t bitOrder);
+uint8_t advanced_io_shift_in(gpio_t dataPin, gpio_t clockPin);
 
 #ifdef __cplusplus
 }
