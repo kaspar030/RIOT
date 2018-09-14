@@ -12,7 +12,7 @@ shared early with a wider audience in order to facilitate easier collaboration.
 
 **WARNING**
 
-Do not depend on anything within this subfolder!  Everything in here might be
+Do not depend on anything within this subfolder! Everything in here might be
 broken or break or be changed or removed at any time, and everything is
 officially unsupported (but may be supported by one or more individuals)! API's
 from this tree might change without notice.
@@ -42,7 +42,6 @@ staging/).
 - the original contributor(s) is/are considered maintainer(s) for a module
 - non-trivial changes SHOULD be ACK'ed by a module's maintainer(s)
 - PR's to staging/ are labeled with "staging"
-- PR's changing both staging and main tree code are *not* labeled "staging"
 - each staging module has a README.md as described below
 
 ## Procedures
