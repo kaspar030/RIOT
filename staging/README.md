@@ -42,7 +42,6 @@ staging/).
 - the original contributor(s) is/are considered maintainer(s) for a module
 - non-trivial changes SHOULD be ACK'ed by a module's maintainer(s)
 - PR's to staging/ are labeled with "staging"
-- PR's changing both staging and main tree code are *not* labeled "staging"
 - each staging module has a README.md as described below
 
 ## Procedures
