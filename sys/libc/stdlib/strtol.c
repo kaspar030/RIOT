@@ -10,6 +10,7 @@ long int strtol(const char *nptr, char **endptr, int base)
 
     switch (*nptr) {
         case '-':neg = 1;
+                 /* fall through */
         case '+':nptr++;
     }
 

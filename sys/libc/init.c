@@ -1,8 +1,8 @@
-#include "uart_stdio.h"
+#include "stdio_uart.h"
 
 void libc_init(void)
 {
-#ifdef MODULE_UART_STDIO
-    uart_stdio_init();
+#ifdef MODULE_STDIO_UART
+    stdio_uart_init();
 #endif
 }

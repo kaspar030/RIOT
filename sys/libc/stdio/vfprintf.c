@@ -115,6 +115,7 @@ int vfprintf(FILE *restrict f, const char *restrict fmt, va_list ap)
                         goto done;
                     case 'p':
                         prefix = "0x";
+                        /* fall through */
                     case 'x':
                     case 'X':
                         int_conv_func = (void *)fmt_u32_hex;
