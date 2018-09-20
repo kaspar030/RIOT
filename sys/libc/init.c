@@ -2,7 +2,7 @@
 
 void libc_init(void)
 {
-#ifdef MODULE_STDIO_UART
-    stdio_uart_init();
+#if defined(MODULE_STDIO_UART) || defined(MODULE_STDIO_RTT)
+    stdio_init();
 #endif
 }
