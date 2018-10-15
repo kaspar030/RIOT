@@ -1086,6 +1086,7 @@ endif
 
 ifneq (,$(filter nanonet,$(USEMODULE)))
   USEMODULE += iolist
+  USEMODULE += nanonet_netdev
 endif
 
 # Enable periph_gpio when periph_gpio_irq is enabled
