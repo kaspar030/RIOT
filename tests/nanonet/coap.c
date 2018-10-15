@@ -15,15 +15,16 @@
 #define ENABLE_DEBUG (0)
 #include "debug.h"
 
-static ssize_t _riot_board_handler(coap_pkt_t *pkt, uint8_t *buf, size_t len)
+static ssize_t _riot_board_handler(coap_pkt_t *pkt, uint8_t *buf, size_t len, void *context)
 {
+    (void)context;
     return coap_reply_simple(pkt, COAP_CODE_205, buf, len,
                              COAP_FORMAT_TEXT, (uint8_t *)RIOT_BOARD, strlen(RIOT_BOARD));
 }
 
 const coap_resource_t coap_resources[] = {
     COAP_WELL_KNOWN_CORE_DEFAULT_HANDLER,
-    { "/riot/board", COAP_GET, _riot_board_handler },
+    { "/riot/board", COAP_GET, _riot_board_handler, NULL },
 };
 
 const unsigned coap_resources_numof = sizeof(coap_resources) / sizeof(coap_resources[0]);
