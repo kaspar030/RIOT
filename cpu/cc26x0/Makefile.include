@@ -1,3 +1,14 @@
 export CPU_ARCH := cortex-m3
 
+export DRIVERLIB ?= $(RIOTCPU)/cc26x0/vendor/ti/devices/cc26x0
+
+
+# these actually depend on cc26xx_rfcore or driverlib in USEMODULE,
+# but Makefile.include is parsed before the dependencies, so they cannot be ifdef'ed here.
+# If put in Makefile.dep in the corresponding module blocks,
+# they get added to INCLUDES multiple times.
+# Thus for now, always add them here.
+INCLUDES += -I$(RIOTCPU)/cc26x0/cc26xx_rfcore
+INCLUDES += -isystem $(DRIVERLIB)
+
 include $(RIOTMAKE)/arch/cortexm.inc.mk

@@ -201,6 +201,11 @@ void auto_init(void)
     auto_init_cc2420();
 #endif
 
+#ifdef MODULE_CC26XX_RFCORE
+    extern void auto_init_cc26xx_rfcore(void);
+    auto_init_cc26xx_rfcore();
+#endif
+
 #ifdef MODULE_ENCX24J600
     extern void auto_init_encx24j600(void);
     auto_init_encx24j600();
