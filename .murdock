@@ -121,22 +121,9 @@ get_app_board_toolchain_pairs() {
 # use dwqc to create full "appdir board toolchain" compile job list
 get_compile_jobs() {
     get_apps | \
-        dwqc ${DWQ_ENV} -s \
+        dwqc -v ${DWQ_ENV} -s \
         "$0 get_app_board_toolchain_pairs \${1}" \
         | xargs '-d\n' -n 1 echo $0 compile
-}
-
-get_compile_jobs2() {
-    get_apps |
-        while read i
-        do
-            echo "$i:"
-            echo $i | dwqc ${DWQ_ENV} -s "$0 get_app_board_toolchain_pairs \${1}"
-        done
-
-        #dwqc ${DWQ_ENV} -s \
-        #"$0 get_app_board_toolchain_pairs \${1}" \
-        #| xargs '-d\n' -n 1 echo $0 compile
 }
 
 print_worker() {
