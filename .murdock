@@ -130,7 +130,8 @@ get_compile_jobs2() {
     get_apps |
         while read i
         do
-            echo $i
+            echo "$i:"
+            echo $i | dwqc ${DWQ_ENV} -s "$0 get_app_board_toolchain_pairs \${1}"
         done
 
         #dwqc ${DWQ_ENV} -s \
