@@ -16,27 +16,30 @@ export DEBUGSERVER_FLAGS = -p 3333 $(RIOTBOARD)/$(BOARD)/dist/$(CPU_MODEL)_$(XDE
 #export DEBUGGER = $(PREFIX)gdb
 #export DEBUGGER_FLAGS = -x $(RIOTBOARD)/$(BOARD)/dist/$(CPU_MODEL)_gdb.conf $(ELFFILE)
 
-# configure the flash tool
-export XDEBUGGER = XDS110
-export UNIFLASH_PATH ?= "UNIFLASH_PATH unconfigured"
-# check which uniflash version is available, either 4.x or 3.x
-ifneq ("$(wildcard $(UNIFLASH_PATH)/dslite.sh)","")
-  export FLASHER ?= $(UNIFLASH_PATH)/dslite.sh
-  export FFLAGS  = --config $(RIOTBOARD)/$(BOARD)/dist/$(CPU_MODEL)_$(XDEBUGGER).ccxml $(ELFFILE)
-  # configure uniflash for resetting target
-  export RESET = $(UNIFLASH_PATH)/simplelink/gen2/bin/xds110reset
-  export RESET_FLAGS
+PROGRAMMER ?= jlink
+
+ifeq (xds110, $(PROGRAMMER))
+  # configure the flash tool
+  export XDEBUGGER = XDS110
+  export UNIFLASH_PATH ?= "UNIFLASH_PATH unconfigured"
+  # check which uniflash version is available, either 4.x or 3.x
+  ifneq ("$(wildcard $(UNIFLASH_PATH)/dslite.sh)","")
+    export FLASHER ?= $(UNIFLASH_PATH)/dslite.sh
+    export FFLAGS  = --config $(RIOTBOARD)/$(BOARD)/dist/$(CPU_MODEL)_$(XDEBUGGER).ccxml $(ELFFILE)
+    # configure uniflash for resetting target
+    export RESET = $(UNIFLASH_PATH)/simplelink/gen2/bin/xds110reset
+    export RESET_FLAGS
+  else
+    export FLASHER = $(UNIFLASH_PATH)/uniflash.sh
+    export FFLAGS  = -ccxml $(RIOTBOARD)/$(BOARD)/dist/$(CPU_MODEL)_$(XDEBUGGER).ccxml -program $(ELFFILE)
+    # configure uniflash for resetting target
+    export RESET = $(UNIFLASH_PATH)/uniflash.sh
+    export RESET_FLAGS = -ccxml $(RIOTBOARD)/$(BOARD)/dist/$(CPU_MODEL)_$(XDEBUGGER).ccxml -reset
+  endif
 else
-  export FLASHER = $(UNIFLASH_PATH)/uniflash.sh
-  export FFLAGS  = -ccxml $(RIOTBOARD)/$(BOARD)/dist/$(CPU_MODEL)_$(XDEBUGGER).ccxml -program $(ELFFILE)
-  # configure uniflash for resetting target
-  export RESET = $(UNIFLASH_PATH)/uniflash.sh
-  export RESET_FLAGS = -ccxml $(RIOTBOARD)/$(BOARD)/dist/$(CPU_MODEL)_$(XDEBUGGER).ccxml -reset
+  export JLINK_IF := jtag
+  export JLINK_DEVICE := CC2650F128
+  export JLINK_SPEED := 1000
+  include $(RIOTMAKE)/tools/jlink.inc.mk
 endif
 
-#export PROGRAMMER=jlink
-#export JLINK_IF := jtag
-#export JLINK_DEVICE := CC2650F128
-#export JLINK_SPEED := 1000
-#
-#include $(RIOTMAKE)/tools/jlink.inc.mk
