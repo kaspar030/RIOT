@@ -234,20 +234,20 @@ static const spi_conf_t spi_config[] = {
 #define I2C_APBCLK          (CLOCK_APB1)
 
 /* I2C 0 device configuration */
-#define I2C_0_DEV           I2C2
-#define I2C_0_CLKEN()       (periph_clk_en(APB1, RCC_APB1ENR_I2C2EN))
-#define I2C_0_CLKDIS()      (periph_clk_dis(APB1, RCC_APB1ENR_I2C2EN))
-#define I2C_0_EVT_IRQ       I2C2_EV_IRQn
-#define I2C_0_EVT_ISR       isr_i2c2_ev
-#define I2C_0_ERR_IRQ       I2C2_ER_IRQn
-#define I2C_0_ERR_ISR       isr_i2c2_er
+#define I2C_0_DEV           I2C3
+#define I2C_0_CLKEN()       (periph_clk_en(APB1, RCC_APB1ENR_I2C3EN))
+#define I2C_0_CLKDIS()      (periph_clk_dis(APB1, RCC_APB1ENR_I2C3EN))
+#define I2C_0_EVT_IRQ       I2C3_EV_IRQn
+#define I2C_0_EVT_ISR       isr_i2c3_ev
+#define I2C_0_ERR_IRQ       I2C3_ER_IRQn
+#define I2C_0_ERR_ISR       isr_i2c3_er
 /* I2C 0 pin configuration */
-#define I2C_0_SCL_PORT      GPIOB
-#define I2C_0_SCL_PIN       10
+#define I2C_0_SCL_PORT      GPIOA
+#define I2C_0_SCL_PIN       8
 #define I2C_0_SCL_AF        4
-#define I2C_0_SCL_CLKEN()   (periph_clk_en(AHB1, RCC_AHB1ENR_GPIOBEN))
+#define I2C_0_SCL_CLKEN()   (periph_clk_en(AHB1, RCC_AHB1ENR_GPIOAEN))
 #define I2C_0_SDA_PORT      GPIOB
-#define I2C_0_SDA_PIN       3
+#define I2C_0_SDA_PIN       4
 #define I2C_0_SDA_AF        9
 #define I2C_0_SDA_CLKEN()   (periph_clk_en(AHB1, RCC_AHB1ENR_GPIOBEN))
 /** @} */
