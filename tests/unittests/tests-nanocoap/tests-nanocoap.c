@@ -468,6 +468,42 @@ static void test_nanocoap__server_option_count_overflow_check(void)
     TEST_ASSERT_EQUAL_INT(-ENOMEM, res);
 }
 
+/*
+ * Verifies that coap_parse() recognizes inclusion of too many options.
+ */
+static void test_nanocoap__server_option_count_overflow(void)
+{
+    /* base pkt is a GET for /riot/value, which results in two options for the
+     * path, but only 1 entry in the options array.
+     * Size buf to accept an extra 2-byte option */
+    unsigned base_len = 17;
+    uint8_t buf[17 + (2 * NANOCOAP_NOPTS_MAX)] = {
+        0x42, 0x01, 0xbe, 0x16, 0x35, 0x61, 0xb4, 0x72,
+        0x69, 0x6f, 0x74, 0x05, 0x76, 0x61, 0x6c, 0x75,
+        0x65
+    };
+    coap_pkt_t pkt;
+
+    /* nonsense filler option that contains a single byte of data */
+    uint8_t fill_opt[] = { 0x11, 0x01 };
+
+    /* fill pkt with maximum options; should succeed */
+    int i = 0;
+    for (; i < (2 * (NANOCOAP_NOPTS_MAX - 1)); i+=2) {
+        memcpy(&buf[base_len+i], fill_opt, 2);
+    }
+
+    /* don't read final two bytes, where overflow option will be added later */
+    int res = coap_parse(&pkt, buf, sizeof(buf) - 2);
+    TEST_ASSERT_EQUAL_INT(0, res);
+
+    /* add option to overflow */
+    memcpy(&buf[base_len+i], fill_opt, 2);
+
+    res = coap_parse(&pkt, buf, sizeof(buf));
+    TEST_ASSERT(res < 0);
+}
+
 Test *tests_nanocoap_tests(void)
 {
     EMB_UNIT_TESTFIXTURES(fixtures) {
@@ -486,6 +522,7 @@ Test *tests_nanocoap_tests(void)
         new_TestFixture(test_nanocoap__server_get_req_con),
         new_TestFixture(test_nanocoap__server_reply_simple_con),
         new_TestFixture(test_nanocoap__server_option_count_overflow_check),
+        new_TestFixture(test_nanocoap__server_option_count_overflow),
     };
 
     EMB_UNIT_TESTCALLER(nanocoap_tests, NULL, NULL, fixtures);
