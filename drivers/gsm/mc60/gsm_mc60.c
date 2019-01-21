@@ -26,9 +26,9 @@ static ssize_t _mc60_send_data(gsm_t *gsmdev, const char *cmd, const uint8_t *da
     uart_write(at_dev->uart, data, data_len);
 
     /* read empty line */
-    at_readline(at_dev, buf, sizeof(buf), timeout);
+    at_readline(at_dev, buf, sizeof(buf), 0, timeout);
 
-    res = at_readline(at_dev, buf, sizeof(buf), timeout);
+    res = at_readline(at_dev, buf, sizeof(buf), 0, timeout);
     if (res <= 0 || strncmp(buf, "OK", 2)) {
         res = -1;
         goto out;
@@ -110,7 +110,7 @@ static ssize_t _mc60_http_post(gsm_t *gsmdev,
         }
     }
 
-    res = at_send_cmd_get_lines(at_dev, "AT+QHTTPREAD=30", (char *)resultbuf, result_len, GSM_SERIAL_TIMEOUT * 30);
+    res = at_send_cmd_get_lines(at_dev, "AT+QHTTPREAD=30", (char *)resultbuf, result_len, 0, GSM_SERIAL_TIMEOUT * 30);
     if (res < 11) {
         res = -1;
         goto out;
@@ -174,7 +174,7 @@ static int mc60_cnet_scan(gsm_t *gsmdev, char *buf, size_t len)
     LOG_INFO("gsm: mc60: scanning GSM towers...\n");
     mutex_lock(&gsmdev->mutex);
 
-    int res = at_send_cmd_get_lines(&gsmdev->at_dev, "AT+QOPS?", buf, len, GSM_SERIAL_TIMEOUT * 120);
+    int res = at_send_cmd_get_lines(&gsmdev->at_dev, "AT+QOPS?", buf, len, 0, GSM_SERIAL_TIMEOUT * 120);
     if (res > 0) {
         buf[res-1] = '\0';
     }
