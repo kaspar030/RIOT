@@ -390,7 +390,7 @@ size_t gsm_cmd(gsm_t *gsmdev, const char *cmd, uint8_t *buf, size_t len, unsigne
 {
     mutex_lock(&gsmdev->mutex);
 
-    size_t res = at_send_cmd_get_lines(&gsmdev->at_dev, cmd, (char *)buf, len, GSM_SERIAL_TIMEOUT * timeout);
+    size_t res = at_send_cmd_get_lines(&gsmdev->at_dev, cmd, (char *)buf, len, 0, GSM_SERIAL_TIMEOUT * timeout);
 
     mutex_unlock(&gsmdev->mutex);
 
@@ -454,7 +454,7 @@ static int gsm_set_driver(gsm_t *gsmdev)
     char buf[64];
     at_dev_t *at_dev = &gsmdev->at_dev;
 
-    int res = at_send_cmd_get_lines(at_dev, "ATI", buf, sizeof(buf), GSM_SERIAL_TIMEOUT);
+    int res = at_send_cmd_get_lines(at_dev, "ATI", buf, sizeof(buf), 0, GSM_SERIAL_TIMEOUT);
     if (res > 0) {
         for (unsigned i = 0; i < _device_ids_numof; i++) {
             const gsm_device_id_t *entry = &_device_ids[i];
