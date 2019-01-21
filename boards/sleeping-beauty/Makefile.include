@@ -2,7 +2,7 @@
 export CPU = stm32f4
 export CPU_MODEL = stm32f401re
 
-CFLAGS += "-DUART_STDIO_DEV=UART_DEV(1)"
+CFLAGS += "-DSTDIO_UART_DEV=UART_DEV(1)"
 
 # load the common Makefile.include for Nucleo boards
 include $(RIOTBOARD)/common/nucleo64/Makefile.include
