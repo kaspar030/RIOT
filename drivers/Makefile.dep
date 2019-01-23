@@ -187,6 +187,16 @@ ifneq (,$(filter gps_serial,$(USEMODULE)))
   USEMODULE += xtimer
 endif
 
+ifneq (,$(filter gsm,$(USEMODULE)))
+    USEMODULE += at
+    USEMODULE += fmt
+    USEMODULE += ipv4_addr
+endif
+
+ifneq (,$(filter gsm_%,$(USEMODULE)))
+  USEMODULE += gsm
+endif
+
 ifneq (,$(filter hd44780,$(USEMODULE)))
   FEATURES_REQUIRED += periph_gpio
 endif
