@@ -16,28 +16,41 @@
  * @brief       HX711 driver
  *
  * @author      Philipp-Alexander Blum <philipp-blum@jakiku.de>
+ * @author      Kaspar Schleiser <kaspar@schleiser.de>
  */
 
-void hx711_set_gain(uint8_t gain);
+#ifndef HX711_H
+#define HX711_H
 
-void hx711_init(uint8_t gain, int sck, int dout);
+#include <stdint.h>
+#include "periph/gpio.h"
 
-uint32_t hx711_read_average(uint32_t times);
+typedef enum {
+    HX711_GAIN_128 = 1,
+    HX711_GAIN_32 = 2,
+    HX711_GAIN_64 = 3
+} hx711_gain_t;
 
-double hx711_get_value(uint8_t times);
+typedef struct {
+    gpio_t dout;
+    gpio_t sck;
+    hx711_gain_t gain;
+} hx711_params_t;
 
-float hx711_get_units(uint8_t times);
+typedef struct {
+    hx711_params_t params;
+    int32_t offset;
+} hx711_t;
 
-void hx711_set_offset(long offset);
+void hx711_init(hx711_t *dev, const hx711_params_t *params);
+void hx711_set_gain(hx711_t *dev, hx711_gain_t gain);
+int32_t hx711_read(hx711_t *dev);
+int32_t hx711_read_average(hx711_t *dev, uint8_t times);
+int32_t hx711_get_value(hx711_t *dev, uint8_t times);
+void hx711_tare(hx711_t *dev, uint8_t times);
+void hx711_set_offset(hx711_t *dev, int32_t offset);
+int32_t hx711_get_offset(hx711_t *dev);
+void hx711_power_down(hx711_t *dev);
+void hx711_power_up(hx711_t *dev);
 
-void hx711_tare(uint8_t times);
-
-void hx711_set_scale(float scale);
-
-float hx711_get_scale(void);
-
-long hx711_get_offset(void);
-
-void hx711_power_down(void);
-
-void hx711_power_up(void);
+#endif /* HX711_H */

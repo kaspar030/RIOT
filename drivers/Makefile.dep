@@ -219,6 +219,10 @@ ifneq (,$(filter hts221,$(USEMODULE)))
   FEATURES_REQUIRED += periph_i2c
 endif
 
+ifneq (,$(filter hx711,$(USEMODULE)))
+  USEMODULE += advanced_io
+endif
+
 ifneq (,$(filter ina2%,$(USEMODULE)))
   USEMODULE += ina2xx
 endif
