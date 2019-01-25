@@ -56,7 +56,7 @@ int main(void)
 
     while (1) {
         hx711_power_up(&dev);
-        printf("Read value: %" PRIu32 "\n", hx711_get_value(&dev, 10));
+        printf("Read value: %" PRIi32 "\n", hx711_get_value(&dev, 10));
         hx711_power_down(&dev);
     }
 
