@@ -239,10 +239,23 @@ static const i2c_conf_t i2c_config[] = {
         .rcc_mask       = RCC_APB1ENR_I2C3EN,
         .clk            = CLOCK_APB1,
         .irqn           = I2C3_EV_IRQn,
+    },
+    {
+        .dev            = I2C2,
+        .speed          = I2C_SPEED_NORMAL,
+        .scl_pin        = GPIO_PIN(PORT_B, 10),
+        .sda_pin        = GPIO_PIN(PORT_B, 3),
+        .scl_af         = GPIO_AF4,
+        .sda_af         = GPIO_AF9,
+        .bus            = APB1,
+        .rcc_mask       = RCC_APB1ENR_I2C2EN,
+        .clk            = CLOCK_APB1,
+        .irqn           = I2C2_EV_IRQn,
     }
 };
 
 #define I2C_0_ISR           isr_i2c3_ev
+#define I2C_1_ISR           isr_i2c2_ev
 
 #define I2C_NUMOF           (sizeof(i2c_config) / sizeof(i2c_config[0]))
 /** @} */
