@@ -180,7 +180,7 @@ int i2c_acquire(i2c_t dev)
 
     mutex_lock(&locks[dev]);
 
-#ifdef STM32_PM_STOP
+#if defined(STM32_PM_STOP) && defined(PERIPH_PM_AUTOBLOCK)
     /* block STOP mode */
     pm_block(STM32_PM_STOP);
 #endif
@@ -196,7 +196,7 @@ int i2c_release(i2c_t dev)
 
     periph_clk_dis(i2c_config[dev].bus, i2c_config[dev].rcc_mask);
 
-#ifdef STM32_PM_STOP
+#if defined(STM32_PM_STOP) && defined(PERIPH_PM_AUTOBLOCK)
     /* unblock STOP mode */
     pm_unblock(STM32_PM_STOP);
 #endif
