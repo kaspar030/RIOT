@@ -48,7 +48,6 @@ void _timestamp_to_gmt_civil(struct tm *_tm, uint32_t epoch)
 
 static void _ztimer_rtc_callback(void *arg)
 {
-    puts(".");
     ztimer_handler((ztimer_dev_t*) arg);
 }
 
