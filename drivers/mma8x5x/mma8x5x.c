@@ -182,6 +182,39 @@ void mma8x5x_set_standby(const mma8x5x_t *dev)
     _reg_clearbits(dev, MMA8X5X_CTRL_REG1, MMA8X5X_CTRL_REG1_ACTIVE);
 }
 
+void mma8x5x_set_mods(const mma8x5x_t *dev, unsigned val)
+{
+    DEBUG("[mma8x5x] set mods bits = 0x%02x\n", val);
+    _reg_clearbits(dev, MMA8X5X_CTRL_REG2, MMA8X5X_CTRL_REG2_MODS_MASK);
+    _reg_setbits(dev, MMA8X5X_CTRL_REG2, val & MMA8X5X_CTRL_REG2_MODS_MASK);
+}
+
+void mma8x5x_set_smods(const mma8x5x_t *dev, unsigned val)
+{
+    val <<= 3;
+    DEBUG("[mma8x5x] set smods bits = 0x%02x\n", val);
+    _reg_clearbits(dev, MMA8X5X_CTRL_REG2, MMA8X5X_CTRL_REG2_SMODS_MASK);
+    _reg_setbits(dev, MMA8X5X_CTRL_REG2, val & MMA8X5X_CTRL_REG2_SMODS_MASK);
+}
+
+void mma8x5x_set_rate(const mma8x5x_t *dev, unsigned val)
+{
+    val <<= 3;
+    val &= MMA8X5X_CTRL_REG1_DR_MASK;
+    DEBUG("[mma8x5x] set rate = 0x%02x\n", val);
+    _reg_clearbits(dev, MMA8X5X_CTRL_REG1, MMA8X5X_CTRL_REG1_DR_MASK);
+    _reg_setbits(dev, MMA8X5X_CTRL_REG1, val);
+}
+
+void mma8x5x_set_sleep_rate(const mma8x5x_t *dev, unsigned val)
+{
+    val <<= 6;
+    val &= MMA8X5X_CTRL_REG1_ASR_MASK;
+    DEBUG("[mma8x5x] set sleep rate = 0x%02x\n", val);
+    _reg_clearbits(dev, MMA8X5X_CTRL_REG1, MMA8X5X_CTRL_REG1_ASR_MASK);
+    _reg_setbits(dev, MMA8X5X_CTRL_REG1, val);
+}
+
 void mma8x5x_set_motiondetect(const mma8x5x_t *dev, uint8_t int_pin, uint8_t threshold)
 {
     DEBUG("[mma8x5x] put device to motion detect mode (ELE=1, OAE=1)\n");

@@ -206,6 +206,9 @@ void mma8x5x_set_motiondetect(const mma8x5x_t *dev, uint8_t int_pin, uint8_t thr
  */
 void mma8x5x_ack_int(const mma8x5x_t *dev);
 
+void mma8x5x_set_mods(const mma8x5x_t *dev, unsigned val);
+void mma8x5x_set_rate(const mma8x5x_t *dev, unsigned val);
+
 #ifdef __cplusplus
 }
 #endif
