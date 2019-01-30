@@ -54,7 +54,7 @@ export INCLUDES += -I$(RIOTCPU)/atmega_common/include
 ifeq (libc,$(RIOT_LIBC))
   USEMODULE += libc
   CFLAGS += -nostdinc
-  LINKFLAGS += -nostdlib
+  LINKFLAGS += -nodefaultlibs
   export INCLUDES += -isystem $(RIOTCPU)/atmega_common/include/vendor
 else
   # avr libc needs some RIOT-specific support code
