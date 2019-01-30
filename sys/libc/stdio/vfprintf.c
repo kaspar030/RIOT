@@ -57,8 +57,8 @@ int vfprintf(FILE *restrict f, const char *restrict fmt, va_list ap)
         }
         else {
             unsigned flags = 0;
-            int width = -1;
-            int precision = -1;
+            unsigned width = 0;
+            unsigned precision = 0;
             prefix = NULL;
 
             size_t (*int_conv_func)(uint8_t*, uint32_t) = NULL;
@@ -97,7 +97,7 @@ int vfprintf(FILE *restrict f, const char *restrict fmt, va_list ap)
                         break;
                     case 's':
                         s = va_arg(ap, char *);
-                        unsigned slen = strlen(s);
+                        unsigned slen = flags & FLAG_PRECISION ? precision : strlen(s);
                         if (! (flags & FLAG_LEFT_ADJUST)) {
                             len += _fpad(f, width, slen, ' ');
                         }
@@ -125,7 +125,6 @@ int vfprintf(FILE *restrict f, const char *restrict fmt, va_list ap)
                             uint32_t val = scn_u32_dec(fmt - 1, strlen(fmt - 1));
                             if (flags & FLAG_PRECISION) {
                                 precision = val;
-                                (void)precision;                         /* no float support */
                             }
                             else {
                                 width = val;
