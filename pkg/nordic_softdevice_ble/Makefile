@@ -32,6 +32,10 @@ $(PKG_SRCDIR)/.extracted: $(PKG_BUILDDIR)/$(PKG_FILE)
 # this file doesn't compile with RIOT, but is not needed either
 	rm $(PKG_BUILDDIR)/src/components/ble/common/ble_conn_params.c
 
+# these files are missing an include
+	sed -i '1i#include <stddef.h>' $(PKG_BUILDDIR)/src/components/ble/common/ble_advdata.c
+	sed -i '1i#include <stddef.h>' $(PKG_BUILDDIR)/src/components/ble/common/ble_srv_common.c
+
 # setup RIOT module makefiles for nordic SDK components
 	cat $(MODULE_MAKEFILE) > $(PKG_SRCDIR)/components/softdevice/common/softdevice_handler/Makefile
 
