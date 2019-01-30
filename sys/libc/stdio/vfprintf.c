@@ -61,7 +61,7 @@ int vfprintf(FILE *restrict f, const char *restrict fmt, va_list ap)
             unsigned precision = 0;
             prefix = NULL;
 
-            size_t (*int_conv_func)(uint8_t*, uint32_t) = NULL;
+            size_t (*int_conv_func)(uint8_t *, uint32_t) = NULL;
 
             /* flags */
             while ((c = *fmt++)) {
@@ -98,7 +98,7 @@ int vfprintf(FILE *restrict f, const char *restrict fmt, va_list ap)
                     case 's':
                         s = va_arg(ap, char *);
                         unsigned slen = flags & FLAG_PRECISION ? precision : strlen(s);
-                        if (! (flags & FLAG_LEFT_ADJUST)) {
+                        if (!(flags & FLAG_LEFT_ADJUST)) {
                             len += _fpad(f, width, slen, ' ');
                         }
                         len += f->out(f, s, slen);
@@ -115,7 +115,7 @@ int vfprintf(FILE *restrict f, const char *restrict fmt, va_list ap)
                         goto done;
                     case 'p':
                         prefix = "0x";
-                        /* fall through */
+                    /* fall through */
                     case 'x':
                     case 'X':
                         int_conv_func = (void *)fmt_u32_hex;
@@ -137,18 +137,16 @@ int vfprintf(FILE *restrict f, const char *restrict fmt, va_list ap)
             }
 done:
             if (int_conv_func) {
-                size_t clen;
-
                 int32_t value;
-                if ((sizeof(int) == 4) || (flags & FLAG_LONG)) {
-                    value = va_arg(ap, int32_t);
+                if (flags & FLAG_LONG) {
+                    value = (int32_t)va_arg(ap, long int);
                 }
                 else {
                     value = (int)va_arg(ap, int);
                 }
-                clen = int_conv_func((void*)buf, value);
+                size_t clen = int_conv_func((void *)buf, value);
                 size_t prefix_len = prefix ? strlen(prefix) : 0;
-                if (! (flags & FLAG_LEFT_ADJUST)) {
+                if (!(flags & FLAG_LEFT_ADJUST)) {
                     len += _fpad(f, width, clen + prefix_len, ' ');
                 }
                 if (prefix_len) {
