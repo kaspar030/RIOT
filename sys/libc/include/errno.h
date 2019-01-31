@@ -27,6 +27,9 @@ enum {
     EOPNOTSUPP,
     EOVERFLOW,
     ETIMEDOUT,
+    ECANCELED,
+    EIO,
+    EEXIST,
 };
 
 #endif /* ERRNO_H */

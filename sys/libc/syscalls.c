@@ -11,6 +11,9 @@ ssize_t read(int fd, void *buf, size_t n)
             return stdio_read(buf, n);
 #endif
         default:
+            (void)fd;
+            (void)buf;
+            (void)n;
             return -EBADF;
     }
 }
@@ -23,6 +26,9 @@ ssize_t write(int fd, const void *buf, size_t n)
             return stdio_write(buf, n);
 #endif
         default:
+            (void)fd;
+            (void)buf;
+            (void)n;
             return -EBADF;
     }
 }

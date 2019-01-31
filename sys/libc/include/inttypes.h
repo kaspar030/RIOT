@@ -13,6 +13,7 @@
 
 #define PRIu32 "lu"
 #define PRIi32 "li"
+#define PRId32 PRIi32
 #define PRIx32 "lx"
 
 typedef uint32_t uint_farptr_t;
