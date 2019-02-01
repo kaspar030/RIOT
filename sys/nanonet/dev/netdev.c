@@ -145,21 +145,13 @@ static int _send_raw(nano_dev_t *dev, uint8_t *buf, size_t len)
 }
 
 #ifdef NANONET_IEEE802154
-static int _send_ieee80154(nano_dev_t *dev, const iolist_t *iolist, uint8_t* dest_l2addr)
-{
-    (void)dev;
-    (void)dest_l2addr;
-    DEBUG("_send_ieee80154(): Sending packet with len %u\n", (unsigned)iolist_size(iolist));
-    return 0;
-}
-
 int nanonet_init_netdev_ieee802154(unsigned devnum)
 {
     DEBUG("nanonet_init_netdev\n");
     nano_dev_t *nanodev = &nanonet_devices[devnum];
     netdev_t *netdev = (netdev_t*)_netdevs[devnum];
 
-    nanodev->send = (nano_dev_send_t) _send_ieee80154;
+    nanodev->send = (nano_dev_send_t) nano_ieee80154_send;
     nanodev->send_raw = _send_raw;
     nanodev->l2_needed = sizeof(eth_hdr_t);
     nanodev->netdev = (void*)netdev;

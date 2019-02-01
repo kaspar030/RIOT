@@ -25,7 +25,7 @@
  * | 0-2   | 3        | 4       | 5  | 6      | 7-9 | 10-11   | 12-13 | 14-15   |
  * |-------+----------+---------+----+--------+-----+---------+-------+---------|
  * | Frame | Security | Frame   | AR | PAN ID | res | dstaddr | ver   | srcaddr |
- * | Type  | Enabled  | pending |    | compr  |     | mode    |       | node    |
+ * | Type  | Enabled  | pending |    | compr  |     | mode    |       | mode    |
  * |-------+----------+---------+----+--------+-----+---------+-------+---------|
 */
 
@@ -172,6 +172,43 @@ static unsigned _parse_hdr(nano_ctx_t *ctx)
     return (buf - ctx->buf);
 }
 
+static uint16_t _gen_fc(unsigned type, unsigned flags, unsigned dstaddrmode, unsigned srcaddrmode)
+{
+    return (type & 0x7) | flags | (dstaddrmode >> 10) & 0x3 | (srcaddrmode >> 14) & 0x3;
+}
+
+
+static int nano_ieee80154_send(nano_dev_t *dev, const iolist_t *iolist, uint8_t* dest_l2addr, size_t l2addrlen)
+{
+    DEBUG("nano_ieee80154_send(): Sending packet with len %u\n", (unsigned)iolist_size(iolist));
+
+    uint8_t hdr[2 + 2 + 32]; /* FC + DST_PAN + 2 times full length address */
+    iolist_t _iolist = { (iolist_t *)iolist, hdr, 4 };
+
+    unsigned flags = 0;
+
+    if (l2addrlen == 4) {
+        /* target has a PAN + short adddress */
+        flags &=
+    }
+    else {
+        /* target is using long address */
+    }
+
+    _iolist->next = iolist;
+
+    netdev->driver->send(netdev, &_iolist);
+
+    return 0;
+}
+
+int nano_ieee802154_reply(nano_ctx_t *ctx)
+{
+    (void)ctx;
+    DEBUG("nano_ieee802154_reply()\n");
+    return 0;
+}
+
 void nano_ieee802154_handle(nano_dev_t *dev, uint8_t *buf, size_t len)
 {
     DEBUG("nano_ieee802154_handle() buf=0x%08x len=%u\n", (unsigned)buf, (unsigned)len);
@@ -199,13 +236,6 @@ void nano_ieee802154_handle(nano_dev_t *dev, uint8_t *buf, size_t len)
     else {
         DEBUG("nano_ieee802154_handle(): dropping pkt due to hdr parsing error.\n");
     }
-}
-
-int nano_ieee802154_reply(nano_ctx_t *ctx)
-{
-    (void)ctx;
-    DEBUG("nano_ieee802154_reply()\n");
-    return 0;
 }
 
 #endif /* NANONET_IEEE802154 */
