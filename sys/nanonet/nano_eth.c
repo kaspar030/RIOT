@@ -56,7 +56,7 @@ int nano_eth_reply(nano_ctx_t *ctx)
     /* set new dst mac address to old src mac address */
     memcpy(pkt->dst, pkt->src, 6);
 
-    /* set our address ass src address */
+    /* set our address as src address */
     memcpy(pkt->src, ctx->dev->l2_addr, 6);
 
     /* send the packet */
