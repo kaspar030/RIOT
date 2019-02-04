@@ -1,0 +1,8 @@
+ifneq (,$(filter gnrc_netdev_default netdev_default,$(USEMODULE)))
+  USEMODULE += cc26xx_rfcore
+endif
+
+ifneq (,$(filter cc26xx_rfcore,$(USEMODULE)))
+  USEMODULE += driverlib
+  USEMODULE += netdev_ieee802154
+endif

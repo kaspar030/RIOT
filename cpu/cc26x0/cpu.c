@@ -56,3 +56,8 @@ static void cpu_clock_init(void)
 
     DDI_0_OSC->CTL0 |= HF_CLOCK_SOURCE | LF_CLOCK_SOURCE; /* configure HF and LF clocks */
 }
+
+/* include TI customer configuration (CCFG) defaults */
+#ifdef MODULE_DRIVERLIB
+#include "startup_files/ccfg.c"
+#endif
