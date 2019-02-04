@@ -31,6 +31,9 @@ uint8_t cc26xx_rfcore_get_chan(void);
 void cc26xx_rfcore_set_promiscuous(bool enable);
 bool cc26xx_rfcore_get_promiscuous(void);
 
+int cc26xx_rfcore_set_txpower(int dbm);
+int cc26xx_rfcore_get_txpower(void);
+
 unsigned cc26xx_get_flags(void);
 
 int cc26xx_rfcore_recv_avail(void);

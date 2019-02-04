@@ -1224,6 +1224,31 @@ exit:
     return error;
 }
 
+unsigned cc26xx_rfcore_disable(void)
+{
+    puts("disable");
+    return 0;
+
+    unsigned error = OT_ERROR_BUSY;
+
+    if (cc26xx_rfcore_state == cc2650_stateDisabled)
+    {
+        error = OT_ERROR_NONE;
+    }
+    else if (cc26xx_rfcore_state == cc2650_stateSleep)
+    {
+        rfCoreSendDisableCmd();
+        /* we don't want to fail if this command string doesn't work, just turn
+         * off the whole core
+         */
+        rfCorePowerOff();
+        cc26xx_rfcore_state = cc2650_stateDisabled;
+        error  = OT_ERROR_NONE;
+    }
+
+    return error;
+}
+
 unsigned cc26xx_rfcore_rx_start(void)
 {
     unsigned error = OT_ERROR_BUSY;
@@ -1594,6 +1619,46 @@ bool cc26xx_rfcore_get_promiscuous(void)
     return sReceiveCmd.frameFiltOpt.frameFiltEn == 0;
 }
 
+int cc26xx_rfcore_get_txpower(void)
+{
+
+    return sCurrentOutputPower->dbm;
+}
+
+int cc26xx_rfcore_set_txpower(int dbm)
+{
+    int old_value = sCurrentOutputPower->dbm;
+    output_config_t const *powerCfg = &(rgOutputPower[0]);
+
+    for (unsigned i = 1; i < OUTPUT_CONFIG_COUNT; i++)
+    {
+        if (rgOutputPower[i].dbm >= dbm) {
+            powerCfg = &(rgOutputPower[i]);
+        }
+        else {
+            break;
+        }
+    }
+
+    if (powerCfg->dbm != old_value) {
+        if (cc26xx_rfcore_state != cc2650_stateDisabled) {
+            rfc_CMD_SET_TX_POWER_t cmd = {
+                .commandNo = CMD_SET_TX_POWER,
+                .txPower = powerCfg->value
+            };
+
+            unsigned res = RFCDoorbellSendTo((uint32_t)&cmd) & 0xFF;
+            if (res == CMDSTA_Done) {
+                sCurrentOutputPower = powerCfg;
+            }
+        }
+    }
+
+    return sCurrentOutputPower->dbm;
+}
+
+
+
 
 
 
@@ -1661,47 +1726,6 @@ unsigned otPlatRadioEnergyScan(otInstance *aInstance, uint8_t aScanChannel, uint
 
 exit:
     return error;
-}
-
-/**
- * Function documented in platform/radio.h
- */
-unsigned otPlatRadioGetTransmitPower(otInstance *aInstance, int8_t *aPower)
-{
-    unsigned error = OT_ERROR_NONE;
-    (void)aInstance;
-
-    otEXPECT_ACTION(aPower != NULL, error = OT_ERROR_INVALID_ARGS);
-    *aPower = sCurrentOutputPower->dbm;
-
-exit:
-    return error;
-}
-
-/**
- * Function documented in platform/radio.h
- */
-unsigned otPlatRadioSetTransmitPower(otInstance *aInstance, int8_t aPower)
-{
-    unsigned int           i;
-    output_config_t const *powerCfg = &(rgOutputPower[0]);
-    (void)aInstance;
-
-    for (i = 1; i < OUTPUT_CONFIG_COUNT; i++)
-    {
-        if (rgOutputPower[i].dbm >= aPower)
-        {
-            powerCfg = &(rgOutputPower[i]);
-        }
-        else
-        {
-            break;
-        }
-    }
-
-    sCurrentOutputPower = powerCfg;
-
-    return OT_ERROR_NONE;
 }
 
 /**

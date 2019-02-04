@@ -172,6 +172,10 @@ static int _get(netdev_t *netdev, netopt_t opt, void *val, size_t max_len)
         case NETOPT_CSMA:
             *((netopt_enable_t *)val) = NETOPT_ENABLE;
             return sizeof(netopt_enable_t);
+        case NETOPT_TX_POWER:
+            assert(max_len >= sizeof(int16_t));
+            *((uint16_t *)val) = cc26xx_rfcore_get_txpower();
+            return sizeof(uint16_t);
 
 #if 0
         case NETOPT_CHANNEL_PAGE:
@@ -204,13 +208,6 @@ static int _get(netdev_t *netdev, netopt_t opt, void *val, size_t max_len)
             assert(max_len >= sizeof(uint8_t));
             *((uint8_t *)val) = dev->tx_retries;
             return sizeof(uint8_t);
-
-        case NETOPT_TX_POWER:
-            assert(max_len >= sizeof(int16_t));
-            *((uint16_t *)val) = cc26xx_rfcore_get_txpower(dev);
-            res = sizeof(uint16_t);
-            break;
-
 
         case NETOPT_CCA_THRESHOLD:
             assert(max_len >= sizeof(int8_t));
@@ -298,13 +295,13 @@ static int _set(netdev_t *netdev, netopt_t opt, const void *val, size_t len)
             }
             break;
 
-#if 0
         case NETOPT_TX_POWER:
             assert(len <= sizeof(int16_t));
-            cc26xx_rfcore_set_txpower(dev, *((const int16_t *)val));
+            cc26xx_rfcore_set_txpower(*((const int16_t *)val));
             res = sizeof(uint16_t);
             break;
 
+#if 0
         case NETOPT_STATE:
             assert(len <= sizeof(netopt_state_t));
             res = _set_state(dev, *((const netopt_state_t *)val));
