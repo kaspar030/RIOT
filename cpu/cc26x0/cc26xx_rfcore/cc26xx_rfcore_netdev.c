@@ -68,6 +68,10 @@ static int _init(netdev_t *netdev)
      * 0 for unicast addresses */
     dev->netdev.short_addr[1] &= 0x7F;
 
+    /* properly set up the driver's RX filter */
+    cc26xx_rfcore_set_addr_ext(dev->netdev.long_addr);
+    cc26xx_rfcore_set_addr_short(dev->netdev.short_addr);
+
     /* reset upper layer */
     netdev_ieee802154_reset(&dev->netdev);
 
@@ -245,18 +249,16 @@ static int _set(netdev_t *netdev, netopt_t opt, const void *val, size_t len)
     }
 
     switch (opt) {
-#if 0
         case NETOPT_ADDRESS:
-            assert(len <= sizeof(uint16_t));
-            cc26xx_rfcore_set_addr_short(dev, *((const uint16_t *)val));
+            assert(len == sizeof(uint16_t));
+            cc26xx_rfcore_set_addr_short((uint8_t *)val);
             /* don't set res to set netdev_ieee802154_t::short_addr */
             break;
         case NETOPT_ADDRESS_LONG:
-            assert(len <= sizeof(uint64_t));
-            cc26xx_rfcore_set_addr_long(dev, *((const uint64_t *)val));
+            assert(len == sizeof(uint64_t));
+            cc26xx_rfcore_set_addr_ext((uint8_t *)val);
             /* don't set res to set netdev_ieee802154_t::long_addr */
             break;
-#endif
         case NETOPT_NID:
             assert(len <= sizeof(uint16_t));
             cc26xx_rfcore_set_pan(*((const uint16_t *)val));
@@ -354,7 +356,7 @@ static int _set(netdev_t *netdev, netopt_t opt, const void *val, size_t len)
 #endif
         case NETOPT_TX_END_IRQ:
             if (((const bool *)val)[0]) {
-                cc26xx_rfcore_irq_enable(IRQ_TX_DONE);
+                //cc26xx_rfcore_irq_enable(IRQ_TX_DONE);
             }
             else {
                 cc26xx_rfcore_irq_disable(IRQ_TX_DONE);

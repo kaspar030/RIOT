@@ -31,6 +31,8 @@
 #include <assert.h>
 #include <errno.h>
 #include <stdio.h>
+
+#include "mutex.h"
 #include "od.h"
 #include "random.h"
 
@@ -155,6 +157,8 @@ static uint8_t sTxBuf0[TX_BUF_SIZE] __attribute__((aligned(4)));
 static dataQueue_t sRxDataQueue = {0};
 
 static volatile bool sTxCmdChainDone = false;
+static mutex_t _tx_lock = MUTEX_INIT;
+
 volatile unsigned sFlags;
 
 /* network stack ISR handlers */
@@ -1164,9 +1168,14 @@ void isr_rfc_cpe0(void)
     }
 
     if (HWREG(RFC_DBELL_NONBUF_BASE + RFC_DBELL_O_RFCPEIFG) & IRQ_TX_DONE) {
+        HWREG(RFC_DBELL_NONBUF_BASE + RFC_DBELL_O_RFCPEIFG) = ~IRQ_TX_DONE;
+    }
+
+    if (sTxCmdChainDone) {
+        sTxCmdChainDone = false;
         sFlags |= 2;
         cc26xx_rfcore_state = cc2650_stateReceive;
-        HWREG(RFC_DBELL_NONBUF_BASE + RFC_DBELL_O_RFCPEIFG) = ~IRQ_TX_DONE;
+        mutex_unlock(&_tx_lock);
     }
 
     if (sFlags) {
@@ -1266,9 +1275,6 @@ unsigned cc26xx_rfcore_rx_start(void)
             goto exit;
         }
         error = OT_ERROR_NONE;
-
-        /* frame filter currently filters everything, so disable for now. */
-        rfCoreModifyRxFrameFilter(false);
     }
     else if (cc26xx_rfcore_state == cc2650_stateReceive)
     {
@@ -1501,20 +1507,7 @@ int cc26xx_rfcore_recv(void *buf, size_t len, netdev_ieee802154_rx_info_t *rx_in
             else {
                 puts("recv error fcs");
             }
-            /*
-            if ((receiveFrame.mPsdu[0] & IEEE802154_FRAME_TYPE_MASK) == IEEE802154_FRAME_TYPE_ACK)
-            {
-                if (receiveFrame.mPsdu[IEEE802154_DSN_OFFSET] == sTransmitFrame.mPsdu[IEEE802154_DSN_OFFSET])
-                {
-                    cc26xx_rfcore_state = cc2650_stateReceive;
-                    cc2650RadioProcessTransmitDone(aInstance, &sTransmitFrame, &receiveFrame, receiveError);
-                }
-            }
-            else
-            {
-                puts("rx done");
-                //cc2650RadioProcessReceiveDone(aInstance, &receiveFrame, receiveError);
-            }*/
+
             curEntry->status = DATA_ENTRY_PENDING;
         }
 
@@ -1543,10 +1536,8 @@ int cc26xx_rfcore_recv_avail(void)
 
 int cc26xx_rfcore_send(const iolist_t *iolist)
 {
-    unsigned error = -EAGAIN;
-
-    if (cc26xx_rfcore_state == cc2650_stateReceive)
-    {
+    mutex_lock(&_tx_lock);
+    if (cc26xx_rfcore_state == cc2650_stateReceive) {
         size_t len = 0;
         uint8_t *bufpos = sTxBuf0;
 
@@ -1555,8 +1546,8 @@ int cc26xx_rfcore_send(const iolist_t *iolist)
             if (len > TX_BUF_SIZE) {
                 DEBUG("cc26xx_rfcore: error: packet too large (%u bytes to be sent)\n",
                       (unsigned)len);
-                error = -EOVERFLOW;
-                goto exit;
+                mutex_unlock(&_tx_lock);
+                return -EOVERFLOW;
             }
 
             memcpy(bufpos, iol->iol_base, iol->iol_len);
@@ -1564,21 +1555,21 @@ int cc26xx_rfcore_send(const iolist_t *iolist)
         }
 
         cc26xx_rfcore_state = cc2650_stateTransmit;
+        sTxCmdChainDone = false;
 
         if (!(rfCoreSendTransmitCmd(sTxBuf0, len) == CMDSTA_Done)) {
-            error = -1;
-            goto exit;
+            puts("s err");
+            cc26xx_rfcore_state = cc2650_stateReceive;
+            mutex_unlock(&_tx_lock);
+            return -1;
         }
-
-        sTxCmdChainDone = false;
 
         return len;
     }
-
-exit:
-    cc26xx_rfcore_state = cc2650_stateTransmit;
-
-    return error;
+    else {
+        mutex_unlock(&_tx_lock);
+        return -EAGAIN;
+    }
 }
 
 unsigned cc26xx_rfcore_irq_is_enabled(unsigned irq)
@@ -1659,12 +1650,16 @@ int cc26xx_rfcore_set_txpower(int dbm)
 
 void cc26xx_rfcore_set_addr_ext(uint8_t *addr)
 {
-    memcpy((uint64_t *)&sReceiveCmd.localExtAddr, addr, 8);
+    for (size_t i = 0; i < IEEE802154_LONG_ADDRESS_LEN; i++) {
+        ((uint8_t *)&sReceiveCmd.localExtAddr)[i] = addr[(IEEE802154_LONG_ADDRESS_LEN - 1) - i];
+    }
 }
 
 void cc26xx_rfcore_set_addr_short(uint8_t *addr)
 {
-    memcpy((uint16_t *)&sReceiveCmd.localShortAddr, addr, 2);
+    for (size_t i = 0; i < IEEE802154_SHORT_ADDRESS_LEN; i++) {
+        ((uint8_t *)&sReceiveCmd.localShortAddr)[i] = addr[(IEEE802154_SHORT_ADDRESS_LEN - 1) - i];
+    }
 }
 
 
