@@ -23,6 +23,8 @@ void cc26xx_rfcore_irq_tx_done_disable(void);
 void cc2650RadioProcessReceiveQueue(void);
 
 void cc26xx_rfcore_get_ieee_eui64(uint8_t *aIeeeEui64);
+void cc26xx_rfcore_set_addr_ext(uint8_t *addr);
+void cc26xx_rfcore_set_addr_short(uint8_t *addr);
 
 void cc26xx_rfcore_set_pan(uint16_t aPanid);
 void cc26xx_rfcore_set_chan(uint16_t channel);

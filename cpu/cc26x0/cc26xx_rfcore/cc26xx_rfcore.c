@@ -1657,7 +1657,15 @@ int cc26xx_rfcore_set_txpower(int dbm)
     return sCurrentOutputPower->dbm;
 }
 
+void cc26xx_rfcore_set_addr_ext(uint8_t *addr)
+{
+    memcpy((uint64_t *)&sReceiveCmd.localExtAddr, addr, 8);
+}
 
+void cc26xx_rfcore_set_addr_short(uint8_t *addr)
+{
+    memcpy((uint16_t *)&sReceiveCmd.localShortAddr, addr, 2);
+}
 
 
 
