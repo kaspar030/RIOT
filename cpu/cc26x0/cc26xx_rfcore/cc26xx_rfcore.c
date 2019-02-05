@@ -78,7 +78,7 @@ static unsigned sTransmitError;
 /* phy state as defined by openthread */
 volatile cc2650_PhyState cc26xx_rfcore_state;
 
-static output_config_t const *sCurrentOutputPower = &(rgOutputPower[OUTPUT_CONFIG_COUNT - 1]);
+static output_config_t const *sCurrentOutputPower = &(rgOutputPower[5]);
 
 /* Overrides for IEEE 802.15.4, differential mode */
 static uint32_t sIEEEOverrides[] = {
