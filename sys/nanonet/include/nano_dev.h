@@ -25,7 +25,6 @@ struct nano_dev {
     int (*send_raw)(struct nano_dev *dev, uint8_t* buf, size_t len);
     int (*reply)(nano_ctx_t *ctx);
     uint8_t l2_addr[NANO_L2_ADDRLEN];
-    uint16_t l2_needed;
 
 #ifdef NANONET_IPV4
     uint32_t ipv4;

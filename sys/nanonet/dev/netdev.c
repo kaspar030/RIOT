@@ -153,7 +153,6 @@ int nanonet_init_netdev_ieee802154(unsigned devnum)
 
     nanodev->send = (nano_dev_send_t) nano_ieee80154_send;
     nanodev->send_raw = _send_raw;
-    nanodev->l2_needed = sizeof(eth_hdr_t);
     nanodev->netdev = (void*)netdev;
     nanodev->reply = nano_ieee802154_reply;
     nanodev->handle_rx = nano_ieee802154_handle;
@@ -191,7 +190,6 @@ int nanonet_init_netdev_eth(unsigned devnum)
 
     nanodev->send = (nano_dev_send_t) _send_ethernet;
     nanodev->send_raw = _send_raw;
-    nanodev->l2_needed = sizeof(eth_hdr_t);
     nanodev->netdev = (void*)netdev;
     nanodev->reply = nano_eth_reply;
     nanodev->handle_rx = nano_eth_handle;
