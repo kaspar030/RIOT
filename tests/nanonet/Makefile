@@ -19,7 +19,19 @@ CFLAGS += -DENCX24J600_CS=$(ENC_CS)
 CFLAGS += -DENCX24J600_INT=$(ENC_INT)
 USEMODULE += encx24j600
 
-CFLAGS += -DNANOCOAP_DEBUG -g
 DISABLE_MODULE += core_msg
+
+#
+# debug build
+#
+CFLAGS += -DNANOCOAP_DEBUG -g
+
+#
+# headless, small-memory configuration
+#
+#CFLAGS += -DNDEBUG -DLOG_LEVEL=LOG_NONE
+#CFLAGS += -DMAXTHREADS=2
+#CFLAGS += -DSCHED_PRIO_LEVELS=2
+#CFLAGS += -DTHREAD_STACKSIZE_IDLE=128
 
 include $(RIOTBASE)/Makefile.include
