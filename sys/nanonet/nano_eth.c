@@ -18,6 +18,9 @@ void nano_eth_handle(nano_dev_t *dev, uint8_t *buf, size_t len)
 
     eth_hdr_t *pkt = (eth_hdr_t *) buf;
 
+    ctx.src_mac = pkt->src;
+    ctx.dst_mac = pkt->dst;
+
     int (*handler)(nano_ctx_t *, size_t) = NULL;
 
     switch (ntohs(pkt->ethertype)) {
