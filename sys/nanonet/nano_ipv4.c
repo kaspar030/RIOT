@@ -37,6 +37,8 @@ int ipv4_handle(nano_ctx_t *ctx, size_t offset) {
     DEBUG("ipv4: got packet with protocol 0x%01x\n", (unsigned int) hdr->protocol);
 
     if (ctx->dst_addr.ipv4 == dev->ipv4 || ctx->dst_addr.ipv4 & 0xff) { /* TODO: fix broadcast stuff */
+        arp_cache_update(dev, ctx->src_addr.ipv4, ctx->src_mac);
+
         switch (hdr->protocol) {
             case 0x1:
                 icmp_handle(ctx, offset+hdr_len);
