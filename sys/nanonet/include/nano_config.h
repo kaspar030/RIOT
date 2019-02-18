@@ -6,7 +6,9 @@
 #endif
 
 /* should fit the biggest expected packet */
+#ifndef NANONET_RX_BUFSIZE
 #define NANONET_RX_BUFSIZE 384
+#endif
 
 #ifdef MODULE_NETDEV_ETH
 #define NANONET_IPV4
