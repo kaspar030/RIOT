@@ -13,13 +13,14 @@
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
 
-static arp_cache_entry_t arp_cache[NANO_ARP_CACHE_SIZE] = {{0}};
+static arp_cache_entry_t arp_cache[NANO_ARP_CACHE_SIZE] = { { 0 } };
 
 static void arp_cache_put(nano_dev_t *dev, uint32_t dest_ip, uint8_t *mac_addr);
 static void arp_cache_maybe_add(nano_dev_t *dev, uint32_t dest_ip, uint8_t *mac);
 
-int arp_handle(nano_ctx_t *ctx, size_t offset) {
-    arp_pkt_t* pkt;
+int arp_handle(nano_ctx_t *ctx, size_t offset)
+{
+    arp_pkt_t *pkt;
 
     if ((ctx->len - offset) < (int)sizeof(arp_pkt_t)) {
         DEBUG("arp_handle(): pkt too short\n");
@@ -28,12 +29,12 @@ int arp_handle(nano_ctx_t *ctx, size_t offset) {
 
     nano_dev_t *dev = ctx->dev;
 
-    pkt = (arp_pkt_t*) (ctx->buf+offset);
+    pkt = (arp_pkt_t *)(ctx->buf + offset);
 
     if (ntohl(pkt->arp_ipv4_types) != 0x00010800 || ntohs(pkt->arp_ipv4_lengths) != 0x0604) {
         DEBUG("arp_handle(): invalid types / lengths fields: types: 0x%x lengths: 0x%x\n",
-                (unsigned int) ntohl(pkt->arp_ipv4_types),
-                (unsigned int) ntohs(pkt->arp_ipv4_lengths));
+              (unsigned int)ntohl(pkt->arp_ipv4_types),
+              (unsigned int)ntohs(pkt->arp_ipv4_lengths));
         return -1;
     }
 
@@ -42,14 +43,14 @@ int arp_handle(nano_ctx_t *ctx, size_t offset) {
     int op = ntohs(pkt->arp_ipv4_op);
     switch (op) {
         case 1:
-            DEBUG("arp: request for 0x%08x\n", (unsigned int) dst_ip);
+            DEBUG("arp: request for 0x%08x\n", (unsigned int)dst_ip);
             if (dst_ip == dev->ipv4) {
                 arp_cache_maybe_add(dev, src_ip, pkt->src_mac);
                 arp_reply(ctx, offset);
             }
             break;
         case 2:
-            DEBUG("arp: reply for 0x%08x\n", (unsigned int) src_ip);
+            DEBUG("arp: reply for 0x%08x\n", (unsigned int)src_ip);
             arp_cache_maybe_add(dev, src_ip, pkt->src_mac);
             break;
         default:
@@ -60,12 +61,13 @@ int arp_handle(nano_ctx_t *ctx, size_t offset) {
     return 0;
 }
 
-void arp_request(nano_dev_t *dev, uint32_t ip) {
+void arp_request(nano_dev_t *dev, uint32_t ip)
+{
     DEBUG("arp_request: requesting MAC for 0x%08x\n", (unsigned int)ip);
 
-    uint8_t buf[sizeof(eth_hdr_t) + sizeof(arp_pkt_t)] = { 0 };;
+    uint8_t buf[sizeof(eth_hdr_t) + sizeof(arp_pkt_t)] = { 0 };
 
-    arp_pkt_t *pkt = (arp_pkt_t *) (buf + sizeof(eth_hdr_t));
+    arp_pkt_t *pkt = (arp_pkt_t *)(buf + sizeof(eth_hdr_t));
 
     pkt->arp_ipv4_types = htonl(0x00010800);
     pkt->arp_ipv4_lengths = htons(0x0604);
@@ -76,7 +78,7 @@ void arp_request(nano_dev_t *dev, uint32_t ip) {
 
     pkt->dst_ip = htonl(ip);
 
-    uint8_t broadcast[] = { 0xff,0xff,0xff,0xff,0xff,0xff };
+    uint8_t broadcast[] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
 
     iolist_t iolist = { NULL, buf, sizeof(buf) };
     dev->send(dev, &iolist, broadcast, 0x0806);
@@ -88,7 +90,7 @@ void arp_reply(nano_ctx_t *ctx, size_t offset)
 
     /* we reuse the request packet, so most of the header is
      * already set up */
-    arp_pkt_t* pkt = (arp_pkt_t*) (ctx->buf+offset);
+    arp_pkt_t *pkt = (arp_pkt_t *)(ctx->buf + offset);
 
     /* check if requested IP matches the device it came from */
     if (pkt->dst_ip != htonl(dev->ipv4)) {
@@ -113,7 +115,8 @@ void arp_reply(nano_ctx_t *ctx, size_t offset)
     dev->reply(ctx);
 }
 
-int arp_cache_find(uint32_t dest_ip) {
+int arp_cache_find(uint32_t dest_ip)
+{
     for (int i = 0; i < NANO_ARP_CACHE_SIZE; i++) {
         if (arp_cache[i].ip == dest_ip) {
             return i;
@@ -134,7 +137,7 @@ int arp_cache_get(nano_dev_t *dev, uint32_t dest_ip, uint8_t *mac_addr_out)
         res = 1;
     }
 
-    if(!res) {
+    if (!res) {
         /* IP not found in entry. start ARP request. */
         arp_request(dev, dest_ip);
     }
@@ -151,7 +154,8 @@ static void arp_cache_put(nano_dev_t *dev, uint32_t dest_ip, uint8_t *mac_addr)
         arp_cache[n].ip = dest_ip;
         arp_cache[n].dev = dev;
         memcpy(arp_cache[n].mac, mac_addr, 6);
-    } else {
+    }
+    else {
         DEBUG("arp cache full\n");
     }
 }
