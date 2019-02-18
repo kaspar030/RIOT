@@ -15,8 +15,11 @@
 
 static arp_cache_entry_t arp_cache[NANO_ARP_CACHE_SIZE] = { { 0 } };
 
-static void arp_cache_put(nano_dev_t *dev, uint32_t dest_ip, uint8_t *mac_addr);
-static void arp_cache_maybe_add(nano_dev_t *dev, uint32_t dest_ip, uint8_t *mac);
+static void arp_cache_put(nano_dev_t *dev, uint32_t dest_ip, uint8_t *mac_addr, unsigned n);
+void arp_cache_update(nano_dev_t *dev, uint32_t dest_ip, uint8_t *mac);
+static void arp_cache_clear(int n);
+static void arp_request(nano_dev_t *dev, uint32_t ip);
+static void arp_reply(nano_ctx_t *ctx, size_t offset);
 
 int arp_handle(nano_ctx_t *ctx, size_t offset)
 {
@@ -43,15 +46,15 @@ int arp_handle(nano_ctx_t *ctx, size_t offset)
     int op = ntohs(pkt->arp_ipv4_op);
     switch (op) {
         case 1:
-            DEBUG("arp: request for 0x%08x\n", (unsigned int)dst_ip);
+            DEBUG("arp: received request for 0x%08x\n", (unsigned int)dst_ip);
             if (dst_ip == dev->ipv4) {
-                arp_cache_maybe_add(dev, src_ip, pkt->src_mac);
+                arp_cache_update(dev, src_ip, pkt->src_mac);
                 arp_reply(ctx, offset);
             }
             break;
         case 2:
-            DEBUG("arp: reply for 0x%08x\n", (unsigned int)src_ip);
-            arp_cache_maybe_add(dev, src_ip, pkt->src_mac);
+            DEBUG("arp: got reply for 0x%08x\n", (unsigned int)src_ip);
+            arp_cache_update(dev, src_ip, pkt->src_mac);
             break;
         default:
             DEBUG("arp_handle(): invalid operation\n");
@@ -61,7 +64,7 @@ int arp_handle(nano_ctx_t *ctx, size_t offset)
     return 0;
 }
 
-void arp_request(nano_dev_t *dev, uint32_t ip)
+static void arp_request(nano_dev_t *dev, uint32_t ip)
 {
     DEBUG("arp_request: requesting MAC for 0x%08x\n", (unsigned int)ip);
 
@@ -84,7 +87,7 @@ void arp_request(nano_dev_t *dev, uint32_t ip)
     dev->send(dev, &iolist, broadcast, 0x0806);
 }
 
-void arp_reply(nano_ctx_t *ctx, size_t offset)
+static void arp_reply(nano_ctx_t *ctx, size_t offset)
 {
     nano_dev_t *dev = ctx->dev;
 
@@ -115,7 +118,7 @@ void arp_reply(nano_ctx_t *ctx, size_t offset)
     dev->reply(ctx);
 }
 
-int arp_cache_find(uint32_t dest_ip)
+static int arp_cache_find(uint32_t dest_ip)
 {
     for (int i = 0; i < NANO_ARP_CACHE_SIZE; i++) {
         if (arp_cache[i].ip == dest_ip) {
@@ -125,16 +128,47 @@ int arp_cache_find(uint32_t dest_ip)
     return -1;
 }
 
+static void arp_cache_clear(int n)
+{
+    assert((n >= 0) && n < NANO_ARP_CACHE_SIZE);
+    memset(&arp_cache[n], 0, sizeof(arp_cache_entry_t));
+}
+
+static void arp_cache_put(nano_dev_t *dev, uint32_t dest_ip, uint8_t *mac_addr, unsigned n)
+{
+    assert(n < NANO_ARP_CACHE_SIZE);
+
+#if 0 /* disabled for lack of data that shows any improvement */
+    if (n != 0) {
+        /* if the first entry is older than the *last* time
+         * the updated entry was accessed, swap them.
+         * This way, old entries should eventually move to the bottom of the
+         * list.
+         */
+        if (arp_cache[0].since < arp_cache[n].since) {
+            arp_cache[n] = arp_cache[0];
+            n = 0;
+        }
+    }
+#endif
+
+    DEBUG("arp cache adding/updating 0x%08x to entry %i\n", (unsigned int)dest_ip, n);
+
+    arp_cache[n].ip = dest_ip;
+    arp_cache[n].dev = dev;
+    memcpy(arp_cache[n].mac, mac_addr, 6);
+    arp_cache[n].since = 0 /* TODO: use proper time */;
+}
+
 int arp_cache_get(nano_dev_t *dev, uint32_t dest_ip, uint8_t *mac_addr_out)
 {
-    DEBUG("arp_cache_get: looking for 0x%08x\n", (unsigned int)dest_ip);
-
     int res = 0;
 
     int n = arp_cache_find(dest_ip);
     if (n != -1) {
         memcpy(mac_addr_out, arp_cache[n].mac, 6);
         res = 1;
+        DEBUG("arp: found 0x%08x as entry %i\n", (unsigned int)dest_ip, n);
     }
 
     if (!res) {
@@ -145,26 +179,66 @@ int arp_cache_get(nano_dev_t *dev, uint32_t dest_ip, uint8_t *mac_addr_out)
     return res;
 }
 
-static void arp_cache_put(nano_dev_t *dev, uint32_t dest_ip, uint8_t *mac_addr)
+void arp_cache_update(nano_dev_t *dev, uint32_t dest_ip, uint8_t *mac)
 {
-    int n = arp_cache_find(0x0);
+    int n;
+    unsigned now = 0;
+    uint16_t max_age = 0;
+    int oldest = -1;
+    int free = -1;
+    int match = -1;
 
-    if (n != -1) {
-        DEBUG("arp cache adding 0x%08x\n", (unsigned int)dest_ip);
-        arp_cache[n].ip = dest_ip;
-        arp_cache[n].dev = dev;
-        memcpy(arp_cache[n].mac, mac_addr, 6);
+    for (unsigned i = 0; i < NANO_ARP_CACHE_SIZE; i++) {
+        if (arp_cache[i].ip == dest_ip) {
+            /* check for exact match of the IP address */
+            match = i;
+            break;
+        }
+        else if (free == -1) {
+            /* if we didn't find a free slot yet, check if this one is */
+            if (arp_cache[i].ip == 0) {
+                free = i;
+            }
+            else {
+                /* check if this is the oldest entry. */
+                uint16_t age = now - arp_cache[i].since;
+                if (age >= max_age) {
+                    max_age = age;
+                    oldest = i;
+                }
+            }
+        }
+    }
+
+    /* use exact match, first free slot or oldest entry in that order */
+    if ((n = match) < 0) {
+        if ((n = free) < 0) {
+            n = oldest;
+            arp_cache_clear(n);
+            DEBUG("arp: using evicted entry %i\n", n);
+        }
+        else {
+            DEBUG("arp: using free entry %i\n", n);
+        }
     }
     else {
-        DEBUG("arp cache full\n");
+        if (memcmp(arp_cache[n].mac, mac, 6) == 0)  {
+            /* there was a match for the IP address.
+             * If the mac address is still the same, just update
+             * the last used time and return.
+             */
+            DEBUG("arp: updating entry %i time\n", n);
+            arp_cache[n].since = 0 /* TODO: use proper time */;
+            return;
+        }
+        else {
+            DEBUG("arp: changing MAC address for entry %i\n", n);
+        }
     }
-}
 
-static void arp_cache_maybe_add(nano_dev_t *dev, uint32_t dest_ip, uint8_t *mac)
-{
-    if (arp_cache_find(dest_ip) == -1) {
-        arp_cache_put(dev, dest_ip, mac);
-    }
+    assert (n >= 0);
+
+    arp_cache_put(dev, dest_ip, mac, n);
 }
 
 #endif /* NANONET_IPV4 */

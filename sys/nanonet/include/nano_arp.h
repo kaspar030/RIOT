@@ -7,7 +7,7 @@
 
 #define NANO_ARP_CACHE_SIZE 16
 
-typedef struct  __attribute__((packed)) arp_pkt {
+typedef struct  __attribute__((packed)) {
     uint32_t arp_ipv4_types;
     uint16_t arp_ipv4_lengths;
     uint16_t arp_ipv4_op;
@@ -17,16 +17,16 @@ typedef struct  __attribute__((packed)) arp_pkt {
     uint32_t dst_ip;
 } arp_pkt_t;
 
-typedef struct arp_cache_entry {
+typedef struct {
     uint32_t ip;
     uint8_t mac[6];
+    uint16_t since;
     nano_dev_t* dev;
 } arp_cache_entry_t;
 
 int arp_handle(nano_ctx_t *ctx, size_t offset);
-void arp_reply(nano_ctx_t *ctx, size_t offset);
 
 int arp_cache_get(nano_dev_t *dev, uint32_t dest_ip, uint8_t *mac_addr_out);
-void arp_request(nano_dev_t *dev, uint32_t dest_ip);
+void arp_cache_update(nano_dev_t *dev, uint32_t dest_ip, uint8_t *mac);
 
 #endif /* NANO_ARP_H */
