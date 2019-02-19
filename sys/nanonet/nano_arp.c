@@ -13,6 +13,27 @@
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
 
+#ifndef NANO_ARP_CACHE_SIZE
+#define NANO_ARP_CACHE_SIZE 16
+#endif
+
+typedef struct  __attribute__((packed)) {
+    uint32_t arp_ipv4_types;
+    uint16_t arp_ipv4_lengths;
+    uint16_t arp_ipv4_op;
+    uint8_t src_mac[6];
+    uint32_t src_ip;
+    uint8_t dst_mac[6];
+    uint32_t dst_ip;
+} arp_pkt_t;
+
+typedef struct {
+    uint32_t ip;
+    uint8_t mac[6];
+    uint16_t since;
+    nano_dev_t* dev;
+} arp_cache_entry_t;
+
 static arp_cache_entry_t arp_cache[NANO_ARP_CACHE_SIZE] = { { 0 } };
 
 static void arp_cache_put(nano_dev_t *dev, uint32_t dest_ip, uint8_t *mac_addr, unsigned n);
