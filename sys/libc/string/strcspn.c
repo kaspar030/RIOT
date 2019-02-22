@@ -1,3 +1,5 @@
+/* From musl libc.  See LICENSE.musl for copyright information. */
+
 #include <string.h>
 
 #define BITOP(a,b,op) \
