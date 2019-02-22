@@ -1,5 +1,5 @@
 USEMODULE += libc_stdio
 USEMODULE += libc_stdlib
 USEMODULE += libc_string
-USEMODULE += stdio_uart
 USEMODULE += fmt
+DEFAULT_MODULE += stdio_uart
