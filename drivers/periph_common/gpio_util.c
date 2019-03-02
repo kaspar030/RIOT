@@ -8,7 +8,7 @@
 
 #include "periph/gpio.h"
 
-uint8_t advanced_io_shift_in(gpio_t data_pin, gpio_t clock_pin){
+uint8_t gpio_util_shiftin(gpio_t data_pin, gpio_t clock_pin){
     uint8_t byte = 0x00;
 
     for(unsigned int i = 8; i > 0; i--){

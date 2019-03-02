@@ -7,26 +7,33 @@
  */
 
 /**
- * @defgroup   advanced_io Advanced I/O Utils
+ * @defgroup   gpio_util GPIO I/O Utils
  * @ingroup    utils
- * @brief      Advanced I/O Utils
+ * @brief      GPIO I/O Utils
  *
  *             The implementation is Arduino compatible with a different API.
  * @{
  *
  * @file
- * @brief      Advanced I/O Utils
+ * @brief      GPIO I/O Utils
  *
  * @author     Philipp-Alexander Blum <philipp-blum@jakiku.de>
  */
 
-#include "periph/gpio.h"
+#include "gpio.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-uint8_t advanced_io_shift_in(gpio_t dataPin, gpio_t clockPin);
+/**
+ *
+ * @brief shifts a byte in from a given data_pin. Set the clock in clock_pin
+ * @param data_pin
+ * @param clock_pin
+ * @return the uint8_t which go shiftet in
+ */
+uint8_t gpio_util_shiftin(gpio_t data_pin, gpio_t clock_pin);
 
 
 #ifdef __cplusplus
