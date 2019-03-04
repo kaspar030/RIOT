@@ -9,9 +9,8 @@
 /**
  * @defgroup   gpio_util GPIO I/O Utils
  * @ingroup    utils
- * @brief      GPIO I/O Utils
+ * @brief      GPIO I/O Utils. Same functionality as the Arduino shiftIn() in Advanced I/O.
  *
- *             The implementation is Arduino compatible with a different API.
  * @{
  *
  * @file
@@ -28,10 +27,10 @@ extern "C" {
 
 /**
  *
- * @brief shifts a byte in from a given data_pin. Set the clock in clock_pin
+ * @brief shift in a byte from a given data_pin. Create clock pulses on clock_pin. MSB first.
  * @param data_pin
  * @param clock_pin
- * @return the uint8_t which go shiftet in
+ * @return the resulting uint8_t of the shift.
  */
 uint8_t gpio_util_shiftin(gpio_t data_pin, gpio_t clock_pin);
 
