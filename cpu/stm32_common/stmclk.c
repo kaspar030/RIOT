@@ -1,6 +1,8 @@
 /*
  * Copyright (C) 2017 Freie Universität Berlin
  *               2017 OTA keys S.A.
+ *               2019 Inria
+ *               2019 Kaspar Schleiser <kaspar@schleiser.de>
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -16,11 +18,13 @@
  *
  * @author      Hauke Petersen <hauke.petersen@fu-berlin.de>
  * @author      Vincent Dupont <vincent@otakeys.com>
+ * @author      Kaspar Schleiser <kaspar@schleiser.de>
  * @}
  */
 
 #if defined(CPU_FAM_STM32F0) || defined(CPU_FAM_STM32F1) || defined(CPU_FAM_STM32F2) \
-    || defined(CPU_FAM_STM32F3) || defined(CPU_FAM_STM32F4) || defined(CPU_FAM_STM32F7)
+    || defined(CPU_FAM_STM32F3) || defined(CPU_FAM_STM32F4) || defined(CPU_FAM_STM32F7) \
+    || defined(CPU_FAM_STM32WB)
 
 #include "cpu.h"
 #include "stmclk.h"
@@ -168,7 +172,11 @@ void stmclk_init_sysclk(void)
     /* disable any interrupts. Global interrupts could be enabled if this is
      * called from some kind of bootloader...  */
     unsigned is = irq_disable();
+#if defined(CPU_FAM_STM32WB)
+    RCC->CICR = 0;
+#else
     RCC->CIR = 0;
+#endif
 
     /* enable HSI clock for the duration of initialization */
     stmclk_enable_hsi();

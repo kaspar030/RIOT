@@ -193,17 +193,24 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    if (strlen(argv[1]) < 9
-            || !isdigit(argv[1][6])
-            || !isdigit(argv[1][7])
-            || !isdigit(argv[1][8])
-            || ((argv[1][5] != 'f') && (argv[1][5] != 'F')
-                /* && (argv[1][5] != 'l') && (argv[1][5] != 'L') */)) {
-        fprintf(stderr, "Invalid model : %s\n", argv[1]);
-        return 1;
+    int model;
+
+    if (strcmp(argv[1], "stm32wb55") == 0) {
+        model = 55;
+    }
+    else {
+        if (strlen(argv[1]) < 9
+                || !isdigit(argv[1][6])
+                || !isdigit(argv[1][7])
+                || !isdigit(argv[1][8])
+                || ((argv[1][5] != 'f') && (argv[1][5] != 'F')
+                    /* && (argv[1][5] != 'l') && (argv[1][5] != 'L') */)) {
+            fprintf(stderr, "Invalid model : %s\n", argv[1]);
+            return 1;
+        }
+        model = atoi(argv[1] + 6);
     }
 
-    int model = atoi(argv[1] + 6);
     int i;
     for (i = 0; i < MODEL_MAX; i++) {
         if (stm32_model[i] == model) {

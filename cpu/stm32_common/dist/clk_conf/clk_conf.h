@@ -35,6 +35,7 @@ enum fam {
     STM32F3,
     STM32F4,
     STM32F7,
+    STM32WB,
     FAM_MAX,
 };
 /** @} */
@@ -105,6 +106,8 @@ enum {
     STM32F769,
     STM32F777,
     STM32F779,
+
+    STM32WB55,
 
     MODEL_MAX,
 };
@@ -262,6 +265,8 @@ static const unsigned stm32_model[] = {
     STM32F(769),
     STM32F(777),
     STM32F(779),
+
+    [STM32WB55] = 55,
 };
 
 /** STM32F2xx / STM32F401 PLL config */
@@ -592,6 +597,22 @@ static const clk_cfg_t stm32_clk_cfg[] = {
         .has_pll_i2s_alt_input = false,
         .has_alt_48MHz = ALT_48MHZ_SAI | ALT_48MHZ_P,
         .need_48MHz = true,
+    },
+    [STM32WB55] = {
+        .family = STM32F7,
+        .max_coreclock = 64000000U,
+        .max_apb1 = 16000000U,
+        .max_apb2 = 32000000U,
+        .hsi = 16000000U,
+        .pll = stm32f4_7_pll_cfg,
+        .has_pll_i2s = false,
+        .has_pll_sai = true,
+        .has_pll_i2s_m = false,
+        .has_pll_sai_m = false,
+        .has_pll_i2s_alt_input = false,
+        .has_alt_48MHz = 0,
+        .need_48MHz = true,
+
     },
 };
 

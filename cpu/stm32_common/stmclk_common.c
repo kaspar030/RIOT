@@ -23,7 +23,7 @@
 #include "stmclk.h"
 #include "periph_conf.h"
 
-#if defined(CPU_FAM_STM32L4) || defined(CPU_FAM_STM32F7)
+#if defined(CPU_FAM_STM32L4) || defined(CPU_FAM_STM32F7) || defined(CPU_FAM_STM32WB)
 #define REG_PWR_CR          CR1
 #define BIT_CR_DBP          PWR_CR1_DBP
 #else
@@ -39,6 +39,14 @@
 #define REG_LSE             BDCR
 #define BIT_LSEON           RCC_BDCR_LSEON
 #define BIT_LSERDY          RCC_BDCR_LSERDY
+#endif
+
+#if defined (CPU_FAM_STM32WB)
+#define BIT_LSION   RCC_CSR_LSI1ON
+#define BIT_LSIRDY  RCC_CSR_LSI1RDY
+#else
+#define BIT_LSION   RCC_CSR_LSION
+#define BIT_LSIRDY  RCC_CSR_LSIRDY
 #endif
 
 #ifndef CLOCK_HSE
@@ -74,8 +82,8 @@ void stmclk_enable_lfclk(void)
         stmclk_dbp_lock();
     }
     else {
-        RCC->CSR |= RCC_CSR_LSION;
-        while (!(RCC->CSR & RCC_CSR_LSIRDY)) {}
+        RCC->CSR |= BIT_LSION;
+        while (!(RCC->CSR & BIT_LSIRDY)) {}
     }
 }
 
@@ -88,7 +96,7 @@ void stmclk_disable_lfclk(void)
         stmclk_dbp_lock();
     }
     else {
-        RCC->CSR &= ~(RCC_CSR_LSION);
+        RCC->CSR &= ~(BIT_LSION);
     }
 }
 
