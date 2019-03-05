@@ -8,6 +8,7 @@
 
 #include "periph/gpio.h"
 
+#ifdef MODULE_PERIPH_GPIO
 uint8_t gpio_util_shiftin(gpio_t data_pin, gpio_t clock_pin){
     uint8_t byte = 0x00;
 
@@ -21,3 +22,4 @@ uint8_t gpio_util_shiftin(gpio_t data_pin, gpio_t clock_pin){
 
     return byte;
 }
+#endif
