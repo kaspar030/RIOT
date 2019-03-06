@@ -9,7 +9,7 @@ INCLUDES += -I$(RIOTBOARD)/common/nrf51/include
 
 ifeq ($(PROGRAMMER),openocd)
   # use common openocd configuration for nrf51
-  export OPENOCD_CONFIG = $(RIOTBOARD)/common/nrf51/dist/openocd.cfg
+  export OPENOCD_CONFIG ?= $(RIOTBOARD)/common/nrf51/dist/openocd.cfg
   include $(RIOTMAKE)/tools/openocd.inc.mk
 else ifeq ($(PROGRAMMER),jlink)
   # setup JLink for flashing
