@@ -586,6 +586,7 @@ int coap_get_block2(coap_pkt_t *pkt, coap_block1_t *block2);
  * @returns     amount of bytes written to @p buf
  */
 size_t coap_put_option_block1(uint8_t *buf, uint16_t lastonum, unsigned blknum, unsigned szx, int more);
+size_t coap_put_option_block2_req(uint8_t *buf, uint16_t lastonum, unsigned blknum, unsigned szx);
 
 /**
  * @brief   Insert block1 option into buffer (from coap_block1_t)

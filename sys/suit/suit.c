@@ -99,7 +99,7 @@ void suit_init_conditions(void)
     uuid_v5(&device, &vendor, devid, SUIT_DEVID_BYTES);
 }
 
-int suit_parse(suit_cbor_manifest_t *manifest, uint8_t *buf, size_t len)
+int suit_parse(suit_cbor_manifest_t *manifest, const uint8_t *buf, size_t len)
 {
     return suit_cbor_parse(manifest, buf, len);
 }

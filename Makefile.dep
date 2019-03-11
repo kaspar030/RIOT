@@ -808,11 +808,6 @@ ifneq (,$(filter uuid,$(USEMODULE)))
   USEMODULE += fmt
 endif
 
-ifneq (,$(filter riotboot_hdr, $(USEMODULE)))
-  USEMODULE += checksum
-  USEMODULE += riotboot
-endif
-
 ifneq (,$(filter suit_%,$(USEMODULE)))
   USEMODULE += suit
 endif
@@ -830,8 +825,33 @@ ifneq (,$(filter periph_gpio_irq,$(USEMODULE)))
   FEATURES_REQUIRED += periph_gpio
 endif
 
+ifneq (,$(filter riotboot_suit, $(USEMODULE)))
+  USEMODULE += sock_util
+  USEMODULE += riotboot_flashwrite
+  USEMODULE += libcose_crypt_hacl
+  USEPKG += libcose
+endif
+
+ifneq (,$(filter riotboot_flashwrite, $(USEMODULE)))
+  USEMODULE += riotboot_slot
+  FEATURES_REQUIRED += periph_flashpage
+endif
+
 ifneq (,$(filter riotboot_slot, $(USEMODULE)))
   USEMODULE += riotboot_hdr
+endif
+
+ifneq (,$(filter riotboot_hdr, $(USEMODULE)))
+  USEMODULE += checksum
+  USEMODULE += riotboot
+endif
+
+ifneq (,$(filter riotboot, $(USEMODULE)))
+  FEATURES_REQUIRED += riotboot
+endif
+
+ifneq (,$(filter ota_suit, $(USEMODULE)))
+  USEMODULE += riotboot_suit
 endif
 
 # always select gpio (until explicit dependencies are sorted out)

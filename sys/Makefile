@@ -139,6 +139,9 @@ endif
 ifneq (,$(filter suit%,$(USEMODULE)))
   DIRS += suit
 endif
+ifneq (,$(filter ota_suit,$(USEMODULE)))
+  DIRS += net/application_layer/ota_suit
+endif
 
 DIRS += $(dir $(wildcard $(addsuffix /Makefile, $(USEMODULE))))
 

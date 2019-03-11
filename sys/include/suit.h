@@ -92,7 +92,7 @@ void suit_init_conditions(void);
  * @return              SUIT_OK on parseable manifest
  * @return              negative @ref suit_error_t code on error
  */
-int suit_parse(suit_cbor_manifest_t *manifest, uint8_t *buf, size_t len);
+int suit_parse(suit_cbor_manifest_t *manifest, const uint8_t *buf, size_t len);
 
 /**
  * @brief Validate a manifest

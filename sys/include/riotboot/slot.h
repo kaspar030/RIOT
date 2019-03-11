@@ -37,6 +37,7 @@ extern "C" {
  * @returns nr of currently active slot
  */
 int riotboot_slot_current(void);
+int riotboot_slot_other(void);
 
 /**
  * @brief  Get jump-to address of image slot
