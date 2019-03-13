@@ -28,7 +28,28 @@ static msg_t _main_msg_queue[MAIN_QUEUE_SIZE];
 
 extern int udp_cmd(int argc, char **argv);
 
+#include "net/sock/util.h"
+#include "net/nanocoap_sock.h"
+
+static int _cb(void *arg, size_t offset, uint8_t *buf, size_t len, int more)
+{
+    printf("_cb: %p %u %p %u %i \"%.*s\"\n", arg, offset, buf, len, more, len, (char *)buf);
+    return 0;
+}
+
+static int _nanocoap_get(int argc, char **argv)
+{
+    if (argc < 2) {
+        return -EINVAL;
+    }
+
+    nanocoap_get_blockwise_url(argv[1], COAP_BLOCKSIZE_32, _cb, NULL);
+
+    return 0;
+}
+
 static const shell_command_t shell_commands[] = {
+    { "get", "coap test", _nanocoap_get },
     { "udp", "send data over UDP and listen on UDP ports", udp_cmd },
     { NULL, NULL, NULL }
 };
