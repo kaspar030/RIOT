@@ -59,6 +59,11 @@ DEVELHELP ?= 1
 # Change this to 0 show compiler invocation lines by default:
 QUIET ?= 1
 
+USEMODULE += gnrc_sock_udp
+USEMODULE += nanocoap_sock
+USEMODULE += sock_util
+CFLAGS += -Wno-unused-parameter
+
 include $(RIOTBASE)/Makefile.include
 
 # Set a custom channel if needed
