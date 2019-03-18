@@ -42,6 +42,10 @@ USEMODULE += shell
 USEMODULE += shell_commands
 USEMODULE += ps
 
+USEMODULE += nanocoap_sock
+USEMODULE += sock_util
+CFLAGS += -Wno-unused-parameter
+
 # Comment this out to disable code in RIOT that does safety checking
 # which is not needed in a production environment but helps in the
 # development process:
