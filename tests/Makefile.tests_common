@@ -1,4 +1,8 @@
-APPLICATION ?= tests_$(notdir $(patsubst %/,%,$(CURDIR)))
+ifneq (1,$(LAZE))
+  APPLICATION ?= tests_$(notdir $(patsubst %/,%,$(CURDIR)))
+else
+  APPLICATION ?= $(notdir $(patsubst %/,%,$(CURDIR)))
+endif
 ifneq (,$(filter tests_driver_%,$(APPLICATION)))
     BOARD ?= samr21-xpro
 endif

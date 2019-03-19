@@ -80,6 +80,10 @@ MAKEOVERRIDES += $(foreach v,$(__DIRECTORY_VARIABLES),$(v)=$($(v)))
 # trailing '/' is important when RIOTPROJECT == CURDIR
 BUILDRELPATH ?= $(patsubst $(RIOTPROJECT)/%,%,$(CURDIR)/)
 
+ifeq ($(LAZE),1)
+include $(RIOTBASE)/makefiles/laze.mk
+else
+
 # get host operating system
 OS := $(shell uname)
 
@@ -748,3 +752,4 @@ endif # BOARD=none
 # allows setting user specific system wide configuration parsed after the body
 # of $(RIOTBASE)/Makefile.include
 include $(RIOT_MAKEFILES_GLOBAL_POST)
+endif # LAZE=0
