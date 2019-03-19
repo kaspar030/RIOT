@@ -1,0 +1,4 @@
+app:
+    global_vars:
+        CFLAGS:
+            - -DDEVELHELP

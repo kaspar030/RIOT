@@ -1,0 +1,6 @@
+module:
+    name: sock_dns
+    sources:
+        - dns.c
+    depends:
+        - posix_headers

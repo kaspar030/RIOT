@@ -1,0 +1,11 @@
+app:
+    depends:
+        - motor_driver
+        - periph_qdec
+        - shell
+        - shell_commands
+        - xtimer
+    global_vars:
+        CFLAGS:
+            - -DLOG_LEVEL="LOG_DEBUG"
+            - -DDEBUG_ASSERT_VERBOSE

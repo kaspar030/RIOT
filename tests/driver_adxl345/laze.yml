@@ -1,0 +1,4 @@
+app:
+    depends:
+        - adxl345
+        - xtimer

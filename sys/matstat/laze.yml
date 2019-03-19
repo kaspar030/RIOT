@@ -1,0 +1,4 @@
+module:
+    name: matstat
+    sources:
+        - matstat.c

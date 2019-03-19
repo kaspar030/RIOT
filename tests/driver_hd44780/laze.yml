@@ -1,0 +1,4 @@
+app:
+    depends:
+        - feature/arduino
+        - hd44780

@@ -1,0 +1,19 @@
+module:
+    - name: ccs811
+      depends:
+          - periph_gpio
+          - periph_i2c
+          - xtimer
+      uses:
+          - ccs811_full
+      sources:
+          - ccs811.c
+          - saul: ccs811_saul.c
+      export_vars:
+          CFLAGS:
+              - -I${relpath}/include
+
+    - name: ccs811_full
+      depends:
+          - ccs811
+          - periph_gpio_irq

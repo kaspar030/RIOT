@@ -1,0 +1,19 @@
+module:
+    - name: periph_common
+      sources:
+          - init.c
+          - periph_cpuid: cpuid.c
+          - periph_eeprom: eeprom.c
+          - periph_flashpage: flashpage.c
+          - periph_i2c: i2c.c
+          - periph_pm: pm.c
+          - periph_spi: spi.c
+          - periph_timer: timer.c
+      depends:
+          - periph_rtc_common
+      uses:
+          - board
+
+    - name: periph_rtc_common
+      sources: rtc.c
+

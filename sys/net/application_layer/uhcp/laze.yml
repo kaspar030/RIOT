@@ -1,0 +1,20 @@
+module:
+    - name: uhcp_base
+      sources:
+          - uhcp.c
+      depends:
+          - -core
+      uses:
+          - uhcpc
+          - uhcpd
+
+    - name: uhcpc
+      sources:
+        - uhcpc.c
+      depends:
+        - uhcp_base
+        - sock_udp
+        - xtimer
+      vars:
+          CFLAGS:
+              - -DUHCP_CLIENT

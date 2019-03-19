@@ -1,0 +1,13 @@
+module:
+  - name: fatfs_diskio_mtd
+    depends:
+        - fatfs
+        - mtd
+    uses:
+        - mtd_native
+        - mtd_sdcard
+    sources:
+      - mtd_diskio.c
+    export_vars:
+      includes:
+        - ${relpath}/include

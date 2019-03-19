@@ -1,0 +1,7 @@
+module:
+  - name: app_metadata
+    depends:
+      - riot_info
+    sources:
+      - app_metadata.c
+

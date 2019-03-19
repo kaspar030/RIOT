@@ -1,0 +1,5 @@
+module:
+    - name: mtd_native
+      depends:
+          - mtd
+      sources: mtd_native.c

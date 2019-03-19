@@ -1,0 +1,10 @@
+module:
+    name: hts221
+    depends:
+        - periph_i2c
+    sources:
+        - hts221.c
+        - saul: hts221_saul.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

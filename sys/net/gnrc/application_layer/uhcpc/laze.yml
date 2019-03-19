@@ -1,0 +1,10 @@
+module:
+    - name: gnrc_uhcpc
+      depends:
+          - ?auto_init_gnrc_uhcp
+      sources:
+          - gnrc_uhcpc.c
+
+    - name: auto_init_gnrc_uhcp
+      depends:
+          - auto_init

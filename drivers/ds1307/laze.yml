@@ -1,0 +1,9 @@
+module:
+    name: ds1307
+    depends:
+        - periph_i2c
+    sources:
+        - ds1307.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

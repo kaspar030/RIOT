@@ -1,0 +1,6 @@
+app:
+    depends:
+        - embunit
+    global_vars:
+        CFLAGS:
+            - -DTHREAD_STACKSIZE_MAIN="(5*THREAD_STACKSIZE_DEFAULT)"

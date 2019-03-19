@@ -1,0 +1,10 @@
+module:
+    name: ina2xx
+    depends:
+        - periph_i2c
+    sources:
+        - ina2xx.c
+        - saul: ina2xx_saul.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

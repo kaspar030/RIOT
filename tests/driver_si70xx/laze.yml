@@ -1,0 +1,9 @@
+app:
+    depends:
+        - si7006
+        - xtimer
+    export_vars:
+        CFLAGS:
+            - -DTEST_I2C="0"
+            - -DTEST_I2C_ADDR="0x80"
+            - -DTEST_PIN_EN="GPIO_PIN(0,0)"

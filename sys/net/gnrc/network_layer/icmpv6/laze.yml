@@ -1,0 +1,12 @@
+module:
+    name: gnrc_icmpv6
+    depends:
+        - inet_csum
+        - icmpv6
+    uses:
+        - gnrc_icmpv6_echo
+    sources:
+        - gnrc_icmpv6.c
+subdirs:
+    - echo
+    - error

@@ -1,0 +1,13 @@
+module:
+    - name: gnrc_pktbuf
+      depends:
+          - ?auto_init_gnrc_pktbuf
+          - gnrc_pktbuf_static
+      uses:
+          - test_suites_define
+      sources:
+          - gnrc_pktbuf.c
+
+    - name: auto_init_gnrc_pktbuf
+      depends:
+          - auto_init

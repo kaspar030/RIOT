@@ -1,0 +1,10 @@
+module:
+    name: mma7660
+    depends:
+        - periph_i2c
+    sources:
+        - mma7660.c
+        - saul: mma7660_saul.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

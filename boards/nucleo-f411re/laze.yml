@@ -1,0 +1,15 @@
+builder:
+    name: nucleo-f411re
+    parent: stm32f411re
+    vars:
+        CFLAGS:
+            - -I${relpath}/include
+    disable_modules:
+        - periph_adc
+
+module:
+    - name: board
+      context: nucleo-f411re
+      depends:
+          - cpu/stm32f4
+          - nucleo64

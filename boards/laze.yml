@@ -1,0 +1,8 @@
+subdirs:
+    - common
+    - native
+    - nucleo-f401re
+    - nucleo-f411re
+    - samd21-xpro
+    - samr21-xpro
+    - stm32f4discovery

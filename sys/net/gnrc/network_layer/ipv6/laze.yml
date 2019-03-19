@@ -1,0 +1,36 @@
+module:
+    - name: gnrc_ipv6
+      sources:
+          - gnrc_ipv6.c
+      depends:
+          - ?auto_init_gnrc_ipv6
+          - gnrc_ipv6_hdr
+          - gnrc_ipv6_nib
+          - ipv6_addr
+          - gnrc_netif
+      uses:
+          - fib
+          - gnrc_icmpv6
+          - gnrc_icmpv6_error
+          - gnrc_ipv6_blacklist
+          - gnrc_ipv6_ext
+          - gnrc_ipv6_node
+          - gnrc_ipv6_router
+          - gnrc_ipv6_whitelist
+          - gnrc_sixlowpan
+          - gnrc_sixlowpan_ctx
+          - gnrc_sixlowpan_iphc_nhc
+          - gnrc_sixlowpan_nd
+          - gnrc_sixlowpan_nd_router
+          - netstats_ipv6
+
+    - name: auto_init_gnrc_ipv6
+      depends:
+          - auto_init
+
+subdirs:
+        - blacklist
+        - ext
+        - hdr
+        - nib
+        - whitelist

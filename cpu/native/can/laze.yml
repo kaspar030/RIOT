@@ -1,0 +1,4 @@
+module:
+    name: can_linux
+    sources:
+        - candev_linux.c

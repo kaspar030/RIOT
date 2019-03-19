@@ -1,0 +1,17 @@
+module:
+    - name: ds18
+      depends:
+          - periph_gpio
+          - xtimer
+      uses:
+          - ds18_optimized
+      sources:
+          - ds18.c
+          - saul: ds18_saul.c
+      export_vars:
+          CFLAGS:
+              - -I${relpath}/include
+
+    - name: ds18_optimized
+      depends:
+          - ds18

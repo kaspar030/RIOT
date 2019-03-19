@@ -1,0 +1,41 @@
+app:
+    name: unittests
+    depends:
+        - unittests-base
+        - tests-base64
+        - tests-bcd
+        - tests-bitfield
+        - tests-bloom
+        - tests-checksum
+        - tests-color
+        - tests-core
+        - tests-flashpage
+        - tests-gnrc_ipv6_nib
+
+module:
+    name: unittests-base
+    sources:
+      - main.c
+    depends:
+        - board
+        - embunit
+        - test_utils_interactive_sync
+    uses:
+        - xtimer
+    vars:
+        CFLAGS:
+            - ${testsuites}
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/common
+
+subdirs:
+    - tests-base64
+    - tests-bcd
+    - tests-bitfield
+    - tests-bloom
+    - tests-checksum
+    - tests-color
+    - tests-core
+    - tests-flashpage
+    - tests-gnrc_ipv6_nib

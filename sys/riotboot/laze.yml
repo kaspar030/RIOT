@@ -1,0 +1,21 @@
+module:
+  - name: riotboot_flashwrite
+    sources:
+      - flashwrite.c
+
+  - name: riotboot_flashwrite_sha256
+    sources:
+      - flashwrite_verify_sha256.c
+
+  - name: riotboot_hdr
+    depends:
+      - checksum
+    sources:
+      - hdr.c
+
+  - name: riotboot_slot
+    depends:
+      - riotboot_hdr
+      - riotboot_config
+    sources:
+      - slot.c

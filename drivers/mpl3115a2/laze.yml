@@ -1,0 +1,9 @@
+module:
+    name: mpl3115a2
+    sources:
+        - mpl3115a2.c
+    depends:
+        - periph_i2c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

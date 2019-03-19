@@ -1,0 +1,4 @@
+app:
+    depends:
+        - lis3dh
+        - xtimer

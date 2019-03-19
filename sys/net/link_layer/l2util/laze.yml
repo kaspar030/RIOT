@@ -1,0 +1,12 @@
+module:
+    - name: l2util
+      sources: l2util.c
+      uses:
+          - cc110x
+          - esp_now
+          - netdev_eth
+          - netdev_ieee802154
+          - nimble_netif
+          - nordic_softdevice_ble
+          - nrfmin
+          - xbee

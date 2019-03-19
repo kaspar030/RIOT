@@ -1,0 +1,30 @@
+module:
+    - name: gnrc_sixlowpan
+      depends:
+          - ?auto_init_gnrc_sixlowpan
+          - sixlowpan
+      uses:
+          - ccn_lite
+          - gnrc_ipv6
+          - gnrc_sixlowpan_frag
+          - gnrc_sixlowpan_frag_fb
+          - gnrc_sixlowpan_frag_hint
+          - gnrc_sixlowpan_frag_rb
+          - gnrc_sixlowpan_iphc
+      sources:
+          - gnrc_sixlowpan.c
+
+    - name: gnrc_sixlowpan_router
+      depends:
+          - gnrc_ipv6_router
+
+    - name: auto_init_gnrc_sixlowpan
+      depends:
+          - auto_init
+
+subdirs:
+    - ctx
+    - frag
+    - iphc
+    - nd
+    - netif

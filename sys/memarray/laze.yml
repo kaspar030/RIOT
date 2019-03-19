@@ -1,0 +1,4 @@
+module:
+  - name: memarray
+    sources:
+      - memarray.c

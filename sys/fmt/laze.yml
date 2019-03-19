@@ -1,0 +1,10 @@
+module:
+  - name: fmt
+    sources:
+        - fmt.c
+
+  - name: fmt_table
+    sources:
+        - table.c
+    depends:
+        - fmt

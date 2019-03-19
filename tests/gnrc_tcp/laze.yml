@@ -1,0 +1,20 @@
+app:
+  depends:
+    - auto_init_gnrc_netif
+    - gnrc_ipv6_default
+    - gnrc_tcp
+    - gnrc_pktbuf_cmd
+    - shell
+    - shell_commands
+    - od
+    - cpu/native:
+        - netdev_tap
+  global_vars:
+    CFLAGS:
+      - -DSHELL_NO_ECHO
+      # shorten default TCP timeouts to decrease test runtime
+      - -DGNRC_TCP_MSL=1000000
+      - -DGNRC_TCP_CONNECTION_TIMEOUT_DURATION=3000000
+
+  blacklist:
+    - atmega_common

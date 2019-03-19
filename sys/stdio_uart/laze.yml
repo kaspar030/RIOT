@@ -1,0 +1,20 @@
+module:
+    - name: stdio_uart
+      sources: stdio_uart.c
+      depends:
+        - periph_uart
+        - stdin:
+            - stdio_uart_rx
+      uses:
+        - stdio_uart_rx
+      vars:
+          CFLAGS_GCC:
+              - -Wno-cast-function-type
+
+    - name: stdio_uart_rx
+      depends:
+          - isrpipe
+          - stdio_uart
+
+    - name: stdin
+

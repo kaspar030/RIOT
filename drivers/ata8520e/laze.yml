@@ -1,0 +1,13 @@
+module:
+    name: ata8520e
+    depends:
+        - fmt
+        - periph_gpio
+        - periph_gpio_irq
+        - periph_spi
+        - xtimer
+    sources:
+        - ata8520e.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

@@ -1,0 +1,4 @@
+module:
+    - name: csma_sender
+      sources:
+        - csma_sender.c

@@ -1,0 +1,4 @@
+module:
+    - name: native_vfs
+      sources:
+          - native_vfs.c

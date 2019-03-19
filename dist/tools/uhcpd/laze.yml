@@ -1,0 +1,8 @@
+app:
+    whitelist: host
+    sources: uhcpd.c
+    depends:
+        - uhcp_base
+    global_vars:
+        CFLAGS:
+            - -I${root}/sys/include

@@ -1,0 +1,11 @@
+module:
+    - name: hashes
+      sources:
+        - cmac.c
+        - hashes.c
+        - md5.c
+        - sha1.c
+        - sha3.c
+        - sha256.c
+      depends:
+          - crypto

@@ -1,0 +1,8 @@
+app:
+    sources:
+    depends:
+      - ssp
+    vars:
+        CFLAGS:
+            - -Wno-array-bounds
+            - -Wstringop-overflow=0

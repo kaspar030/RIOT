@@ -1,0 +1,11 @@
+app:
+    depends:
+        - embunit
+        - random
+    global_vars:
+        CFLAGS:
+            - -DTHREAD_STACKSIZE_MAIN="(3072"
+            - +
+            - THREAD_STACKSIZE_DEFAULT
+            - +
+            - THREAD_EXTRA_STACKSIZE_PRINTF)

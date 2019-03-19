@@ -1,0 +1,24 @@
+module:
+    name: kw2xrf
+    sources:
+        - kw2xrf.c
+        - kw2xrf_getset.c
+        - kw2xrf_intern.c
+        - kw2xrf_netdev.c
+        - kw2xrf_spi.c
+        - kw2xrf_tm.c
+    depends:
+        - core_thread_flags
+        - ieee802154
+        - luid
+        - netdev_ieee802154
+        - periph_gpio_irq
+        - periph_spi
+    uses:
+        - gnrc
+        - gnrc_sixlowpan
+        - netstats_l2
+        - sixlowpan
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

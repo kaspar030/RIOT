@@ -1,0 +1,12 @@
+module:
+    - name: gnrc_sixlowpan_frag_vrb
+      sources:
+          - gnrc_sixlowpan_frag_vrb.c
+      depends:
+          - gnrc_sixlowpan_frag_fb
+          - xtimer
+      uses:
+          - gnrc_ipv6_nib
+          - gnrc_sixlowpan_frag
+          - gnrc_sixlowpan_frag_stats
+          - test_suites_define

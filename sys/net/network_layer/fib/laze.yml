@@ -1,0 +1,7 @@
+module:
+  - name: fib
+    depends:
+      - posix_headers
+      - universal_address
+    sources:
+      - fib.c

@@ -1,0 +1,18 @@
+app:
+    depends: tests-checksum
+
+module:
+    - name: tests-checksum
+      sources:
+          - tests-checksum-crc8.c
+          - tests-checksum-crc16-ccitt.c
+          - tests-checksum-fletcher16.c
+          - tests-checksum-fletcher32.c
+          - tests-checksum-ucrc16.c
+          - tests-checksum.c
+      depends:
+          - checksum
+          - unittests-base
+      global_vars:
+        testsuites:
+          - checksum

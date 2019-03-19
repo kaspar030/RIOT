@@ -1,0 +1,6 @@
+app:
+    depends:
+        - periph_i2c
+        - printf_float
+        - sht2x
+        - xtimer
