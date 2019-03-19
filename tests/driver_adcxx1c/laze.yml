@@ -1,0 +1,10 @@
+app:
+    depends:
+        - adc081c
+        - xtimer
+    global_vars:
+        CFLAGS:
+            - -DADCXX1C_PARAM_LOW_LIMIT="90"
+            - -DADCXX1C_PARAM_HIGH_LIMIT="130"
+            - -DADCXX1C_PARAM_HYSTERESIS="10"
+            - -DADCXX1C_PARAM_CYCLES="ADCXX1C_CYCLE_32"

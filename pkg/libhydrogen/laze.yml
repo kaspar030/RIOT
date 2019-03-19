@@ -1,0 +1,18 @@
+module:
+  - name: libhydrogen
+    license: ISC
+    download:
+      git:
+        url: https://github.com/jedisct1/libhydrogen
+        commit: 39eb529905ce118b674a7723c0d2b48074b9986d
+      patches:
+        - patches/0001-Add-support-for-RIOT-OS.patch
+    depends:
+      - random
+    sources: hydrogen.c
+    vars:
+      CFLAGS:
+        - -Wno-type-limits
+    export_vars:
+      includes:
+        - ${srcdir}

@@ -1,0 +1,4 @@
+module:
+    name: can_trx
+    sources:
+        - can_trx.c

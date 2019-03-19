@@ -1,0 +1,53 @@
+module:
+    - name: random
+      sources:
+        - random.c
+      depends:
+          - ?auto_init_random
+          - random_prng_default
+
+    - name: auto_init_random
+      depends:
+          - auto_init
+
+    # THIS SETS THE DEFAULT PRNG
+    - name: random_prng_default
+      context: default
+      depends: random_prng_tinymt32
+
+    - name: random_prng_mersenne
+      sources:
+        - mersenne.c
+      depends:
+        - random
+
+    - name: random_prng_minstd
+      sources:
+        - minstd.c
+      depends:
+        - random
+
+    - name: random_prng_musl_lcg
+      sources:
+        - musl_lcg.c
+      depends:
+        - random
+
+    - name: random_prng_tinymt32
+      sources:
+        - tinymt32.c
+      depends:
+        - random
+        - tinymt32
+
+    - name: random_prng_xorshift
+      sources:
+        - xorshift.c
+      depends: random
+
+    - name: sys/random
+      depends:
+        - random
+
+subdirs:
+    - tinymt32

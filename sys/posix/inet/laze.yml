@@ -1,0 +1,9 @@
+module:
+    name: posix_inet
+    depends:
+        - posix_headers
+    uses:
+        - ipv4_addr
+        - ipv6_addr
+    sources:
+        - inet.c

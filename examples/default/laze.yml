@@ -1,0 +1,23 @@
+app:
+    depends:
+        - shell
+        - shell_commands
+
+        - ?periph_rtc
+
+        # add networking if a network device is present
+        - ?netdev_default
+        - netdev_default:
+            - gnrc_default
+            - gnrc_ipv6_router_default
+            - gnrc_pktdump
+            - gnrc_txtsnd
+
+
+        # include and auto-initialize all available sensors
+        - saul_default
+
+        # Comment this out to disable code in RIOT that does safety checking
+        # which is not needed in a production environment but helps in the
+        # development process:
+        - develhelp

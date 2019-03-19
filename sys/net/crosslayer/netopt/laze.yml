@@ -1,0 +1,4 @@
+module:
+    - name: netopt
+      sources:
+        - netopt.c

@@ -1,0 +1,11 @@
+context:
+    name: sam0
+    parent: cortexm
+    vars:
+        includes:
+            - ${relpath}/include
+        LINKFLAGS:
+            - -Tcortexm.ld
+
+subdirs:
+    - periph

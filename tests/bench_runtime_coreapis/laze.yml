@@ -1,0 +1,4 @@
+app:
+    depends:
+        - benchmark
+        - core_thread_flags

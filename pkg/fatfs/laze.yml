@@ -1,0 +1,29 @@
+module:
+  - name: fatfs
+    depends:
+      - "!periph_rtc":
+          - fatfs_nortc
+
+    license: BSD-1-Clause
+    download:
+      git:
+        url: https://github.com/RIOT-OS/FatFS
+        commit: 34f371c7735fc6fc8e714a74a7a73a61d3ed5633
+    prepare:
+      - cmd:
+          - cd ${srcdir}
+          - mkdir -p include/fatfs
+          - cp *.h include/fatfs
+    sources: [ ff.c, ffsystem.c, ffunicode.c ]
+    export_vars:
+      includes:
+        - ${srcdir}/include
+
+  - name: fatfs_nortc
+    export_vars:
+      CFLAGS_DEFINES:
+        - -DFATFS_FFCONF_OPT_FS_NORTC=1
+
+subdirs:
+  - fatfs_diskio/mtd
+  - fatfs_vfs

@@ -1,0 +1,14 @@
+module:
+    - name: gnrc_udp
+      depends:
+          - ?auto_init_gnrc_udp
+          - inet_csum
+          - udp
+      uses:
+          - gnrc_ipv6
+      sources:
+          - gnrc_udp.c
+
+    - name: auto_init_gnrc_udp
+      depends:
+          - auto_init

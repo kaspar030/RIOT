@@ -1,0 +1,43 @@
+builder:
+    name: native
+    parent: cpu/native
+    vars:
+        CC: gcc
+        CXX: g++
+        SIZE: size
+        CFLAGS:
+            - -m32
+            - -DRIOT_MCU=\"native\"
+            - -DBOARD_NATIVE
+            - -I${relpath}/include
+            - remove:
+              - -Os
+        LINK: gcc
+        LINKFLAGS: [ -m32 ]
+        libs: [ -ldl, -lm ]
+
+defaults:
+  module:
+    context: native
+
+module:
+  - name: board
+    sources:
+      - board_init.c
+      - motor_driver: board.c
+    depends:
+        - native-drivers
+        - cpu/native
+        - core
+        - periph_common
+    uses:
+        - mtd
+
+  - name: feature/motor_driver
+  - name: feature/cpp
+    global_vars:
+      LINK:
+        - remove: gcc
+        - g++
+
+subdirs: drivers

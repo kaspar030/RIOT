@@ -1,0 +1,5 @@
+app:
+    depends:
+        - riot_info
+        - riotboot_slot
+        - shell

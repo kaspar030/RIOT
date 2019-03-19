@@ -1,0 +1,7 @@
+module:
+  - name: test_utils_interactive_sync
+    depends:
+      - stdin
+    sources:
+      - interactive_sync.c
+

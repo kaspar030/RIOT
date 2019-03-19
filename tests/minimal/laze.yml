@@ -1,0 +1,10 @@
+app:
+    depends:
+        - lto
+        - -test_utils_interactive_sync
+    global_vars:
+        CFLAGS:
+            - -DNDEBUG
+            - -DLOG_LEVEL=LOG_NONE
+            - remove:
+                - -DDEVELHELP

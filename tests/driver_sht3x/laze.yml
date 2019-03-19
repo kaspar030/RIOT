@@ -1,0 +1,3 @@
+app:
+    depends:
+        - sht3x

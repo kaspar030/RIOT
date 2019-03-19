@@ -1,0 +1,8 @@
+module:
+    - name: gcoap
+      sources:
+        - gcoap.c
+      depends:
+        - nanocoap
+        - gnrc_sock_udp
+        - sock_util

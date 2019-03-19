@@ -1,0 +1,11 @@
+module:
+    name: lc709203f
+    depends:
+        - periph_gpio
+        - periph_gpio_irq
+        - periph_i2c
+    sources:
+        - lc709203f.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

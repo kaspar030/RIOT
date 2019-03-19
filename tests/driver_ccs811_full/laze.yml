@@ -1,0 +1,3 @@
+app:
+    depends:
+        - ccs811_full

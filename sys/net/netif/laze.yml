@@ -1,0 +1,5 @@
+module:
+  - name: netif
+    sources: netif.c
+    uses:
+      - test_suites_define

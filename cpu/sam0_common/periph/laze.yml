@@ -1,0 +1,28 @@
+template:
+    "%NAME%":
+        - adc
+        - cpuid
+        - flashpage
+        - i2c
+        - rtc
+        - rtt
+        - spi
+        - timer
+        - uart
+
+module:
+    name: "periph_%NAME%"
+    context: sam0
+
+    sources:
+        - "%NAME%.c"
+---
+module:
+    - name: periph_gpio
+      context: sam0
+      sources: gpio.c
+      uses: periph_gpio_irq
+
+    - name: periph_gpio_irq
+      context: sam0
+      depends: periph_gpio

@@ -1,0 +1,11 @@
+module:
+    name: srf04
+    depends:
+        - periph_gpio
+        - periph_gpio_irq
+        - xtimer
+    sources:
+        - srf04.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

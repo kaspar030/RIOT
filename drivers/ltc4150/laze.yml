@@ -1,0 +1,13 @@
+module:
+    name: ltc4150
+    depends:
+        - periph_gpio
+        - periph_gpio_irq
+        - xtimer
+    sources:
+        - ltc4150.c
+        - ltc4150_last_minute.c
+        - saul: ltc4150_saul.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

@@ -1,0 +1,11 @@
+module:
+    name: sht2x
+    depends:
+        - periph_i2c
+        - xtimer
+    sources:
+        - sht2x.c
+        - saul: sht2x_saul.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

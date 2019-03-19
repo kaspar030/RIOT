@@ -1,0 +1,4 @@
+app:
+    depends:
+        - fmt
+        - posix_semaphore

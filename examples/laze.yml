@@ -1,0 +1,14 @@
+defaults:
+    app:
+      whitelist: riot
+      sources: main.c
+      depends: board
+
+subdirs:
+    - asymcute_mqttsn
+    - default
+    - hello-world
+    - gnrc_minimal
+    - gnrc_networking
+    - ipc_pingpong
+    - saul

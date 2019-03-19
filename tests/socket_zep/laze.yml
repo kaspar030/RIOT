@@ -1,0 +1,7 @@
+app:
+    depends:
+        - od
+        - socket_zep
+    global_vars:
+        CFLAGS:
+            - -DDEVELHELP

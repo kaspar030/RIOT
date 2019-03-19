@@ -1,0 +1,12 @@
+module:
+  - name: isrpipe
+    sources: isrpipe.c
+    depends:
+        - tsrb
+
+  - name: isrpipe_read_timeout
+    sources:
+        - read_timeout/read_timeout.c
+    depends:
+        - isrpipe
+        - xtimer

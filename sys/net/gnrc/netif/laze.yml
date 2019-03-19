@@ -1,0 +1,61 @@
+module:
+    - name: gnrc_netif
+      depends:
+          - fmt
+          - netif
+          - l2util
+          - netdev_ieee802154:
+              - gnrc_netif_ieee802154
+          - netdev_eth:
+              - gnrc_netif_ethernet
+
+      uses:
+          - cc110x
+          - esp_now
+          - gnrc_gomach
+          - gnrc_ipv6
+          - gnrc_ipv6_nib
+          - gnrc_ipv6_router
+          - gnrc_lorawan
+          - gnrc_lwmac
+          - gnrc_mac
+          - gnrc_netif_dedup
+          - gnrc_netif_ieee802154
+          - gnrc_rpl
+          - gnrc_sixloenc
+          - gnrc_sixlowpan
+          - gnrc_sixlowpan_iphc
+          - gnrc_sixlowpan_nd
+          - l2filter
+          - netdev_eth
+          - netdev_ieee802154
+          - netopt
+          - netstats
+          - netstats_ipv6
+          - netstats_l2
+          - nordic_softdevice_ble
+          - nrfmin
+          - od
+          - xbee
+
+      sources:
+          - _netif.c
+          - gnrc_netif.c
+          - gnrc_netif_device_type.c
+          - gnrc_netif_raw.c
+
+    - name: gnrc_netif_ethernet
+      depends:
+          - gnrc_netif
+      sources:
+            - ethernet/gnrc_netif_ethernet.c
+
+    - name: gnrc_netif_ieee802154
+      depends:
+          - gnrc_netif
+          - ieee802154
+      sources:
+            - ieee802154/gnrc_netif_ieee802154.c
+
+subdirs:
+    - hdr

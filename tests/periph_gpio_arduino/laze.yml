@@ -1,0 +1,5 @@
+app:
+    depends:
+        - arduino
+        - periph_gpio
+        - shell

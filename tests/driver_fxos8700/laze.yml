@@ -1,0 +1,3 @@
+app:
+    depends:
+        - fxos8700

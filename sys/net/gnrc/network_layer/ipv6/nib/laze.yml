@@ -1,0 +1,57 @@
+module:
+    - name: gnrc_ipv6_nib
+      depends:
+          - ?auto_init_gnrc_ipv6_nib
+          - evtimer
+          - gnrc_ndp
+          - luid
+          - random
+          - gnrc_ipv6
+          - sock_dns:
+              - gnrc_ipv6_nib_dns
+      uses:
+          - gnrc_ipv6
+          - gnrc_netif
+          - gnrc_sixlowpan_ctx
+          - gnrc_sixlowpan_nd
+          - test_suites_define
+      sources:
+          - _nib-6ln.c
+          - _nib-6lr.c
+          - _nib-arsm.c
+          - _nib-internal.c
+          - _nib-router.c
+          - _nib-slaac.c
+          - nib.c
+          - nib_abr.c
+          - nib_ft.c
+          - nib_nc.c
+          - nib_pl.c
+
+    - name: auto_init_gnrc_ipv6_nib
+      depends:
+          - auto_init
+
+    - name: gnrc_ipv6_nib_6lbr
+      depends:
+          - gnrc_ipv6_nib_6lr
+
+    - name: gnrc_ipv6_nib_6lr
+      depends:
+          - gnrc_ipv6_nib_6ln
+          - gnrc_ipv6_nib_router
+
+    - name: gnrc_ipv6_nib_6ln
+      depends:
+          - gnrc_ipv6_nib
+          - gnrc_sixlowpan_nd
+
+    - name: gnrc_ipv6_nib_dns
+      depends:
+          - gnrc_ipv6_nib
+
+    - name: gnrc_ipv6_nib_router
+      depends:
+          - gnrc_ipv6_nib
+      uses:
+          - gnrc_ipv6_nib

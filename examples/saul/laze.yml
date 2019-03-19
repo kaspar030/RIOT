@@ -1,0 +1,10 @@
+app:
+    depends:
+        - ps
+        - saul_default
+        - shell
+        - shell_commands
+    global_vars:
+        CFLAGS:
+            - -DDEVELHELP
+            - -DLOG_LEVEL=LOG_DEBUG

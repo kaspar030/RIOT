@@ -1,0 +1,7 @@
+app:
+    depends:
+        - embunit
+        - fmt
+        - tinycbor_float
+    uses:
+        - tinycbor_float

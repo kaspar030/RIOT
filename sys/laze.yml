@@ -1,0 +1,61 @@
+defaults:
+    module:
+        depends:
+          - core
+
+subdirs:
+  #- arduino (missing cpp support)
+    - app_metadata
+    - auto_init
+    - base64
+    - benchmark
+    - bitfield
+    - bloom
+    - can
+    - cb_mux
+    - cbor
+    - checksum
+    - color
+    - cpp11-compat
+    - crypto
+    - div
+    - ecc
+    - eepreg
+    - embunit
+    - event
+    - evtimer
+    - fmt
+    - fs
+    - hashes
+    - iolist
+    - isrpipe
+    - luid
+    - matstat
+    - memarray
+    - mineplex
+    - net
+    - newlib_syscalls_default
+    - od
+    - phydat
+    - pipe
+    - pm_layered
+    - posix
+    - ps
+    - quad_math
+    - random
+    - riotboot
+    - saul_reg
+    - schedstatistics
+    - sema
+    - shell
+    - ssp
+    - stdio_rtt
+    - stdio_uart
+    - test_utils
+    - timex
+    - trickle
+    - tsrb
+    - ubjson
+    - universal_address
+    - vfs
+    - xtimer

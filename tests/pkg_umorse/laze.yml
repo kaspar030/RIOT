@@ -1,0 +1,6 @@
+app:
+    depends:
+        - xtimer
+    global_vars:
+        CFLAGS:
+            - -DUMORSE_DELAY_DIT="120"

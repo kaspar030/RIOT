@@ -1,0 +1,14 @@
+module:
+  - name: netif
+
+subdirs:
+        - application_layer
+        - crosslayer
+        - gnrc
+        - link_layer
+        - netdev_test
+        - netif
+        - network_layer
+        - routing
+        - sock
+        - transport_layer

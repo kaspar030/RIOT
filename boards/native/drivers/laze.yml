@@ -1,0 +1,8 @@
+module:
+    name: native-drivers
+    depends:
+        - periph_qdec: motor_driver
+    sources:
+        - native-led.c
+        - periph_qdec: native-qdec.c
+

@@ -1,0 +1,3 @@
+app:
+    depends:
+        - pulse_counter

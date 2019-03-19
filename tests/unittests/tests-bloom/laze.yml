@@ -1,0 +1,13 @@
+app:
+    depends:
+        - tests-bloom
+module:
+    - name: tests-bloom
+      sources:
+        - tests-bloom.c
+      depends:
+          - bloom
+          - unittests-base
+      global_vars:
+          testsuites:
+              - bloom

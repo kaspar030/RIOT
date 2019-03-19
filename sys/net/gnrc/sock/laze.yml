@@ -1,0 +1,20 @@
+module:
+    name: gnrc_sock
+    depends:
+        - gnrc_core
+        - gnrc_netapi_mbox
+        - core_mbox
+    uses:
+        - gnrc_neterr
+        - xtimer
+    sources:
+        - gnrc_sock.c
+    export_vars:
+        CFLAGS:
+            - -DSOCK_HAS_IPV6
+        includes:
+            - ${relpath}/include
+
+subdirs:
+        - ip
+        - udp

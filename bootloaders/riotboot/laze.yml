@@ -1,0 +1,19 @@
+app:
+    - name: riotboot
+      whitelist: cortexm
+      sources: main.c
+      depends:
+          - board
+          - riotboot_slot
+      disable_modules:
+          - auto_init
+          - core_init
+          - core_msg
+          - core_panic
+
+      global_vars:
+          CFLAGS:
+              - -DRIOTBOOT
+              - -DNDEBUG
+              - -DLOG_LEVEL=LOG_NONE
+

@@ -1,0 +1,13 @@
+module:
+        - name: gnrc_mac
+          sources:
+                  - internal.c
+                  - timeout.c
+          depends:
+                  - gnrc_netif
+                  - csma_sender
+                  - gnrc_priority_pktqueue
+                  - evtimer
+          uses:
+                  - gnrc_gomach
+                  - gnrc_lwmac

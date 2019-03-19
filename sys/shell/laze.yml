@@ -1,0 +1,12 @@
+module:
+    name: shell
+    sources:
+        - shell.c
+    depends:
+        - stdin
+    uses:
+        - newlib
+        - shell_commands
+
+subdirs:
+    - commands

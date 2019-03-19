@@ -1,0 +1,7 @@
+module:
+    name: mtd_sdcard
+    depends:
+        - mtd
+        - sdcard_spi
+    sources:
+        - mtd_sdcard.c

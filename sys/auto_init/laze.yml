@@ -1,0 +1,16 @@
+module:
+    name: auto_init
+    sources:
+        - auto_init.c
+    uses:
+        - all
+        # "all" makes laze collect all "-DMODULE_FOO", but it will not pass any
+        # exported vars / includes. Should those be needed, add them here:
+        - asymcute
+        - gnrc_sock
+
+subdirs:
+    - can
+    - netif
+    - saul
+    - storage
