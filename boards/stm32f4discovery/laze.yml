@@ -1,0 +1,14 @@
+builder:
+    name: stm32f4discovery
+    parent: stm32f407vg
+    vars:
+        CFLAGS:
+            - -I${relpath}/include
+
+module:
+    - name: board
+      context: stm32f4discovery
+      sources: board.c
+      depends:
+          - cpu/stm32f4
+          - stm32

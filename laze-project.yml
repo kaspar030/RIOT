@@ -1,0 +1,74 @@
+rule:
+    - name: CC
+      in: '.c'
+      out: '.o'
+      depfile: "$out.d"
+      deps: gcc
+      cmd: '${CC} -MMD -MF $out.d ${CFLAGS} ${testsuites} -c ${in} -o ${out}'
+      var_options:
+          testsuites:
+              prefix: -DTEST_SUITES=
+              joiner: ','
+    - name: ASM
+      in: '.S'
+      out: '.o'
+      cmd: '${CC} ${CFLAGS} -c ${in} -o ${out}'
+    - name: LINK
+      in: '.o'
+      options:
+          combine: true
+      cmd: '${LINK} ${LINKFLAGS} ${CFLAGS} ${in} ${libs} -o ${out}'
+
+    - name: SYMLINK
+      cmd: 'ln -f ${in} ${out}'
+
+context:
+    - name: default
+      bindir: "build/bin/${builder}"
+      vars:
+          CFLAGS:
+            - -Wall
+            - -Werror
+            - -Werror=old-style-definition
+            - -Werror=strict-prototypes
+            - -Wold-style-definition
+            - -Wstrict-prototypes
+            - -Os
+            - -g
+
+    - name: riot
+      parent: default
+      vars:
+          CFLAGS:
+            - -I${relpath}/drivers/include
+            - -I${relpath}/sys/include
+            - -DRIOT_VERSION=\"laze\"
+            - -DRIOT_FILE_RELATIVE=__FILE__
+
+builder:
+          - name: host
+            parent: default
+            vars:
+                CC : gcc
+                LINK: gcc
+            tools:
+                run:
+                    cmd:
+                     - "${out}"
+
+module:
+    - name: riot
+      context: riot
+
+    - name: riot_info
+      context: riot
+      export_vars:
+          CFLAGS:
+            - -DFOO=\"${builder}\"
+            - -DRIOT_BOARD=\"${builder}\"
+
+    - name: host
+      context: host
+
+subdirs:
+    [ dist, core, boards, cpu, drivers, sys, examples, tests, pkg ]

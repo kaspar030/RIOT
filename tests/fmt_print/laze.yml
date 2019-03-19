@@ -1,0 +1,4 @@
+app:
+    name: tests_fmt_print
+    depends:
+        - fmt

@@ -1,0 +1,9 @@
+app:
+    depends:
+        - mpu9150
+        - xtimer
+    export_vars:
+        CFLAGS:
+            - -DTEST_I2C="I2C_DEV(0)"
+            - -DTEST_HW_ADDR="MPU9150_HW_ADDR_HEX_68"
+            - -DTEST_COMP_ADDR="MPU9150_COMP_ADDR_HEX_0C"

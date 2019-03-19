@@ -1,0 +1,38 @@
+context:
+    name: cpu/native
+    parent: riot
+    tools:
+        run:
+            cmd:
+             - "${out}"
+        term:
+            cmd:
+             - "${out}"
+
+module:
+    name: cpu/native
+    sources: [ async_read.c,  irq_cpu.c,  native_cpu.c,  panic.c,  startup.c,  syscalls.c, tramp.S ]
+    global_vars:
+        CFLAGS:
+            - -DNATIVE_INCLUDES
+            - -DCPU_NATIVE
+            - -I${relpath}/include
+    depends:
+        - core
+        - periph_uart
+    uses:
+        - netdev_tap
+        - xtimer
+
+defaults:
+    module:
+        context: cpu/native
+
+subdirs:
+    - periph
+    - netdev_tap
+
+---
+module:
+    name: printf_float
+    context: cpu/native

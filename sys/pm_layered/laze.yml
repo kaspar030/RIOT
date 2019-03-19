@@ -1,0 +1,4 @@
+module:
+    name: pm_layered
+    sources:
+        - pm.c

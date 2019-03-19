@@ -1,0 +1,46 @@
+defaults:
+    module:
+        depends:
+          - core
+
+subdirs:
+    - auto_init
+    - base64
+    - bitfield
+    - bloom
+    - cbor
+    - checksum
+    - color
+    - cpp11-compat
+    - crypto
+    - div
+    - ecc
+    - embunit
+    - event
+    - fmt
+    - fs
+    - hashes
+    - isrpipe
+    - luid
+    - mineplex
+    - net
+    - newlib_syscalls_default
+    - od
+    - phydat
+    - pipe
+    - pm_layered
+    - posix
+    - ps
+    - quad_math
+    - random
+    - rtt_stdio
+    - saul_reg
+    - sema
+    - shell
+    - timex
+    - trickle
+    - tsrb
+    - stdio_uart
+    - universal_address
+    - vfs
+    - xtimer

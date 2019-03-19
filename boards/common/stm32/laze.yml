@@ -1,0 +1,7 @@
+module:
+    - name: stm32
+      context: stm32
+      global_vars:
+          CFLAGS:
+            - -I${relpath}/include
+

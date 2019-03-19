@@ -1,0 +1,30 @@
+builder:
+    name: samr21-xpro
+    parent: samd21g18a
+    vars:
+        CFLAGS:
+            - -I${relpath}/include
+
+        PORT: /dev/ttyACM0
+
+    tools:
+        flash:
+            cmd:
+                - ${OBJCOPY} -O binary ${out} ${out}.bin
+                - edbg ${EDBG_TARGET_TYPE} --verbose --verify --program --file ${out}.bin
+        term:
+            cmd:
+                - picocom --baud 115200 --quiet --imap lfcrlf ${PORT}
+
+module:
+    - name: board
+      context: samr21-xpro
+      sources: board.c
+      depends:
+          - cpu/samd21
+          - periph_gpio
+
+    - name: saul_board
+      context: samr21-xpro
+      depends:
+          - saul_gpio

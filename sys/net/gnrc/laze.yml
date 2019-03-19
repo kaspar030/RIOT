@@ -1,0 +1,58 @@
+defaults:
+    module:
+        depends:
+            - gnrc_core
+
+module:
+    - name: gnrc
+      depends:
+          - gnrc_core
+
+    - name: gnrc_core
+      depends:
+        - core
+        - gnrc
+        - gnrc_netapi
+        - gnrc_netif
+        - gnrc_netif_hdr
+        - gnrc_pkt
+        - gnrc_pktbuf
+
+    - name: gnrc_netdev_default
+      depends:
+          - gnrc_netdev
+          - netdev_default
+
+    - name: gnrc_ipv6_default
+      depends:
+          - gnrc_ipv6
+          - gnrc_icmpv6
+            # if netif_num==1: if gnrc_sixlowpan_nd: gnrc_ndp_host
+            # else:
+          - gnrc_ndp_host
+
+    - name: gnrc_ipv6_router
+      depends:
+          - gnrc_ipv6
+
+    - name: gnrc_ipv6_router_default
+      depends:
+          - gnrc_ipv6_router
+          - gnrc_icmpv6
+          - gnrc_ndp_router
+
+subdirs:
+        - application_layer
+        - link_layer
+        - netapi
+        - netif
+        - netreg
+        - nettest
+        - network_layer
+        - pkt
+        - pktbuf_static
+        - pktdump
+        - priority_pktqueue
+        - routing
+        - sock
+        - transport_layer

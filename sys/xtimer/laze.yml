@@ -1,0 +1,9 @@
+module:
+    name: xtimer
+    sources:
+        - xtimer.c
+        - xtimer_core.c
+    depends:
+        - auto_init
+        - div
+        - periph_timer

@@ -1,0 +1,11 @@
+defaults:
+    app:
+        sources: main.c
+        depends: board
+
+subdirs:
+    - default
+    - hello-world
+    - gnrc_networking
+    - ipc_pingpong
+    - saul

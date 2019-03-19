@@ -1,0 +1,55 @@
+context:
+    name: cortexm
+    parent: riot
+    vars:
+        CC: arm-none-eabi-gcc
+        LINK: arm-none-eabi-gcc
+        OBJCOPY: arm-none-eabi-objcopy
+        CFLAGS:
+            - -std=c99
+            - -mlittle-endian -mthumb
+            - -I${relpath}/include
+            - -I${relpath}/include/vendor
+            - -I${root}/sys/libc/include
+            - -DDONT_USE_CMSIS_INIT
+            - -DCOREIF_NG=1
+            - -mno-thumb-interwork
+            - -ffunction-sections -fdata-sections -fno-builtin -fshort-enums
+            - -fno-common
+            - -fno-delete-null-pointer-checks
+
+        LINKFLAGS:
+            - -mno-thumb-interwork
+            - -ffunction-sections -fdata-sections -fno-builtin -fshort-enums
+            - -L${relpath}/ldscripts
+            - -static -lgcc -nostartfiles
+            - -Wl,--gc-sections
+
+module:
+    - context: cortexm
+      name: cortexm
+      sources:
+       - cortexm_init.c
+       - irq_arch.c
+       - mpu.c
+       - panic.c
+       - thread_arch.c
+       - vectors_cortexm.c
+
+      vars:
+          CFLAGS:
+              - -DMODULE_CORTEXM_COMMON
+              - -DMODULE_NEWLIB
+
+      depends:
+          - core
+          - newlib
+          - cortexm_common_periph
+
+    - name: mpu_stack_guard
+      context: cortexm
+    - name: printf_float
+      context: cortexm
+
+subdirs:
+    - periph

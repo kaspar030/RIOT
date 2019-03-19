@@ -1,0 +1,7 @@
+module:
+    name: ina220
+    sources:
+        - ina220.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

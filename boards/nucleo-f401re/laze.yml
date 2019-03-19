@@ -1,0 +1,13 @@
+builder:
+    name: nucleo-f401re
+    parent: stm32f401re
+    vars:
+        CFLAGS:
+            - -I${relpath}/include
+
+module:
+    - name: board
+      context: nucleo-f401re
+      depends:
+          - nucleo64
+          - cpu/stm32f4

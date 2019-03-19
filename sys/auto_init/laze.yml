@@ -1,0 +1,10 @@
+module:
+    name: auto_init
+    sources:
+        - auto_init.c
+    uses:
+        - all
+
+subdirs:
+    - netif
+    - saul

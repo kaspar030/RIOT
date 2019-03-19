@@ -1,0 +1,11 @@
+module:
+    name: lsm6dsl
+    depends:
+        - periph_i2c
+        - xtimer
+    sources:
+        - lsm6dsl.c
+        - saul: lsm6dsl_saul.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

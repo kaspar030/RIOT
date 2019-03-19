@@ -1,0 +1,7 @@
+module:
+    name: isl29125
+    sources:
+        - isl29125.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

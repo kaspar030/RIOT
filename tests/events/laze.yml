@@ -1,0 +1,4 @@
+app:
+    depends:
+        - event_callback
+        - event_timeout

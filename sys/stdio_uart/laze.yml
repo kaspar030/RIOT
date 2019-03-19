@@ -1,0 +1,5 @@
+module:
+    sources: stdio_uart.c
+    depends:
+     - sys/isrpipe
+     - periph_uart

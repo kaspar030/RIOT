@@ -1,0 +1,16 @@
+module:
+    name: xbee
+    depends:
+        - ieee802154
+        - netif
+        - periph_gpio
+        - periph_uart
+        - xtimer
+    uses:
+        - sixlowpan
+        - xbee_encryption
+    sources:
+        - xbee.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include
