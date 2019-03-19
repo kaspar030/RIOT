@@ -1,0 +1,7 @@
+module:
+    name: posix_time
+    sources:
+        - posix_time.c
+    depends:
+        - xtimer
+        - timex

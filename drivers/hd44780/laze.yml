@@ -1,0 +1,12 @@
+module:
+    name: hd44780
+    depends:
+        - div
+        - periph_gpio
+        - periph_timer
+        - xtimer
+    sources:
+        - hd44780.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

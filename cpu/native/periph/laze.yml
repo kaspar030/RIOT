@@ -1,0 +1,16 @@
+template:
+    "%NAME%":
+        - cpuid
+        - gpio
+        - hwrng
+        - pm
+        - rtc
+        - timer
+        - uart
+
+module:
+    context: cpu/native
+    name: "periph_%NAME%"
+
+    sources:
+        - "%NAME%.c"

@@ -1,0 +1,4 @@
+subdirs:
+    - nucleo
+    - nucleo64
+    - stm32

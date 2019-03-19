@@ -1,0 +1,10 @@
+module:
+    name: tsl2561
+    sources:
+        - tsl2561.c
+        - saul: tsl2561_saul.c
+    depends:
+        - periph_i2c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

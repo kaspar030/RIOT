@@ -1,0 +1,13 @@
+subdirs:
+    - semaphore
+    - pthread
+    - sockets
+    - time
+
+module:
+    name: posix
+    sources:
+        - inet.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

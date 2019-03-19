@@ -1,0 +1,15 @@
+template:
+    "%NAME%":
+        - adc
+        - cpuid
+        - gpio
+        - i2c
+        - spi
+        - uart
+
+module:
+    context: sam0
+    name: "periph_%NAME%"
+
+    sources:
+        - "%NAME%.c"

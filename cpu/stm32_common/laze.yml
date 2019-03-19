@@ -1,0 +1,23 @@
+context:
+    name: stm32
+    parent: cortexm
+    vars:
+        CFLAGS:
+            - -I${relpath}/include
+        LINKFLAGS:
+            - -L${relpath}/ldscripts
+
+module:
+    name: stm32_common
+    context: stm32
+    sources:
+        - cpu_common.c
+        - cpu_init.c
+        - stmclk.c
+        - stmclk_common.c
+    depends:
+        - cortexm
+        - pm_layered
+
+subdirs:
+    - periph

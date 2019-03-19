@@ -1,0 +1,23 @@
+builder:
+    name: native
+    parent: cpu/native
+    vars:
+        CC: gcc
+        CFLAGS:
+            - "-m32"
+            - '-DRIOT_MCU=\"native\"'
+            - '-I${relpath}/include'
+        LINK: gcc
+        LINKFLAGS: [ -m32 ]
+        libs: [ -ldl, -lm ]
+
+module:
+    name: board
+    sources: board_init.c
+    depends:
+        - native-drivers
+        - cpu/native
+        - core
+        - periph_common
+
+subdirs: drivers

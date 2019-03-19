@@ -1,0 +1,6 @@
+subdirs:
+        - coap
+        - dns
+        - emcute
+        - sntp
+        - uhcp

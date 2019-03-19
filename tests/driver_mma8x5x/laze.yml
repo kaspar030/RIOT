@@ -1,0 +1,4 @@
+app:
+    depends:
+        - mma8x5x
+        - xtimer

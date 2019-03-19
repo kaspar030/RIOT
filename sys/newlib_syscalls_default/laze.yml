@@ -1,0 +1,14 @@
+module:
+    name: newlib
+    sources: syscalls.c
+    global_vars:
+        CFLAGS:
+            - -I${relpath}/include
+        LINKFLAGS:
+            - -specs=nano.specs
+        libs:
+            - -lc -lnosys -lm
+    depends:
+        - sys/stdio_uart
+    uses:
+        - board

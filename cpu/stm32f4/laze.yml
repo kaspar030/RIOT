@@ -1,0 +1,66 @@
+context:
+    name: stm32f4
+    parent: stm32
+    vars:
+        CFLAGS:
+            - -mcpu=cortex-m4
+            - -mfloat-abi=soft
+            - -DRIOT_MCU=\"stm32f4\"
+            - -DCPU_STM32F4
+            - -DCPU_FAM_STM32F4
+            - -DCPU_ARCH_CORTEX_M4F
+            - -I${relpath}/include
+        LINKFLAGS:
+            - -Tstm32_common.ld
+            - -Wl,--defsym=_rom_start_addr=0x08000000
+            - -Wl,--defsym=_ram_start_addr=0x20000000
+    disable_modules:
+        - periph_flashpage
+        - periph_hwrng
+        - periph_rtc
+
+module:
+    context: stm32f4
+    sources:
+        - vectors.c
+    depends:
+        - stm32_common
+        - periph_common
+
+subdirs:
+    - periph
+
+---
+context:
+    - name: stm32f411re
+      parent: stm32f4
+      vars:
+          CFLAGS:
+              - -DCPU_MODEL_STM32F411RE
+              - -DCPU_LINE_STM32F411xE
+              - -DSTM32F411xE
+          LINKFLAGS:
+              - -Wl,--defsym=_rom_length=512K
+              - -Wl,--defsym=_ram_length=128K
+
+    - name: stm32f401re
+      parent: stm32f4
+      vars:
+          CFLAGS:
+              - -DCPU_MODEL_STM32F401RE
+              - -DCPU_LINE_STM32F401xE
+              - -DSTM32F401xE
+          LINKFLAGS:
+              - -Wl,--defsym=_rom_length=512K
+              - -Wl,--defsym=_ram_length=96K
+
+    - name: stm32f407vg
+      parent: stm32f4
+      vars:
+          CFLAGS:
+              - -DCPU_MODEL_STM32F407VG
+              - -DCPU_LINE_STM32F407xx
+              - -DSTM32F407xx
+          LINKFLAGS:
+              - -Wl,--defsym=_rom_length=1024K
+              - -Wl,--defsym=_ram_length=192K

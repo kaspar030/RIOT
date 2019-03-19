@@ -1,0 +1,3 @@
+app:
+    whitelist: host
+    sources: ethos.c

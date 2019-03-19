@@ -1,0 +1,9 @@
+module:
+    name: nrf24l01p
+    sources:
+        - nrf24l01p.c
+    depends:
+        - periph_spi
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

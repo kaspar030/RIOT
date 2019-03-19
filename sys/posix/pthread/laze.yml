@@ -1,0 +1,22 @@
+module:
+    name: pthread
+    depends:
+        - posix
+        - xtimer
+
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include
+    sources:
+        - pthread.c
+        - pthread_attr.c
+        - pthread_barrier.c
+        - pthread_barrierattr.c
+        - pthread_cond.c
+        - pthread_mutex.c
+        - pthread_mutex_attr.c
+        - pthread_once.c
+        - pthread_rwlock.c
+        - pthread_rwlock_attr.c
+        - pthread_spin.c
+        - pthread_tls.c

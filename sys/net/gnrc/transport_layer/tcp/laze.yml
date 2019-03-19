@@ -1,0 +1,13 @@
+module:
+    name: gnrc_tcp
+    depends:
+        - core_mbox
+    uses:
+        - gnrc_ipv6
+    sources:
+        - gnrc_tcp.c
+        - gnrc_tcp_eventloop.c
+        - gnrc_tcp_fsm.c
+        - gnrc_tcp_option.c
+        - gnrc_tcp_pkt.c
+        - gnrc_tcp_rcvbuf.c

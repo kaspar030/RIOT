@@ -1,0 +1,3 @@
+subdirs:
+        - inet_csum
+        - netopt

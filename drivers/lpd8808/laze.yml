@@ -1,0 +1,10 @@
+module:
+    name: lpd8808
+    depends:
+        - color
+        - periph_gpio
+    sources:
+        - lpd8808.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include
