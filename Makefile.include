@@ -34,6 +34,11 @@ _riotbase := $(LAST_MAKEFILEDIR)
 # of $(RIOTBASE)/Makefile.include
 include $(RIOT_MAKEFILES_GLOBAL_PRE)
 
+# use laze wrapper if requested
+ifeq ($(LAZE),1)
+  include $(RIOTBASE)/makefiles/laze.mk
+else
+
 # Globally set default goal to `all`
 .DEFAULT_GOAL := all
 
@@ -1082,3 +1087,4 @@ include $(RIOTMAKE)/cargo-targets.inc.mk
 # allows setting user specific system wide configuration parsed after the body
 # of $(RIOTBASE)/Makefile.include
 include $(RIOT_MAKEFILES_GLOBAL_POST)
+endif # LAZE=0
