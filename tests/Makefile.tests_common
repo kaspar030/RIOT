@@ -1,4 +1,14 @@
-APPLICATION ?= tests_$(notdir $(patsubst %/,%,$(CURDIR)))
+ifneq (1,$(LAZE))
+  APPLICATION ?= tests_$(notdir $(patsubst %/,%,$(CURDIR)))
+  ifneq (,$(filter tests_driver_%,$(APPLICATION)))
+    BOARD ?= samr21-xpro
+  endif
+else
+  APPLICATION ?= $(notdir $(patsubst %/,%,$(CURDIR)))
+  ifneq (,$(filter driver_%,$(APPLICATION)))
+    BOARD ?= samr21-xpro
+  endif
+endif
 
 ifneq (,$(wildcard $(CURDIR)/tests*/.))
   # add interactive test configuration when testing Kconfig
@@ -12,9 +22,6 @@ ifneq (,$(wildcard $(CURDIR)/tests*/.))
   endif
 endif
 
-ifneq (,$(filter tests_driver_%,$(APPLICATION)))
-  BOARD ?= samr21-xpro
-endif
 BOARD ?= native
 RIOTBASE ?= $(CURDIR)/../..
 QUIET ?= 1
