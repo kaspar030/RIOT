@@ -1,0 +1,21 @@
+module:
+    - name: event
+      sources:
+        - event.c
+      depends:
+        - core_thread_flags
+      uses:
+        - xtimer
+
+    - name: event_callback
+      sources:
+          - callback.c
+      depends:
+          - event
+
+    - name: event_timeout
+      sources:
+          - timeout.c
+      depends:
+          - event
+          - xtimer

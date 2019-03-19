@@ -1,0 +1,3 @@
+module:
+    - name: tsrb
+      sources: tsrb.c

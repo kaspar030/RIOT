@@ -1,0 +1,8 @@
+module:
+    name: vfs
+    depends:
+        - posix_headers
+        - ?native_vfs
+    sources:
+        - vfs.c
+        - vfs_stdio.c

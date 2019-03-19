@@ -1,0 +1,17 @@
+app:
+    depends:
+        - fatfs_diskio_mtd
+        - shell
+        - fatfs
+        - ?mtd_sdcard
+        - ?mtd_native
+        - ?periph_rtc
+    global_vars:
+        CFLAGS:
+            - -DMTD_NATIVE_FILENAME=\"./bin/riot_fatfs_disk.img\"
+            - -DMTD_PAGE_SIZE="512"
+            - -DMTD_SECTOR_SIZE="512"
+            - -DFATFS_IMAGE_FILE_SIZE_MIB="128"
+            - -DMTD_SECTOR_NUM="(((FATFS_IMAGE_FILE_SIZE_MIB)*1024*1024)/MTD_SECTOR_SIZE)"
+    blacklist:
+        - atmega_common

@@ -1,0 +1,10 @@
+module:
+    name: bmx055
+    depends:
+        - periph_i2c
+    sources:
+        - bmx055.c
+        - saul: bmx055_saul.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

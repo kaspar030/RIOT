@@ -1,0 +1,13 @@
+app:
+    sources:
+    depends:
+        - gnrc
+        - gnrc_neterr
+        - gnrc_netif
+        - netdev_eth
+        - netdev_test
+        - od
+        - periph_timer
+    global_vars:
+        CFLAGS:
+            - -DGNRC_PKTBUF_SIZE="200"

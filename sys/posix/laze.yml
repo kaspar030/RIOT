@@ -1,0 +1,11 @@
+module:
+    name: posix_headers
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include
+subdirs:
+    - inet
+    - pthread
+    - semaphore
+    - sockets
+    - time

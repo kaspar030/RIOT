@@ -1,0 +1,12 @@
+app:
+    depends:
+        - fmt
+        - shell
+        - shell_commands
+        - sx1276
+    uses:
+        - periph_eeprom
+    global_vars:
+        CFLAGS:
+            - -DREGION_EU868
+            - -DLORAMAC_ACTIVE_REGION="LORAMAC_REGION_EU868"

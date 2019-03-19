@@ -1,0 +1,4 @@
+module:
+    name: netdev_layer
+    sources:
+        - netdev_layer.c

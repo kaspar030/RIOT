@@ -1,0 +1,10 @@
+module:
+    name: gnrc_sixlowpan_ctx
+    depends:
+        - ipv6_addr
+        - xtimer
+    uses:
+        - gnrc_sixlowpan_ctx
+        - test_suites_define
+    sources:
+        - gnrc_sixlowpan_ctx.c

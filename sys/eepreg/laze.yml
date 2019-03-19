@@ -1,0 +1,6 @@
+module:
+  - name: eepreg
+    sources:
+      - eepreg.c
+    depends:
+      - periph_eeprom

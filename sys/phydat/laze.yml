@@ -1,0 +1,7 @@
+module:
+    name: phydat
+    depends:
+        - fmt
+    sources:
+        - phydat.c
+        - phydat_str.c

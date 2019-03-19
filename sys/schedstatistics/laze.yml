@@ -1,0 +1,7 @@
+module:
+  - name: schedstatistics
+    depends:
+      - sched_cb
+      - xtimer
+    sources:
+      - schedstatistics.c

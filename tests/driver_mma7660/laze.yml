@@ -1,0 +1,4 @@
+app:
+    depends:
+        - mma7660
+        - xtimer

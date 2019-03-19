@@ -1,0 +1,5 @@
+app:
+    depends:
+        - dht
+        - fmt
+        - xtimer

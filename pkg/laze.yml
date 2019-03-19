@@ -1,0 +1,8 @@
+subdirs:
+    - cayenne-lpp
+    - fatfs
+    - hacl
+    - heatshrink
+    - jsmn
+    - libhydrogen
+    - relic

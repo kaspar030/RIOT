@@ -1,0 +1,6 @@
+app:
+    depends:
+        - embunit
+    uses:
+        - newlib
+        - newlib_nano

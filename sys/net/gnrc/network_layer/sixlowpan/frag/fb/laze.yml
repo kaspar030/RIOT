@@ -1,0 +1,10 @@
+module:
+    - name: gnrc_sixlowpan_frag_fb
+      depends:
+        - core_msg
+      uses:
+        - gnrc_sixlowpan_frag_stats
+        - test_suites_define
+      sources:
+        - gnrc_sixlowpan_frag_fb.c
+

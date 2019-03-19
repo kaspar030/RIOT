@@ -1,0 +1,11 @@
+module:
+    - name: gnrc_sixlowpan_frag_rb
+      sources:
+          - gnrc_sixlowpan_frag_rb.c
+      depends:
+          - xtimer
+      uses:
+          - gnrc_sixlowpan_frag_vrb
+          - gnrc_sixlowpan_frag_stats
+          - gnrc_sixlowpan_iphc
+          - gnrc_ipv6

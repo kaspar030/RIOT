@@ -1,0 +1,3 @@
+subdirs:
+        - tftp
+        - uhcpc

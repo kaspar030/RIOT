@@ -1,0 +1,12 @@
+app:
+    depends:
+        - auto_init_gnrc_netif
+        - gnrc_icmpv6_echo
+        - gnrc_ipv6_default
+        - gnrc_netdev_default
+        - gnrc_sock_udp
+        - gnrc_udp
+        - shell_commands
+    sources:
+        - coap.c
+        - microcoap_sock.c

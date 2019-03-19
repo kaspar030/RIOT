@@ -1,0 +1,11 @@
+template:
+    "%NAME%":
+        - pm
+        - pwm
+
+module:
+    context: samd21
+    name: "periph_%NAME%"
+
+    sources:
+        - "%NAME%.c"

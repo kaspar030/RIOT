@@ -1,0 +1,4 @@
+module:
+  - name: fatfs_vfs
+    sources: fatfs_vfs.c
+    depends: fatfs

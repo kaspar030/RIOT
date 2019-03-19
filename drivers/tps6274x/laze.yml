@@ -1,0 +1,9 @@
+module:
+    name: tps6274x
+    depends:
+        - periph_gpio
+    sources:
+        - tps6274x.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

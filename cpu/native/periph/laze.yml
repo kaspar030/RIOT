@@ -1,0 +1,18 @@
+template:
+    "%NAME%":
+        - cpuid
+        - gpio
+        - hwrng
+        - pm
+        - pwm
+        - qdec
+        - rtc
+        - timer
+        - uart
+
+module:
+    context: cpu/native
+    name: "periph_%NAME%"
+
+    sources:
+        - "%NAME%.c"

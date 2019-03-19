@@ -1,0 +1,15 @@
+module:
+    name: sdcard_spi
+    depends:
+        - auto_init: auto_init_storage
+        - checksum
+        - div
+        - periph_gpio
+        - periph_spi
+        - periph_timer
+        - xtimer
+    sources:
+        - sdcard_spi.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

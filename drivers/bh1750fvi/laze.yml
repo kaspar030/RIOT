@@ -1,0 +1,11 @@
+module:
+    name: bh1750fvi
+    depends:
+        - div
+        - periph_i2c
+        - xtimer
+    sources:
+        - bh1750fvi.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

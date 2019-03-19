@@ -1,0 +1,28 @@
+app:
+    sources:
+      - common.c
+    depends:
+        - embunit
+        - gnrc_ipv6
+        - gnrc_netif
+        - gnrc_pktdump
+        - gnrc_sixlowpan
+        - gnrc_sixlowpan_iphc
+        - netdev_eth
+        - netdev_ieee802154
+        - ieee802154
+        - netdev_test
+        - od
+    global_vars:
+        CFLAGS:
+            - -DGNRC_IPV6_NIB_CONF_ARSM="0"
+            - -DGNRC_IPV6_NIB_CONF_SLAAC="0"
+            - -DGNRC_IPV6_NIB_CONF_NO_RTR_SOL="1"
+            - -DGNRC_NETIF_NUMOF="4"
+            - -DGNRC_NETIF_ADDRS_NUMOF="16"
+            - -DGNRC_NETIF_GROUPS_NUMOF="8"
+            - -DLOG_LEVEL="LOG_NONE"
+            - -DTEST_SUITES
+            - -DDEVELHELP
+            - -DDEBUG_ASSERT_VERBOSE
+            - -g

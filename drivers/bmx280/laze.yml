@@ -1,0 +1,24 @@
+module:
+    - name: bmx280
+      depends:
+          - saul
+          - xtimer
+      uses:
+          - bme280_spi
+          - bme280_i2c
+      sources:
+          - bmx280.c
+          - bmx280_saul.c
+      export_vars:
+          CFLAGS:
+              - -I${relpath}/include
+
+    - name: bme280_spi
+      depends:
+          - bmx280
+          - periph_spi
+
+    - name: bme280_i2c
+      depends:
+          - bmx280
+          - periph_i2c

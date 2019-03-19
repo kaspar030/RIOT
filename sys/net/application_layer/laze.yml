@@ -1,0 +1,8 @@
+subdirs:
+        - asymcute
+        - nanocoap
+        - dns
+        - emcute
+        - gcoap
+        - sntp
+        - uhcp

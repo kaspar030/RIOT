@@ -1,0 +1,18 @@
+module:
+    - name: sock
+      uses:
+        - gnrc_sock
+
+    - name: sock_udp
+      depends: sock
+      uses:
+        - gnrc_sock_udp
+
+    - name: sock_util
+      sources:
+        - sock_util.c
+      depends:
+          - board:
+              - fmt
+          - posix_inet
+          - sock

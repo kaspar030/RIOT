@@ -1,0 +1,5 @@
+app:
+    depends:
+        - fmt
+        - sdcard_spi
+        - shell

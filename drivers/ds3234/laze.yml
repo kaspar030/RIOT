@@ -1,0 +1,9 @@
+module:
+    name: ds3234
+    depends:
+        - periph_spi
+    sources:
+        - ds3234.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

@@ -1,0 +1,4 @@
+module:
+    name: cc1xxx_common
+    sources:
+        - gnrc_netif_cc1xxx.c

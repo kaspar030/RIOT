@@ -1,0 +1,10 @@
+module:
+    name: my9221
+    depends:
+        - periph_gpio
+        - xtimer
+    sources:
+        - my9221.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

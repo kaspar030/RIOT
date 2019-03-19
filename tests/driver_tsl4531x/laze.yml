@@ -1,0 +1,4 @@
+app:
+    depends:
+        - tsl4531x
+        - xtimer

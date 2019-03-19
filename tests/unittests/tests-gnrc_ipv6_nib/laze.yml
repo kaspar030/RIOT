@@ -1,0 +1,33 @@
+app:
+    depends: tests-gnrc_ipv6_nib
+
+module:
+    - name: tests-gnrc_ipv6_nib
+      sources:
+          - tests-gnrc_ipv6_nib-abr.c
+          - tests-gnrc_ipv6_nib-ft.c
+          - tests-gnrc_ipv6_nib-internal.c
+          - tests-gnrc_ipv6_nib-nc.c
+          - tests-gnrc_ipv6_nib-pl.c
+          - tests-gnrc_ipv6_nib.c
+      depends:
+          - gnrc_ipv6
+          - gnrc_ipv6_nib
+
+          # required for GNRC_IPV6_NIB_CONF_MULTIHOP_P6C
+          - gnrc_sixlowpan_nd
+
+          - unittests-base
+      global_vars:
+          testsuites:
+              - gnrc_ipv6_nib
+          CFLAGS:
+            - -DGNRC_IPV6_NIB_CONF_ROUTER=1
+            - -DGNRC_IPV6_NIB_NUMOF=16
+            - -DGNRC_IPV6_NIB_OFFL_NUMOF=25
+            - -DGNRC_IPV6_NIB_DEFAULT_ROUTER_NUMOF=4
+            - -DGNRC_IPV6_NIB_ABR_NUMOF=4
+            - -DGNRC_IPV6_NIB_CONF_6LBR=1
+            - -DGNRC_IPV6_NIB_CONF_MULTIHOP_P6C=1
+            - -DGNRC_IPV6_NIB_CONF_DC=1
+            - -I${root}/sys/net/gnrc/network_layer/ipv6/nib
