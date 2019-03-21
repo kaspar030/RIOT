@@ -1,7 +1,7 @@
 #!/bin/sh
 
-[ -f "build.yml" ] && {
-    echo "build.yml exists, exiting."
+[ -f "laze.yml" ] && {
+    echo "laze.yml exists, exiting."
     exit 1
 }
 
@@ -22,6 +22,6 @@ laze create --type=module --auto-sources --name=${MODULE_NAME} $(arglist --depen
     {
         echo "    export_vars:"
         echo "        CFLAGS:"
-        echo "            - -I${relpath}/include)"
-    } >> build.yml
+        echo "            - -I\${relpath}/include"
+    } >> laze.yml
 }
