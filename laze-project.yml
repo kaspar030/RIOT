@@ -4,7 +4,7 @@ rule:
       out: '.o'
       depfile: "$out.d"
       deps: gcc
-      cmd: '${CC} -MMD -MF $out.d ${CFLAGS} ${testsuites} -c ${in} -o ${out}'
+      cmd: 'ccache ${CC} -MMD -MF $out.d ${CFLAGS} ${testsuites} -c ${in} -o ${out}'
       var_options:
           testsuites:
               prefix: -DTEST_SUITES=

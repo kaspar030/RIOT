@@ -13,7 +13,7 @@ module:
         - gnrc_ipv6_blacklist: sc_blacklist.c
         - gnrc_ipv6_nc: sc_ipv6_nc.c
         - gnrc_ipv6_whitelist: sc_whitelist.c
-        - gnrc_netif: sc_netif.c
+        - gnrc_netif: sc_gnrc_netif.c
         - gnrc_rpl: sc_gnrc_rpl.c
         - gnrc_sixlowpan_ctx,gnrc_sixlowpan_nd_border_router: sc_gnrc_6ctx.c
         - lpc2387: sc_heap.c

@@ -1,7 +1,6 @@
 app:
     depends:
         - can_isotp
-        - can_pm
         - can_trx
         - conn_can
         - conn_can_isotp_multi

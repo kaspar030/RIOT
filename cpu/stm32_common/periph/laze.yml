@@ -34,6 +34,7 @@ module:
     - name: periph_dac
       context: stm32
       sources: dac.c
+      depends: feature/periph_dac
 
     - name: periph_i2c
       context: stm32f4

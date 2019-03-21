@@ -1,4 +1,5 @@
 module:
+    name: trickle
     depends:
         - xtimer
         - random

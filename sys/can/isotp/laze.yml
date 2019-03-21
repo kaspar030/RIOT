@@ -1,0 +1,6 @@
+module:
+    name: can_isotp
+    sources:
+        - isotp.c
+    depends:
+        - can

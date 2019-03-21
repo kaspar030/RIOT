@@ -1,0 +1,6 @@
+module:
+    name: gnrc_pktbuf
+    depends:
+        - gnrc_pktbuf_static
+    sources:
+        - gnrc_pktbuf.c

@@ -9,6 +9,8 @@ subdirs:
     - benchmark
     - bitfield
     - bloom
+    - can
+    - cb_mux
     - cbor
     - checksum
     - color
@@ -24,6 +26,7 @@ subdirs:
     - iolist
     - isrpipe
     - luid
+    - matstat
     - mineplex
     - net
     - newlib_syscalls_default

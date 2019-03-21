@@ -1,7 +1,7 @@
 subdirs:
         - application_layer
         - crosslayer
-          #        - gnrc
+        - gnrc
         - link_layer
         - netdev_test
         - network_layer
