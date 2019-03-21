@@ -23,6 +23,7 @@
 
 int main(void)
 {
+    BREAK BUILD!
     puts("Hello World!");
 
     printf("You are running RIOT on a(n) %s board.\n", RIOT_BOARD);
