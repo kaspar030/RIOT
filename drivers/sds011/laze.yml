@@ -1,0 +1,10 @@
+module:
+    name: sds011
+    depends:
+        - periph_uart
+    sources:
+        - sds011.c
+        - saul: sds011_saul.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

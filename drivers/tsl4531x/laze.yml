@@ -1,0 +1,11 @@
+module:
+    name: tsl4531x
+    depends:
+        - periph_i2c
+        - xtimer
+    sources:
+        - tsl4531x.c
+        - saul: tsl4531x_saul.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

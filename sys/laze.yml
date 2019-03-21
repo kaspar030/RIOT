@@ -6,6 +6,7 @@ defaults:
 subdirs:
     - auto_init
     - base64
+    - benchmark
     - bitfield
     - bloom
     - cbor
@@ -20,6 +21,7 @@ subdirs:
     - fmt
     - fs
     - hashes
+    - iolist
     - isrpipe
     - luid
     - mineplex
@@ -37,10 +39,11 @@ subdirs:
     - saul_reg
     - sema
     - shell
+    - stdio_uart
     - timex
     - trickle
     - tsrb
-    - stdio_uart
+    - ubjson
     - universal_address
     - vfs
     - xtimer

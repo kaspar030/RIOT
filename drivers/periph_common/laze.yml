@@ -4,6 +4,7 @@ module:
         - cpuid.c
         - flashpage.c
         - init.c
+        - periph_i2c: i2c.c
         - pm.c
         - spi.c
         - timer.c

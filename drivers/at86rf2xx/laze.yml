@@ -11,6 +11,7 @@ module:
           - ieee802154
           - netdev_ieee802154
           - periph_spi
+          - periph_gpio_irq
       uses:
           - netstats_l2
           - gnrc

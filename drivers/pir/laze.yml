@@ -4,3 +4,4 @@ module:
         - pir.c
     depends:
         - periph_gpio
+        - periph_gpio_irq

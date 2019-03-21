@@ -1,0 +1,12 @@
+module:
+    name: adcxx1c
+    depends:
+        - periph_gpio
+        - periph_gpio_irq
+        - periph_i2c
+    sources:
+        - adcxx1c.c
+        - saul: adcxx1c_saul.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

@@ -1,0 +1,9 @@
+module:
+    name: apa102
+    depends:
+        - periph_gpio
+    sources:
+        - apa102.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

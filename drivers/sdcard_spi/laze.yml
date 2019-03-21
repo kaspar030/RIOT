@@ -1,6 +1,7 @@
 module:
     name: sdcard_spi
     depends:
+        - checksum
         - div
         - periph_gpio
         - periph_spi

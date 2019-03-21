@@ -2,3 +2,4 @@ app:
     depends:
         - periph_uart
         - shell
+        - xtimer

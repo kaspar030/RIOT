@@ -1,0 +1,11 @@
+module:
+    name: si114x
+    depends:
+        - periph_i2c
+        - xtimer
+    sources:
+        - si114x.c
+        - saul: si114x_saul.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

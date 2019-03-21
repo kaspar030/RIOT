@@ -3,6 +3,7 @@ module:
     depends:
         - div
         - netdev_eth
+        - periph_gpio_irq
         - periph_timer
         - xtimer
     uses:

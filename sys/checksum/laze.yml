@@ -1,4 +1,5 @@
 module:
+    name: checksum
     sources:
         - crc16_ccitt.c
         - fletcher16.c

@@ -1,0 +1,12 @@
+module:
+    name: pulse_counter
+    depends:
+        - periph_gpio
+        - periph_gpio_irq
+        - xtimer
+    sources:
+        - pulse_counter.c
+        - saul: pulse_counter_saul.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

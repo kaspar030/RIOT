@@ -1,0 +1,6 @@
+module:
+    name: motor_driver
+    depends:
+        - periph_pwm
+    sources:
+        - motor_driver.c

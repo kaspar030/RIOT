@@ -4,6 +4,7 @@ module:
         - div
         - luid
         - netdev_eth
+        - periph_gpio_irq
         - periph_timer
         - xtimer
     uses:

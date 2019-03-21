@@ -1,0 +1,11 @@
+module:
+    name: fxos8700
+    depends:
+        - periph_i2c
+        - xtimer
+    sources:
+        - fxos8700.c
+        - saul: fxos8700_saul.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

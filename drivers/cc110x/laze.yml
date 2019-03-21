@@ -4,6 +4,7 @@ module:
         - div
         - ieee802154
         - luid
+        - periph_gpio_irq
         - periph_timer
         - xtimer
     uses:

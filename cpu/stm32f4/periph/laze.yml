@@ -1,7 +1,6 @@
 template:
     "%NAME%":
         - adc
-        - i2c
 
 module:
     name: "periph_%NAME%"
