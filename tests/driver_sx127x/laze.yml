@@ -1,0 +1,8 @@
+app:
+    depends:
+        - od
+        - ps
+        - shell
+        - shell_commands
+        - sx1276
+        - xtimer

@@ -1,0 +1,7 @@
+app:
+    depends:
+        - embunit
+        - riotboot_hdr
+    global_vars:
+        CFLAGS:
+            - -DLOG_LEVEL="LOG_NONE"

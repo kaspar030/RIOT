@@ -1,10 +1,8 @@
 app:
-    sources:
-      - tests-cbor.c
+    sources: tests-bcd.c
     depends:
-        - sys/cbor
         - sys/embunit
         - unittests-base
     global_vars:
         CFLAGS:
-            - -DTEST_SUITES=cbor
+            - -DTEST_SUITES=bcd

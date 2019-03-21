@@ -1,0 +1,14 @@
+app:
+    depends:
+        - auto_init_gnrc_netif
+        - gnrc_ipv6_default
+        - gnrc_netdev_default
+        - gnrc_sock_udp
+        - gnrc_udp
+        - nanocoap_sock
+        - od
+        - shell
+    sources:
+        - nanocli_client.c
+        - nanocli_server.c
+        - request_handlers.c

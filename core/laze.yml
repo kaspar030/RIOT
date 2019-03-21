@@ -4,6 +4,7 @@ module:
         - atomic_c11.c
         - atomic_sync.c
         - bitarithm.c
+        - cond.c
         - kernel_init.c
         - lifo.c
         - mutex.c

@@ -19,5 +19,5 @@ laze create --type=app \
             [ -n "$b" ] && echo "            - $a=\"$b\"" \
                  || echo "            - $a"
         done
-    } >> build.yml
+    } >> laze.yml
 }

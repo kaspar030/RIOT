@@ -1,0 +1,8 @@
+app:
+    depends:
+        - grove_ledbar
+    global_vars:
+        CFLAGS:
+            - -DGROVE_LEDBAR_CLK="GPIO_PIN(0,1)"
+            - -DGROVE_LEDBAR_DAT="GPIO_PIN(0,2)"
+            - -DGROVE_LEDBAR_DIR="GROVE_LEDBAR_G2R"

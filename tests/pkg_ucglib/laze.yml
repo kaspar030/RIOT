@@ -1,0 +1,12 @@
+app:
+    depends:
+        - xtimer
+    global_vars:
+        CFLAGS:
+            - -DTEST_OUTPUT="1"
+            - -DTEST_SPI="0"
+            - -DTEST_PIN_CS="GPIO_PIN(0,0)"
+            - -DTEST_PIN_CD="GPIO_PIN(0,0)"
+            - -DTEST_PIN_RESET="GPIO_PIN(0,0)"
+            - -DTEST_DISPLAY
+            - -DTEST_DISPLAY_EXT

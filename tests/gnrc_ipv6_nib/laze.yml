@@ -1,0 +1,15 @@
+app:
+    depends:
+        - embunit
+        - gnrc_ipv6
+        - gnrc_ipv6_nib
+        - gnrc_netif
+        - netdev_eth
+        - netdev_test
+    sources:
+        - mockup_netif.c
+    global_vars:
+        CFLAGS:
+            - -DGNRC_NETTYPE_NDP="GNRC_NETTYPE_TEST"
+            - -DGNRC_PKTBUF_SIZE="512"
+            - -DTEST_SUITES
