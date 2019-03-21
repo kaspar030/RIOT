@@ -1,5 +1,5 @@
 module:
-    name: gnrc_pktbuf
+    name: gnrc_pktbuf_static
     uses:
         - gnrc_neterr
         - od

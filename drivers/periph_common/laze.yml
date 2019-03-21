@@ -2,12 +2,11 @@ module:
     name: periph_common
     sources:
         - cpuid.c
-        - flashpage.c
+        - periph_flashpage: flashpage.c
         - init.c
         - periph_i2c: i2c.c
-        - pm.c
-        - spi.c
-        - timer.c
+        - periph_pm: pm.c
+        - periph_spi: spi.c
+        - periph_timer: timer.c
     uses:
-        - periph_spi
         - board

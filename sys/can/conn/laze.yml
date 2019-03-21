@@ -1,0 +1,12 @@
+module:
+    - name: conn_can
+      sources:
+          - isotp.c
+          - raw.c
+      depends:
+          - can
+          - can_mbox
+          - xtimer
+      uses: conn_can_isotp_multi
+    - name: conn_can_isotp_multi
+

@@ -1,11 +1,32 @@
 module:
     name: gnrc_netif
-    sources:
-        - gnrc_netif.c
-        - gnrc_netif_addr_from_str.c
-        - gnrc_netif_addr_to_str.c
+    depends:
+        - fmt
     uses:
-        - gnrc_ipv4_netif
-        - gnrc_ipv6_netif
+        - cc110x
+        - esp_now
+        - gnrc_ipv6
+        - gnrc_ipv6_nib
+        - gnrc_sixloenc
+        - gnrc_sixlowpan
+        - gnrc_sixlowpan_iphc
+        - gnrc_sixlowpan_nd
+        - netdev_eth
+        - netdev_ieee802154
+        - netopt
+        - netstats
+        - netstats_ipv6
+        - netstats_l2
+        - nordic_softdevice_ble
+        - nrfmin
+        - xbee
+    sources:
+        - _netif.c
+        - gnrc_netif.c
+        - gnrc_netif_device_type.c
+        - gnrc_netif_raw.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include
 subdirs:
     - hdr

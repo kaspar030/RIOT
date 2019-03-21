@@ -50,7 +50,9 @@ subdirs:
         - nettest
         - network_layer
         - pkt
+        - pktbuf
         - pktbuf_static
+          #- pktbuf_malloc
         - pktdump
         - priority_pktqueue
         - routing

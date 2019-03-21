@@ -1,0 +1,32 @@
+module:
+    - name: can
+      sources:
+          - device.c
+          - dll.c
+          - pkt.c
+          - router.c
+      depends:
+          - can_arch_deps
+          - gnrc_pktbuf_static
+      uses:
+          - can_isotp
+          - can_mbox
+          - can_pm
+          - can_trx
+
+    - name: can_mbox
+      depends:
+          - core_mbox
+
+    - name: can_pm
+
+    - name: can_arch_deps
+      context: riot
+
+    - name: can_arch_deps
+      context: native
+      depends: libsocketcan
+
+subdirs:
+    - conn
+    - isotp
