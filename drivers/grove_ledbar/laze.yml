@@ -1,0 +1,10 @@
+module:
+    name: grove_ledbar
+    depends:
+        - my9221
+    sources:
+        - grove_ledbar.c
+        - saul: grove_ledbar_saul.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

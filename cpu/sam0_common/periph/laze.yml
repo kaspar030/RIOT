@@ -2,14 +2,24 @@ template:
     "%NAME%":
         - adc
         - cpuid
-        - gpio
+        - flashpage
         - i2c
         - spi
         - uart
 
 module:
-    context: sam0
     name: "periph_%NAME%"
+    context: sam0
 
     sources:
         - "%NAME%.c"
+---
+module:
+    - name: periph_gpio
+      context: sam0
+      sources: gpio.c
+      uses: periph_gpio_irq
+
+    - name: periph_gpio_irq
+      context: sam0
+      depends: periph_gpio

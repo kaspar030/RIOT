@@ -1,0 +1,13 @@
+module:
+    - name: at
+      depends:
+          - fmt
+          - isrpipe
+          - periph_uart
+      uses:
+          - at_urc
+      sources:
+          - at.c
+
+    - name: at_urc
+      depends: at

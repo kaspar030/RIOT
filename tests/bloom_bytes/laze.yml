@@ -1,5 +1,6 @@
 app:
     depends:
+        - fmt
         - sys/bloom
         - sys/random
         - xtimer

@@ -1,4 +1,5 @@
 app:
     depends:
+        - benchmark
         - periph_gpio
         - shell

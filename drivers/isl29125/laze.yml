@@ -1,5 +1,7 @@
 module:
     name: isl29125
+    depends:
+        - periph_gpio_irq
     sources:
         - isl29125.c
     export_vars:

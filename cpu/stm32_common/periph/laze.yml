@@ -1,7 +1,6 @@
 template:
     "%NAME%":
       - flashpage
-      - gpio
       - hwrng
       - pm
       - rtc
@@ -32,7 +31,21 @@ module:
         - periph_gpio
 ---
 module:
-    name: periph_dac
-    context: stm32
-    sources: dac.c
-    depends: feature_dac
+    - name: periph_dac
+      context: stm32
+      sources: dac.c
+
+    - name: periph_i2c
+      context: stm32f4
+      sources: i2c_2.c
+
+    - name: periph_gpio
+      context: stm32
+      sources: gpio.c
+      uses: periph_gpio_irq
+
+    - name: periph_gpio_irq
+      context: stm32
+
+    - name: periph_cpuid
+      context: stm32

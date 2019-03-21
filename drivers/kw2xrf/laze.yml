@@ -5,6 +5,7 @@ module:
         - luid
         - netdev_ieee802154
         - netif
+        - periph_gpio_irq
     uses:
         - gnrc
         - gnrc_sixlowpan

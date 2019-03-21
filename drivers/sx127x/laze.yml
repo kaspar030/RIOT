@@ -1,0 +1,28 @@
+module:
+    - name: sx127x
+      depends:
+          - iolist
+          - lora
+          - netif
+          - periph_gpio
+          - periph_gpio_irq
+          - periph_spi
+          - xtimer
+      uses:
+          - sx1272
+          - sx1276
+      sources:
+          - sx127x.c
+          - sx127x_getset.c
+          - sx127x_internal.c
+          - sx127x_netdev.c
+      export_vars:
+          CFLAGS:
+              - -I${relpath}/include
+
+    - name: sx1272
+      depends: sx127x
+
+    - name: sx1276
+      depends: sx127x
+

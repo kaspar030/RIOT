@@ -1,0 +1,10 @@
+module:
+    name: soft_spi
+    depends:
+        - periph_gpio
+        - xtimer
+    sources:
+        - soft_spi.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

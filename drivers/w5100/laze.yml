@@ -3,6 +3,7 @@ module:
     depends:
         - luid
         - netdev_eth
+        - periph_gpio_irq
     sources:
         - w5100.c
     export_vars:

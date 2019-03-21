@@ -1,0 +1,11 @@
+module:
+    name: sht1x
+    depends:
+        - periph_gpio
+        - xtimer
+    sources:
+        - sht1x.c
+        - saul: sht1x_saul.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

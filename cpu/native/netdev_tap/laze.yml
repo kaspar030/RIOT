@@ -3,4 +3,5 @@ module:
     sources:
         - netdev_tap.c
     depends:
+        - iolist
         - netdev_eth

@@ -1,0 +1,14 @@
+module:
+    name: rn2xx3
+    depends:
+        - fmt
+        - periph_gpio
+        - periph_uart
+        - xtimer
+    sources:
+        - rn2xx3.c
+        - rn2xx3_getset.c
+        - rn2xx3_internal.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

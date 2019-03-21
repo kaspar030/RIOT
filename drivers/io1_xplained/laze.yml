@@ -3,9 +3,11 @@ module:
     depends:
         - at30tse75x
         - div
+        - periph_adc
         - periph_gpio
         - periph_i2c
         - periph_timer
+        - sdcard_spi
         - xtimer
     sources:
         - io1_xplained.c

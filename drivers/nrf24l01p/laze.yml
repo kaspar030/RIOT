@@ -3,6 +3,7 @@ module:
     sources:
         - nrf24l01p.c
     depends:
+        - periph_gpio_irq
         - periph_spi
     export_vars:
         CFLAGS:

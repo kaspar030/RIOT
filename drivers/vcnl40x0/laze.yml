@@ -1,0 +1,10 @@
+module:
+    name: vcnl40x0
+    depends:
+        - periph_i2c
+    sources:
+        - vcnl40x0.c
+        - saul: vcnl40x0_saul.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include
