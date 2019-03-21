@@ -1,0 +1,4 @@
+app:
+    depends:
+        - cb_mux
+        - xtimer

@@ -1,0 +1,7 @@
+app:
+    depends:
+        - ps
+        - saul_default
+        - shell
+        - shell_commands
+        - sht11

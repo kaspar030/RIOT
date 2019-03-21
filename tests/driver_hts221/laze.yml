@@ -1,0 +1,4 @@
+app:
+    depends:
+        - hts221
+        - xtimer

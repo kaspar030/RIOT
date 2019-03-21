@@ -1,0 +1,8 @@
+app:
+    depends:
+        - embunit
+        - fmt
+        - memarray
+    global_vars:
+        CFLAGS:
+            - -DCBOR_NO_LL

@@ -1,0 +1,9 @@
+app:
+    depends:
+        - can_trx
+        - ps
+        - shell
+        - shell_commands
+        - tja1042
+    uses:
+        - tja1042

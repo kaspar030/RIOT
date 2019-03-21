@@ -1,0 +1,3 @@
+app:
+    depends:
+        - ads101x

@@ -1,0 +1,10 @@
+app:
+    depends:
+        - embunit
+        - gnrc_sixlowpan_frag
+    uses:
+        - gnrc_ipv6
+    global_vars:
+        CFLAGS:
+            - -DTEST_SUITES
+            - -DGNRC_PKTBUF_SIZE="2048"

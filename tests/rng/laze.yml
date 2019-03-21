@@ -1,0 +1,19 @@
+app:
+    depends:
+        - fmt
+        - random
+        - shell
+        - xtimer
+        - prng_xorshift
+    uses:
+        - newlib
+        - periph_hwrng
+        - prng_fortuna
+        - prng_mersenne
+        - prng_minstd
+        - prng_musl_lcg
+        - prng_sha1prng
+        - prng_tinymt32
+        - prng_xorshift
+    sources:
+        - test.c

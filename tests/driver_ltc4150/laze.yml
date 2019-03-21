@@ -1,0 +1,4 @@
+app:
+    depends:
+        - fmt
+        - ltc4150

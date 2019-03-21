@@ -89,7 +89,6 @@ subdirs:
     - sdcard_spi
     - sds011
     - servo
-    - sht11
     - sht1x
     - sht2x
     - sht3x

@@ -1,0 +1,7 @@
+app:
+    depends:
+        - lc709203f
+        - xtimer
+    global_vars:
+        CFLAGS:
+            - -DDEVELHELP

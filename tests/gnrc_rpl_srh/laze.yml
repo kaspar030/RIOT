@@ -1,0 +1,17 @@
+app:
+    depends:
+        - auto_init_gnrc_netif
+        - embunit
+        - gnrc_icmpv6_error
+        - gnrc_ipv6_router_default
+        - gnrc_pktbuf_cmd
+        - gnrc_pktdump
+        - gnrc_rpl_srh
+        - netdev_tap
+        - od
+        - ps
+        - shell
+        - shell_commands
+    global_vars:
+        CFLAGS:
+            - -DOUTPUT="TEXT"

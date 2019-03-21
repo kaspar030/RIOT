@@ -1,0 +1,7 @@
+app:
+    depends:
+        - at
+        - at_urc
+        - shell
+    uses:
+        - at_urc

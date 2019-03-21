@@ -1,0 +1,16 @@
+app:
+    depends:
+        - can_isotp
+        - can_pm
+        - can_trx
+        - conn_can
+        - conn_can_isotp_multi
+        - ps
+        - shell
+        - shell_commands
+    uses:
+        - can_isotp
+        - conn_can_isotp_multi
+    global_vars:
+        CFLAGS:
+            - -DLOG_LEVEL="LOG_ALL"

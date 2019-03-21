@@ -1,0 +1,3 @@
+app:
+    depends:
+        - puf_sram

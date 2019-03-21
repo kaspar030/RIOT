@@ -1,0 +1,7 @@
+app:
+    depends:
+        - external_module
+        - random
+    uses:
+        - prng_tinymt32
+        - prng_xorshift

@@ -1,0 +1,8 @@
+app:
+    depends:
+        - embunit
+        - libcose_crypt_hacl
+        - memarray
+    global_vars:
+        CFLAGS:
+            - -DTHREAD_STACKSIZE_MAIN="(4*THREAD_STACKSIZE_DEFAULT)"

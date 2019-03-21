@@ -1,0 +1,5 @@
+app:
+    depends:
+        - ds1307
+        - embunit
+        - xtimer

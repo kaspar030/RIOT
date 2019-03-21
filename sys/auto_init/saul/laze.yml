@@ -5,6 +5,7 @@ module:
         - bme280
         - bmp180
         - bmp280
+        - bmx055
         - bmx280
         - dht
         - hdc1000
@@ -28,6 +29,7 @@ module:
         - auto_init_adc.c
         - auto_init_adxl345.c
         - auto_init_bmp180.c
+        - auto_init_bmx055.c
         - auto_init_bmx280.c
         - auto_init_dht.c
         - auto_init_gpio.c
