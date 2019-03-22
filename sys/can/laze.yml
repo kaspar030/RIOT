@@ -6,6 +6,7 @@ module:
           - pkt.c
           - router.c
       depends:
+          - auto_init_can
           - can_arch_deps
           - gnrc_pktbuf_static
       uses:

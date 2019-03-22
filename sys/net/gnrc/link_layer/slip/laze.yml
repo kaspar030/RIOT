@@ -1,4 +1,0 @@
-module:
-    name: gnrc_slip
-    sources:
-        - gnrc_slip.c

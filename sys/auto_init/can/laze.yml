@@ -1,0 +1,11 @@
+module:
+    name: auto_init_can
+    uses:
+        - can_isotp
+        - can_linux
+        - can_pm
+        - can_trx
+        - esp_can
+    sources:
+        - auto_init_can.c
+        - auto_init_can_native.c

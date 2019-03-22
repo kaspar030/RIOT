@@ -16,6 +16,7 @@ app:
         - shell
         - shell_commands
         - ps
+        - xtimer
 
     global_vars:
         CFLAGS:
