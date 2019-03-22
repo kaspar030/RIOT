@@ -6,5 +6,6 @@ module:
         - all
 
 subdirs:
+    - can
     - netif
     - saul

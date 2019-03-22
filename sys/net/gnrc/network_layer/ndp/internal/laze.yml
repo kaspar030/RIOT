@@ -1,7 +1,0 @@
-module:
-    name: gnrc_ndp_internal
-    depends:
-        - gnrc_ndp
-        - random
-    sources:
-        - gnrc_ndp_internal.c

@@ -1,16 +1,6 @@
 module:
     name: gnrc_ndp
     uses:
-        - gnrc_ndp_node
         - gnrc_sixlowpan_nd
-        - gnrc_sixlowpan_nd_border_router
-        - gnrc_sixlowpan_nd_router
-        - gnrc_ndp_router
     sources:
         - gnrc_ndp.c
-
-subdirs:
-        - host
-        - internal
-        - node
-        - router

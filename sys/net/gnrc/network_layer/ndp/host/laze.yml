@@ -1,6 +1,0 @@
-module:
-    name: gnrc_ndp_host
-    depends:
-        - gnrc_ndp_internal
-    sources:
-        - gnrc_ndp_host.c

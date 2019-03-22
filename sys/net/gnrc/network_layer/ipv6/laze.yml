@@ -4,8 +4,6 @@ module:
         - gnrc_ipv6.c
     depends:
         - gnrc_ipv6_hdr
-        - gnrc_ipv6_nc
-        - gnrc_ipv6_netif
         - ipv6_hdr
         - ipv6_addr
     uses:
@@ -13,7 +11,6 @@ module:
         - gnrc_icmpv6
         - gnrc_ipv6_blacklist
         - gnrc_ipv6_ext
-        - gnrc_ipv6_nc
         - gnrc_ipv6_node
         - gnrc_ipv6_router
         - gnrc_ipv6_whitelist
@@ -30,6 +27,4 @@ subdirs:
         - blacklist
         - ext
         - hdr
-        - nc
-        - netif
         - whitelist
