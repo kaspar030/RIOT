@@ -71,6 +71,9 @@ PSEUDOMODULES += sock_tcp
 PSEUDOMODULES += sock_udp
 PSEUDOMODULES += suit_%
 
+# handle suit_v4 being a distinct module
+NO_PSEUDOMODULES += suit_v4
+
 # print ascii representation in function od_hex_dump()
 PSEUDOMODULES += od_string
 
