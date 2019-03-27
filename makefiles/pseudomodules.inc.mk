@@ -70,6 +70,11 @@ PSEUDOMODULES += sock
 PSEUDOMODULES += sock_ip
 PSEUDOMODULES += sock_tcp
 PSEUDOMODULES += sock_udp
+PSEUDOMODULES += suit_%
+
+# handle suit_v1 being a distinct module
+NO_PSEUDOMODULES += suit_v1
+NO_PSEUDOMODULES += suit_v4
 
 # print ascii representation in function od_hex_dump()
 PSEUDOMODULES += od_string
@@ -142,4 +147,6 @@ PSEUDOMODULES += crypto_aes_precalculated
 # This pseudomodule causes a loop in AES to be unrolled (more flash, less CPU)
 PSEUDOMODULES += crypto_aes_unroll
 
+# Over the Air update modules
+PSEUDOMODULES += suit_%
 # Packages may also add modules to PSEUDOMODULES in their `Makefile.include`.
