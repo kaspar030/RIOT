@@ -49,6 +49,9 @@ USEMODULE += nanocoap_sock sock_util
 USEMODULE += suit suit_coap suit_v4_cbor uuid
 USEPKG += tinycbor
 
+# USE THIS FOR SIZE COMPARISON (disables most suit output)
+#CFLAGS += -DLOG_LEVEL=LOG_NONE
+
 ifneq (native,$(BOARD))
   FEATURES_REQUIRED += riotboot
   USEMODULE += riotboot_slot riotboot_flashwrite
