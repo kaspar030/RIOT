@@ -32,6 +32,12 @@
 #include "suit/v4/suit.h"
 #endif
 
+#ifdef MODULE_SUIT_MINIMAL
+#include "suit/minimal/manifest.h"
+int suit_flashwrite_helper(void *arg, size_t offset, uint8_t *buf, size_t len,
+                    int more);
+#endif
+
 #define ENABLE_DEBUG (0)
 #include "debug.h"
 
@@ -83,7 +89,7 @@ static void _suit_handle_url(const char *url)
         riotboot_flashwrite_init(&writer, riotboot_slot_other());
         res = nanocoap_get_blockwise_url(_url, COAP_BLOCKSIZE_64, suit_flashwrite_helper,
                                          &writer);
-#else
+#elif MODULE_SUIT_V4
         suit_v4_manifest_t manifest;
         memset(&writer, 0, sizeof(manifest));
 
@@ -107,6 +113,14 @@ static void _suit_handle_url(const char *url)
         if (res) {
             return;
         }
+#elif MODULE_SUIT_MINIMAL
+        unsigned target_slot = riotboot_slot_other();
+        suit_minimal_manifest_t *manifest = (void *)_manifest_buf;
+        suit_minimal_url_get(manifest, (uint8_t *)_url, SUIT_URL_MAX, target_slot);
+        printf("suit: got image URL: \"%s\"\n", _url);
+        riotboot_flashwrite_init(&writer, target_slot);
+        int res = nanocoap_get_blockwise_url(_url, COAP_BLOCKSIZE_64,
+                                         suit_flashwrite_helper, &writer);
 
 #endif
         if (res == 0) {

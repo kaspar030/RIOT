@@ -75,6 +75,7 @@ PSEUDOMODULES += suit_%
 # handle suit_v1 being a distinct module
 NO_PSEUDOMODULES += suit_v1
 NO_PSEUDOMODULES += suit_v4
+NO_PSEUDOMODULES += suit_minimal
 
 # print ascii representation in function od_hex_dump()
 PSEUDOMODULES += od_string

@@ -47,7 +47,10 @@ USEMODULE += suit suit_coap
 #USEMODULE += suit_v1
 
 # v4:
-USEMODULE += suit_v4
+#USEMODULE += suit_v4
+
+# minimal:
+USEMODULE += suit suit_coap suit_minimal
 
 ifneq (native,$(BOARD))
   FEATURES_REQUIRED += riotboot
