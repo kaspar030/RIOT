@@ -32,11 +32,12 @@ int to_file(const char *filename, void *buf, size_t len)
 int main(int argc, char *argv[])
 {
     if (argc != 6) {
-        fprintf(stderr, "usage: mkmanifest seq_nr file1 file2 base_url outfile\n");
+        fprintf(stderr,
+                "usage: mkmanifest seq_nr file1 file2 base_url outfile\n");
         exit(1);
     }
 
-    size_t mlen = sizeof(suit_minimal_manifest_t);
+    size_t mlen = sizeof(suit_minimal_manifest_t) + (2 * SUIT_MINIMAL_URL_MAXLEN);
     suit_minimal_manifest_t *m = calloc(1, mlen);
     if (!m) {
         fprintf(stderr, "malloc failed");
@@ -45,21 +46,24 @@ int main(int argc, char *argv[])
 
     m->seq_nr = strtol(argv[1], NULL, 10);
 
-    size_t url_root_len = strlen(argv[4]);
-    uint8_t *url_root = (uint8_t *)argv[4];
-
-    for (unsigned slot = 0; slot < SUIT_MINIMAL_SLOT_NUMOF; slot++) {
-        char *ptr = argv[2 + slot];
-        size_t len = strlen(ptr);
-        if ((url_root_len + len) > SUIT_MINIMAL_URL_MAXLEN) {
-            fprintf(stderr, "filename of slot %u too long\n", slot);
-            exit(1);
-        }
-        memcpy(m->slots[slot].url, url_root, url_root_len);
-        memcpy(m->slots[slot].url + url_root_len, ptr, len);
-        m->url_len[slot] = url_root_len + len;
+    char urls[2][SUIT_MINIMAL_URL_MAXLEN];
+    for (int i = 0; i < 2; i++) {
+        strcpy(urls[i], argv[4]);
+        strcat(urls[i], argv[2 + i]);
+        printf("URL %i: \"%s\" %p\n", i, urls[i], (void*)urls[i]);
     }
 
+    uint8_t *urls_array[] = {
+        (uint8_t *)urls[0], (uint8_t *)urls[1]
+    };
+
+
+    m->encoded_urls_len = suit_minimal_encode_urls(m->encoded_urls,
+                                                    2 * SUIT_MINIMAL_URL_MAXLEN,
+                                                    urls_array, 2);
+
     suit_minimal_manifest_print(m);
-    to_file(argv[5], m, sizeof(suit_minimal_manifest_t));
+
+    unlink(argv[5]);
+    to_file(argv[5], m, sizeof(suit_minimal_manifest_t) + m->encoded_urls_len);
 }
