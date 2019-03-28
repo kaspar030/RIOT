@@ -5,6 +5,11 @@ module:
       depends:
           - random_prng_default
 
+    # THIS SETS THE DEFAULT PRNG
+    - name: random_prng_default
+      context: default
+      depends: random_prng_xorshift
+
     - name: random_prng_mersenne
       sources:
         - mersenne.c
@@ -34,10 +39,6 @@ module:
       sources:
         - xorshift.c
       depends: random
-
-    - name: random_prng_default
-      context: riot
-      depends: random_prng_xorshift
 
     - name: sys/random
       depends:
