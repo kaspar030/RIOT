@@ -27,6 +27,33 @@
 #include "byteorder.h"
 #endif
 
+/**
+ * @brief DNS internal structure
+ */
+typedef struct {
+    uint16_t id;        /**< read           */
+    uint16_t flags;     /**< DNS            */
+    uint16_t qdcount;   /**< RFC            */
+    uint16_t ancount;   /**< for            */
+    uint16_t nscount;   /**< detailed       */
+    uint16_t arcount;   /**< explanations   */
+    uint8_t payload[];  /**< !!             */
+} sock_dns_hdr_t;
+
+/**
+ * @name DNS defines
+ * @{
+ */
+#define DNS_TYPE_A              (1)
+#define DNS_TYPE_AAAA           (28)
+#define DNS_CLASS_IN            (1)
+
+#define SOCK_DNS_RETRIES        (2)
+
+#define SOCK_DNS_MAX_NAME_LEN   (64U)       /* we're in embedded context. */
+#define SOCK_DNS_QUERYBUF_LEN   (sizeof(sock_dns_hdr_t) + 4 + SOCK_DNS_MAX_NAME_LEN)
+/** @} */
+
 /* min domain name length is 1, so minimum record length is 7 */
 #define DNS_MIN_REPLY_LEN   (unsigned)(sizeof(sock_dns_hdr_t ) + 7)
 
