@@ -11,8 +11,6 @@ module:
         - gnrc_sixlowpan
         - gnrc_sixlowpan_iphc
         - gnrc_sixlowpan_nd
-        - netdev_eth
-        - netdev_ieee802154
         - netopt
         - netstats
         - netstats_ipv6
@@ -25,6 +23,10 @@ module:
         - gnrc_netif.c
         - gnrc_netif_device_type.c
         - gnrc_netif_raw.c
+        - netdev_eth:
+            - ethernet/gnrc_netif_ethernet.c
+        - netdev_ieee802154:
+            - ieee802154/gnrc_netif_ieee802154.c
     export_vars:
         CFLAGS:
             - -I${relpath}/include

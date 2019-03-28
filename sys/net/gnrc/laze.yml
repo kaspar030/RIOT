@@ -5,8 +5,6 @@ defaults:
 
 module:
     - name: gnrc
-      depends:
-          - gnrc_core
 
     - name: gnrc_core
       depends:

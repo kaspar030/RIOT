@@ -1,0 +1,24 @@
+module:
+    name: gnrc_ipv6_nib
+    depends:
+        - evtimer
+        - gnrc_ndp
+        - luid
+        - random
+    uses:
+        - gnrc_ipv6
+        - gnrc_netif
+        - gnrc_sixlowpan_ctx
+        - gnrc_sixlowpan_nd
+    sources:
+        - _nib-6ln.c
+        - _nib-6lr.c
+        - _nib-arsm.c
+        - _nib-internal.c
+        - _nib-router.c
+        - _nib-slaac.c
+        - nib.c
+        - nib_abr.c
+        - nib_ft.c
+        - nib_nc.c
+        - nib_pl.c
