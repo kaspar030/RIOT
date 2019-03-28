@@ -1,0 +1,6 @@
+module:
+    name: evtimer
+    depends:
+        - xtimer
+    sources:
+        - evtimer.c

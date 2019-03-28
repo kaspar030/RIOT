@@ -20,6 +20,7 @@ subdirs:
     - ecc
     - embunit
     - event
+    - evtimer
     - fmt
     - fs
     - hashes

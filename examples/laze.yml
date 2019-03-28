@@ -6,6 +6,7 @@ defaults:
 subdirs:
     - default
     - hello-world
+    - gnrc_minimal
     - gnrc_networking
     - ipc_pingpong
     - saul
