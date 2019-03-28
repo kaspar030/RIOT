@@ -1,0 +1,21 @@
+app:
+    depends: tests-core
+
+module:
+    - name: tests-core
+      sources:
+        - tests-core-atomic.c
+        - tests-core-bitarithm.c
+        - tests-core-byteorder.c
+        - tests-core-cib.c
+        - tests-core-clist.c
+        - tests-core-lifo.c
+        - tests-core-list.c
+        - tests-core-priority-queue.c
+        - tests-core-ringbuffer.c
+        - tests-core.c
+      depends:
+          - unittests-base
+      global_vars:
+          testsuites:
+              - core

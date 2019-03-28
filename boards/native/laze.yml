@@ -3,6 +3,7 @@ builder:
     parent: cpu/native
     vars:
         CC: gcc
+        SIZE: size
         CFLAGS:
             - "-m32"
             - '-DRIOT_MCU=\"native\"'

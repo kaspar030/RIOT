@@ -1,8 +1,11 @@
 app:
-    sources: tests-bcd.c
-    depends:
-        - sys/embunit
-        - unittests-base
-    global_vars:
-        CFLAGS:
-            - -DTEST_SUITES=bcd
+    depends: tests-bcd
+
+module:
+    - name: tests-bcd
+      sources: tests-bcd.c
+      depends:
+          - unittests-base
+      global_vars:
+          testsuites:
+              - bcd

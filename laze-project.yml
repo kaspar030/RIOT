@@ -7,7 +7,7 @@ rule:
       cmd: 'ccache ${CC} -MMD -MF $out.d ${CFLAGS} ${testsuites} -c ${in} -o ${out}'
       var_options:
           testsuites:
-              prefix: -DTEST_SUITES=
+              start: -DTEST_SUITES=
               joiner: ','
     - name: ASM
       in: '.S'
@@ -44,6 +44,10 @@ context:
             - -I${relpath}/sys/include
             - -DRIOT_VERSION=\"laze\"
             - -DRIOT_FILE_RELATIVE=__FILE__
+      tools:
+          size:
+              cmd:
+               - "${SIZE} ${out}"
 
 builder:
           - name: host
@@ -51,6 +55,7 @@ builder:
             vars:
                 CC : gcc
                 LINK: gcc
+                SIZE: size
             tools:
                 run:
                     cmd:

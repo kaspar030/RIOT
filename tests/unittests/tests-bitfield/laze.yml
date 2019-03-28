@@ -1,12 +1,12 @@
 app:
-    sources:
-      - tests-bitfield.c
-    depends:
-        - sys/bitfield
-        - sys/embunit
-        - unittests-base
-    global_vars:
-        CFLAGS:
-            - -DTEST_SUITES=bitfield
-        testsuites:
-            - bitfield
+    depends: tests-bitfield
+module:
+    - name: tests-bitfield
+      sources:
+        - tests-bitfield.c
+      depends:
+          - sys/bitfield
+          - unittests-base
+      global_vars:
+          testsuites:
+              - bitfield

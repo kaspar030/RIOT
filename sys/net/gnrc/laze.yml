@@ -4,6 +4,16 @@ defaults:
             - gnrc_core
 
 module:
+    - name: gnrc_default
+      depends:
+          - gnrc_netdev_default
+          - auto_init_gnrc_netif
+          - gnrc_icmpv6_error
+          - gnrc_ipv6_router_default
+          - gnrc_udp
+          - gnrc_pktdump
+          - gnrc_icmpv6_echo
+
     - name: gnrc
 
     - name: gnrc_core
@@ -36,6 +46,14 @@ module:
       depends:
           - gnrc_ipv6_router
           - gnrc_icmpv6
+
+    - name: netstats
+    - name: netstats_l2
+      depends: netstats
+    - name: netstats_ipv6
+      depends: netstats
+    - name: netstats_rpl
+      depends: netstats
 
 subdirs:
         - application_layer

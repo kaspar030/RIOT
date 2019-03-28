@@ -4,7 +4,6 @@ app:
         - random
         - shell
         - xtimer
-        - prng_xorshift
     uses:
         - newlib
         - periph_hwrng

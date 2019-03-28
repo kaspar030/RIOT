@@ -4,19 +4,24 @@ app:
         - udp.c
 
     depends:
-        - auto_init_gnrc_netif
-        - gnrc_netdev_default
-        - gnrc_core
-        - gnrc_udp
-        - gnrc_ipv6
-        - gnrc_icmpv6_echo
-        - gnrc_ipv6_router_default
+        # this pulls in GNRC's default configuration
+        - gnrc_default
+
+        # This application dumps received packets to STDIO using the
+        # pktdump module
         - gnrc_pktdump
-        - ipv6_addr
+
+        # Add a routing protocol
+        - gnrc_rpl
+        - auto_init_gnrc_rpl
+
+        # Add also the shell, some shell commands
         - shell
         - shell_commands
         - ps
-        - xtimer
+        - netstats_l2
+        - netstats_ipv6
+        - netstats_rpl
 
     global_vars:
         CFLAGS:

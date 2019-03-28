@@ -1,5 +1,8 @@
 module:
     name: gnrc_ndp
+    depends:
+        - gnrc_icmpv6
+        - gnrc_netif
     uses:
         - gnrc_sixlowpan_nd
     sources:

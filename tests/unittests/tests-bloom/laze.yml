@@ -1,10 +1,13 @@
 app:
-    sources:
-      - tests-bloom.c
     depends:
-        - sys/bloom
-        - sys/embunit
-        - unittests-base
-    global_vars:
-        testsuites:
-            - bloom
+        - tests-bloom
+module:
+    - name: tests-bloom
+      sources:
+        - tests-bloom.c
+      depends:
+          - sys/bloom
+          - unittests-base
+      global_vars:
+          testsuites:
+              - bloom
