@@ -1,11 +1,29 @@
+app:
+    name: unittests
+    depends:
+        - unittests-base
+        - tests-base64
+        - tests-bcd
+        - tests-bitfield
+        - tests-bloom
+        - tests-checksum
+        - tests-color
+        - tests-core
+        - tests-flashpage
+        - tests-gnrc_ipv6_nib
+
 module:
     name: unittests-base
     sources:
         - main.c
     depends:
         - board
+        - sys/embunit
     uses:
         - xtimer
+    global_vars:
+        CFLAGS:
+            - -I${relpath}/common
 
 subdirs:
     - tests-base64
@@ -13,3 +31,7 @@ subdirs:
     - tests-bitfield
     - tests-bloom
     - tests-checksum
+    - tests-color
+    - tests-core
+    - tests-flashpage
+    - tests-gnrc_ipv6_nib

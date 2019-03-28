@@ -1,0 +1,12 @@
+app:
+    depends: tests-color
+
+module:
+    - name: tests-color
+      sources: tests-color.c
+      depends:
+          - color
+          - unittests-base
+      global_vars:
+          testsuites:
+              - color

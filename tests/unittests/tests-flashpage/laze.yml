@@ -1,0 +1,11 @@
+app:
+    depends: tests-flashpage
+
+module:
+    - name: tests-flashpage
+      sources: tests-flashpage.c
+      depends:
+          - unittests-base
+      global_vars:
+          testsuites:
+              - flashpage

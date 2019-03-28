@@ -5,6 +5,7 @@ context:
         CC: arm-none-eabi-gcc
         LINK: arm-none-eabi-gcc
         OBJCOPY: arm-none-eabi-objcopy
+        SIZE: arm-none-eabi-size
         CFLAGS:
             - -std=c99
             - -mlittle-endian -mthumb

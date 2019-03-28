@@ -3,28 +3,48 @@ module:
     options:
         use_optional_source_deps: True
     sources:
-        - at30tse75x: sc_at30tse75x.c
-        - ccn-lite-utils: sc_ccnl.c
-        - cpu/x86: sc_x86_lspci.c
-        - fib: sc_fib.c
-        - gnrc_icmpv6_echo: sc_gnrc_icmpv6_echo.c
-        - gnrc_ipv6_blacklist: sc_blacklist.c
-        - gnrc_ipv6_nib: sc_gnrc_ipv6_nib.c
-        - gnrc_ipv6_whitelist: sc_whitelist.c
-        - gnrc_netif: sc_gnrc_netif.c
-        - gnrc_rpl: sc_gnrc_rpl.c
-        - gnrc_sixlowpan_ctx,gnrc_sixlowpan_nd_border_router: sc_gnrc_6ctx.c
-        - lpc2387: sc_heap.c
-        - mci: sc_disk.c
-        - periph_rtc: sc_rtc.c
-        - ps: sc_ps.c
-        - random: sc_random.c
-        - saul_reg: sc_saul_reg.c
+        - at30tse75x:
+          - sc_at30tse75x.c
+        - ccn-lite-utils: 
+          - sc_ccnl.c
+        - cpu/x86:
+            - sc_x86_lspci.c
+        - fib:
+            - sc_fib.c
+        - gnrc_icmpv6_echo:
+            - sc_gnrc_icmpv6_echo.c
+        - gnrc_ipv6_blacklist:
+            - sc_blacklist.c
+        - gnrc_ipv6_nib:
+            - sc_gnrc_ipv6_nib.c
+        - gnrc_ipv6_whitelist:
+            - sc_whitelist.c
+        - gnrc_netif:
+            - sc_gnrc_netif.c
+        - gnrc_rpl: 
+          - sc_gnrc_rpl.c
+        - gnrc_sixlowpan_ctx,gnrc_sixlowpan_nd_border_router:
+          - sc_gnrc_6ctx.c
+        - lpc2387:
+          - sc_heap.c
+        - mci:
+          - sc_disk.c
+        - periph_rtc:
+          - sc_rtc.c
+        - ps:
+          - sc_ps.c
+        - random:
+          - sc_random.c
+        - saul_reg:
+          - sc_saul_reg.c
         - sc_sys.c
         - shell_commands.c
-        - sht11: sc_sht11.c
-        - sntp: sc_sntp.c
-        - vfs: sc_vfs.c
+        - sht11:
+          - sc_sht11.c
+        - sntp:
+          - sc_sntp.c
+        - vfs:
+          - sc_vfs.c
 
     uses:
         - at30tse75x
@@ -40,8 +60,13 @@ module:
         - gnrc_sixlowpan_ctx
         - gnrc_sixlowpan_nd_border_router
         - ipv6_addr
+        - l2filter
         - lpc2387
         - mci
+        - netstats
+        - netstats_l2
+        - netstats_ipv6
+        - netstats_rpl
         - periph_rtc
         - ps
         - random

@@ -1,9 +1,13 @@
 app:
-    sources: tests-base64.c
     depends:
-        - sys/base64
-        - sys/embunit
-        - unittests-base
-    global_vars:
-        CFLAGS:
-            - -DTEST_SUITES=base64
+        - tests-base64
+
+module:
+    - name: tests-base64
+      sources: tests-base64.c
+      depends:
+          - sys/base64
+          - unittests-base
+      global_vars:
+          testsuites:
+              - base64
