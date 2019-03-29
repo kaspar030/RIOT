@@ -292,6 +292,14 @@ typedef struct {
 } coap_resource_t;
 
 /**
+ * @brief   Type for CoAP resource subtrees
+ */
+typedef const struct {
+    const coap_resource_t *resources;   /**< ptr to resource array  */
+    const size_t resources_numof;       /**< nr of entries in array */
+} coap_resource_subtree_t;
+
+/**
  * @brief   Block1 helper struct
  */
 typedef struct {
@@ -466,6 +474,9 @@ size_t coap_put_option(uint8_t *buf, uint16_t lastonum, uint16_t onum, uint8_t *
  * @returns     amount of bytes written to @p buf
  */
 size_t coap_put_option_ct(uint8_t *buf, uint16_t lastonum, uint16_t content_type);
+
+size_t coap_put_option_block(uint8_t *buf, uint16_t lastonum, unsigned blknum,
+                             unsigned szx, int more, uint16_t option);
 
 /**
  * @brief   Encode the given string as multi-part option into buffer
@@ -1147,6 +1158,12 @@ static inline uint32_t coap_get_observe(coap_pkt_t *pkt)
 extern ssize_t coap_well_known_core_default_handler(coap_pkt_t *pkt, \
                                                     uint8_t *buf, size_t len,
                                                     void *context);
+
+/**
+ * @brief   Handler for delegating to subtree
+ */
+ssize_t coap_subtree_handler(coap_pkt_t *pkt, uint8_t *buf, size_t len,
+                             void *context);
 
 /**
  * @brief   Resource definition for the default .well-known/core handler

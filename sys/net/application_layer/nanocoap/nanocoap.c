@@ -627,7 +627,7 @@ static unsigned _slicer_blknum(coap_block_slicer_t *slicer)
     return blknum;
 }
 
-static size_t coap_put_option_block(uint8_t *buf, uint16_t lastonum, unsigned blknum, unsigned szx, int more, uint16_t option)
+size_t coap_put_option_block(uint8_t *buf, uint16_t lastonum, unsigned blknum, unsigned szx, int more, uint16_t option)
 {
     uint32_t blkopt = (blknum << 4) | szx | (more ? 0x8 : 0);
     size_t olen = _encode_uint(&blkopt);
@@ -640,30 +640,33 @@ size_t coap_put_option_block1(uint8_t *buf, uint16_t lastonum, unsigned blknum, 
     return coap_put_option_block(buf, lastonum, blknum, szx, more, COAP_OPT_BLOCK1);
 }
 
-int coap_get_block1(coap_pkt_t *pkt, coap_block1_t *block1)
+int coap_get_block(coap_pkt_t *pkt, coap_block1_t *block, uint16_t blkopt)
 {
     uint32_t blknum;
     unsigned szx;
 
-    block1->more = coap_get_blockopt(pkt, COAP_OPT_BLOCK1, &blknum, &szx);
-    if (block1->more >= 0) {
-        block1->offset = blknum << (szx + 4);
+    block->more = coap_get_blockopt(pkt, blkopt, &blknum, &szx);
+    if (block->more >= 0) {
+        block->offset = blknum << (szx + 4);
     }
     else {
-        block1->offset = 0;
+        block->offset = 0;
     }
 
-    block1->blknum = blknum;
-    block1->szx = szx;
+    block->blknum = blknum;
+    block->szx = szx;
 
-    return (block1->more >= 0);
+    return (block->more >= 0);
 }
 
-int coap_get_block2(coap_pkt_t *pkt, coap_block1_t *block2)
+int coap_get_block1(coap_pkt_t *pkt, coap_block1_t *block)
 {
-    block2->more = coap_get_blockopt(pkt, COAP_OPT_BLOCK2, &block2->blknum,
-                                     &block2->szx);
-    return (block2->more >= 0);
+    return coap_get_block(pkt, block, COAP_OPT_BLOCK1);
+}
+
+int coap_get_block2(coap_pkt_t *pkt, coap_block1_t *block)
+{
+    return coap_get_block(pkt, block, COAP_OPT_BLOCK2);
 }
 
 size_t coap_put_block1_ok(uint8_t *pkt_pos, coap_block1_t *block1, uint16_t lastonum)
@@ -940,4 +943,44 @@ unsigned coap_get_len(coap_pkt_t *pkt)
         pktlen += pkt->payload_len + 1;
     }
     return pktlen;
+}
+
+ssize_t coap_subtree_handler(coap_pkt_t *pkt, uint8_t *buf, size_t len,
+                             void *context)
+{
+    uint8_t uri[NANOCOAP_URI_MAX];
+
+    unsigned method_flag = coap_method2flag(coap_get_code_detail(pkt));
+
+    if (coap_get_uri_path(pkt, uri) <= 0) {
+        puts("no uri");
+    }
+
+    else {
+        printf("nanocoap: subtree URI path: \"%s\"\n", uri);
+        coap_resource_subtree_t *subtree = context;
+
+        /* TODO: refactor into function, use both here and above */
+        for (unsigned i = 0; i < subtree->resources_numof; i++) {
+            const coap_resource_t *resource = &subtree->resources[i];
+            puts(resource->path);
+            if (!(resource->methods & method_flag)) {
+                continue;
+            }
+
+            int res = coap_match_path(resource, uri);
+            if (res > 0) {
+                continue;
+            }
+            else if (res < 0) {
+                break;
+            }
+            else {
+                return resource->handler(pkt, buf, len, resource->context);
+            }
+        }
+    }
+
+    return coap_reply_simple(pkt, COAP_CODE_INTERNAL_SERVER_ERROR, buf,
+                             len, COAP_FORMAT_TEXT, NULL, 0);
 }

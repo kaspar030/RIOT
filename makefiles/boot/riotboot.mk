@@ -14,11 +14,12 @@ BINDIR_APP = $(BINDIR)/$(APPLICATION)
 export SLOT0_OFFSET SLOT0_LEN SLOT1_OFFSET SLOT1_LEN
 
 # Mandatory APP_VER, set to epoch by default
-APP_VER ?= $(shell date +%s)
+EPOCH := $(shell date +%s)
+APP_VER ?= $(EPOCH)
 
 # Final target for slot 0 with riot_hdr
-SLOT0_RIOT_BIN = $(BINDIR_APP)-slot0.riot.bin
-SLOT1_RIOT_BIN = $(BINDIR_APP)-slot1.riot.bin
+SLOT0_RIOT_BIN = $(BINDIR_APP)-slot0.$(APP_VER).riot.bin
+SLOT1_RIOT_BIN = $(BINDIR_APP)-slot1.$(APP_VER).riot.bin
 SLOT_RIOT_BINS = $(SLOT0_RIOT_BIN) $(SLOT1_RIOT_BIN)
 
 $(BINDIR_APP)-%.elf: $(BASELIBS)
@@ -35,7 +36,7 @@ $(BINDIR_APP)-slot1.elf: FW_ROM_LEN=$$((SLOT1_LEN - $(RIOTBOOT_HDR_LEN)))
 $(BINDIR_APP)-slot1.elf: ROM_OFFSET=$(SLOT1_IMAGE_OFFSET)
 
 # Create binary target with RIOT header
-$(SLOT_RIOT_BINS): %.riot.bin: %.hdr %.bin
+$(SLOT_RIOT_BINS): %.$(APP_VER).riot.bin: %.hdr %.bin
 	@echo "creating $@..."
 	$(Q)cat $^ > $@
 
@@ -131,6 +132,13 @@ riotboot/slot1: $(SLOT1_RIOT_BIN)
 
 # Default flashing rule for bootloader + slot 0
 riotboot/flash: riotboot/flash-slot0 riotboot/flash-bootloader
+
+# include suit targets
+ifneq (,$(filter suit_v1, $(USEMODULE)))
+include $(RIOTMAKE)/suit.inc.mk
+else
+include $(RIOTMAKE)/suit.v4.inc.mk
+endif
 
 else
 riotboot:
