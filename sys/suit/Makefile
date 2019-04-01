@@ -4,7 +4,14 @@ SUBMODULES := 1
 # necessary to not fail for suit_v1_*.
 SUBMODULES_NOFORCE := 1
 
-#DIRS += v1 v4 minimal
-DIRS += minimal
+ifneq (, $(filter suit_v1, $(USEMODULE)))
+  DIRS += v1
+endif
+ifneq (, $(filter suit_v4, $(USEMODULE)))
+  DIRS += v4
+endif
+ifneq (, $(filter suit_minimal, $(USEMODULE)))
+  DIRS += minimal
+endif
 
 include $(RIOTBASE)/Makefile.base
