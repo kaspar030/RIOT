@@ -14,7 +14,7 @@ SUIT_CLASS_ID ?= $(BOARD)
 SUIT_KEY ?= secret.key
 
 $(SUIT_MANIFEST): $(SLOT0_RIOT_BIN) $(SLOT1_RIOT_BIN)
-	cd $(BINDIR) && $(RIOTBASE)/dist/tools/suit_minimal/mkmanifest \
+	cd $(BINDIR) && $(RIOTBASE)/dist/tools/suit_minimal/bin/mkmanifest \
 	  $@ \
 	  $(SUIT_SEQNR) \
 	  $(SUIT_COAP_ROOT)/ \

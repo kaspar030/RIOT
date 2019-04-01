@@ -1,4 +1,4 @@
-all: mkmanifest
+all: bin/mkmanifest
 
 CFLAGS += -Wall -g
 
@@ -15,5 +15,6 @@ SRCS := mkmanifest.c \
 			$(RIOTBASE)/core/bitarithm.c \
 			#
 
-mkmanifest: $(SRCS) $(RIOTBASE)/sys/include/suit/minimal/manifest.h
+bin/mkmanifest: $(SRCS) $(RIOTBASE)/sys/include/suit/minimal/manifest.h
+	mkdir -p bin
 	gcc $(CFLAGS) -I. -I$(RIOTBASE)/sys/include -I$(RIOTBASE)/core/include $(SRCS) -o $@
