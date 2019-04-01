@@ -1,0 +1,1 @@
+#define BITARITHM_LSB_BUILTIN
