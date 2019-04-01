@@ -866,6 +866,10 @@ ifneq (,$(filter suit_v4,$(USEMODULE)))
   USEPKG += tinycbor
 endif
 
+ifneq (,$(filter suit_minimal,$(USEMODULE)))
+  USEMODULE += suit_conditions
+endif
+
 ifneq (,$(filter suit_conditions,$(USEMODULE)))
   USEMODULE += uuid
 endif
