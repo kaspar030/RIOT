@@ -116,10 +116,18 @@ static void _suit_handle_url(const char *url)
 #elif MODULE_SUIT_MINIMAL
         unsigned target_slot = riotboot_slot_other();
         suit_minimal_manifest_t *manifest = (void *)_manifest_buf;
+
+        int res = suit_minimal_manifest_validate(manifest);
+        if (res) {
+            LOG_INFO("suit: manifest validation failed. res=%i\n", res);
+            return;
+        }
+
         suit_minimal_url_get(manifest, (uint8_t *)_url, SUIT_URL_MAX, target_slot);
-        printf("suit: got image URL: \"%s\"\n", _url);
+        LOG_INFO("suit: got image URL: \"%s\"\n", _url);
+
         riotboot_flashwrite_init(&writer, target_slot);
-        int res = nanocoap_get_blockwise_url(_url, COAP_BLOCKSIZE_64,
+        res = nanocoap_get_blockwise_url(_url, COAP_BLOCKSIZE_64,
                                          suit_flashwrite_helper, &writer);
 
 #endif

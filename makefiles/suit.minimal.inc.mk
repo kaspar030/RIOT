@@ -8,18 +8,20 @@ SUIT_COAP_FSROOT ?= $(RIOTBASE)/coaproot
 SUIT_MANIFEST ?= $(BINDIR_APP)-$(APP_VER).bin
 SUIT_MANIFEST_LATEST ?= $(BINDIR_APP)-latest.bin
 
-SUIT_VENDOR ?= "riot-os.org"
 SUIT_SEQNR ?= $(APP_VER)
-SUIT_DEVICE_ID ?= $(BOARD)
+SUIT_VENDOR_ID ?= "riot-os.org"
+SUIT_CLASS_ID ?= $(BOARD)
 SUIT_KEY ?= secret.key
 
 $(SUIT_MANIFEST): $(SLOT0_RIOT_BIN) $(SLOT1_RIOT_BIN)
 	cd $(BINDIR) && $(RIOTBASE)/dist/tools/suit_minimal/mkmanifest \
+	  $@ \
 	  $(SUIT_SEQNR) \
+	  $(SUIT_COAP_ROOT)/ \
 	  $(notdir $(SLOT0_RIOT_BIN)) \
 	  $(notdir $(SLOT1_RIOT_BIN)) \
-	  $(SUIT_COAP_ROOT)/ \
-	  $@
+	  $(SUIT_VENDOR_ID) \
+	  $(SUIT_CLASS_ID)
 
 $(SUIT_MANIFEST_LATEST): $(SUIT_MANIFEST)
 	@ln -f -s $< $@

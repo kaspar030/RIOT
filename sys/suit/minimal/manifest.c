@@ -5,10 +5,19 @@
 #include <errno.h>
 
 #include "suit/minimal/manifest.h"
+#include "uuid.h"
 
 void suit_minimal_manifest_print(const suit_minimal_manifest_t *m)
 {
-    printf("seq nr: 0x%08x\n", (unsigned)m->seq_nr);
+    char uuid_buf[UUID_STR_LEN + 1] = {0};
+    printf("seq nr    : 0x%08x\n", (unsigned)m->seq_nr);
+
+    uuid_to_string(&m->vendor_id, uuid_buf);
+    printf("vendor id : %s\n", uuid_buf);
+
+    uuid_to_string(&m->class_id, uuid_buf);
+    printf("class id  : %s\n", uuid_buf);
+
     for (unsigned slot = 0; slot < 2; slot++) {
         uint8_t url[SUIT_MINIMAL_URL_MAXLEN];
         suit_minimal_url_get(m, url, SUIT_MINIMAL_URL_MAXLEN, slot);
