@@ -1,12 +1,13 @@
 module:
     name: periph_common
     sources:
-        - cpuid.c
+        - periph_cpuid: cpuid.c
         - periph_flashpage: flashpage.c
         - init.c
         - periph_i2c: i2c.c
         - periph_pm: pm.c
         - periph_spi: spi.c
         - periph_timer: timer.c
+        - periph_eeprom: eeprom.c
     uses:
         - board
