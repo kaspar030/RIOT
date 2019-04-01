@@ -52,6 +52,8 @@ USEMODULE += suit suit_coap
 # minimal:
 USEMODULE += suit suit_coap suit_minimal
 
+#CFLAGS += -DLOG_LEVEL=LOG_NONE
+
 ifneq (native,$(BOARD))
   FEATURES_REQUIRED += riotboot
   USEMODULE += riotboot_slot riotboot_flashwrite
