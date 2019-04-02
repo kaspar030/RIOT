@@ -1,10 +1,14 @@
 module:
-    name: lis2dh12
-    depends:
-        - periph_spi
+  - name: lis2dh12
     sources:
         - lis2dh12.c
         - saul: lis2dh12_saul.c
+    depends:
+        - periph_spi
+    uses: lis2dh12_spi
     export_vars:
         CFLAGS:
             - -I${relpath}/include
+
+  - name: lis2dh12_spi
+    depends: lis2dh12

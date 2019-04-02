@@ -11,3 +11,6 @@ module:
       depends:
           - nucleo64
           - cpu/stm32f4
+
+    - name: feature/periph_qdec
+      context: nucleo-f401re

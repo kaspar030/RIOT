@@ -1,12 +1,24 @@
 module:
-    name: adcxx1c
+  - name: adcxx1c
     depends:
         - periph_gpio
         - periph_gpio_irq
         - periph_i2c
+    uses:
+      - adc081c
+      - adc101c
+      - adc121c
+
     sources:
         - adcxx1c.c
         - saul: adcxx1c_saul.c
     export_vars:
         CFLAGS:
             - -I${relpath}/include
+
+  - name: adc081c
+    depends: adcxx1c
+  - name: adc101c
+    depends: adcxx1c
+  - name: adc121c
+    depends: adcxx1c

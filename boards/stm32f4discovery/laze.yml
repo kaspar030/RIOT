@@ -15,3 +15,7 @@ module:
 
     - name: feature/periph_dac
       context: stm32f4discovery
+
+    - name: feature/motor_driver
+      context: stm32f4discovery
+      depends: disabled
