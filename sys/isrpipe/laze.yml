@@ -1,4 +1,6 @@
 module:
+  - name: isrpipe
     sources: isrpipe.c
     depends:
         - sys/tsrb
+        - xtimer

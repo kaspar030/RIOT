@@ -50,3 +50,10 @@ module:
 
     - name: periph_cpuid
       context: stm32
+
+    - name: periph_qdec
+      context: stm32
+      sources: qdec.c
+      depends:
+        - periph_gpio
+        - feature/periph_qdec

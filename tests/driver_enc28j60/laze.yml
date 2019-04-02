@@ -4,8 +4,6 @@ app:
         - enc28j60
         - gnrc_icmpv6_echo
         - gnrc_ipv6_router_default
-        - gnrc_netdev
-        - gnrc_netdev_default
         - periph_gpio
         - periph_spi
         - ps

@@ -33,3 +33,4 @@ subdirs:
     - can
     - periph
     - netdev_tap
+    - trace

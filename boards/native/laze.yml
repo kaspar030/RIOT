@@ -13,13 +13,17 @@ builder:
         libs: [ -ldl, -lm ]
 
 module:
-    name: board
+  - name: board
     context: native
-    sources: board_init.c
+    sources:
+      - board_init.c
+      - motor_driver: board.c
     depends:
         - native-drivers
         - cpu/native
         - core
         - periph_common
+
+  - name: feature/motor_driver
 
 subdirs: drivers

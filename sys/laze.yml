@@ -4,6 +4,7 @@ defaults:
           - core
 
 subdirs:
+  #- arduino (missing cpp support)
     - auto_init
     - base64
     - benchmark

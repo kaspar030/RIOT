@@ -4,6 +4,8 @@ template:
         - gpio
         - hwrng
         - pm
+        - pwm
+        - qdec
         - rtc
         - timer
         - uart

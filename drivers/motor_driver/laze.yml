@@ -1,6 +1,8 @@
 module:
     name: motor_driver
     depends:
+        - periph_gpio
         - periph_pwm
+        - feature/motor_driver
     sources:
         - motor_driver.c

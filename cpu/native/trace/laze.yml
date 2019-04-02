@@ -1,0 +1,4 @@
+module:
+  - name: trace
+    context: cpu/native
+    sources: trace.c
