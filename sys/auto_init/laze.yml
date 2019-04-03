@@ -9,3 +9,4 @@ subdirs:
     - can
     - netif
     - saul
+    - storage

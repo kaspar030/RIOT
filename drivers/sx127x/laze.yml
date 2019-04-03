@@ -2,8 +2,8 @@ module:
     - name: sx127x
       depends:
           - iolist
-          - lora
-          - netif
+          #          - lora
+          - gnrc_netif
           - periph_gpio
           - periph_gpio_irq
           - periph_spi
