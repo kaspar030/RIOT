@@ -1,5 +1,5 @@
 module:
-    name: si114x
+  - name: si114x
     depends:
         - periph_i2c
         - xtimer
@@ -9,3 +9,6 @@ module:
     export_vars:
         CFLAGS:
             - -I${relpath}/include
+  - name: si1145
+    depends:
+      - si114x

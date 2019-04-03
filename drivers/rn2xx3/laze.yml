@@ -1,14 +1,24 @@
 module:
-    name: rn2xx3
-    depends:
-        - fmt
-        - periph_gpio
-        - periph_uart
-        - xtimer
-    sources:
-        - rn2xx3.c
-        - rn2xx3_getset.c
-        - rn2xx3_internal.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    - name: rn2xx3_base
+      depends:
+          - fmt
+          - periph_gpio
+          - periph_uart
+          - xtimer
+      uses:
+          - rn2903
+          - rn2483
+      sources:
+          - rn2xx3.c
+          - rn2xx3_getset.c
+          - rn2xx3_internal.c
+      export_vars:
+          CFLAGS:
+              - -I${relpath}/include
+
+    - name: rn2903
+      depends:
+        - rn2xx3_base
+    - name: rn2483
+      depends:
+        - rn2xx3_base

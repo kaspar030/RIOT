@@ -39,8 +39,8 @@ module:
           - sc_saul_reg.c
         - sc_sys.c
         - shell_commands.c
-        - sht11:
-          - sc_sht11.c
+        - sht1x:
+          - sc_sht1x.c
         - sntp:
           - sc_sntp.c
         - vfs:
@@ -71,6 +71,5 @@ module:
         - ps
         - random
         - saul_reg
-        - sht11
         - sntp
         - vfs
