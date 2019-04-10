@@ -1,0 +1,6 @@
+module:
+  - name: ssp
+    global_vars:
+      CFLAGS:
+        - -fstack-protector
+

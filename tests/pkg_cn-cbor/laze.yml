@@ -3,6 +3,7 @@ app:
         - embunit
         - fmt
         - memarray
+        - pkg/cn-cbor
     global_vars:
         CFLAGS:
             - -DCBOR_NO_LL

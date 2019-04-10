@@ -1,4 +1,5 @@
 module:
+  - name: cpp11-compat
     sources:
         - condition_variable.cpp
         - cppsupport.cpp
@@ -6,3 +7,9 @@ module:
         - thread.cpp
     depends:
         - cpp
+        - timex
+        - xtimer
+    export_vars:
+      CFLAGS:
+        - -I${relpath}/include
+

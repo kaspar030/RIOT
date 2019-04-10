@@ -1,10 +1,13 @@
 module:
     name: gnrc_sixlowpan
+    depends:
+      - sixlowpan
     uses:
         - gnrc_sixlowpan_frag
         - gnrc_sixlowpan_iphc
     sources:
         - gnrc_sixlowpan.c
+
 subdirs:
         - ctx
         - frag

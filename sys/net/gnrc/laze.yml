@@ -34,9 +34,6 @@ module:
       depends:
           - gnrc_ipv6
           - gnrc_icmpv6
-            # if netif_num==1: if gnrc_sixlowpan_nd: gnrc_ndp_host
-            # else:
-          - gnrc_ndp_host
 
     - name: gnrc_ipv6_router
       depends:
@@ -54,6 +51,9 @@ module:
       depends: netstats
     - name: netstats_rpl
       depends: netstats
+
+    - name: gnrc_txtsnd
+    - name: gnrc_neterr
 
 subdirs:
         - application_layer

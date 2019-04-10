@@ -1,6 +1,6 @@
-app:
+module:
+  - name: eepreg
     sources:
+      - eepreg.c
     depends:
       - periph_eeprom
-      - shell
-      - shell_commands

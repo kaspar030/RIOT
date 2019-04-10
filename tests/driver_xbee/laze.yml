@@ -1,7 +1,6 @@
 app:
     depends:
         - auto_init_gnrc_netif
-        - gnrc_netdev
         - gnrc_netif
         - gnrc_pktdump
         - gnrc_txtsnd

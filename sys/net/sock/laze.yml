@@ -5,6 +5,8 @@ module:
 
     - name: sock_udp
       depends: sock
+      uses:
+        - gnrc_sock_udp
 
     - name: sock_util
       sources:

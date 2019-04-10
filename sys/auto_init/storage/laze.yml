@@ -1,0 +1,4 @@
+module:
+  - name: auto_init_storage
+    sources:
+      - sdcard_spi: auto_init_sdcard_spi.c

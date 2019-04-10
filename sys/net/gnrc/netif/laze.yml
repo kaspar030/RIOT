@@ -2,21 +2,25 @@ module:
     name: gnrc_netif
     depends:
         - fmt
+        - netif
     uses:
         - cc110x
         - esp_now
         - gnrc_ipv6
         - gnrc_ipv6_nib
+        - gnrc_netif_dedup
         - gnrc_sixloenc
         - gnrc_sixlowpan
         - gnrc_sixlowpan_iphc
         - gnrc_sixlowpan_nd
+        - l2filter
         - netopt
         - netstats
         - netstats_ipv6
         - netstats_l2
         - nordic_softdevice_ble
         - nrfmin
+        - od
         - xbee
     sources:
         - _netif.c

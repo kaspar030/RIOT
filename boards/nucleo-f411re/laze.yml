@@ -1,5 +1,5 @@
 builder:
-    name: nucleo-f411
+    name: nucleo-f411re
     parent: stm32f411re
     vars:
         CFLAGS:
@@ -9,7 +9,7 @@ builder:
 
 module:
     - name: board
-      context: nucleo-f411
+      context: nucleo-f411re
       depends:
           - cpu/stm32f4
           - nucleo64

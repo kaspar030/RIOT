@@ -1,3 +1,3 @@
 app:
-    depends:
-        - cpp
+  depends:
+    - cpp11-compat

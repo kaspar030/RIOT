@@ -4,6 +4,7 @@ module:
         - auto_init.c
     uses:
         - all
+        - asymcute
 
 subdirs:
     - can

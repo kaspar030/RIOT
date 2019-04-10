@@ -59,6 +59,7 @@ module:
         - gnrc_rpl
         - gnrc_sixlowpan_ctx
         - gnrc_sixlowpan_nd_border_router
+        - gnrc_txtsnd
         - ipv6_addr
         - l2filter
         - lpc2387
