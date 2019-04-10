@@ -39,6 +39,10 @@
 extern "C" {
 #endif
 
+#ifndef RIOT_FILE_RELATIVE
+#define RIOT_FILE_RELATIVE __FILE__
+#endif
+
 void addFailure(const char *msg, long line, const char *file);  /*TestCase.c*/
 
 void assertImplementationLongLong(long long expected,long long actual, long line, const char *file);
