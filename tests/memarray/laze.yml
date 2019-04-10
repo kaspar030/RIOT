@@ -1,4 +1,5 @@
 app:
+    sources:
     depends:
         - memarray
         - ps

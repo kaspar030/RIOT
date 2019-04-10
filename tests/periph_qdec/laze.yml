@@ -1,4 +1,5 @@
 app:
+    sources:
     depends:
-        - periph_qdec
-        - xtimer
+      - periph_qdec
+      - xtimer

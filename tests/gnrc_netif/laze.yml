@@ -1,4 +1,6 @@
 app:
+    sources:
+      - common.c
     depends:
         - embunit
         - gnrc_ipv6
@@ -8,10 +10,9 @@ app:
         - gnrc_sixlowpan_iphc
         - netdev_eth
         - netdev_ieee802154
+        - ieee802154
         - netdev_test
         - od
-    sources:
-        - common.c
     global_vars:
         CFLAGS:
             - -DGNRC_IPV6_NIB_CONF_ARSM="0"
@@ -22,3 +23,6 @@ app:
             - -DGNRC_NETIF_GROUPS_NUMOF="8"
             - -DLOG_LEVEL="LOG_NONE"
             - -DTEST_SUITES
+            - -DDEVELHELP
+            - -DDEBUG_ASSERT_VERBOSE
+            - -g

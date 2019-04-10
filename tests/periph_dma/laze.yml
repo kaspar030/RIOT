@@ -1,3 +1,4 @@
 app:
+    sources:
     depends:
-        - periph_dma
+      - periph_dma

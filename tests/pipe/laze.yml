@@ -1,3 +1,4 @@
 app:
+    sources:
     depends:
-        - sys/pipe
+      - sys/pipe

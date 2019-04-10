@@ -19,6 +19,7 @@ subdirs:
     - crypto
     - div
     - ecc
+    - eepreg
     - embunit
     - event
     - evtimer
@@ -29,6 +30,7 @@ subdirs:
     - isrpipe
     - luid
     - matstat
+    - memarray
     - mineplex
     - net
     - newlib_syscalls_default
@@ -44,6 +46,7 @@ subdirs:
     - saul_reg
     - sema
     - shell
+    - ssp
     - stdio_uart
     - timex
     - trickle

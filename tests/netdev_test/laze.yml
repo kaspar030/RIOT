@@ -1,9 +1,10 @@
 app:
+    sources:
     depends:
         - gnrc
-        - gnrc_netdev
         - gnrc_neterr
         - gnrc_netif
+        - netdev_eth
         - netdev_test
         - od
         - periph_timer

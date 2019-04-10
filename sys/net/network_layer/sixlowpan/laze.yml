@@ -1,3 +1,4 @@
 module:
+  - name: sixlowpan
     sources:
         - sixlowpan_print.c

@@ -1,7 +1,13 @@
 module:
-    name: gnrc_sixlowpan_iphc
-    uses:
+  - name: gnrc_sixlowpan_iphc
+    depends:
         - gnrc_sixlowpan_iphc_nhc
+        - gnrc_sixlowpan_ctx
+    uses:
         - gnrc_udp
     sources:
         - gnrc_sixlowpan_iphc.c
+
+  - name: gnrc_sixlowpan_iphc_nhc
+    depends:
+      - gnrc_sixlowpan_iphc

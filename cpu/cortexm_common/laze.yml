@@ -3,11 +3,13 @@ context:
     parent: riot
     vars:
         CC: arm-none-eabi-gcc
+        CXX: arm-none-eabi-g++
         LINK: arm-none-eabi-gcc
         OBJCOPY: arm-none-eabi-objcopy
         SIZE: arm-none-eabi-size
-        CFLAGS:
+        CFLAGS_STD:
             - -std=c99
+        CFLAGS:
             - -mlittle-endian -mthumb
             - -I${relpath}/include
             - -I${relpath}/include/vendor
@@ -51,6 +53,14 @@ module:
       context: cortexm
     - name: printf_float
       context: cortexm
+
+    - name: feature/cpp
+      context: cortexm
+      global_vars:
+        LINK:
+          - remove:
+            - arm-none-eabi-gcc
+          - arm-none-eabi-g++
 
 subdirs:
     - periph

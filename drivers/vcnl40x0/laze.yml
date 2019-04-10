@@ -1,10 +1,16 @@
 module:
-    name: vcnl40x0
+  - name: vcnl40x0
     depends:
-        - periph_i2c
+      - periph_i2c
+    uses:
+      - vcnl4010
     sources:
-        - vcnl40x0.c
-        - saul: vcnl40x0_saul.c
+       - vcnl40x0.c
+       - saul: vcnl40x0_saul.c
     export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+      CFLAGS:
+        - -I${relpath}/include
+
+  - name: vcnl4010
+    depends:
+      - vcnl40x0

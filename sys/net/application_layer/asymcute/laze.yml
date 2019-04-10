@@ -1,0 +1,10 @@
+module:
+  - name: asymcute
+    sources:
+      - asymcute.c
+    depends:
+      - event
+      - event_timeout
+      - event_callback
+      - gnrc_sock_udp
+

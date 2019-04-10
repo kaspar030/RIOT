@@ -3,6 +3,7 @@ app:
         - fatfs_diskio_mtd
         - mtd
         - shell
+        - pkg/fatfs
     uses:
         - mtd_native
         - mtd_sdcard

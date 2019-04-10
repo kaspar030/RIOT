@@ -1,3 +1,6 @@
+module:
+  - name: netif
+
 subdirs:
         - application_layer
         - crosslayer

@@ -1,4 +1,5 @@
 module:
+  - name: embunit
     sources:
       - AssertImpl.c
       - ColorOutputter.c

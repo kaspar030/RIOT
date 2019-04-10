@@ -1,4 +1,6 @@
 module:
     name: netdev_test
+    uses:
+      - netdev_ieee802154
     sources:
         - netdev_test.c

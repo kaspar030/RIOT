@@ -4,11 +4,13 @@ rule:
       out: '.o'
       depfile: "$out.d"
       deps: gcc
-      cmd: 'ccache ${CC} -MMD -MF $out.d ${CFLAGS} ${testsuites} -c ${in} -o ${out}'
-      var_options:
-          testsuites:
-              start: -DTEST_SUITES=
-              joiner: ','
+      cmd: 'ccache ${CC} -MMD -MF $out.d ${CFLAGS_STD} ${CFLAGS} ${testsuites} -c ${in} -o ${out}'
+    - name: CXX
+      in: '.cpp'
+      out: '.o'
+      depfile: "$out.d"
+      deps: gcc
+      cmd: 'ccache ${CXX} -MMD -MF $out.d ${CXXFLAGS_STD} ${CFLAGS} ${CXXFLAGS} ${testsuites} -c ${in} -o ${out}'
     - name: ASM
       in: '.S'
       out: '.o'
@@ -29,10 +31,8 @@ context:
           CFLAGS:
             - -Wall
             - -Werror
-            - -Werror=old-style-definition
-            - -Werror=strict-prototypes
-            - -Wold-style-definition
-            - -Wstrict-prototypes
+            #- -Wold-style-definition
+            #- -Wstrict-prototypes
             - -Os
             - -g
 
@@ -43,7 +43,12 @@ context:
             - -I${relpath}/drivers/include
             - -I${relpath}/sys/include
             - -DRIOT_VERSION=\"laze\"
-            - -DRIOT_FILE_RELATIVE=__FILE__
+          CXXFLAGS_STD:
+            - -std=c++11
+      var_options:
+          testsuites:
+              start: -DTEST_SUITES=
+              joiner: ','
       tools:
           size:
               cmd:
@@ -53,7 +58,8 @@ builder:
           - name: host
             parent: default
             vars:
-                CC : gcc
+                CC  : gcc
+                CXX : g++
                 LINK: gcc
                 SIZE: size
             tools:
@@ -74,6 +80,10 @@ module:
 
     - name: host
       context: host
+
+    - name: cpp
+      depends:
+        - feature/cpp
 
 subdirs:
     [ dist, core, boards, cpu, drivers, sys, examples, tests, pkg ]

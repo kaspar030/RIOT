@@ -4,6 +4,7 @@ defaults:
         depends: board
 
 subdirs:
+    - asymcute_mqttsn
     - default
     - hello-world
     - gnrc_minimal

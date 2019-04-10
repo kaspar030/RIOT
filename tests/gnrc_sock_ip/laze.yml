@@ -4,7 +4,7 @@ app:
         - gnrc_sock_ip
         - ps
     sources:
-        - stack.c
+      - stack.c
     global_vars:
         CFLAGS:
             - -DDEVELHELP

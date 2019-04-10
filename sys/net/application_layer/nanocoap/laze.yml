@@ -1,0 +1,12 @@
+module:
+  - name: nanocoap
+    sources:
+      - nanocoap.c
+
+  - name: nanocoap_sock
+    sources:
+      - sock.c
+    depends:
+      - nanocoap
+      - sock_udp
+

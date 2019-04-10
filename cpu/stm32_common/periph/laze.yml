@@ -57,3 +57,9 @@ module:
       depends:
         - periph_gpio
         - feature/periph_qdec
+
+    - name: periph_eeprom
+      context: stm32
+      sources: eeprom.c
+      depends: feature/periph_eeprom
+

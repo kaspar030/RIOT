@@ -2,7 +2,6 @@ module:
     name: xbee
     depends:
         - ieee802154
-        - netif
         - periph_gpio
         - periph_uart
         - xtimer
@@ -11,6 +10,7 @@ module:
         - xbee_encryption
     sources:
         - xbee.c
+        - gnrc: gnrc_xbee.c
     export_vars:
         CFLAGS:
             - -I${relpath}/include

@@ -15,13 +15,13 @@ app:
 module:
     name: unittests-base
     sources:
-        - main.c
+      - main.c
     depends:
         - board
-        - sys/embunit
+        - embunit
     uses:
         - xtimer
-    global_vars:
+    export_vars:
         CFLAGS:
             - -I${relpath}/common
 
