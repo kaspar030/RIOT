@@ -20,6 +20,7 @@
 #include <board.h>
 #include <log.h>
 
+#ifdef MODULE_MOTOR_DRIVER
 extern int32_t qdecs_value[QDEC_NUMOF];
 
 void native_motor_driver_qdec_simulation(
@@ -52,3 +53,4 @@ void native_motor_driver_qdec_simulation(
             motor_driver, motor_id);
     }
 }
+#endif
