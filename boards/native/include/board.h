@@ -127,6 +127,7 @@ extern mtd_dev_t *mtd0;
 /** @} */
 #endif
 
+#ifdef MODULE_MOTOR_DRIVER
 /**
  * @brief Simulate QDEC on motor_set() calls
  *
@@ -182,6 +183,7 @@ static const motor_driver_config_t motor_driver_config[] = {
 
 #define MOTOR_DRIVER_NUMOF           ARRAY_SIZE(motor_driver_config)
 /** @} */
+#endif
 
 #endif /* __cplusplus */
 
