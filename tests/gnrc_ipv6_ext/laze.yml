@@ -4,10 +4,12 @@ app:
         - gnrc_ipv6_ext
         - gnrc_ipv6_router_default
         - gnrc_netdev_default
+        - gnrc_pktdump
         - gnrc_rpl_srh
         - gnrc_sixlowpan_iphc_nhc
         - gnrc_udp
         - ps
+        - shell
     global_vars:
         CFLAGS:
             - -DDEVELHELP

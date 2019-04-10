@@ -1,7 +1,8 @@
 defaults:
     app:
-        sources: main.c
-        depends: board
+      whitelist: riot
+      sources: main.c
+      depends: board
 
 subdirs:
     - asymcute_mqttsn

@@ -15,6 +15,20 @@ module:
           - gnrc_icmpv6_echo
 
     - name: gnrc
+      uses:
+        # almost all gnrc modules include nettypes.h, which adds types
+        # depending on used modules, so add those here:
+       - ccn_lite
+       - gnrc_gomach
+       - gnrc_icmpv6
+       - gnrc_ipv6
+       - gnrc_ipv6_ext
+       - gnrc_lwmac
+       - gnrc_sixloenc
+       - gnrc_sixlowpan
+       - gnrc_tcp
+       - gnrc_udp
+       - ndn_riot
 
     - name: gnrc_core
       depends:
