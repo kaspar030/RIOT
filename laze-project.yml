@@ -4,13 +4,13 @@ rule:
       out: '.o'
       depfile: "$out.d"
       deps: gcc
-      cmd: 'ccache ${CC} -MMD -MF $out.d ${CFLAGS_STD} ${CFLAGS} ${testsuites} -c ${in} -o ${out}'
+      cmd: 'ccache ${CC} -MMD -MF $out.d ${CFLAGS_STD} ${CFLAGS} ${includes} ${testsuites} -c ${in} -o ${out}'
     - name: CXX
       in: '.cpp'
       out: '.o'
       depfile: "$out.d"
       deps: gcc
-      cmd: 'ccache ${CXX} -MMD -MF $out.d ${CXXFLAGS_STD} ${CFLAGS} ${CXXFLAGS} ${testsuites} -c ${in} -o ${out}'
+      cmd: 'ccache ${CXX} -MMD -MF $out.d ${CXXFLAGS_STD} ${CFLAGS} ${CXXFLAGS} ${includes} ${testsuites} -c ${in} -o ${out}'
     - name: ASM
       in: '.S'
       out: '.o'
@@ -45,10 +45,15 @@ context:
             - -DRIOT_VERSION=\"laze\"
           CXXFLAGS_STD:
             - -std=c++11
+          includes:
+            - ${relpath}/drivers/include
+            - ${relpath}/sys/include
       var_options:
           testsuites:
               start: -DTEST_SUITES=
               joiner: ','
+          includes:
+            prefix: -I
       tools:
           size:
               cmd:
