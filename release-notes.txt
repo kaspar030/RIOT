@@ -91,6 +91,7 @@ CPU
     + samd21: enabled idle modes
     + sam0: added support for RWWEE on-chip memory
     + Kinetis: added support for EA series and S9KEAZ129 MCU
+    + TI CC2650: added I2C periph implementation
 
 Device Drivers
 --------------
