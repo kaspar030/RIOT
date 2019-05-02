@@ -151,9 +151,7 @@ riotboot/flash: riotboot/flash-slot0 riotboot/flash-bootloader
 FLASHFILE = $(RIOTBOOT_EXTENDED_BIN)
 
 # include suit targets
-ifneq (,$(filter suit_v1, $(USEMODULE)))
-include $(RIOTMAKE)/suit.inc.mk
-else
+ifneq (,$(filter suit_v4, $(USEMODULE)))
 include $(RIOTMAKE)/suit.v4.inc.mk
 endif
 
