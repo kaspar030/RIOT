@@ -1,5 +1,8 @@
 module:
     name: gnrc_sixlowpan_frag
+    depends:
+      - gnrc_sixlowpan
+      - xtimer
     uses:
         - gnrc_sixlowpan_iphc
     sources:

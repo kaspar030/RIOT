@@ -1,4 +1,6 @@
 module:
     name: ipv6_hdr
+    depends:
+      - ipv6_addr
     sources:
         - ipv6_hdr_print.c

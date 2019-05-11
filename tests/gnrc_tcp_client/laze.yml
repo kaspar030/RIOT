@@ -6,6 +6,12 @@ app:
         - gnrc_tcp
     export_vars:
         CFLAGS:
-            - -DTARGET_ADDR=\"fe80::affe\"
-            - -DTARGET_PORT="80"
+# Target Address, Target Port and number of Test Cycles
+            - -DSERVER_ADDR=\"2001:db8::affe:0001\"
+            - -DSERVER_PORT=80
+            - -DCLIENT_ADDR=\"2001:db8::affe:0002\"
             - -DCYCLES="3"
+            - -DGNRC_NETIF_IPV6_GROUPS_NUMOF=3
+            - -DGNRC_IPV6_NIB_CONF_ARSM=1
+            - -DGNRC_IPV6_NIB_CONF_QUEUE_PKT=1
+

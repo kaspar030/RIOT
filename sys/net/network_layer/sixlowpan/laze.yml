@@ -1,4 +1,7 @@
 module:
   - name: sixlowpan
+    depends:
+      - od
+      - ipv6_hdr
     sources:
         - sixlowpan_print.c
