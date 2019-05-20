@@ -69,3 +69,11 @@ suit/notify: | $(filter suit/publish, $(MAKECMDGOALS))
 	aiocoap-client -m POST "coap://$(SUIT_CLIENT)/suit/trigger" \
 		--payload "$(SUIT_COAP_ROOT)/$$(basename $(SUIT_MANIFEST_SIGNED_LATEST))" && \
 		echo "Triggered $(SUIT_CLIENT) to update."
+
+suit/delkeys:
+	rm -f public_key.h public.key secret.key
+
+suit/genkey:
+	$(RIOTBASE)/dist/tools/suit_v4/gen_key.py
+
+suit/keyhdr: suit/genkey $(SUIT_PUB_HDR)
