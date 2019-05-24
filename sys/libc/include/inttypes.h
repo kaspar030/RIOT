@@ -9,6 +9,7 @@
 
 #define PRIu16 "u"
 #define PRIi16 "i"
+#define PRId16 "i"
 #define PRIx16 "x"
 
 #define PRIu32 "lu"
