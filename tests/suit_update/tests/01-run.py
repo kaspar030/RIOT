@@ -20,6 +20,8 @@ MANIFEST_TIMEOUT = 15
 
 # If available use user defined tags for latest, Default: latest-1/2
 MANIFESTS = os.getenv('MANIFESTS', 'latest-1 latest-2').split(' ')
+USE_ETHOS = int(os.getenv('USE_ETHOS', '1'))
+TAP = os.getenv('TAP', 'tap0')
 
 def notify(server_url, client_url, manifest):
     cmd = ['make', 'SUIT_MANIFEST_SIGNED_LATEST={}'.format(manifest), 'suit/notify',
@@ -27,16 +29,20 @@ def notify(server_url, client_url, manifest):
            'SUIT_CLIENT={}'.format(client_url)]
     assert not subprocess.call(cmd)
 
-
 def testfunc(child):
     """For one board test if specified application is updatable"""
 
     # Initial Setup and wait for address configuration
     child.expect_exact('main(): This is RIOT!')
-    # Get device global address
-    child.expect(r'inet6 addr: (?P<gladdr>[0-9a-fA-F:]+:[A-Fa-f:0-9]+)'
-                '  scope: global  VAL')
-    client = "[{}]".format(child.match.group("gladdr").lower())
+
+    if USE_ETHOS is 0:
+        # Get device global address
+        child.expect(r'inet6 addr: (?P<gladdr>[0-9a-fA-F:]+:[A-Fa-f:0-9]+)'
+                    '  scope: global  VAL')
+        client = "[{}]".format(child.match.group("gladdr").lower())
+    else:
+        # Get device local address
+        client = "[fe80::2%{}]".format(TAP)
 
     for manifest in MANIFESTS:
         # Wait for suit_coap thread to start
