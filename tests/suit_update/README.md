@@ -1,8 +1,16 @@
 # Overview
 
 This a test application for suit module. The application sets-up a node with all
-the software needed to perform suit-updates. Currently it only works for wireless
-nodes so you need to setup a border router.
+the software needed to perform suit-updates.
+
+If you are going to test a stand alone node over ethos make sure in your Makefile
+`USE_ETHOS=1` and `USE_ETHOS=0` if doing a wireless test where BR is set-up. 
+
+
+```
+# Change this to 0 to not use ethos
+USE_ETHOS ?= 1
+```
 
 ## Requirements
 
@@ -40,7 +48,9 @@ Start aiocoap-fileserver:
 If aiocoap was cloned and built from source aiocoap-filserver will be located
 at <AIOCOAP_BASE_DIR>/aiocoap/contrib.
 
-### Setup a BR
+### Network
+
+#### A) Set-Up a BR
 
 On a different board flash follow the instruction and setup [gnrc_border_router](https://github.com/RIOT-OS/RIOT/tree/master/examples/gnrc_border_router).
 
@@ -52,6 +62,10 @@ it would be '2001:db8::/64' when running:
 Add a routable address to host:
 
     $ sudo ip address add 2001:db8::1/128 dev tap0
+
+#### B) Locally over ethos
+
+Nothing to be done.
 
 ### Provision IoT device (initial flash)
 
@@ -75,3 +89,5 @@ If not using the default SUIT_MANIFEST_SIGNED_LATEST values you should pass them
 where `MANIFESTS=tag-1 tag-2`. Its important that they are in the chronological publishing order.
 
     $ MANIFESTS="latest-1 latest-2" BOARD=samr21-xpro make test
+
+If testing locally over ethos you will have to prefix your command with `sudo`.

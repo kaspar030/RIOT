@@ -67,7 +67,34 @@ ifneq (,$(filter $(BOARD),$(LOW_MEMORY_BOARDS)))
   USEMODULE += prng_minstd
 endif
 
+# Change this to 0 to not use ethos
+USE_ETHOS ?= 1
+TAP ?= tap0
+IPV6_PREFIX ?= 2001:db8::/64
+
+ifeq (1,$(USE_ETHOS))
+ifeq (,$(filter native,$(BOARD)))
+  GNRC_NETIF_NUMOF := 2
+  USEMODULE += ethos
+  USEMODULE += stdio_uart_rx
+  USEMODULE += gnrc_uhcpc
+
+  # ethos baudrate can be configured from make command
+  ETHOS_BAUDRATE ?= 115200
+  CFLAGS += -DETHOS_BAUDRATE=$(ETHOS_BAUDRATE) -DUSE_ETHOS_FOR_STDIO
+
+  TERMDEPS += host-tools
+  TERMPROG ?= sudo sh $(RIOTTOOLS)/ethos/start_network.sh
+  TERMFLAGS ?= $(PORT) $(TAP) $(IPV6_PREFIX)
+endif
+endif
+
 include $(RIOTBASE)/Makefile.include
+
+.PHONY: host-tools
+
+host-tools:
+	$(Q)env -u CC -u CFLAGS make -C $(RIOTTOOLS)
 
 # Set a custom channel if needed
 ifneq (,$(filter cc110x,$(USEMODULE)))          # radio is cc110x sub-GHz
