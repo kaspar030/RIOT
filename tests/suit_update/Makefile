@@ -84,8 +84,14 @@ ifeq (,$(filter native,$(BOARD)))
   CFLAGS += -DETHOS_BAUDRATE=$(ETHOS_BAUDRATE) -DUSE_ETHOS_FOR_STDIO
 
   TERMDEPS += host-tools
-  TERMPROG ?= sudo sh $(RIOTTOOLS)/ethos/start_network.sh
-  TERMFLAGS ?= $(PORT) $(TAP) $(IPV6_PREFIX)
+  ifneq (1,$(RIOT_CI_BUILD))
+    TERMPROG ?= sudo sh $(RIOTTOOLS)/ethos/start_network.sh
+    TERMFLAGS ?= $(PORT) $(TAP) $(IPV6_PREFIX)
+  else
+    # The network is pre-configured on RIOT's CI workers
+    TERMPROG = $(RIOTTOOLS)/ethos/ethos
+    TERMFLAGS = $(PORT) $(TAP)
+  endif
 endif
 endif
 
