@@ -3,5 +3,6 @@ module:
     sources:
         - posix_time.c
     depends:
+        - posix_headers
         - xtimer
         - timex

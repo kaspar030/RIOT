@@ -3,5 +3,6 @@ module:
     sources:
         - dns.c
     depends:
+        - posix_headers
         - sock_udp
         - sock_util

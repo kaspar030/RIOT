@@ -1,3 +1,5 @@
 module:
+    depends:
+        - posix_headers
     sources:
         - vfs.c

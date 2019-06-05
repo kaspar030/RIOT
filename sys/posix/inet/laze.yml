@@ -1,5 +1,7 @@
 module:
     name: posix_inet
+    depends:
+        - posix_headers
     sources:
         - inet.c
     export_vars:

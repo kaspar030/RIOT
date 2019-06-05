@@ -1,4 +1,6 @@
 module:
     name: posix_sockets
+    depends:
+        - posix_headers
     sources:
         - posix_sockets.c

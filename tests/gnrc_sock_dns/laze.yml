@@ -4,7 +4,7 @@ app:
         - gnrc_ipv6_default
         - gnrc_netdev_default
         - gnrc_sock_udp
-        - posix
+        - posix_headers
         - shell_commands
         - sock_dns
     global_vars:
