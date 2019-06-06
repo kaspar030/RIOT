@@ -2,6 +2,8 @@ module:
     name: shell
     sources:
         - shell.c
+    depends:
+     - stdio_uart_rx
     uses:
         - newlib
         - shell_commands

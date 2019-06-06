@@ -2,3 +2,4 @@ subdirs:
     - ieee802154
     - csma_sender
     - l2filter
+    - l2util

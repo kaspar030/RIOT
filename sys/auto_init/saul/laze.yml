@@ -40,7 +40,7 @@ module:
         - auto_init_jc42.c
         - auto_init_l3g4200d.c
         - auto_init_lis3dh.c
-        - auto_init_lps331ap.c
+        - auto_init_lpsxxx.c
         - auto_init_lsm303dlhc.c
         - auto_init_lsm6dsl.c
         - auto_init_mag3110.c

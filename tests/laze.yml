@@ -79,7 +79,7 @@ subdirs:
   - driver_lis3dh
   - driver_lis3mdl
   - driver_lpd8808
-  - driver_lps331ap
+  - driver_lpsxxx
   - driver_lsm303dlhc
   - driver_lsm6dsl
   - driver_ltc4150

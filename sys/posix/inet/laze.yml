@@ -1,0 +1,7 @@
+module:
+    name: posix_inet
+    sources:
+        - inet.c
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include

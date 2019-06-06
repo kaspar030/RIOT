@@ -2,7 +2,7 @@ module:
     - name: at
       depends:
           - fmt
-          - isrpipe
+          - isrpipe_read_timeout
           - periph_uart
       uses:
           - at_urc

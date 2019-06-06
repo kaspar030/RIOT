@@ -3,6 +3,7 @@ module:
     depends:
         - fmt
         - netif
+        - l2util
     uses:
         - cc110x
         - esp_now

@@ -1,0 +1,20 @@
+module:
+    - name: lpsxxx
+      sources:
+          - lpsxxx.c
+          - saul: lpsxxx_saul.c
+      depends:
+          - periph_i2c
+      uses:
+          - lps22hb
+          - lps25hb
+          - lps331ap
+      export_vars:
+          CFLAGS:
+              - -I${relpath}/include
+    - name: lps331ap
+      depends: lpsxxx
+    - name: lps22hb
+      depends: lpsxxx
+    - name: lps25hb
+      depends: lpsxxx

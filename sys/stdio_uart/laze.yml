@@ -1,5 +1,13 @@
 module:
-    sources: stdio_uart.c
-    depends:
-     - isrpipe
-     - periph_uart
+    - name: sys/stdio_uart
+      sources: stdio_uart.c
+      depends:
+          - periph_uart
+      uses:
+          - stdio_uart_rx
+
+    - name: stdio_uart_rx
+      depends:
+          - isrpipe
+          - sys/stdio_uart
+

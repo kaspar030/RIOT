@@ -1,0 +1,3 @@
+module:
+    - name: l2util
+      sources: l2util.c

@@ -4,7 +4,10 @@ template:
         - cpuid
         - flashpage
         - i2c
+        - rtc
+        - rtt
         - spi
+        - timer
         - uart
 
 module:

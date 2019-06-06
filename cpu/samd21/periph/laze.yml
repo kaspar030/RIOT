@@ -2,8 +2,6 @@ template:
     "%NAME%":
         - pm
         - pwm
-        - rtt
-        - timer
 
 module:
     context: samd21

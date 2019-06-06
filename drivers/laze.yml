@@ -56,7 +56,7 @@ subdirs:
     - lis3dh
     - lis3mdl
     - lpd8808
-    - lps331ap
+    - lpsxxx
     - lsm303dlhc
     - lsm6dsl
     - ltc4150
