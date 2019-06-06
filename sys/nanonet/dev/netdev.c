@@ -84,7 +84,9 @@ static void _netdev_isr(netdev_t *netdev, netdev_event_t event)
 {
     if (event == NETDEV_EVENT_ISR) {
         unsigned n = (unsigned)netdev->context;
-        thread_flags_set(nanonet_thread, 0x1<<n);
+        /* send n as bit. shift left by one to make space for
+         * THREAD_FLAG_EVENT) */
+        thread_flags_set(nanonet_thread, 0x1<<(n + 1));
         return;
     }
 

@@ -24,6 +24,7 @@
 #include "bitarithm.h"
 #include "board.h"
 #include "byteorder.h"
+#include "event.h"
 #include "thread.h"
 #include "thread_flags.h"
 
@@ -57,9 +58,15 @@ void nanonet_loop(void)
     thread_flags_t flag;
 
     while(1) {
-        flag = thread_flags_wait_one((0x1<<nano_dev_numof)-1);
-        dev = (nano_dev_t*) &nanonet_devices[bitarithm_lsb(flag)];
-        dev->netdev->driver->isr(dev->netdev);
+        flag = thread_flags_wait_one(0xffff);
+        if (flag & THREAD_FLAG_EVENT) {
+        }
+        else {
+            unsigned netdev_num = bitarithm_lsb(flag >> 1);
+            assert(netdev_num < nano_dev_numof);
+            dev = (nano_dev_t*) &nanonet_devices[netdev_num];
+            dev->netdev->driver->isr(dev->netdev);
+        }
     }
 }
 
