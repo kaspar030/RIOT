@@ -38,7 +38,7 @@ int udp_handle(nano_ctx_t *ctx, size_t offset)
 {
     udp_hdr_t *hdr = (udp_hdr_t*) (ctx->buf+offset);
 
-    if ((ctx->len-offset) < (int)sizeof(udp_hdr_t)) {
+    if ((ctx->len-offset) < sizeof(udp_hdr_t)) {
         DEBUG("udp: truncated packet received.\n");
         return -1;
     }
@@ -60,13 +60,14 @@ int udp_handle(nano_ctx_t *ctx, size_t offset)
 
     nano_udp_bind_t *bind = _find_udp_bind(dst_port);
     if (bind) {
+        /* TODO: possibly validate UDP checksum */
         return bind->handler(ctx, offset+sizeof(udp_hdr_t), bind);
     }
     else {
         if (is_ipv4_hdr(ctx->l3_hdr_start)) {
 #ifdef NANONET_IPV4
+            /* unless this packet was broadcast, send ICMP unreachable */
             if (! (ctx->src_addr.ipv4 || (~ctx->dst_addr.ipv4))) {
-                /* also filter broadcast */
                 DEBUG("udp: unreachable port %u\n", dst_port);
                 icmp_port_unreachable(ctx);
             }
@@ -83,7 +84,6 @@ int udp_handle(nano_ctx_t *ctx, size_t offset)
 
 static void udp_build_hdr(udp_hdr_t *hdr, uint16_t dst_port, uint16_t src_port, size_t len)
 {
-
     hdr->src_port = htons(src_port);
     hdr->dst_port = htons(dst_port);
 
