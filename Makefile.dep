@@ -86,6 +86,7 @@ endif
 
 ifneq (,$(filter nanonet,$(USEMODULE)))
   USEMODULE += iolist
+  USEMODULE += tsrb
   USEMODULE += event
   USEMODULE += nanonet_netdev
 endif
