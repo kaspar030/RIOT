@@ -15,4 +15,11 @@ static inline int nano_min(int a, int b) {
     return a < b ? a : b;
 }
 
+static inline size_t nano_ctx_bufleft(nano_ctx_t *ctx, void *buf_pos)
+{
+    return (size_t)(ctx->buf - (size_t)buf_pos + ctx->len);
+}
+
+void nano_dump(uint8_t *addr, size_t len);
+
 #endif /* NANO_UTIL_H */

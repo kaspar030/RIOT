@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stddef.h>
 
+#include "fmt.h"
+
 /* calcsum - used to calculate IP and ICMP header checksums using
  * one's compliment of the one's compliment sum of 16 bit words of the header
  */
@@ -48,3 +50,18 @@ void nano_util_addr_dump(uint8_t *addr, size_t len)
     }
 }
 #endif
+
+void nano_dump(uint8_t *addr, size_t len)
+{
+    size_t n = 0;
+    while (n < len) {
+        print_byte_hex(*addr++);
+        n++;
+        if ((n & 0x7) == 0) {
+            print("\n", 1);
+        }
+    }
+    if ((n & 0x7) != 0) {
+        print("\n", 1);
+    }
+}
