@@ -89,9 +89,9 @@ static void arp_request(nano_dev_t *dev, uint32_t ip)
 {
     DEBUG("arp_request: requesting MAC for 0x%08x\n", (unsigned int)ip);
 
-    uint8_t buf[sizeof(eth_hdr_t) + sizeof(arp_pkt_t)] = { 0 };
+    uint8_t buf[sizeof(arp_pkt_t)] = { 0 };
 
-    arp_pkt_t *pkt = (arp_pkt_t *)(buf + sizeof(eth_hdr_t));
+    arp_pkt_t *pkt = (arp_pkt_t *)(buf);
 
     pkt->arp_ipv4_types = htonl(0x00010800);
     pkt->arp_ipv4_lengths = htons(0x0604);
