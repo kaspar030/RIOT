@@ -4,25 +4,14 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#include "clist.h"
 #include "nano_ctx.h"
 #include "nano_ipv4.h"
 #include "nano_ipv6.h"
+#include "tsrb.h"
 
-typedef struct __attribute__((packed)) {
-    uint16_t src_port;
-    uint16_t dst_port;
-    uint32_t seq_nr;
-    uint32_t ack_nr;
-    uint8_t data_offset; /* (NS not used) */
-    uint8_t flags;
-    uint16_t window_size;
-    uint16_t urgent_ptr;
-    uint8_t options[];
-} tcp_hdr_t;
-
-typedef int (*nano_tcp_handler_t) (nano_ctx_t *ctx, size_t offset);
-
-static enum {
+typedef enum {
+    CLOSED,
     LISTEN,
     SYN_SENT,
     SYN_RECEIVED,
@@ -33,20 +22,65 @@ static enum {
     CLOSING,
     LAST_ACK,
     TIME_WAIT,
-    CLOSED
+    UNKNOWN,
+} tcp_state_t;
+
+enum {
+    TCP_SND = 1,
 };
 
+typedef struct __attribute__((packed)) {
+    uint16_t src_port;
+    uint16_t dst_port;
+    uint32_t seq_nr;
+    uint32_t ack_nr;
+    uint8_t data_offset; /* (NS not used) */
+    uint8_t flags;
+    uint16_t window_size;
+    uint16_t checksum;
+    uint16_t urgent_ptr;
+    uint8_t options[];
+} tcp_hdr_t;
 
-typedef struct nano_tcp_bind {
-    uint16_t port;
-    nano_tcp_handler_t handler;
-} nano_tcp_bind_t;
+typedef struct {
+    clist_node_t next;
+    tcp_state_t state;
+    uint16_t flags;
+    uint16_t src_port;
+    uint16_t dst_port;
+    union {
+        uint32_t ipv4;
+        uint8_t ipv6[8];
+    } peer;
 
-extern nano_tcp_bind_t nano_tcp_binds[];
+    uint32_t irs;
+    uint32_t rcv_nxt;
 
+    /* urgent pointer not supported (yet) */
+    /*uint32_t rcv_up;*/
+
+    uint32_t iss;
+    uint32_t snd_nxt;
+    uint32_t snd_una;
+
+    tsrb_t rcv_buf;
+    event_t event;
+} tcp_tcb_t;
+
+/* typedef struct nano_tcp_bind { */
+/*     uint16_t port; */
+/*     nano_tcp_handler_t handler; */
+/* } nano_tcp_bind_t; */
+/* typedef int (*nano_tcp_handler_t) (nano_ctx_t *ctx, size_t offset); */
+
+/* extern nano_tcp_bind_t nano_tcp_binds[]; */
+
+int tcp_init(tcp_tcb_t *tcb, uint8_t *buf, size_t buf_len);
+int tcp_connect(tcp_tcb_t *tcb, uint32_t dst_ip, uint16_t dst_port, uint16_t src_port);
+int tcp_write(tcp_tcb_t *tcb, const iolist_t *iolist);
+int tcp_close(tcp_tcb_t *tcb);
 int tcp_handle(nano_ctx_t *ctx, size_t offset);
-int tcp_send(const iolist_t *iolist, uint32_t dst_ip, uint16_t dst_port, uint16_t src_port);
-int tcp6_send(const iolist_t *iolist, uint8_t* dst_ip, uint16_t dst_port, uint16_t src_port, nano_dev_t *dev);
-int tcp_reply(nano_ctx_t *ctx);
 
+/* int tcp6_send(const iolist_t *iolist, uint8_t* dst_ip, uint16_t dst_port, uint16_t src_port, nano_dev_t *dev); */
+/* int tcp_reply(nano_ctx_t *ctx); */
 #endif /* NANO_TCP_H */

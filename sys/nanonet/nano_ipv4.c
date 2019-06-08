@@ -12,6 +12,7 @@
 #include "nano_icmp.h"
 #include "nano_ipv4.h"
 #include "nano_route.h"
+#include "nano_tcp.h"
 #include "nano_udp.h"
 #include "nano_util.h"
 
@@ -42,6 +43,9 @@ int ipv4_handle(nano_ctx_t *ctx, size_t offset) {
         switch (hdr->protocol) {
             case 0x1:
                 icmp_handle(ctx, offset+hdr_len);
+                break;
+            case 0x6:
+                tcp_handle(ctx, offset+hdr_len);
                 break;
             case 0x11:
                 udp_handle(ctx, offset+hdr_len);
@@ -75,6 +79,39 @@ ipv4_route_t *ipv4_getroute(uint32_t dest_ip) {
 #endif
 }
 
+static uint16_t calcsum(ipv4_hdr_t *hdr, const iolist_t *payload, size_t payload_len)
+{
+    uint16_t csum;
+
+    /* calculate checksum for IPv4 pseudo header */
+    uint16_t _payload_len = htons((uint16_t)payload_len);
+    uint8_t protocol[2] = { 0, hdr->protocol };
+
+    csum = nano_util_calcsum(0, (uint8_t *)&hdr->src, (2 * 4 /*IPV4_ADDR_LEN*/));
+    csum = nano_util_calcsum(csum, protocol, sizeof(protocol));
+    csum = nano_util_calcsum(csum, (uint8_t *)&_payload_len, 2);
+
+    /* add actual data fields */
+    /* TODO: iterate iolist */
+    csum = nano_util_calcsum(csum, payload->iol_base, payload_len);
+
+    return csum;
+}
+
+static void ipv4_set_l4_checksum(ipv4_hdr_t *hdr, const iolist_t *iolist, size_t payload_len, int protocol)
+{
+    switch (protocol) {
+        case 0x6 /* TCP */:
+            {
+                uint16_t csum = ~calcsum(hdr, iolist, payload_len);
+                tcp_hdr_t *tcp_hdr = iolist->iol_base;
+                tcp_hdr->checksum = csum;
+                DEBUG("ipv4_send() TCP checksum=0x%04x tcp_hdr=%p payload_len=%u\n",
+                        (unsigned)csum, (void*)tcp_hdr, (unsigned)payload_len);
+            }
+    }
+}
+
 int ipv4_send(const iolist_t *iolist, uint32_t dest_ip, int protocol)
 {
     ipv4_route_t *route;
@@ -102,6 +139,8 @@ int ipv4_send(const iolist_t *iolist, uint32_t dest_ip, int protocol)
 
     hdr.hdr_chksum = ~nano_util_calcsum(0, (uint8_t *)&hdr, sizeof(ipv4_hdr_t));
 
+    ipv4_set_l4_checksum(&hdr, iolist, payload_len, protocol);
+
     if (! arp_cache_get(dev, dest_ip, dest_mac)) {
         DEBUG("ipv4: no ARP entry for 0x%08x\n", (unsigned int)dest_ip);
         return -2;
@@ -123,10 +162,18 @@ int ipv4_reply(nano_ctx_t *ctx)
     hdr->dst = hdr->src;
     hdr->src = htonl(ctx->dev->ipv4);
 
-    hdr->total_len = htons(ctx->len - (((uint8_t*)hdr) - ctx->buf));
+    uint16_t total_len = ctx->len - (((uint8_t*)hdr) - ctx->buf);
+    hdr->total_len = htons(total_len);
 
     hdr->hdr_chksum = 0;
     hdr->hdr_chksum = ~nano_util_calcsum(0, (uint8_t*)hdr, sizeof(ipv4_hdr_t));
+
+    if (hdr->protocol == 0x6 /*TCP*/) {
+        size_t hdr_len = ipv4_hdr_len(hdr);
+        size_t payload_len = total_len - hdr_len;
+        iolist_t iolist = { .iol_base=(((uint8_t *)hdr) + hdr_len), .iol_len=payload_len };
+        ipv4_set_l4_checksum(hdr, &iolist, payload_len, hdr->protocol);
+    }
 
     return ctx->dev->reply(ctx);
 }
