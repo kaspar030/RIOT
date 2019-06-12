@@ -1,6 +1,7 @@
 #ifndef NANONET_H
 #define NANONET_H
 
+#include "event.h"
 #include "thread.h"
 
 #include "nano_config.h"
@@ -21,5 +22,6 @@ void nanonet_start_thread(void);
 
 extern uint8_t nanonet_rxbuf[NANONET_RX_BUFSIZE];
 extern thread_t *nanonet_thread;
+extern event_queue_t nanonet_events;
 
 #endif /* NANONET_H */
