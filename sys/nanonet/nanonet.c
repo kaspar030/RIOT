@@ -37,6 +37,8 @@
 #include "debug.h"
 
 thread_t *nanonet_thread;
+event_queue_t nanonet_events;
+
 uint8_t nanonet_rxbuf[NANONET_RX_BUFSIZE];
 
 void nanonet_init(void)
@@ -44,6 +46,7 @@ void nanonet_init(void)
     DEBUG("nanonet: initializing...\n");
 
     nanonet_thread = (thread_t *)sched_active_thread;
+    event_queue_init(&nanonet_events);
 
     nanonet_init_devices();
 
@@ -56,10 +59,14 @@ void nanonet_loop(void)
 
     nano_dev_t *dev;
     thread_flags_t flag;
+    event_t *event;
 
     while(1) {
         flag = thread_flags_wait_one(0xffff);
         if (flag & THREAD_FLAG_EVENT) {
+            while ((event = event_get(&nanonet_events))) {
+                event->handler(event);
+            }
         }
         else {
             unsigned netdev_num = bitarithm_lsb(flag >> 1);
