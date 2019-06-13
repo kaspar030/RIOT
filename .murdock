@@ -247,19 +247,22 @@ test_job() {
     local appdir=$1
     local board=$(echo $2 | cut -f 1 -d':')
     local toolchain=$(echo $2 | cut -f 2 -d':')
-    local flashfile="$3"
 
-    [ ! -f "$flashfile" ] && {
-        echo "$0: _test(): flashfile \"$flashfile\" doesn't exist!"
-        return 1
-    }
+    # interpret any extra arguments as file names.
+    # They will be sent along with the job to the test worker
+    # and stored in the application's binary folder.
+    shift 2
+    local files=""
+    for filename in "$@"; do
+        files="${files} --file ${filename}:${appdir}/bin/${board}/$(basename ${filename})"
+    done
 
     dwqc \
         ${DWQ_ENV} \
         ${DWQ_JOBID:+--subjob} \
-        --file $flashfile:$appdir/bin/${board}/$(basename $flashfile) \
         --queue ${TEST_QUEUE:-$board} \
         --maxfail 1 \
+        $files \
         "./.murdock run_test $appdir $board:$toolchain"
 }
 
