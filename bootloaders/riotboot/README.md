@@ -105,13 +105,4 @@ flash` if the `riotboot` feature is used.
 
 ## Flashing examples
 
-The following sequence of commands tests building, flashing and booting slot 0,
-then slot 1. tests/riotboot prints out the current booted slot in the shell.
-
-To test building, flashing and booting the first slot:
-
-`BOARD=samr21-xpro APP_VER=$(date +%s) make -C tests/riotboot/ flash test`
-
-For the second slot:
-
-`BOARD=samr21-xpro APP_VER=$(date +%s) make -C tests/riotboot/ riotboot/flash-slot1 test`
+See 'tests/riotboot/README.md.
