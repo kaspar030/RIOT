@@ -52,20 +52,19 @@ ifneq (native,$(BOARD))
   USEMODULE += riotboot_slot riotboot_flashwrite riotboot_flashwrite_verify_sha256
 endif
 
+# The test script assumes initially version "0" is flashed,
+# as done by the CI.
+# Thus default to that (instead of epoch set by makefiles/boot/riotboot.inc.mk).
+APP_VER?=0
+
+# The test needs the linked slot binaries without header in order to be able to
+# create final binaries with specific APP_VER values. The CI RasPi test workers
+# don't compile themselves, thus add the required files here so they will be
+# submitted along with the test jobs.
+TEST_EXTRA_FILES=$(SLOT_RIOT_ELFS)
+
 # Change this to 0 show compiler invocation lines by default:
 QUIET ?= 1
-
-# Use different settings when compiling for one of the following (low-memory)
-# boards
-LOW_MEMORY_BOARDS := nucleo-f334r8
-
-ifneq (,$(filter $(BOARD),$(LOW_MEMORY_BOARDS)))
-  $(info Using low-memory configuration for microcoap_server.)
-  ## low-memory tuning values
-  # lower pktbuf buffer size
-  CFLAGS += -DGNRC_PKTBUF_SIZE=1000
-  USEMODULE += prng_minstd
-endif
 
 # Change this to 0 to not use ethos
 USE_ETHOS ?= 1
@@ -89,10 +88,24 @@ ifeq (,$(filter native,$(BOARD)))
     TERMFLAGS ?= $(PORT) $(TAP) $(IPV6_PREFIX)
   else
     # The network is pre-configured on RIOT's CI workers
+    export TAP=riot0
+    IPV6_PREFIX=2001:db8::/64
     TERMPROG = $(RIOTTOOLS)/ethos/ethos
-    TERMFLAGS = $(PORT) $(TAP)
+    TERMFLAGS = $(TAP) $(PORT)
   endif
 endif
+endif
+
+# Use different settings when compiling for one of the following (low-memory)
+# boards
+LOW_MEMORY_BOARDS := nucleo-f334r8
+
+ifneq (,$(filter $(BOARD),$(LOW_MEMORY_BOARDS)))
+  $(info Using low-memory configuration for microcoap_server.)
+  ## low-memory tuning values
+  # lower pktbuf buffer size
+  CFLAGS += -DGNRC_PKTBUF_SIZE=1000
+  USEMODULE += prng_minstd
 endif
 
 include $(RIOTBASE)/Makefile.include
