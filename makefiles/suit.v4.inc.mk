@@ -23,9 +23,20 @@ export CFLAGS += -DSOCK_URLPATH_MAXLEN=128
 SUIT_VENDOR ?= "riot-os.org"
 SUIT_SEQNR ?= $(APP_VER)
 SUIT_DEVICE_ID ?= $(BOARD)
-SUIT_KEY ?= secret.key
-SUIT_PUB ?= public.key
-SUIT_PUB_HDR ?= public_key.h
+
+ifeq (1, RIOT_CI_BUILD)
+  # when running on CI, take keys from $(BINDIR)
+  # compile jobs will send the keys along with the ELF files
+  SUIT_KEY = $(BINDIR)/secret.key
+  SUIT_PUB = $(BINDIR)/public.key
+  SUIT_PUB_HDR = $(BINDIR)/public_key.h
+  TEST_EXTRA_FILES = $(SUIT_KEY) $(SUIT_PUB) $(SUIT_PUB_HDR)
+else
+  SUIT_KEY ?= secret.key
+  SUIT_PUB ?= public.key
+  SUIT_PUB_HDR ?= public_key.h
+endif
+
 
 $(SUIT_KEY) $(SUIT_PUB):
 	@$(RIOTBASE)/dist/tools/suit_v4/gen_key.py
