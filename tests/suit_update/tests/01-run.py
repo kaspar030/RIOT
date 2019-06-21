@@ -32,12 +32,15 @@ def start_aiocoap_fileserver():
     return tmpdirname, aiocoap_process
 
 
-def cleanup(tmpdirname, aiocoap_process):
-    aiocoap_process.kill()
-    aiocoap_process.wait(1)
-    aiocoap_process.terminate()
-    aiocoap_process.wait(1)
-    tmpdirname.cleanup()
+def cleanup(tmpdir, aiocoap_process):
+    try:
+        aiocoap_process.terminate()
+        aiocoap_process.wait(1)
+    except subprocess.TimeoutExpired:
+        aiocoap_process.kill()
+        aiocoap_process.wait()
+
+    tmpdir.cleanup()
 
 
 def notify(coap_server, client_url, version=None):
