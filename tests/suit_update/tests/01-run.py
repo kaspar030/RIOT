@@ -33,6 +33,7 @@ def start_aiocoap_fileserver():
 
 
 def cleanup(tmpdir, aiocoap_process):
+    print("cleaning up...")
     try:
         aiocoap_process.terminate()
         aiocoap_process.wait(1)
@@ -126,4 +127,5 @@ if __name__ == "__main__":
         print(e)
     finally:
         cleanup(tmpdir, aiocoap_process)
-        sys.exit(res)
+
+    sys.exit(res)
