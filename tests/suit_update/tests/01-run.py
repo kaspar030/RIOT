@@ -34,6 +34,9 @@ def start_aiocoap_fileserver():
 
 def cleanup(tmpdirname, aiocoap_process):
     aiocoap_process.kill()
+    aiocoap_process.wait(1)
+    aiocoap_process.terminate()
+    aiocoap_process.wait(1)
     tmpdirname.cleanup()
 
 
