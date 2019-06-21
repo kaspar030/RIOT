@@ -116,8 +116,8 @@ if __name__ == "__main__":
 
         res = run(testfunc, echo=True)
 
-    except (SystemExit, KeyboardInterrupt):
-        pass
+    except Exception as e:
+        print(e)
     finally:
         cleanup(tmpdir, aiocoap_process)
         sys.exit(res)
