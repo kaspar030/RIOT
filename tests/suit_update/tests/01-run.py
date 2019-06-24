@@ -33,13 +33,7 @@ def start_aiocoap_fileserver():
 
 
 def cleanup(tmpdir, aiocoap_process):
-    try:
-        aiocoap_process.terminate()
-        aiocoap_process.wait(1)
-    except subprocess.TimeoutExpired:
-        aiocoap_process.kill()
-        aiocoap_process.wait()
-
+    aiocoap_process.kill()
     tmpdir.cleanup()
 
 
