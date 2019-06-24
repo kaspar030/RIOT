@@ -7,7 +7,6 @@
 # directory for more details.
 
 import os
-import signal
 import subprocess
 import sys
 import tempfile
@@ -27,14 +26,20 @@ TAP = os.getenv("TAP", "tap0")
 def start_aiocoap_fileserver():
     tmpdirname = tempfile.TemporaryDirectory()
     aiocoap_process = subprocess.Popen(
-        "aiocoap-fileserver %s" % tmpdirname.name, shell=True, preexec_fn=os.setsid
+        "exec aiocoap-fileserver %s" % tmpdirname.name, shell=True
     )
 
     return tmpdirname, aiocoap_process
 
 
 def cleanup(tmpdir, aiocoap_process):
-    os.killpg(os.getpgid(aiocoap_process.pid), signal.SIGKILL)
+    try:
+        aiocoap_process.terminate()
+        aiocoap_process.wait(1)
+    except subprocess.TimeoutExpired:
+        aiocoap_process.kill()
+        aiocoap_process.wait()
+
     tmpdir.cleanup()
 
 
