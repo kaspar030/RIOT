@@ -266,7 +266,7 @@ test_job() {
         startswith "${BINDIR}" "${filename}" || \
             error "$0: file ${filename} not in build directory"
         # get relative (to $(BINDIR) path
-        local relpath="$(realpath --relative-to $(BINDIR) ${filename})"
+        local relpath="$(realpath --relative-to ${BINDIR} ${filename})"
 
         # set remote file path.
         # currently, the test workers build in the default build path.
