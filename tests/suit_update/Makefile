@@ -82,8 +82,8 @@ ifeq (,$(filter native,$(BOARD)))
   ETHOS_BAUDRATE ?= 115200
   CFLAGS += -DETHOS_BAUDRATE=$(ETHOS_BAUDRATE) -DUSE_ETHOS_FOR_STDIO
 
-  TERMDEPS += host-tools
   ifneq (1,$(RIOT_CI_BUILD))
+    TERMDEPS += host-tools
     TERMPROG ?= sudo sh $(RIOTTOOLS)/ethos/start_network.sh
     TERMFLAGS ?= $(PORT) $(TAP) $(IPV6_PREFIX)
   else
