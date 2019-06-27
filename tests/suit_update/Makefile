@@ -74,13 +74,12 @@ IPV6_PREFIX ?= 2001:db8::/64
 ifeq (1,$(USE_ETHOS))
 ifeq (,$(filter native,$(BOARD)))
   GNRC_NETIF_NUMOF := 2
-  USEMODULE += ethos
-  USEMODULE += stdio_uart_rx
+  USEMODULE += stdio_ethos
   USEMODULE += gnrc_uhcpc
 
   # ethos baudrate can be configured from make command
   ETHOS_BAUDRATE ?= 115200
-  CFLAGS += -DETHOS_BAUDRATE=$(ETHOS_BAUDRATE) -DUSE_ETHOS_FOR_STDIO
+  CFLAGS += -DETHOS_BAUDRATE=$(ETHOS_BAUDRATE)
 
   ifneq (1,$(RIOT_CI_BUILD))
     TERMDEPS += host-tools
