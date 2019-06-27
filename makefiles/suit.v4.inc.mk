@@ -29,8 +29,7 @@ SUIT_PUB ?= $(BINDIR)/public.key
 SUIT_PUB_HDR ?= $(BINDIR)/public_key.h
 
 # In the CI, building is done on a different host than running the tests.
-# The latter requires re-publishing with a different version, so it requires
-# the keys.
+# The tests re-publish different versions, so they require the keys.
 TEST_EXTRA_FILES += $(SUIT_KEY) $(SUIT_PUB) $(SUIT_PUB_HDR)
 
 $(SUIT_KEY) $(SUIT_PUB):
