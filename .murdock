@@ -34,6 +34,14 @@ error() {
     exit 1
 }
 
+# true if "$2" starts with "$1", false otherwise
+startswith() {
+  case "${2}" in
+    ${1}*) true ;;
+    *) false ;;
+  esac
+}
+
 # if MURDOCK_HOOK is set, this function will execute it and pass on all it's
 # parameters. should the hook script exit with negative exit code, hook() makes
 # this script exit with error, too.
@@ -254,7 +262,16 @@ test_job() {
     shift 2
     local files=""
     for filename in "$@"; do
-        files="${files} --file ${filename}:${appdir}/bin/${board}/$(basename ${filename})"
+        # check if the file is within $(BINDIR)
+        startswith "${BINDIR}" "${filename}" || \
+            error "$0: file ${filename} not in build directory"
+        # get relative (to $(BINDIR) path
+        local relpath="$(realpath --relative-to $(BINDIR) ${filename})"
+
+        # set remote file path.
+        # currently, the test workers build in the default build path.
+        local remote_bindir="${appdir}/bin/${board}"
+        files="${files} --file ${filename}:${remote_bindir}/${relpath}"
     done
 
     dwqc \
