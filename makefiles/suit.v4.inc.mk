@@ -33,7 +33,8 @@ SUIT_PUB_HDR ?= $(BINDIR)/public_key.h
 TEST_EXTRA_FILES += $(SUIT_KEY) $(SUIT_PUB) $(SUIT_PUB_HDR)
 
 $(SUIT_KEY) $(SUIT_PUB):
-	@$(RIOTBASE)/dist/tools/suit_v4/gen_key.py
+	@$(RIOTBASE)/dist/tools/suit_v4/gen_key.py $(SUIT_KEY) $(SUIT_PUB)
+
 
 $(SUIT_PUB_HDR): $(SUIT_PUB)
 	@xxd -i $(SUIT_PUB) > $@
@@ -84,8 +85,5 @@ suit/notify: | $(filter suit/publish, $(MAKECMDGOALS))
 
 suit/delkeys:
 	rm -f public_key.h public.key secret.key
-
-suit/genkey:
-	$(RIOTBASE)/dist/tools/suit_v4/gen_key.py
 
 suit/keyhdr: suit/genkey $(SUIT_PUB_HDR)
