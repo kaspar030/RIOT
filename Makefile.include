@@ -396,7 +396,7 @@ include $(RIOTMAKE)/bindist.inc.mk
 include $(RIOTMAKE)/modules.inc.mk
 
 
-.PHONY: all link clean flash flash-only term doc debug debug-server reset objdump help info-modules
+.PHONY: all link clean flash flash-only termdeps term doc debug debug-server reset objdump help info-modules
 .PHONY: print-size elffile binfile hexfile flashfile
 .PHONY: ..in-docker-container
 
@@ -556,7 +556,10 @@ flash-only: $(FLASHDEPS)
 preflash: $(BUILD_BEFORE_FLASH)
 	$(PREFLASHER) $(PREFFLAGS)
 
-term: $(filter flash, $(MAKECMDGOALS)) $(TERMDEPS)
+termdeps: $(TERMDEPS)
+	@true
+
+term: $(filter flash, $(MAKECMDGOALS)) termdeps
 	$(call check_cmd,$(TERMPROG),Terminal program)
 	$(TERMPROG) $(TERMFLAGS)
 
