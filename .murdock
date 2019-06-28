@@ -263,10 +263,12 @@ test_job() {
     local files=""
     for filename in "$@"; do
         # check if the file is within $(BINDIR)
-        startswith "${BINDIR}" "${filename}" || \
-            error "$0: file ${filename} not in build directory"
-        # get relative (to $(BINDIR) path
-        local relpath="$(realpath --relative-to ${BINDIR} ${filename})"
+        if startswith "${BINDIR}" "${filename}"; then
+          # get relative (to $(BINDIR) path
+          local relpath="$(realpath --relative-to ${BINDIR} ${filename})"
+        else
+          local relpath="$(basename ${filename})"
+        fi
 
         # set remote file path.
         # currently, the test workers build in the default build path.
