@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Kaspar Schleiser <kaspar@schleiser.de>
+ * Copyright (C) 2019 Kaspar Schleiser <kaspar@schleiser.de>
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -36,6 +36,8 @@ extern int _gnrc_netif_config(int argc, char **argv);
 int main(void)
 {
     puts("RIOT SUIT update example application");
+
+    /* print running slot */
     printf("running from slot %u\n", riotboot_slot_current());
     printf("slot start addr = %p\n", (void *)riotboot_slot_get_hdr(riotboot_slot_current()));
 

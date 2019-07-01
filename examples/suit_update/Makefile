@@ -2,7 +2,7 @@
 APPLICATION = suit_update
 
 # If no BOARD is found in the environment, use this default:
-BOARD ?= native
+BOARD ?= samr21-xpro
 
 # This has to be the absolute path to the RIOT base directory:
 RIOTBASE ?= $(CURDIR)/../..
@@ -39,6 +39,9 @@ USEMODULE += shell_commands
 # development process:
 #DEVELHELP = 1
 
+# Change this to 0 show compiler invocation lines by default:
+QUIET ?= 1
+
 #
 # SUIT update specific stuff
 #
@@ -46,24 +49,17 @@ USEMODULE += shell_commands
 USEMODULE += nanocoap_sock sock_util
 USEMODULE += suit suit_coap
 
-# v4:
+# SUIT draft v4 support:
 USEMODULE += suit_v4
-INCLUDES += -I$(CURDIR) # Include public_key.h in the path
 
-
-ifneq (native,$(BOARD))
-  FEATURES_REQUIRED += riotboot
-  USEMODULE += riotboot_slot riotboot_flashwrite riotboot_flashwrite_verify_sha256
-endif
-
-# Change this to 0 show compiler invocation lines by default:
-QUIET ?= 1
+# SUIT depends on riotboot support and some extra riotboot modules
+FEATURES_REQUIRED += riotboot
+USEMODULE += riotboot_slot riotboot_flashwrite riotboot_flashwrite_verify_sha256
 
 # Change this to 0 to not use ethos
 USE_ETHOS ?= 1
 
 ifeq (1,$(USE_ETHOS))
-ifeq (,$(filter native,$(BOARD)))
   GNRC_NETIF_NUMOF := 2
   USEMODULE += stdio_ethos
   USEMODULE += gnrc_uhcpc
@@ -71,29 +67,49 @@ ifeq (,$(filter native,$(BOARD)))
   # ethos baudrate can be configured from make command
   ETHOS_BAUDRATE ?= 115200
   CFLAGS += -DETHOS_BAUDRATE=$(ETHOS_BAUDRATE)
-endif
+
+  # make sure ethos and uhcpd are built
+  TERMDEPS += host-tools
+  ifneq (1,$(RIOT_CI_BUILD))
+    # if running locally (not on CI), use start_network.sh
+    TAP ?= tap0
+    IPV6_PREFIX ?= 2001:db8::/64
+    TERMPROG ?= sudo sh $(RIOTTOOLS)/ethos/start_network.sh
+    TERMFLAGS ?= $(PORT) $(TAP) $(IPV6_PREFIX)
+  else
+    # The network is pre-configured on RIOT's CI workers,
+    # so if running a CI build, make use of that
+    export TAP=riot0
+    TERMPROG = $(RIOTTOOLS)/ethos/ethos
+    TERMFLAGS = $(TAP) $(PORT)
+  endif
 endif
 
-# riotboot is currently incompatible with the softdevice.
-# that gets automatically selected with gnrc_netdev_default, unless nrfmin is used.
+# The test script assumes initially version "0" is flashed,
+# as done by the CI.
+# Thus default to that (instead of epoch set by makefiles/boot/riotboot.inc.mk).
+APP_VER ?= 0
+
+# The test needs the linked slot binaries without header in order to be able to
+# create final binaries with specific APP_VER values. The CI RasPi test workers
+# don't compile themselves and re-create signed images, thus add the required
+# files here so they will be submitted along with the test jobs.
+TEST_EXTRA_FILES += $(SLOT_RIOT_ELFS) $(SUIT_KEY) $(SUIT_PUB)
+
+# riotboot is currently incompatible with the NRF softdevice.
+# That gets automatically selected on boards that support it, unless nrfmin is
+# used.
 # So use that here in order to prevent the softdevice from being used.
 ifeq (nrf52dk,$(BOARD))
   USEMODULE += nrfmin
 endif
 
-# Use different settings when compiling for one of the following (low-memory)
-# boards
-LOW_MEMORY_BOARDS := nucleo-f334r8
-
-ifneq (,$(filter $(BOARD),$(LOW_MEMORY_BOARDS)))
-  $(info Using low-memory configuration for microcoap_server.)
-  ## low-memory tuning values
-  # lower pktbuf buffer size
-  CFLAGS += -DGNRC_PKTBUF_SIZE=1000
-  USEMODULE += prng_minstd
-endif
-
 include $(RIOTBASE)/Makefile.include
+
+.PHONY: host-tools
+
+host-tools:
+	$(Q)env -u CC -u CFLAGS make -C $(RIOTTOOLS)
 
 # Set a custom channel if needed
 ifneq (,$(filter cc110x,$(USEMODULE)))          # radio is cc110x sub-GHz
