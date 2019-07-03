@@ -9,6 +9,7 @@ Table of contents:
 
 - [Prerequisites][prerequisites]
 - [Setup][setup]
+  - [Sign key management][key-management]
   - [Setup a wired device using ethos][setup-wired]
     - [Provision the device][setup-wired-provision]
     - [Configure the network][setup-wired-network]
@@ -50,6 +51,18 @@ Table of contents:
 
 ## Setup
 [setup]: #Setup
+
+### Key Management
+[key-management]: #Key-management
+
+SUIT keys consist of a private and a public key file, stored in "$(SUIT_KEY_DIR)".
+Similar to how ssh names its keyfiles, the public key filename equals the
+private key file, but has an extra ".pub" appended.
+
+SUIT_KEY_DIR defaults to the "keys/" folder at the top of a RIOT checkout.
+
+If the chosen key doesn't exist, it will be generated automatically.
+That step can be done manually using the "suit/genkey" target.
 
 ### Setup a wired device using ethos
 [setup-wired]: #Setup-a-wired-device-using-ethos
@@ -303,7 +316,7 @@ You can do the publish-notify sequence several times to verify this.
 
 ### Node
 
-For the suit_update to work there are important block that aren't normally built
+For the suit_update to work there are important modules that aren't normally built
 in a RIOT application:
 
 * riotboot
@@ -452,7 +465,7 @@ The following variables are defined in makefiles/suit.inc.mk:
     SUIT_COAP_SERVER ?= localhost
     SUIT_COAP_ROOT ?= coap://$(SUIT_COAP_SERVER)/$(SUIT_COAP_BASEPATH)
     SUIT_COAP_FSROOT ?= $(RIOTBASE)/coaproot
-    SUIT_PUB_HDR ?= public_key.h
+    SUIT_PUB_HDR ?= $(BINDIR)/riotbuild/public_key.h
 
 The following convention is used when naming a manifest
 
@@ -466,9 +479,10 @@ The following default values are using for generating the manifest:
     SUIT_VENDOR ?= RIOT
     SUIT_VERSION ?= $(APP_VER)
     SUIT_DEVICE_ID ?= $(BOARD)
-    SUIT_KEY ?= secret.key
-    SUIT_PUB ?= public.key
-    SUIT_PUB_HDR ?= public_key.h
+    SUIT_KEY ?= default
+    SUIT_KEY_DIR ?= $(RIOTBASE)/keys
+    SUIT_SEC ?= $(SUIT_KEY_DIR)/$(SUIT_KEY)
+    SUIT_PUB ?= $(SUIT_KEY_DIR)/$(SUIT_KEY).pub
 
 All files (both slot binaries, both manifests, copies of manifests with
 "latest" instead of $APP_VER in riotboot build) are copied into the folder
@@ -480,17 +494,16 @@ under $(SUIT_COAP_ROOT). This can be done by e.g., "aiocoap-fileserver $(SUIT_CO
 
 ### Makefile recipes
 
-The following recipes are defined in makefiles/suit.inc.mk
+The following recipes are defined in makefiles/suit.inc.mk:
 
 suit/manifest: creates a non signed and signed manifest, and also a latest tag for these.
     It uses following parameters:
 
-    - $(SUIT_KEY): key to sign the manifest
-    - $(SUIT_PUB): public key used to verify the manifest
-	- $(SUIT_COAP_ROOT): coap root address
-	- $(SUIT_DEVICE_ID)
-	- $(SUIT_VERSION)
-	- $(SUIT_VENDOR)
+    - $(SUIT_KEY): name of keypair to sign the manifest
+    - $(SUIT_COAP_ROOT): coap root address
+    - $(SUIT_DEVICE_ID)
+    - $(SUIT_VERSION)
+    - $(SUIT_VENDOR)
 
 suit/publish: makes the suit manifest, slotx bin and publishes it to the
     aiocoap-fileserver
