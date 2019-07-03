@@ -1,0 +1,9 @@
+module:
+    - name: boards_common_atmega
+      sources: board.c
+      depends: atmega_common
+      uses:
+          - avr_libc_extra
+      export_vars:
+          includes:
+              - ${relpath}/include
