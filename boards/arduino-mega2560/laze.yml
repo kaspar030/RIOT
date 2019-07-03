@@ -1,0 +1,28 @@
+builder:
+    name: arduino-mega2560
+    parent: atmega2560
+    vars:
+        CFLAGS:
+            - -I${relpath}/include
+        PORT:
+            - /dev/ttyACM0
+
+    tools:
+      flash:
+        cmd:
+          - ${OBJCOPY} -O ihex ${out} ${out}.hex
+          - avrdude -P ${PORT} -c stk500v2 -p m2560 -b 115200 \
+            -F -D -U flash:w:${out}.hex
+      term:
+        cmd:
+          - picocom --baud 9600 --quiet --imap lfcrlf ${PORT}
+
+module:
+    - name: board
+      context: arduino-mega2560
+      depends:
+          - atmega2560
+          - boards_common_arduino-atmega
+
+    - name: feature/periph_uart
+      context: arduino-mega2560

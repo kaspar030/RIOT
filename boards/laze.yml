@@ -1,5 +1,6 @@
 subdirs:
     - common
+    - arduino-mega2560
     - native
     - nucleo-f401re
     - nucleo-f411re
