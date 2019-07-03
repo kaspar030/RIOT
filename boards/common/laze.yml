@@ -1,4 +1,8 @@
 subdirs:
+    - arduino-atmega
+    - atmega
+    - nrf52
+    - nrf52xxxdk
     - nucleo
     - nucleo64
     - stm32

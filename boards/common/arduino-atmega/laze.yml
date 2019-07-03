@@ -1,0 +1,24 @@
+module:
+    - name: boards_common_arduino-atmega
+      sources: led_init.c
+      depends:
+        - boards_common_atmega
+        - periph_gpio
+      export_vars:
+          includes:
+              - ${relpath}/include
+
+---
+template:
+    "%NAME%":
+        - feature/periph_gpio
+        - feature/periph_gpio_irq
+        - feature/periph_adc
+        - feature/periph_i2c
+        - feature/periph_spi
+        - feature/periph_timer
+        - feature/periph_uart
+
+module:
+    - name: "%NAME%"
+      depends: boards_common_arduino-atmega
