@@ -1,0 +1,22 @@
+context:
+  - name: atmega2560
+    parent: atmega_common
+    vars:
+      CFLAGS:
+        - -mmcu=atmega2560
+        - -DRIOT_MCU=\"atmega2560\"
+        - -DCPU_ATMEGA2560
+        - -DMCU_ATMEGA2560
+      RAM_LEN: 8K
+      ROM_LEN: 256K
+
+module:
+  - name: atmega2560
+    context: atmega2560
+    depends: atmega_common
+    export_vars:
+      CFLAGS:
+        - -I${relpath}/include
+
+      LINKFLAGS:
+        - -I${relpath}/ldscripts_compat
