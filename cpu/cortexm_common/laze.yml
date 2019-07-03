@@ -2,30 +2,15 @@ context:
     name: cortexm
     parent: riot
     vars:
-        CC: arm-none-eabi-gcc
-        CXX: arm-none-eabi-g++
-        LINK: arm-none-eabi-gcc
-        OBJCOPY: arm-none-eabi-objcopy
-        SIZE: arm-none-eabi-size
+        PREFIX: arm-none-eabi-
         CFLAGS_STD:
             - -std=c99
-        CFLAGS:
+        CFLAGS_ARCH:
             - -mlittle-endian -mthumb
-            - -I${relpath}/include
-            - -I${relpath}/include/vendor
-            - -I${root}/sys/libc/include
-            - -DDONT_USE_CMSIS_INIT
-            - -DCOREIF_NG=1
             - -mno-thumb-interwork
-            - -ffunction-sections -fdata-sections -fno-builtin -fshort-enums
+        CFLAGS_CODEGEN:
             - -fno-common
             - -fno-delete-null-pointer-checks
-        LINKFLAGS:
-            - -mno-thumb-interwork
-            - -ffunction-sections -fdata-sections -fno-builtin -fshort-enums
-            - -L${relpath}/ldscripts
-            - -static -lgcc -nostartfiles
-            - -Wl,--gc-sections
         CFLAGS_DEFINES:
             - -DDONT_USE_CMSIS_INIT
             - -DCOREIF_NG=1
@@ -37,7 +22,6 @@ context:
             - ${relpath}/include
             - ${relpath}/include/vendor
             - ${root}/sys/libc/include
-
         libs:
             - -lm
 
@@ -61,6 +45,9 @@ module:
           - core
           - newlib
           - cortexm_common_periph
+
+    - name: feature/arch_32bit
+      context: cortexm
 
     - name: mpu_stack_guard
       context: cortexm
