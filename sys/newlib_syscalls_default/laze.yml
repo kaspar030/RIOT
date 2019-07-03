@@ -3,8 +3,6 @@ module:
     sources: syscalls.c
     global_vars:
         CFLAGS:
-            - -I${relpath}/include
-        LINKFLAGS:
             - -specs=nano.specs
     depends:
         - stdio_uart

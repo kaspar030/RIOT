@@ -31,18 +31,36 @@ context:
           CFLAGS:
             - -Wall
             - -Werror
-            #- -Wold-style-definition
-            #- -Wstrict-prototypes
             - -Os
             - -g
 
     - name: riot
       parent: default
       vars:
+          PREFIX: ""
+          CC  : ${PREFIX}gcc
+          CXX : ${PREFIX}g++
+          LINK: ${PREFIX}gcc
+          SIZE: ${PREFIX}size
+          OBJCOPY: ${PREFIX}objcopy
           CFLAGS:
             - '-DRIOT_VERSION=\"laze\"'
+            - -fdiagnostics-color
+            - -ffunction-sections -fdata-sections
+            - -fno-common
+            - -fno-delete-null-pointer-checks
+            - -fshort-enums
+            - -Wextra
+            - -Wformat-overflow
+            - -Wformat-truncation
+            - -Wformat=2
+            - -Wmissing-include-dirs
+              #- -Wold-style-definition
+              #- -Wstrict-prototypes
           CXXFLAGS_STD:
             - -std=c++11
+          LINKFLAGS:
+            - -Wl,--gc-sections
           includes:
             - ${relpath}/drivers/include
             - ${relpath}/sys/include
@@ -60,11 +78,6 @@ context:
 builder:
           - name: host
             parent: default
-            vars:
-                CC  : gcc
-                CXX : g++
-                LINK: gcc
-                SIZE: size
             tools:
                 run:
                     cmd:
@@ -78,7 +91,6 @@ module:
       context: riot
       export_vars:
           CFLAGS:
-            - -DFOO=\"${builder}\"
             - -DRIOT_BOARD=\"${builder}\"
 
     - name: host
