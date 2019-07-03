@@ -1,6 +1,11 @@
 subdirs:
+    - avr8_common
+    - atmega_common
+    - atmega2560
     - cortexm_common
     - native
+    - nrf5x_common
+    - nrf52
     - sam0_common
     - samd21
     - stm32_common

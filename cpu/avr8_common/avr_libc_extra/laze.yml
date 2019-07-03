@@ -1,0 +1,13 @@
+module:
+  - name: avr_libc_extra
+    sources:
+      - atmega_stdio.c
+      - posix_unistd.c
+    depends:
+      - board
+      - stdio_uart
+    global_vars:
+      CFLAGS:
+        - -isystem${relpath}/include
+        - -isystem${relpath}/include/vendor
+        - -I${root}/sys/libc/include

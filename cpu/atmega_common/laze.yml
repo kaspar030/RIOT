@@ -1,0 +1,31 @@
+context:
+  - name: atmega_common
+    parent: riot
+    vars:
+      PREFIX: avr-
+      LINKFLAGS:
+        - -Wl,--defsym=__TEXT_REGION_LENGTH__=${ROM_LEN}-${RAM_LEN}
+        - -Wl,--defsym=__DATA_REGION_LENGTH__=${RAM_LEN}
+        - -e reset_handler
+
+module:
+  - name: atmega_common
+    depends:
+      - avr_libc_extra
+      - core
+    context: atmega_common
+    sources:
+      - cpu.c
+      - irq_arch.c
+      - startup.c
+      - thread_arch.c
+    export_vars:
+      CFLAGS:
+        - -I${relpath}/include
+
+  - name: feature/periph_cpuid
+  - name: feature/periph_eeprom
+  - name: feature/periph_pm
+
+subdirs:
+  - periph
