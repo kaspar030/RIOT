@@ -1,0 +1,22 @@
+template:
+    "%NAME%":
+      - adc
+      - cpuid
+      - eeprom
+      - gpio
+      - i2c
+      - pm
+      - pwm
+      - spi
+      - timer
+      - uart
+
+module:
+    name: "periph_%NAME%"
+    context: atmega_common
+    depends:
+      - periph_common
+      - feature/periph_%NAME%
+
+    sources:
+        - "%NAME%.c"
