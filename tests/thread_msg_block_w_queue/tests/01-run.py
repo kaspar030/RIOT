@@ -11,8 +11,8 @@ from testrunner import run
 
 
 def testfunc(child):
-    child.expect('sender_thread start\r\n')
-    child.expect('main thread alive\r\n')
+    child.expect('sender_thread start$')
+    child.expect('main thread alive$')
 
 
 if __name__ == "__main__":
