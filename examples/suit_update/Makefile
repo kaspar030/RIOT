@@ -70,19 +70,15 @@ ifeq (1,$(USE_ETHOS))
 
   # make sure ethos and uhcpd are built
   TERMDEPS += host-tools
-  ifneq (1,$(RIOT_CI_BUILD))
-    # if running locally (not on CI), use start_network.sh
-    TAP ?= tap0
-    IPV6_PREFIX ?= 2001:db8::/64
-    TERMPROG ?= sudo sh $(RIOTTOOLS)/ethos/start_network.sh
-    TERMFLAGS ?= $(PORT) $(TAP) $(IPV6_PREFIX)
-  else
-    # The network is pre-configured on RIOT's CI workers,
-    # so if running a CI build, make use of that
-    export TAP=riot0
-    TERMPROG = $(RIOTTOOLS)/ethos/ethos
-    TERMFLAGS = $(TAP) $(PORT)
-  endif
+
+  # For local testing, run
+  #
+  #     $ cd dist/tools/ethos; sudo ./setup_network.sh riot0 2001:db8::0/64
+  #
+  #... in another shell and keep it running.
+  export TAP ?= riot0
+  TERMPROG = $(RIOTTOOLS)/ethos/ethos
+  TERMFLAGS = $(TAP) $(PORT)
 endif
 
 # The test script assumes initially version "0" is flashed,
