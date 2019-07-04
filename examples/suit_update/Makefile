@@ -81,11 +81,6 @@ ifeq (1,$(USE_ETHOS))
   TERMFLAGS = $(TAP) $(PORT)
 endif
 
-# The test script assumes initially version "0" is flashed,
-# as done by the CI.
-# Thus default to that (instead of epoch set by makefiles/boot/riotboot.inc.mk).
-APP_VER ?= 0
-
 # The test needs the linked slot binaries without header in order to be able to
 # create final binaries with specific APP_VER values. The CI RasPi test workers
 # don't compile themselves and re-create signed images, thus add the required

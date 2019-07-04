@@ -70,6 +70,12 @@ def testfunc(child):
     # Initial Setup and wait for address configuration
     child.expect_exact("main(): This is RIOT!")
 
+    # get version of currently running image
+    # "Image Version: 0x00000000"
+    child.expect(r"Image Version: (?P<app_ver>0x[0-9a-fA-F:]+)")
+    current_app_ver = int(child.match.group("app_ver"), 16)
+    print("CURRENT APP_VER={}".format(current_app_ver))
+
     if USE_ETHOS == 0:
         # Get device global address
         child.expect(
@@ -81,10 +87,12 @@ def testfunc(child):
         # Get device local address
         client = "[fe80::2%{}]".format(TAP)
 
-    for version in [1, 2]:
+    for version in [current_app_ver + 1, current_app_ver + 2]:
         # Wait for suit_coap thread to start
         child.expect_exact("suit_coap: started.")
         # Trigger update process, verify it validates manifest correctly
+        global tmpdir
+        publish(tmpdir.name, COAP_HOST, version)
         notify(COAP_HOST, client, version)
         child.expect_exact("suit_coap: trigger received")
         child.expect_exact("suit: verifying manifest signature...")
@@ -106,13 +114,11 @@ def testfunc(child):
 
 
 if __name__ == "__main__":
+    global tmpdir
     try:
         res = 1
         tmpdir, aiocoap_process = start_aiocoap_fileserver()
         # TODO: wait for coap port to be available
-
-        publish(tmpdir.name, COAP_HOST, 1)
-        publish(tmpdir.name, COAP_HOST, 2)
 
         res = run(testfunc, echo=True)
 
