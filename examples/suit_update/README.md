@@ -178,8 +178,8 @@ In this case the RIOT node can be reached from the host using its global address
 ### Start aiocoap-fileserver
 [Start-aiocoap-fileserver]: #start-aiocoap-fileserver
 
-`aiocoap-fileserver` is used for hosting firmwares available for updates. Device
-retrieve the new firmware using the CoAP protocol.
+`aiocoap-fileserver` is used for hosting firmwares available for updates.
+Devices retrieve the new firmware using the CoAP protocol.
 
 Start `aiocoap-fileserver`:
 
