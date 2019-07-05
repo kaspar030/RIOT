@@ -18,6 +18,11 @@
 #define PTHREAD_COND_H
 
 #include <time.h>
+
+#ifndef CPU_NATIVE
+#include <sys/types.h>
+#endif
+
 #include "mutex.h"
 #include "priority_queue.h"
 
