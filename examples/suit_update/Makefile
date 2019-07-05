@@ -85,7 +85,7 @@ endif
 # create final binaries with specific APP_VER values. The CI RasPi test workers
 # don't compile themselves and re-create signed images, thus add the required
 # files here so they will be submitted along with the test jobs.
-TEST_EXTRA_FILES += $(SLOT_RIOT_ELFS) $(SUIT_KEY) $(SUIT_PUB)
+TEST_EXTRA_FILES += $(SLOT_RIOT_ELFS) $(SUIT_SEC) $(SUIT_PUB)
 
 # riotboot is currently incompatible with the NRF softdevice.
 # That gets automatically selected on boards that support it, unless nrfmin is
