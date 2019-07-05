@@ -28,7 +28,7 @@ start_uhcpd() {
 TAP=$1
 PREFIX=$2
 _USER=$3
-UHCPD="../uhcpd/bin/uhcpd"
+: ${UHCPD:="$(readlink -f $(dirname $0)"/../uhcpd/bin")/uhcpd"}
 
 [ -z "${TAP}" -o -z "${PREFIX}" ] && {
     echo "usage: $0 <tap-device> <prefix> [<user>]"
