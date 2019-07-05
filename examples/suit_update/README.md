@@ -9,36 +9,48 @@ Table of contents:
 
 - [Prerequisites][prerequisites]
 - [Setup][setup]
-  - [Sign key management][key-management]
+  - [Signing key management][key-management]
   - [Setup a wired device using ethos][setup-wired]
     - [Provision the device][setup-wired-provision]
     - [Configure the network][setup-wired-network]
-  - [Setup a wireless device behind a border router][setup-wireless]
+  - [Alternative: Setup a wireless device behind a border router][setup-wireless]
     - [Provision the wireless device][setup-wireless-provision]
     - [Configure the wireless network][setup-wireless-network]
-  - [Setup aiocoap fileserver][setup-aiocoap-fileserver]
+  - [Start aiocoap fileserver][start-aiocoap-fileserver]
 - [Perform an update][update]
   - [Build and publish the firmware update][update-build-publish]
   - [Notify an update to the device][update-notify]
 - [Detailed explanation][detailed-explanation]
+- [Automatic test][test]
 
 ## Prerequisites
 [prerequisites]: #Prerequisites
 
 - Install python dependencies (only Python3.6 and later is supported):
 
-      $ sudo pip install ed25519 pyasn1 cbor click
+      $ pip3 install --user ed25519 pyasn1 cbor click
 
 - Install aiocoap from the source
 
-      $ sudo pip3 install --upgrade "git+https://github.com/chrysn/aiocoap#egg=aiocoap[all]"
+      $ pip3 install --user --upgrade "git+https://github.com/chrysn/aiocoap#egg=aiocoap[all]"
 
   See the [aiocoap installation instructions](https://aiocoap.readthedocs.io/en/latest/installation.html)
   for more details.
 
+- Install aiocoap-fileserver
+
+    $ wget https://github.com/chrysn/aiocoap/raw/master/contrib/aiocoap-fileserver -O ~/.local/bin/aiocoap-fileserver
+    $ chmod a+x ~/.local/bin/aiocoap-fileserver
+
+- add ~/.local/bin to PATH
+
+  The aiocoap tools are installed to ~/.local/bin. Either add
+  "export PATH=$PATH:~/.local/bin" to your ~/.profile and re-login, or execute
+  that command *in every shell you use for this tutorial*.
+
 - Clone this repository:
 
-      $ git clone https://github.com/future-proof-iot/RIOT -b suit
+      $ git clone https://github.com/RIOT-OS/RIOT
       $ cd RIOT
 
 - In all setup below, `ethos` (EThernet Over Serial) is used to provide an IP
@@ -48,6 +60,10 @@ Table of contents:
 
       $ make -C dist/tools/ethos clean all
       $ make -C dist/tools/uhcpd clean all
+
+  It is possible to interact with the device over it's serial terminal as usual
+  using "make term", but that requires an already set up tap interface.
+  See [update] for more information.
 
 ## Setup
 [setup]: #Setup
@@ -70,7 +86,7 @@ That step can be done manually using the "suit/genkey" target.
 #### Provision the device
 [setup-wired-provision]: #Provision-the-device
 
-In order to get a SUIT capable firmware onto the node. In examples/suit_update:
+In order to get a SUIT capable firmware onto the node, run
 
     $ BOARD=samr21-xpro make -C examples/suit_update clean riotboot/flash -j4
 
@@ -81,41 +97,20 @@ sign and verify the manifest and images. See the "Key generation" section in
 #### Configure the network
 [setup-wired-network]: #Configure-the-network
 
-In one terminal and with the board already flashed and connected to /dev/ttyACM0:
+In one terminal, start:
 
-    $ sudo ./dist/tools/ethos/start_network.sh /dev/ttyACM0 tap0 2001:db8::/64
+    $ cd dist/tools/ethos; sudo ./setup_network.sh riot0 2001:db8::/64
 
-Once everything is configured you will get:
+This will create a tap interface called "riot0", owned by the user. It will
+also run an instance of uhcpcd, which starts serving the prefix
+"2001:db8::/64". Keep the shell open as long as you need the network.
 
-    ...
-
-    Iface  7  HWaddr: 00:22:09:17:DD:59
-            L2-PDU:1500 MTU:1500  HL:64  RTR
-            Source address length: 6
-            Link type: wired
-            inet6 addr: fe80::222:9ff:fe17:dd59  scope: local  TNT[1]
-            inet6 addr: fe80::2  scope: local  VAL
-            inet6 group: ff02::2
-            inet6 group: ff02::1
-            inet6 group: ff02::1:ff17:dd59
-            inet6 group: ff02::1:ff00:2
-
-    suit_coap: started.
-
-Keep this running (don't close the shell).
-
-From another terminal, add a routable address to host:
-
-    $ sudo ip address add 2001:db8::1/128 dev tap0
-
-If the network has been started as described above, the RIOT updatable device
-is reachable on its link-local address `fe80::2` via the `tap0` interface but
-not when using its wireless interface global address:
-
-    $ ping6 fe80::2%tap0
-
-### Setup a wireless device behind a border router
+### Alternative: Setup a wireless device behind a border router
 [setup-wireless]: #Setup-a-wireless-device-behind-a-border-router
+
+If the workflow for updating using ethos is successful, you can try doing the
+same over "real" network interfaces, by updating a node that is connected
+wirelessly with a border router in between.
 
 #### Configure the wireless network
 [setup-wireless-network]: #Configure-the-wireless-network
@@ -180,20 +175,16 @@ In this case the RIOT node can be reached from the host using its global address
 
     $ ping6 2001:db8::7b7e:3255:1313:8d96
 
-### Setup aiocoap-fileserver
-[setup-aiocoap-fileserver]: #Setup-aiocoap-fileserver
+### Start aiocoap-fileserver
+[Start-aiocoap-fileserver]: #start-aiocoap-fileserver
 
 `aiocoap-fileserver` is used for hosting firmwares available for updates. Device
 retrieve the new firmware using the CoAP protocol.
 
-Clone the aiocoap repository:
-
-    $ git clone https://github.com/chrysn/aiocoap.git ..
-
 Start `aiocoap-fileserver`:
 
     $ mkdir -p coaproot
-    $ ../aiocoap/contrib/aiocoap-fileserver coaproot
+    $ aiocoap-fileserver coaproot
 
 Keep the server running in the terminal.
 
@@ -529,3 +520,29 @@ suit/genkey: this recipe generates a ed25519 key to sign the manifest
 
 **NOTE**: to plugin a new server you would only have to change the suit/publish
 recipe, respecting or adjusting to the naming conventions.**
+
+## Automatic test
+[Automatic test]: #test
+
+This applications ships with an automatic test. The test script itself expects
+the application and bootloader to be flashed. It will then create two more
+manifests with increasing version numbers and update twice, confirming after
+each update that the newly flashed image is actually running.
+
+To run the test,
+
+- ensure the [prerequisites] are installed
+
+- make sure aiocoap-fileserver is in $PATH
+
+- compile and flash the application and bootloader:
+
+    $ make -C examples/suit_update clean all flash -j4
+
+- [set up the network][setup-wired-network] (in another shell):
+
+    $ sudo dist/tools/ethos/setup_network.sh riot0 2001:db8::/64
+
+- run the test:
+
+    $ make -C examples/suit_update test
