@@ -28,6 +28,12 @@ context:
     - name: default
       bindir: "build/bin/${builder}"
       vars:
+          PREFIX: ""
+          CC  : ${PREFIX}gcc
+          CXX : ${PREFIX}g++
+          LINK: ${PREFIX}gcc
+          SIZE: ${PREFIX}size
+          OBJCOPY: ${PREFIX}objcopy
           CFLAGS:
             - -Wall
             - -Werror
@@ -37,12 +43,6 @@ context:
     - name: riot
       parent: default
       vars:
-          PREFIX: ""
-          CC  : ${PREFIX}gcc
-          CXX : ${PREFIX}g++
-          LINK: ${PREFIX}gcc
-          SIZE: ${PREFIX}size
-          OBJCOPY: ${PREFIX}objcopy
           CFLAGS:
             - '-DRIOT_VERSION=\"laze\"'
             - -fdiagnostics-color
@@ -55,6 +55,7 @@ context:
             - -Wformat-truncation
             - -Wformat=2
             - -Wmissing-include-dirs
+              # these are invalid for cpp. maybe introduce C_ONLY_FLAGS?
               #- -Wold-style-definition
               #- -Wstrict-prototypes
           CXXFLAGS_STD:
@@ -76,12 +77,12 @@ context:
                - "${SIZE} ${out}"
 
 builder:
-          - name: host
-            parent: default
-            tools:
-                run:
-                    cmd:
-                     - "${out}"
+    - name: host
+      parent: default
+      tools:
+        run:
+          cmd:
+            - "${out}"
 
 module:
     - name: riot
@@ -90,8 +91,8 @@ module:
     - name: riot_info
       context: riot
       export_vars:
-          CFLAGS:
-            - -DRIOT_BOARD=\"${builder}\"
+        CFLAGS:
+          - -DRIOT_BOARD=\"${builder}\"
 
     - name: host
       context: host
