@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 
+#include "irq.h"
 #include "net/nanocoap_sock.h"
 #include "xtimer.h"
 
@@ -37,12 +38,17 @@ int main(void)
 {
     puts("RIOT SUIT update example application");
 
-    /* print running slot */
     int current_slot = riotboot_slot_current();
     if (current_slot != -1) {
+        /* Sometimes, udhcp output messes up the following printfs.  That
+         * confuses the test script. As a workaround, just disable interrupts
+         * for a while.
+         */
+        irq_disable();
         printf("running from slot %d\n", current_slot);
         printf("slot start addr = %p\n", (void *)riotboot_slot_get_hdr(current_slot));
         riotboot_slot_print_hdr(current_slot);
+        irq_enable();
     }
     else {
         printf("[FAILED] You're not running riotboot\n");
