@@ -99,7 +99,7 @@ sign and verify the manifest and images. See the "Key generation" section in
 
 In one terminal, start:
 
-    $ cd dist/tools/ethos; sudo ./setup_network.sh riot0 2001:db8::/64
+    $ sudo dist/tools/ethos/setup_network.sh riot0 2001:db8::/64
 
 This will create a tap interface called "riot0", owned by the user. It will
 also run an instance of uhcpcd, which starts serving the prefix
