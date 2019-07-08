@@ -1,4 +1,4 @@
-USEPKG += cn-cbor
+USEPKG += nanocbor
 
 USEMODULE += libcose_crypt
 
@@ -7,4 +7,10 @@ ifneq (,$(filter libcose_crypt_tweetnacl,$(USEMODULE)))
 endif
 ifneq (,$(filter libcose_crypt_hacl,$(USEMODULE)))
   USEPKG += hacl
+endif
+ifneq (,$(filter libcose_crypt_monocypher,$(USEMODULE)))
+  USEPKG += monocypher
+endif
+ifneq (,$(filter libcose_crypt_c25519,$(USEMODULE)))
+  USEPKG += c25519
 endif
