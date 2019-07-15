@@ -183,6 +183,7 @@ subdirs:
   - periph_timer
   - periph_uart
   - pipe
+  - pkg_cayenne-lpp
   #- pkg_cn-cbor
   - pkg_fatfs
   - pkg_fatfs_vfs
@@ -195,7 +196,7 @@ subdirs:
   #- pkg_microcoap
   #- pkg_monocypher
   #- pkg_qdsa
-  #- pkg_relic
+  - pkg_relic
   #- pkg_semtech-loramac
   #- pkg_tinycbor
   #- pkg_tinycrypt

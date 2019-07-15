@@ -1,0 +1,12 @@
+module:
+  - name: cayenne-lpp
+    license: LGPLv2.1
+    download:
+      git:
+        url: https://github.com/aabadie/cayenne-lpp
+        commit: ad3aa26043e221eda28ac3da2484e1ef84986442
+    sources:
+      - cayenne_lpp.c
+    export_vars:
+      includes:
+        - ${srcdir}
