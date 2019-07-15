@@ -17,3 +17,7 @@ app:
     global_vars:
         CFLAGS:
             - -DDEVELHELP
+
+    blacklist:
+        # insufficient memory
+        - atmega_common

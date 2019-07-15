@@ -13,3 +13,7 @@ app:
             - -DGNRC_NETTYPE_NDP="GNRC_NETTYPE_TEST"
             - -DGNRC_PKTBUF_SIZE="512"
             - -DTEST_SUITES
+
+    blacklist:
+        # insufficient memory
+        - atmega_common

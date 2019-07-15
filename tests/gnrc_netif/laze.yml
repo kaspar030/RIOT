@@ -26,3 +26,7 @@ app:
             - -DDEVELHELP
             - -DDEBUG_ASSERT_VERBOSE
             - -g
+
+    blacklist:
+        # insufficient memory
+        - atmega_common
