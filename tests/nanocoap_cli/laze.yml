@@ -10,3 +10,7 @@ app:
         - nanocli_client.c
         - nanocli_server.c
         - request_handlers.c
+
+    blacklist:
+        # insufficient memory
+        - atmega_common

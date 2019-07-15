@@ -13,3 +13,7 @@ app:
     global_vars:
         CFLAGS:
             - -DLOG_LEVEL="LOG_ALL"
+
+    blacklist:
+        # insufficient memory
+        - atmega_common
