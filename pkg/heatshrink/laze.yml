@@ -1,0 +1,18 @@
+module:
+  - name: heatshrink
+    license: ISC
+    download:
+      git:
+        url: https://github.com/atomicobject/heatshrink.git
+        commit: 7d419e1fa4830d0b919b9b6a91fe2fb786cf3280
+    sources:
+      - heatshrink_decoder.c
+      - heatshrink_encoder.c
+    vars:
+      CFLAGS:
+        - -Wno-implicit-fallthrough
+    export_vars:
+      includes:
+        - ${srcdir}
+      CFLAGS:
+        - -DHEATSHRINK_DYNAMIC_ALLOC=0

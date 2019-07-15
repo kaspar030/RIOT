@@ -1,6 +1,20 @@
 app:
     depends:
         - embunit
+        - relic
     global_vars:
-        CFLAGS:
-            - -DTHREAD_STACKSIZE_MAIN="(5*THREAD_STACKSIZE_DEFAULT)"
+        #CFLAGS:
+            #- -DTHREAD_STACKSIZE_MAIN="5*THREAD_STACKSIZE_DEFAULT"
+        RELIC_CONFIG_FLAGS:
+            - -DARCH=NONE
+            - -DOPSYS=NONE
+            - -DQUIET=off
+            - -DWORD=32
+            - -DFP_PRIME=255
+            - '-DWITH="BN;MD;DV;FP;EP;CP;BC;EC"'
+            - -DSEED=ZERO
+    blacklist:
+        # insufficient memory
+        - atmega_common
+
+
