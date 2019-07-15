@@ -1,6 +1,9 @@
 app:
     depends: tests-gnrc_ipv6_nib
 
+    blacklist:
+        # insufficient memory
+        - atmega_common
 module:
     - name: tests-gnrc_ipv6_nib
       sources:
@@ -17,6 +20,7 @@ module:
           # required for GNRC_IPV6_NIB_CONF_MULTIHOP_P6C
           - gnrc_sixlowpan_nd
 
+          - test_suites_define
           - unittests-base
       global_vars:
           testsuites:

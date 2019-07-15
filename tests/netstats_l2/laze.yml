@@ -6,3 +6,7 @@ app:
         - netstats_l2
         - shell
         - shell_commands
+
+    blacklist:
+        # insufficient memory
+        - atmega_common

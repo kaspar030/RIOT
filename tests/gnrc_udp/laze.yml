@@ -18,3 +18,7 @@ app:
     global_vars:
         CFLAGS:
             - -DIEEE802154_DEFAULT_CHANNEL="26"
+
+    blacklist:
+        # insufficient memory
+        - atmega_common

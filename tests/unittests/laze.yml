@@ -12,6 +12,10 @@ app:
         - tests-flashpage
         - tests-gnrc_ipv6_nib
 
+    blacklist:
+        # insufficient memory
+        - atmega_common
+
 module:
     name: unittests-base
     sources:
