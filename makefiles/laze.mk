@@ -9,7 +9,9 @@ ifneq ($(filter $(MAKECMDGOALS),clean),)
 	CLEAN=clean
 endif
 
-.PHONY: clean all
+LAZE_TOOLS = flash term reset cleanterm
+
+.PHONY: clean all $(LAZE_TOOLS)
 
 all: | $(CLEAN)
 	laze build $(LAZE_ARGS) -b $(BOARD)
@@ -17,11 +19,8 @@ all: | $(CLEAN)
 clean:
 	@echo "clean unsupported"
 
-flash:
-	laze build $(LAZE_ARGS) -b $(BOARD) -t flash
-
-term:
-	laze build $(LAZE_ARGS) -b $(BOARD) -t term
+$(LAZE_TOOLS):
+	laze build $(LAZE_ARGS) -b $(BOARD) -t $@
 
 buildtest: | $(CLEAN)
 	laze build $(LAZE_ARGS)
