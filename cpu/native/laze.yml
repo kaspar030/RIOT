@@ -8,6 +8,9 @@ context:
         term:
             cmd:
              - "${out}"
+        reset:
+            cmd:
+             - "true"
 
 defaults:
     module:
