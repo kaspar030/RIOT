@@ -13,10 +13,6 @@ defaults:
         global_vars:
             CFLAGS:
                 - -DDEVELHELP
-        tools:
-            test:
-                cmd:
-                    - '${relpath}/tests/*'
 
 subdirs:
   - bench_msg_pingpong

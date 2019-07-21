@@ -4,13 +4,21 @@ rule:
       out: '.o'
       depfile: "$out.d"
       deps: gcc
-      cmd: '${CC} -MMD -MF $out.d ${CFLAGS_STD} ${CFLAGS} ${includes} -c ${in} -o ${out}'
+      cmd: '${CC} -MD -MF $out.d
+                ${CFLAGS_STD} ${CFLAGS_ARCH} ${CFLAGS_CODEGEN}
+                ${CFLAGS_DEFINES} ${CFLAGS_WARN} ${CFLAGS_GCC}
+                ${CFLAGS} ${includes}
+                -c ${in} -o ${out}'
     - name: CXX
       in: '.cpp'
       out: '.o'
       depfile: "$out.d"
       deps: gcc
-      cmd: '${CXX} -MMD -MF $out.d ${CXXFLAGS_STD} ${CFLAGS} ${CXXFLAGS} ${includes} -c ${in} -o ${out}'
+      cmd: '${CXX} -MMD -MF $out.d ${CXXFLAGS_STD} ${CXXFLAGS}
+                ${CFLAGS_ARCH} ${CFLAGS_CODEGEN}
+                ${CFLAGS_DEFINES} ${CFLAGS_WARN} ${CFLAGS_GCC}
+                ${CFLAGS} ${includes}
+                -c ${in} -o ${out}'
     - name: ASM
       in: '.S'
       out: '.o'
@@ -19,7 +27,9 @@ rule:
       in: '.o'
       options:
           combine: true
-      cmd: '${LINK} ${LINKFLAGS} ${CFLAGS} ${in} ${libs} -o ${out}'
+      cmd: '${LINK} ${LINKFLAGS} ${CFLAGS_STD} ${CFLAGS_ARCH}
+                    ${CFLAGS_CODEGEN} ${CFLAGS}
+                    ${in} ${libs} -Wl,-Map=${out}.map -o ${out}'
 
     - name: SYMLINK
       cmd: 'ln -f ${in} ${out}'
@@ -28,6 +38,7 @@ rule:
       #cmd: 'D=$$(dirname ${out}); rm -rf $$D && git clone ${URL} $$D -n && git -C $$D reset --hard ${COMMIT} && touch ${out}'
     - name: GIT_DOWNLOAD
       cmd: 'D=$$(dirname ${out}); rm -rf $$D && git-cache clone ${URL} ${COMMIT} $$D && touch ${out}'
+
     - name: PATCH
       cmd: 'D=$$(dirname ${out}); git -C $$D am ${in} && touch ${out}'
 
@@ -36,27 +47,37 @@ context:
       bindir: "build/bin/${builder}"
       vars:
           PREFIX: ""
-          CC  : ${PREFIX}gcc
-          CXX : ${PREFIX}g++
-          LINK: ${PREFIX}gcc
+          CC:
+              - ccache
+              - ${PREFIX}gcc
+          CXX:
+              - ccache
+              - ${PREFIX}g++
+          LINK:
+              - ccache
+              - ${PREFIX}gcc
           SIZE: ${PREFIX}size
           OBJCOPY: ${PREFIX}objcopy
-          CFLAGS:
+          CFLAGS_WARN:
             - -Wall
             - -Werror
+          CFLAGS:
             - -Os
-            - -g
+              #            - -g
 
     - name: riot
       parent: default
       vars:
-          CFLAGS:
+          CFLAGS_DEFINES:
             - '-DRIOT_VERSION=\"laze\"'
+          CFLAGS_CODEGEN:
+            - -fdata-sections
+            - -ffunction-sections
             - -fdiagnostics-color
-            - -ffunction-sections -fdata-sections
             - -fno-common
             - -fno-delete-null-pointer-checks
             - -fshort-enums
+          CFLAGS_WARN:
             - -Wextra
             - -Wformat-overflow
             - -Wformat-truncation
@@ -82,6 +103,10 @@ context:
           size:
               cmd:
                - "${SIZE} ${out}"
+          test:
+              cmd:
+               - 'PYTHONPATH=$$(pwd)/dist/pythonlibs/; cd ${relpath} && LAZE=1 tests/*'
+
 
 builder:
     - name: host
@@ -100,6 +125,7 @@ module:
       export_vars:
         CFLAGS:
           - -DRIOT_BOARD=\"${builder}\"
+          - -DRIOT_APPLICATION=\"${app}\"
 
     - name: host
       context: host
@@ -107,6 +133,11 @@ module:
     - name: cpp
       depends:
         - feature/cpp
+
+    - name: lto
+      global_vars:
+          CFLAGS:
+              - -flto -ffat-lto-objects
 
 subdirs:
     [ dist, core, boards, cpu, drivers, sys, examples, tests, pkg, bootloaders ]
