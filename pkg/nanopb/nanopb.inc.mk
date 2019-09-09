@@ -1,5 +1,5 @@
 PROTOC ?= protoc
-PROTOC_GEN_NANOPB ?= protoc-gen-nanopb
+PROTOC_GEN_NANOPB ?= $(PKGDIRBASE)/nanopb/generator/protoc-gen-nanopb
 
 PROTOBUF_FILES ?= $(wildcard *.proto)
 GENSRC   += $(PROTOBUF_FILES:%.proto=$(BINDIR)/$(MODULE)/%.pb.c)
@@ -15,6 +15,7 @@ $(GENSRC): $(PROTOBUF_FILES)
 	$(Q)D=$(BINDIR)/$(MODULE) && \
 	  mkdir -p "$$D" && \
 		cd $(CURDIR) && \
+		make -C $(PKGDIRBASE)/nanopb/generator/proto && \
 		for protofile in $(PROTOBUF_FILES); do \
 			protoc --plugin=protoc-gen-nanopb=$(PROTOC_GEN_NANOPB) \
 				--nanopb_out="$$D" \
