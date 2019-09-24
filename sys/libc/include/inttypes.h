@@ -17,6 +17,8 @@
 #define PRId32 PRIi32
 #define PRIx32 "lx"
 
+#define PRIu64 "llu"
+
 typedef uint32_t uint_farptr_t;
 
 #endif /* INTTYPES_H */
