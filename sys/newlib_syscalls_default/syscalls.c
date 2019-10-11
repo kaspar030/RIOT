@@ -73,6 +73,13 @@ extern char __heap_start__;
 #else /* MODULE_MSP430_COMMON */
 
 /**
+ * LTO linking sometimes fails with undefined references to some syscalls,
+ * unless they're declared 'used'.
+ * This has no size impact on non-LTO builds.
+ */
+#define USED __attribute__((used))
+
+/**
  * @brief manage the heap
  */
 extern char _sheap;                 /* start of the heap */
@@ -182,7 +189,7 @@ __attribute__((used)) void _exit(int n)
  * @return      pointer to the newly allocated memory on success
  * @return      pointer set to address `-1` on failure
  */
-void *_sbrk_r(struct _reent *r, ptrdiff_t incr)
+__attribute__((used)) void *_sbrk_r(struct _reent *r, ptrdiff_t incr)
 {
     void *res = (void*)UINTPTR_MAX;
     unsigned int state = irq_disable();
@@ -500,7 +507,7 @@ int _unlink_r(struct _reent *r, const char *path)
  * Note: the read function does not buffer - data will be lost if the function is not
  * called fast enough.
  */
-_ssize_t _read_r(struct _reent *r, int fd, void *buffer, size_t count)
+USED _ssize_t _read_r(struct _reent *r, int fd, void *buffer, size_t count)
 {
     (void)r;
     (void)fd;
@@ -513,7 +520,7 @@ _ssize_t _read_r(struct _reent *r, int fd, void *buffer, size_t count)
  * All output is directed to stdio_uart, independent of the given file descriptor.
  * The write call will further block until the byte is actually written to the UART.
  */
-_ssize_t _write_r(struct _reent *r, int fd, const void *data, size_t count)
+USED _ssize_t _write_r(struct _reent *r, int fd, const void *data, size_t count)
 {
     (void) r;
     (void) fd;
@@ -521,7 +528,7 @@ _ssize_t _write_r(struct _reent *r, int fd, const void *data, size_t count)
 }
 
 /* Stubs to avoid linking errors, these functions do not have any effect */
-int _open_r(struct _reent *r, const char *name, int flags, int mode)
+USED int _open_r(struct _reent *r, const char *name, int flags, int mode)
 {
     (void) name;
     (void) flags;
@@ -530,14 +537,14 @@ int _open_r(struct _reent *r, const char *name, int flags, int mode)
     return -1;
 }
 
-int _close_r(struct _reent *r, int fd)
+USED int _close_r(struct _reent *r, int fd)
 {
     (void) fd;
     r->_errno = ENODEV;
     return -1;
 }
 
-_off_t _lseek_r(struct _reent *r, int fd, _off_t pos, int dir)
+USED _off_t _lseek_r(struct _reent *r, int fd, _off_t pos, int dir)
 {
     (void) fd;
     (void) pos;
@@ -546,7 +553,7 @@ _off_t _lseek_r(struct _reent *r, int fd, _off_t pos, int dir)
     return -1;
 }
 
-int _fstat_r(struct _reent *r, int fd, struct stat *st)
+USED int _fstat_r(struct _reent *r, int fd, struct stat *st)
 {
     (void) fd;
     (void) st;
@@ -595,7 +602,7 @@ int _link_r(struct _reent *ptr, const char *old_name, const char *new_name)
  *
  * @return      TODO
  */
-int _isatty_r(struct _reent *r, int fd)
+USED int _isatty_r(struct _reent *r, int fd)
 {
     r->_errno = 0;
 
