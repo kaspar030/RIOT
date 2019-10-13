@@ -1,16 +1,34 @@
-From 59ba85698386d2d55c86a00557169f3f5efad502 Mon Sep 17 00:00:00 2001
+From 6a58b74501f7b743e4f7a076dfd44f5e944ef49e Mon Sep 17 00:00:00 2001
 From: Silke Hofstra <silke@slxh.eu>
 Date: Thu, 20 Sep 2018 16:32:40 +0200
 Subject: [PATCH] Add support for RIOT OS
 
 ---
- impl/random.h | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ impl/random.h | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
 diff --git a/impl/random.h b/impl/random.h
-index f2ca1a4..2c09e02 100644
+index f2ca1a4ac5..00cbc8f607 100644
 --- a/impl/random.h
 +++ b/impl/random.h
+@@ -5,7 +5,7 @@ static TLS struct {
+     uint8_t  available;
+ } hydro_random_context;
+ 
+-#if defined(AVR) && !defined(__unix__)
++#if defined(AVR) && !defined(__unix__) && !defined(RIOT_VERSION)
+ #include <Arduino.h>
+ 
+ static bool
+@@ -67,7 +67,7 @@ hydro_random_init(void)
+ 
+ ISR(WDT_vect) {}
+ 
+-#elif (defined(ESP32) || defined(ESP8266)) && !defined(__unix__)
++#elif (defined(ESP32) || defined(ESP8266)) && !defined(__unix__)  && !defined(RIOT_VERSION)
+ 
+ // Important: RF *must* be activated on ESP board
+ // https://techtutorialsx.com/2017/12/22/esp32-arduino-random-number-generation/
 @@ -99,6 +99,18 @@ hydro_random_init(void)
      return 0;
  }
@@ -31,5 +49,5 @@ index f2ca1a4..2c09e02 100644
  
  #include <windows.h>
 -- 
-2.18.0
+2.23.0
 
