@@ -186,7 +186,7 @@ subdirs:
   - pkg_hacl
   - pkg_heatshrink
   - pkg_jsmn
-  #- pkg_libb2
+  - pkg_libb2
   #- pkg_libcose
   - pkg_libhydrogen
   #- pkg_microcoap
