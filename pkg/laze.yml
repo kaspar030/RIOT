@@ -4,5 +4,6 @@ subdirs:
     - hacl
     - heatshrink
     - jsmn
+    - libb2
     - libhydrogen
     - relic
