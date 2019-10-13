@@ -230,8 +230,8 @@ DWORD get_fattime(void)
     return (DWORD)year << FATFS_DISKIO_FATTIME_YEAR_OFFS |
            (DWORD)month << FATFS_DISKIO_FATTIME_MON_OFFS |
            (DWORD)day_of_month << FATFS_DISKIO_FATTIME_DAY_OFFS |
-           hour << FATFS_DISKIO_FATTIME_HH_OFFS |
-           minute << FATFS_DISKIO_FATTIME_MM_OFFS |
+           (DWORD)hour << FATFS_DISKIO_FATTIME_HH_OFFS |
+           (DWORD)minute << FATFS_DISKIO_FATTIME_MM_OFFS |
            second;
 }
 #endif
