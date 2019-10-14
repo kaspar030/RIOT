@@ -1,0 +1,4 @@
+app:
+  depends:
+   - ds75lx
+   - xtimer
