@@ -53,6 +53,7 @@ subdirs:
   - driver_ds1307
   - driver_ds18
   - driver_ds3234
+  - driver_ds75lx
   - driver_dsp0401
   - driver_dynamixel
   - driver_enc28j60

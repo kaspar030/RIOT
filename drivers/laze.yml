@@ -27,6 +27,7 @@ subdirs:
     - ds1307
     - ds18
     - ds3234
+    - ds75lx
     - dsp0401
     - dynamixel
     - enc28j60
@@ -60,7 +61,7 @@ subdirs:
     - mma8x5x
     - motor_driver
     - mpl3115a2
-    - mpu9150
+    - mpu9x50
     - mq3
     - mrf24j40
     - mtd
@@ -97,7 +98,7 @@ subdirs:
     - sx127x
     - tcs37727
     - tja1042
-    - tmp006
+    - tmp00x
     - tps6274x
     - tsl2561
     - tsl4531x
