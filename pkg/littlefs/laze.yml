@@ -1,0 +1,25 @@
+module:
+    - name: littlefs
+      license: Apache-2.0
+      download:
+          git:
+            url: https://github.com/geky/littlefs.git
+            commit: 0bb1f7af17755bd792f0c4966877fb1886dfc802 # v1.6.2
+            #      prepare:
+            #        - cmd:
+            #          - cd ${srcdir}
+            #          - mkdir -p include/littlefs
+            #          - cp *.h include/littlefs
+      depends:
+        - vfs
+        - littlefs_fs
+        - mtd
+      sources:
+        - lfs.c
+        - lfs_util.c
+      export_vars:
+          includes:
+              - ${srcdir}
+
+subdirs:
+    - fs

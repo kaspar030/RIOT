@@ -190,6 +190,7 @@ subdirs:
   - pkg_libb2
   #- pkg_libcose
   - pkg_libhydrogen
+  - pkg_littlefs
   #- pkg_microcoap
   #- pkg_monocypher
   #- pkg_qdsa
