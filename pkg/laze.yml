@@ -6,4 +6,5 @@ subdirs:
     - jsmn
     - libb2
     - libhydrogen
+    - littlefs
     - relic
