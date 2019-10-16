@@ -22,7 +22,7 @@ subdirs:
 #    - lwip
 #    - micro-ecc
 #    - microcoap
-#    - minmea
+    - minmea
 #    - monocypher
 #    - nanocbor
 #    - ndn-riot
