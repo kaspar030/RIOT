@@ -1,8 +1,12 @@
 app:
     depends:
+        - adcxx1c_params
         - adc081c
         - xtimer
-    global_vars:
+
+module:
+    - name: adcxx1c_params
+      export_vars:
         CFLAGS:
             - -DADCXX1C_PARAM_LOW_LIMIT="90"
             - -DADCXX1C_PARAM_HIGH_LIMIT="130"

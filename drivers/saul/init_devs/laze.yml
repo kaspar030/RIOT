@@ -1,5 +1,8 @@
 module:
     name: auto_init_saul
+    depends:
+        - ?auto_init
+        - ?adcxx1c_params
     uses:
         - adxl345
         - bme280
@@ -21,6 +24,7 @@ module:
         - mma8x5x
         - saul_adc
         - saul_gpio
+        - saul_nrf_temperature
         - sht1x
         - si70xx
         - tcs37727
@@ -28,6 +32,7 @@ module:
         - veml6070
     sources:
         - auto_init_adc.c
+        - auto_init_adcxx1c.c
         - auto_init_adxl345.c
         - auto_init_bmp180.c
         - auto_init_bmx055.c
@@ -45,6 +50,7 @@ module:
         - auto_init_lsm6dsl.c
         - auto_init_mag3110.c
         - auto_init_mma8x5x.c
+        - auto_init_nrf_temperature.c
         - auto_init_sht1x.c
         - auto_init_si70xx.c
         - auto_init_tcs37727.c
