@@ -21,7 +21,7 @@ subdirs:
 #    - lua
 #    - lwip
 #    - micro-ecc
-#    - microcoap
+    - microcoap
     - minmea
 #    - monocypher
 #    - nanocbor

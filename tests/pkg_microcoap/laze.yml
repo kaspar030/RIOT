@@ -6,7 +6,12 @@ app:
         - gnrc_netdev_default
         - gnrc_sock_udp
         - gnrc_udp
+        - microcoap
+        - riot_info
         - shell_commands
     sources:
         - coap.c
         - microcoap_sock.c
+    blacklist:
+        # insufficient memory
+        - atmega_common
