@@ -195,6 +195,7 @@ subdirs:
   - pkg_littlefs
   - pkg_lora-serialization
   #- pkg_microcoap
+  - pkg_minmea
   #- pkg_monocypher
   #- pkg_qdsa
   - pkg_relic
