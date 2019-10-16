@@ -193,6 +193,7 @@ subdirs:
   - pkg_libfixmath_unittests
   - pkg_libhydrogen
   - pkg_littlefs
+  - pkg_lora-serialization
   #- pkg_microcoap
   #- pkg_monocypher
   #- pkg_qdsa

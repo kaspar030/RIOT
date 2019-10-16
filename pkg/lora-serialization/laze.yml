@@ -1,0 +1,13 @@
+module:
+    - name: lora-serialization
+      download:
+          git:
+              url: https://github.com/leandrolanzieri/lora-serialization
+              commit: 90e49e4acd119f20ad2ad7b98751b88b08f564d7
+      license: LGPLv2.1
+      sources:
+          - lora_serialization.c
+      export_vars:
+        includes:
+          - ${srcdir}
+
