@@ -4,6 +4,7 @@ module:
         - periph_gpio
         - periph_gpio_irq
         - periph_i2c
+        - ?adcxx1c_params
     uses:
       - adc081c
       - adc101c
