@@ -1,0 +1,17 @@
+module:
+    - name: minmea
+      download:
+          git:
+              url: https://github.com/kosma/minmea
+              commit: ae4dd9442a9041345d5ef108f062e7e4ec6954f2
+      license: WTFPL
+      sources:
+          - minmea.c
+      vars:
+        CFLAGS_DEFINES:
+            - -D_POSIX_C_SOURCE=199309L -D_BSD_SOURCE -D_DEFAULT_SOURCE -D_DARWIN_C_SOURCE
+           # see minmea README.md
+            - -Dtimegm=mktime
+      export_vars:
+        includes:
+            - ${srcdir}
