@@ -40,7 +40,7 @@ rule:
       cmd: 'D=$$(dirname ${out}); rm -rf $$D && git-cache clone ${URL} ${COMMIT} $$D && touch ${out}'
 
     - name: PATCH
-      cmd: 'D=$$(dirname ${out}); git -C $$D am ${in} && touch ${out}'
+      cmd: 'D=$$(dirname ${out}); git -C $$D --git-dir=.git --work-tree=. reset --hard ${COMMIT} && git -C $$D am --ignore-whitespace ${in} || (git -C $$D am --abort; false; ) && touch ${out}'
 
 context:
     - name: default
