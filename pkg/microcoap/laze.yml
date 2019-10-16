@@ -1,0 +1,20 @@
+module:
+    - name: microcoap
+      download:
+          git:
+              url: https://github.com/1248/microcoap.git
+              commit: ef272895925f0d4c563725fe0102966f544a0fdc
+          patches:
+              - patches/0001-Remove-unneeded-.c-files.patch
+              - patches/0002-Add-RIOT-Makefile.patch
+              - patches/0003-change-flag-from-DEBUG-to-MICROCOAP_DEBUG.patch
+              - patches/0004-Increment-MAX_SEGMENTS.patch
+              - patches/0005-fix-uninitialized-variable.patch
+              - patches/0006-Removed-unnecessary-library.json.patch
+
+      license: MIT
+      sources:
+          - coap.c
+      export_vars:
+          includes:
+              - ${srcdir}
