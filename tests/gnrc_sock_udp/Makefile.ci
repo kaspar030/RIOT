@@ -8,5 +8,8 @@ BOARD_INSUFFICIENT_MEMORY := \
     nucleo-f031k6 \
     nucleo-f042k6 \
     nucleo-l031k6 \
+    telosb \
     waspmote-pro \
+    wsn430-v1_3b \
+    wsn430-v1_4 \
     #
