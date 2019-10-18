@@ -77,11 +77,6 @@ extern "C" {
 #endif
 /** @} */
 
-/**
- * @brief   Declare the heap_stats function as available
- */
-#define HAVE_HEAP_STATS
-
 #ifdef __cplusplus
 }
 #endif
