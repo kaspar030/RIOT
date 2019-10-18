@@ -1,0 +1,3 @@
+ifneq (,$(filter newlib,$(USEMODULE)))
+  USEMODULE += newlib_nano
+endif
