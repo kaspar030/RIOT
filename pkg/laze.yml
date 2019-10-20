@@ -20,7 +20,7 @@ subdirs:
     - lora-serialization
 #    - lua
 #    - lwip
-#    - micro-ecc
+    - micro-ecc
     - microcoap
     - minmea
 #    - monocypher

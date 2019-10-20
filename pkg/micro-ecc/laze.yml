@@ -1,0 +1,16 @@
+module:
+    - name: micro-ecc
+      download:
+          git:
+              url: https://github.com/kmackay/micro-ecc.git
+              commit: b6c0cdbe7d20af48b0c2a909a66ff00b093d1542
+          patches:
+            - patches/0002-Include-RIOT-Hardware-RNG-interface.patch
+            - patches/0003-Silence-warning-of-unused-variable.patch
+      license: BSD-2-Clause
+      sources: uECC.c
+      uses:
+          - periph_hwrng
+      export_vars:
+          includes:
+              - ${srcdir}
