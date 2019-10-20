@@ -1,1 +1,4 @@
 app:
+  depends:
+    - sys/hashes
+    - micro-ecc
