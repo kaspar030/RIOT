@@ -116,7 +116,7 @@ static void ztimer_extend_update(ztimer_extend_t *self)
     uint32_t now32 = ztimer_extend_now32(self, lower_now, self->origin);
     uint32_t target = self->super.list.offset + self->super.list.next->offset;
     target -= now32;
-    if ((lower_now + target) > self->lower_max) {
+    if (target > self->lower_max) {
         /* Await counter rollover first */
         return;
     }
