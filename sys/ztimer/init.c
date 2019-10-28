@@ -25,7 +25,7 @@
 #include "ztimer/periph.h"
 #include "ztimer/rtt.h"
 
-#define ENABLE_DEBUG (1)
+#define ENABLE_DEBUG (0)
 #include "debug.h"
 
 #define ZTIMER_TYPE_PERIPH 1
