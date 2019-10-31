@@ -11,4 +11,5 @@ subdirs:
     - gnrc_minimal
     - gnrc_networking
     - ipc_pingpong
+    - nimble_gatt
     - saul

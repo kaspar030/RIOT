@@ -1,0 +1,21 @@
+module:
+    - name: nimble_riot_contrib
+      depends:
+          - nimble
+      uses:
+          - nimble_controller
+          - nimble_host
+          - nimble_netif
+          - nimble_svc_gap
+          - nimble_svc_gatt
+          - nimble_svc_ipss
+          - shell_commands
+      sources:
+          - nimble_riot.c
+      vars:
+        CFLAGS:
+            - -Wno-cast-function-type
+      export_vars:
+          includes:
+              - ${relpath}/include
+

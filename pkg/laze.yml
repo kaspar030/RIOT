@@ -1,42 +1,42 @@
 subdirs:
-#    - c25519
-    - cayenne-lpp
-#    - ccn-lite
-#    - cmsis-dsp
-#    - cn-cbor
-#    - emb6
-    - fatfs
-#    - gecko_sdk
-    - hacl
-    - heatshrink
-#    - jerryscript
-    - jsmn
-    - libb2
-#    - libcoap
-#    - libcose
-    - libfixmath
-    - libhydrogen
-    - littlefs
-    - lora-serialization
-#    - lua
-#    - lwip
-    - micro-ecc
-    - microcoap
-    - minmea
-#    - monocypher
-#    - nanocbor
-#    - ndn-riot
-#    - nimble
-#    - nordic_softdevice_ble
-#    - oonf_api
-#    - openthread
-#    - qDSA
-    - relic
-#    - semtech-loramac
-#    - spiffs
-#    - tiny-asn1
-#    - tinycbor
-    - tinycrypt
+  #    - c25519
+  - cayenne-lpp
+  #    - ccn-lite
+  #    - cmsis-dsp
+  #    - cn-cbor
+  #    - emb6
+  - fatfs
+  #    - gecko_sdk
+  - hacl
+  - heatshrink
+  #    - jerryscript
+  - jsmn
+  - libb2
+  #    - libcoap
+  #    - libcose
+  - libfixmath
+  - libhydrogen
+  - littlefs
+  - lora-serialization
+  #    - lua
+  #    - lwip
+  - micro-ecc
+  - microcoap
+  - minmea
+  #    - monocypher
+  #    - nanocbor
+  #    - ndn-riot
+  - nimble
+  #    - nordic_softdevice_ble
+  #    - oonf_api
+  #    - openthread
+  #    - qDSA
+  - relic
+  #    - semtech-loramac
+  #    - spiffs
+  #    - tiny-asn1
+  #    - tinycbor
+  - tinycrypt
 #    - tinydtls
 #    - tlsf
 #    - tweetnacl

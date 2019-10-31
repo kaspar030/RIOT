@@ -1,0 +1,10 @@
+module:
+    - name: nimble_addr
+      depends:
+          - bluetil_addr
+      sources:
+          - nimble_addr.c
+      export_vars:
+          includes:
+              - ${relpath}/include
+

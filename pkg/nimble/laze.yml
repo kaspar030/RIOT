@@ -1,0 +1,232 @@
+# Nimble on RIOT laze.yml
+# @author: Kaspar Schleiser <kaspar@schleiser.de>
+#
+module:
+  - name: nimble
+    download:
+      git:
+        url: https://github.com/apache/mynewt-nimble.git
+        commit: 37245d0c3f239c35c0c734a337c7b6301fcfd70b
+    license: Apache-2.0
+    depends:
+      - posix_semaphore
+      - event
+      - event_callback
+      - xtimer
+
+      # Requires nimble feature
+      - feature/ble_nimble
+
+      # RIOT port
+      - nimble_porting_nimble
+      - nimble_npl_riot
+
+      # RIOT specifig glue code
+      - nimble_riot_contrib
+
+      # default functionality
+      - nimble_host
+      - nimble_controller
+
+      # submodule dependencies
+      - nimble_host:
+          - tinycrypt
+          - nimble_host_store_ram
+
+      - nimble_controller:
+          - nimble_transport_ram
+
+      # drivers:
+      - nrf51:
+          - nimble_driver_nrf51
+
+      - nrf52:
+          - nimble_driver_nrf52
+
+    sources:
+      - nimble_controller:
+          - nimble/controller/src/ble_ll_adv.c
+          - nimble/controller/src/ble_ll.c
+          - nimble/controller/src/ble_ll_conn.c
+          - nimble/controller/src/ble_ll_conn_hci.c
+          - nimble/controller/src/ble_ll_ctrl.c
+          - nimble/controller/src/ble_ll_dtm.c
+          - nimble/controller/src/ble_ll_hci.c
+          - nimble/controller/src/ble_ll_hci_ev.c
+          - nimble/controller/src/ble_ll_rand.c
+          - nimble/controller/src/ble_ll_resolv.c
+          - nimble/controller/src/ble_ll_rfmgmt.c
+          - nimble/controller/src/ble_ll_scan.c
+          - nimble/controller/src/ble_ll_sched.c
+          - nimble/controller/src/ble_ll_supp_cmd.c
+          - nimble/controller/src/ble_ll_sync.c
+          - nimble/controller/src/ble_ll_trace.c
+          - nimble/controller/src/ble_ll_utils.c
+          - nimble/controller/src/ble_ll_whitelist.c
+
+      - nimble_host:
+          - nimble/host/util/src/addr.c
+          - nimble/host/src/ble_att.c
+          - nimble/host/src/ble_att_clt.c
+          - nimble/host/src/ble_att_cmd.c
+          - nimble/host/src/ble_att_svr.c
+          - nimble/host/src/ble_eddystone.c
+          - nimble/host/src/ble_gap.c
+          - nimble/host/src/ble_gattc.c
+          - nimble/host/src/ble_gatts.c
+          #- nimble/host/src/ble_gatts_lcl.c (no console.h in RIOT)
+          - nimble/host/src/ble_hs_adv.c
+          - nimble/host/src/ble_hs_atomic.c
+          - nimble/host/src/ble_hs.c
+          - nimble/host/src/ble_hs_cfg.c
+          - nimble/host/src/ble_hs_conn.c
+          - nimble/host/src/ble_hs_flow.c
+          - nimble/host/src/ble_hs_hci.c
+          - nimble/host/src/ble_hs_hci_cmd.c
+          - nimble/host/src/ble_hs_hci_evt.c
+          - nimble/host/src/ble_hs_hci_util.c
+          - nimble/host/src/ble_hs_id.c
+          - nimble/host/src/ble_hs_log.c
+          - nimble/host/src/ble_hs_mbuf.c
+          - nimble/host/src/ble_hs_misc.c
+          - nimble/host/src/ble_hs_mqueue.c
+          - nimble/host/src/ble_hs_periodic_sync.c
+          - nimble/host/src/ble_hs_pvcy.c
+          - nimble/host/src/ble_hs_shutdown.c
+          - nimble/host/src/ble_hs_startup.c
+          - nimble/host/src/ble_hs_stop.c
+          - nimble/host/src/ble_ibeacon.c
+          - nimble/host/src/ble_l2cap.c
+          - nimble/host/src/ble_l2cap_coc.c
+          - nimble/host/src/ble_l2cap_sig.c
+          - nimble/host/src/ble_l2cap_sig_cmd.c
+          - nimble/host/src/ble_monitor.c
+          - nimble/host/src/ble_sm_alg.c
+          - nimble/host/src/ble_sm.c
+          - nimble/host/src/ble_sm_cmd.c
+          - nimble/host/src/ble_sm_lgcy.c
+          - nimble/host/src/ble_sm_sc.c
+          - nimble/host/src/ble_store.c
+          - nimble/host/src/ble_store_util.c
+          - nimble/host/src/ble_uuid.c
+
+      - nimble_host_store_ram:
+          - nimble/host/store/ram/src/ble_store_ram.c
+
+      - nimble_porting_nimble:
+          - porting/nimble/src/endian.c
+          - porting/nimble/src/hal_timer.c
+          - porting/nimble/src/mem.c
+          - porting/nimble/src/nimble_port.c
+          - porting/nimble/src/os_cputime.c
+          - porting/nimble/src/os_cputime_pwr2.c
+          - porting/nimble/src/os_mbuf.c
+          - porting/nimble/src/os_mempool.c
+          - porting/nimble/src/os_msys_init.c
+      - nimble_npl_riot:
+          - porting/npl/riot/src/npl_os_riot.c
+          - porting/npl/riot/src/nrf5x_isr.c
+
+      - nimble_svc_gap:
+          - nimble/host/services/gap/src/ble_svc_gap.c
+
+      - nimble_svc_gatt:
+          - nimble/host/services/gatt/src/ble_svc_gatt.c
+
+      - nimble_transport_ram:
+          - nimble/transport/ram/src/ble_hci_ram.c
+
+      - nimble_driver_nrf51:
+          - nimble/drivers/nrf51/src/ble_hw.c
+          - nimble/drivers/nrf51/src/ble_phy.c
+
+      - nimble_driver_nrf52:
+          - nimble/drivers/nrf52/src/ble_hw.c
+          - nimble/drivers/nrf52/src/ble_phy.c
+          - nimble/drivers/nrf52/src/ble_phy_trace.c
+
+    export_vars:
+      includes:
+        - ${srcdir}/nimble/include
+        - ${srcdir}/porting/npl/riot/include
+        - ${srcdir}/porting/nimble/include
+        - ${srcdir}/nimble/host/include
+        - ${srcdir}/nimble/host/util/include
+
+        - ${srcdir}/nimble/host/services/gap/include
+        - ${srcdir}/nimble/host/services/gatt/include
+        - ${srcdir}/nimble/host/services/ipss/include
+
+      nimble:
+        - ${srcdir}
+
+    vars:
+      CFLAGS:
+        - -Wno-unused-but-set-variable
+
+        # NimBLE is not optimized for building with all (extra) warnings enabled. So for
+        # now, we disable a number of selected compiler warnings when building NimBLE.
+        - -Wno-extra
+          #- -Wno-unused-parameter
+        - -Wno-unused-variable
+          #- -Wno-sign-compare
+          #- -Wno-implicit-function-declaration
+          #- -Wno-maybe-uninitialized
+
+  - name: nimble_host
+    depends: nimble
+
+  - name: nimble_controller
+    depends: nimble
+    export_vars:
+      CFLAGS_DEFINES:
+        - -DNIMBLE_CFG_CONTROLLER=1
+        - -DMYNEWT_VAL_OS_CPUTIME_FREQ=32768
+      includes:
+        - ${nimble}/nimble/controller/include
+
+  - name: nimble_porting_nimble
+    depends: nimble
+
+  - name: nimble_npl_riot
+    depends: nimble
+
+  - name: nimble_svc_gap
+    depends: nimble
+
+  - name: nimble_svc_gatt
+    depends: nimble
+
+  - name: nimble_svc_ipss
+    depends: nimble
+
+  - name: nimble_transport_ram
+    depends: nimble
+    export_vars:
+      includes:
+        - ${nimble}/nimble/transport/ram/include
+
+  - name: nimble_host_store_ram
+    depends: nimble
+    export_vars:
+      includes:
+        - ${nimble}/nimble/host/store/ram/include
+
+  - name: nimble_driver_nrf51
+    depends: nimble
+    export_vars:
+      includes:
+        - ${nimble}/nimble/drivers/nrf51/include
+
+  - name: nimble_driver_nrf52
+    depends: nimble
+    export_vars:
+      includes:
+        - ${nimble}/nimble/drivers/nrf52/include
+
+subdirs:
+  - addr
+  - contrib
+  - netif
+  - scanlist
+  - scanner
