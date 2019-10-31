@@ -1,0 +1,8 @@
+module:
+    - name: nimble_scanner
+      sources:
+          - nimble_scanner.c
+      export_vars:
+          includes:
+              - ${relpath}/include
+

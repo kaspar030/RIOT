@@ -1,0 +1,12 @@
+module:
+    - name: nimble_scanlist
+      depends:
+          - nimble_addr
+          - bluetil_ad
+      sources:
+          - nimble_scanlist.c
+          - nimble_scanlist_print.c
+      export_vars:
+          includes:
+              - ${relpath}/include
+

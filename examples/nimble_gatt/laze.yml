@@ -1,0 +1,11 @@
+app:
+    depends:
+        # Include NimBLE
+        - nimble
+        - nimble_svc_gap
+        - nimble_svc_gatt
+
+        # We also use the AD part of the BLE helper module
+        - bluetil_ad
+
+        - riot_info
