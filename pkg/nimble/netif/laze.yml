@@ -1,0 +1,31 @@
+module:
+    - name: nimble_netif
+      depends:
+          - l2addr
+          - bluetil_addr
+          - gnrc_ipv6:
+              - nimble_svc_ipss
+          - gnrc_ipv6_router_default:
+              - gnrc_ipv6_nib_6lr
+              - gnrc_sixlowpan
+              - gnrc_sixlowpan_iphc
+          - gnrc_ipv6_default:
+              - gnrc_ipv6_nib_6ln
+              - gnrc_sixlowpan
+              - gnrc_sixlowpan_iphc
+
+      sources:
+          - nimble_netif.c
+          - nimble_netif_conn.c
+      export_vars:
+          includes:
+            - ${relpath}/include
+          NIMBLE_MAX_CONN: 3
+          CFLAGS_DEFINES:
+            # configure NimBLE's internals
+             -  -DMYNEWT_VAL_MSYS_1_BLOCK_SIZE=264
+             -  -DMYNEWT_VAL_BLE_L2CAP_COC_MAX_NUM=$(NIMBLE_MAX_CONN)
+             -  -DMYNEWT_VAL_BLE_MAX_CONNECTIONS=$(NIMBLE_MAX_CONN)
+           # NimBLEs internal buffer need to hold one IPv6 MTU per connection
+           # for the internal MTU of 256 byte, we need 10 mbufs per connection
+             - -DMYNEWT_VAL_MSYS_1_BLOCK_COUNT=35
