@@ -1,0 +1,29 @@
+module:
+    - name: tinycrypt
+      download:
+          git:
+              url: https://github.com/01org/tinycrypt
+              commit: 6a22712bebbf2fc60d9fc6192dddefd5ad1933e3
+      license: BSD-3-Clause
+      sources:
+        - lib/source/aes_decrypt.c
+        - lib/source/aes_encrypt.c
+        - lib/source/cbc_mode.c
+        - lib/source/ccm_mode.c
+        - lib/source/cmac_mode.c
+        - lib/source/ctr_mode.c
+        - lib/source/ctr_prng.c
+        - lib/source/ecc.c
+        - lib/source/ecc_dh.c
+        - lib/source/ecc_dsa.c
+        - lib/source/ecc_platform_specific.c
+        - lib/source/hmac.c
+        - lib/source/hmac_prng.c
+        - lib/source/sha256.c
+        - lib/source/utils.c
+
+
+      export_vars:
+          includes:
+              - ${srcdir}/lib/include
+

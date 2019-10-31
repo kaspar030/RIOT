@@ -1,5 +1,5 @@
 subdirs:
-    - unittests
+  - unittests
 ---
 # C tests
 defaults:
@@ -86,7 +86,7 @@ subdirs:
   - driver_mma8x5x
   - driver_motor_driver
   - driver_mpl3115a2
-  - driver_mpu9150
+  - driver_mpu9x50
   - driver_mq3
   - driver_my9221
   - driver_nrf24l01p_lowlevel
@@ -110,7 +110,7 @@ subdirs:
   - driver_srf08
   - driver_sx127x
   - driver_tcs37727
-  - driver_tmp006
+  - driver_tmp00x
   - driver_tps6274x
   - driver_tsl2561
   - driver_tsl4531x
@@ -140,8 +140,7 @@ subdirs:
   - gnrc_sock_dns
   - gnrc_sock_ip
   - gnrc_sock_udp
-  - gnrc_tcp_client
-  - gnrc_tcp_server
+  - gnrc_tcp
   - gnrc_udp
   - irq
   - isr_yield_higher
@@ -203,7 +202,7 @@ subdirs:
   - pkg_relic
   #- pkg_semtech-loramac
   #- pkg_tinycbor
-  #- pkg_tinycrypt
+  - pkg_tinycrypt
   #- pkg_tweetnacl
   #- pkg_ucglib
   #- pkg_umorse
