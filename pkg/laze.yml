@@ -36,7 +36,7 @@ subdirs:
 #    - spiffs
 #    - tiny-asn1
 #    - tinycbor
-#    - tinycrypt
+    - tinycrypt
 #    - tinydtls
 #    - tlsf
 #    - tweetnacl
