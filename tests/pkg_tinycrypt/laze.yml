@@ -1,3 +1,5 @@
 app:
     depends:
         - fmt
+        - tinycrypt
+        - feature/arch_32bit
