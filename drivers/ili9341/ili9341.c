@@ -68,7 +68,7 @@ void ili9341_write_cmd(ili9341_t *dev, uint8_t cmd, const uint8_t *data,
 void ili9341_read_cmd(ili9341_t *dev, uint8_t cmd, uint8_t *data, size_t len)
 {
     assert(len);
-    spi_acquire(dev->params.spi, dev->params.cs_pin, SPI_MODE_0,
+    spi_acquire(dev->params.spi, dev->params.cs_pin, dev->params.spi_mode,
                 dev->params.spi_clk);
     ili9341_cmd_start(dev, cmd, true);
     /* Dummy transfer */
