@@ -146,7 +146,8 @@ int ili9341_init(ili9341_t *dev, const ili9341_params_t *prms)
     /* Display function control */
     params[0] = 0x08;
     params[1] = 0x82;
-    params[2] = 0x27; /* 320 lines */
+    //params[2] = 0x27; /* 320 lines */
+    params[2] = 0x1d; /* 240 lines */
     ili9341_write_cmd(dev, ILI9341_CMD_DFUNC, params, 3);
 
 
