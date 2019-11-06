@@ -37,6 +37,13 @@
 #include "board.h"
 #include "periph_conf.h"
 
+#ifdef MODULE_XTIMER_ON_ZTIMER
+#undef XTIMER_BACKOFF
+#define XTIMER_BACKOFF 1
+#undef XTIMER_ISR_BACKOFF
+#define XTIMER_ISR_BACKOFF 1
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

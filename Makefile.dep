@@ -957,6 +957,22 @@ ifneq (,$(filter suit_%,$(USEMODULE)))
   USEMODULE += suit
 endif
 
+ifneq (,$(filter xtimer_on_ztimer%,$(USEMODULE)))
+  UDEMODULE += ztimer_usec
+endif
+
+ifneq (,$(filter ztimer_%,$(USEMODULE)))
+  USEMODULE += ztimer
+endif
+
+ifneq (,$(filter ztimer_periph,$(USEMODULE)))
+  FEATURES_REQUIRED += periph_timer
+endif
+
+ifneq (,$(filter ztimer_rtt,$(USEMODULE)))
+  FEATURES_REQUIRED += periph_rtt
+endif
+
 # Enable periph_gpio when periph_gpio_irq is enabled
 ifneq (,$(filter periph_gpio_irq,$(USEMODULE)))
   FEATURES_REQUIRED += periph_gpio

@@ -38,6 +38,14 @@ extern "C" {
 /** @} */
 
 /**
+ * @name    ztimer configuration
+ * @{
+ */
+#define CONFIG_ZTIMER_USEC_TYPE    ZTIMER_TYPE_PERIPH
+#define CONFIG_ZTIMER_USEC_DEV     TIMER_DEV(1)
+/** @} */
+
+/**
  * @name    AT86RF233 configuration
  *
  * {spi bus, spi speed, cs pin, int pin, reset pin, sleep pin}
