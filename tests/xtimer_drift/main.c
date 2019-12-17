@@ -33,6 +33,16 @@
 #include "msg.h"
 #include "log.h"
 
+#if MODULE_STDIO_UART && STDIO_UART_BAUDRATE < 115200
+/* Printing the status in the (high priority) worker thread takes longer than
+ * the test interval when using stdio_uart with low baudrates.  Lower report
+ * frequency in that case.
+ */
+#define REPORT_EVERY_NTH 2
+#else
+#define REPORT_EVERY_NTH 1
+#endif
+
 /* We generate some context switching and IPC traffic by using multiple threads
  * and generate some xtimer load by scheduling several messages to be called at
  * different times. TEST_HZ is the frequency of messages being sent from the
@@ -112,12 +122,12 @@ void *worker_thread(void *arg)
             start = now;
             last = start;
         }
-        else if ((loop_counter % TEST_HZ) == 0) {
+        else if ((loop_counter % (TEST_HZ * REPORT_EVERY_NTH)) == 0) {
             uint32_t us = now % US_PER_SEC;
             uint32_t sec = now / US_PER_SEC;
             uint32_t expected = start + loop_counter * test_interval;
             int32_t drift = now - expected;
-            expected = last + TEST_HZ * test_interval;
+            expected = last + (TEST_HZ * REPORT_EVERY_NTH) * test_interval;
             int32_t jitter = now - expected;
             printf("now=%" PRIu32 ".%06" PRIu32 " (0x%08" PRIx32 " ticks), ",
                    sec, us, ticks.ticks32);
