@@ -3,6 +3,7 @@ module:
 
 subdirs:
         - application_layer
+        - ble
         - crosslayer
         - gnrc
         - link_layer
