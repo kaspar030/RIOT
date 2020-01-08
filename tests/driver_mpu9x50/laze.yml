@@ -1,0 +1,4 @@
+app:
+    depends:
+        - mpu9150
+        - xtimer
