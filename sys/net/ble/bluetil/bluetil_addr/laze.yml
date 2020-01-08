@@ -1,0 +1,5 @@
+module:
+  - name: bluetil_addr
+    sources: bluetil_addr.c
+    depends:
+      - fmt
