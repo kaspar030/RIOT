@@ -1,0 +1,13 @@
+module:
+    - name: boards_common_nrf52
+      context: nrf52
+      depends:
+          - saul_default: saul_nrf_temperature
+      global_vars:
+          includes:
+              - ${relpath}/include
+
+    - name: saul_nrf_temperature
+      context: nrf52
+      depends:
+        - periph_temperature
