@@ -1,0 +1,3 @@
+module:
+  - name: bluetil_ad
+    sources: bluetil_ad.c
