@@ -1,0 +1,12 @@
+module:
+    - name: boards_common_nrf52xxxdk
+      depends:
+          - core
+          - boards_common_nrf52
+          - saul_default: saul_gpio
+      sources:
+          - board.c
+
+      global_vars:
+          includes:
+              - ${relpath}/include

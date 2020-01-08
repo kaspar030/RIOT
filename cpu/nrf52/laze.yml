@@ -1,0 +1,48 @@
+context:
+    - name: nrf52
+      parent: nrf5x
+      vars:
+          LINKFLAGS:
+            - -L${relpath}/ldscripts
+            - -Wl,--defsym=_rom_start_addr=0x00000000
+            - -Wl,--defsym=_ram_start_addr=0x20000000
+          includes:
+              - ${relpath}/include
+              - ${relpath}/include/vendor
+          CFLAGS_ARCH:
+            - -mcpu=cortex-m4
+            - -mfloat-abi=hard
+            - -mfpu=fpv4-sp-d16
+          CFLAGS_DEFINES:
+            - -DCPU_FAM_NRF52
+            - -DCPU_CORE_CORTEX_M4F
+
+    - name: nrf52832
+      parent: nrf52
+      vars:
+        CFLAGS_DEFINES:
+            - -DRIOT_MCU=\"nrf52832\"
+            - -DCPU_NRF52832
+            - -DCPU_MODEL_NRF52832XXAA
+        ROM_LEN: "0x80000"
+        RAM_LEN: "0x10000"
+
+module:
+    - name: nrf52
+      context: nrf52
+      depends:
+          - nrf5x
+      sources:
+          - cpu.c
+          - vectors.c
+
+    - name: nrf52832
+      context: nrf52832
+      depends:
+          - nrf52
+
+    - name: feature/ble_nimble
+      context: nrf52
+
+subdirs:
+    - periph
