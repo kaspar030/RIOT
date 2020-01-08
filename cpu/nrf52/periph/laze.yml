@@ -1,0 +1,13 @@
+template:
+    "%NAME%":
+        - adc
+        - i2c
+        - pwm
+        - usbdev
+
+module:
+    name: "periph_%NAME%"
+    context: nrf52
+
+    sources:
+        - "%NAME%.c"

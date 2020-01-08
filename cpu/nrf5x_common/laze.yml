@@ -1,0 +1,21 @@
+context:
+    - name: nrf5x
+      parent: cortexm
+
+      vars:
+          includes:
+              - ${relpath}/include
+          LINKFLAGS:
+              - -Tcortexm.ld
+
+module:
+    - name: nrf5x
+      context: nrf5x
+      depends:
+          - cortexm
+          - periph_common
+
+      sources: clock.c
+
+subdirs:
+    - periph
