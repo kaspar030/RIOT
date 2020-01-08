@@ -1,0 +1,18 @@
+module:
+  - name: tmp00x
+    sources:
+        - tmp00x.c
+    depends:
+        - periph_i2c
+    uses:
+        - tmp006
+        - tmp007
+    export_vars:
+        CFLAGS:
+            - -I${relpath}/include
+
+  - name: tmp006
+    depends: tmp00x
+  - name: tmp007
+    depends: tmp00x
+
