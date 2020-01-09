@@ -16,8 +16,8 @@
 printf 'SET(CMAKE_SYSTEM_NAME Generic)\n'
 printf 'SET(CMAKE_SYSTEM_VERSION 1)\n'
 # specify the cross compiler"
-printf 'SET(CMAKE_C_COMPILER [==[%s]==] CACHE STRING "")\n' "${CC}"
-printf 'SET(CMAKE_CXX_COMPILER [==[%s]==] CACHE STRING "")\n' "${CXX}"
+#printf 'SET(CMAKE_C_COMPILER [==[%s]==] CACHE STRING "")\n' "${CC}"
+#printf 'SET(CMAKE_CXX_COMPILER [==[%s]==] CACHE STRING "")\n' "${CXX}"
 printf 'SET(CMAKE_LINKER [==[%s]==] CACHE STRING "")\n' "${LINK}"
 printf 'SET(CMAKE_RANLIB [==[%s]==] CACHE STRING "")\n' "${RANLIB}"
 # disable linker test
