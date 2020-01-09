@@ -1,0 +1,8 @@
+app:
+    depends:
+        - lua
+    sources:
+        - main.lua
+    vars:
+        includes:
+            - ${bindir}/blobs
