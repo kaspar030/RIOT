@@ -1,0 +1,7 @@
+module:
+  - name: lua-contrib
+    depends: lua
+    sources:
+      - binsearch.c
+      - lua_loadlib.c
+      - lua_run.c
