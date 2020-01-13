@@ -72,6 +72,11 @@ BOARDS_FEATURES_USED_BLACKLISTED :=
 $(foreach BOARD, $(BOARDS), $(eval $(call board_unsatisfied_features,$(BOARD))))
 BOARDS := $(filter-out $(BOARDS_WITH_MISSING_FEATURES) $(BOARDS_WITH_BLACKLISTED_FEATURES), $(BOARDS))
 
+# optionally filter boards that are flagged as not having enough flash / RAM
+ifeq (1, $(BOARDS_SKIP_INSUFFICIENT_MEMORY))
+  BOARDS := $(filter-out $(BOARD_INSUFFICIENT_MEMORY), $(BOARDS))
+endif
+
 info-buildsizes: SHELL=bash
 info-buildsizes:
 	@echo -e "   text\t   data\t    bss\t    dec\tboard"; \
