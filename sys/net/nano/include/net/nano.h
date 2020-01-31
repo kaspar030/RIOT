@@ -4,17 +4,7 @@
 #include "event.h"
 #include "thread.h"
 
-#include "nano_config.h"
-#include "nano_dev.h"
-#include "nano_ctx.h"
-#include "nano_eth.h"
-#include "nano_ieee802154.h"
-#include "nano_arp.h"
-#include "nano_ipv4.h"
-#include "nano_ipv6.h"
-#include "nano_6lp.h"
-#include "nano_route.h"
-#include "nano_udp.h"
+#include "net/nano/config.h"
 
 void nanonet_init(void);
 void nanonet_loop(void);

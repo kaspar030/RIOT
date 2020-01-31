@@ -5,9 +5,10 @@
 #include <stddef.h>
 
 #include "clist.h"
-#include "nano_ctx.h"
-#include "nano_ipv4.h"
-#include "nano_ipv6.h"
+#include "event.h"
+#include "net/nano/ctx.h"
+#include "net/nano/ipv4.h"
+#include "net/nano/ipv6.h"
 #include "tsrb.h"
 
 typedef enum {

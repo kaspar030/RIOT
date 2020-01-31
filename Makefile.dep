@@ -1057,6 +1057,10 @@ ifneq (,$(filter suit_%,$(USEMODULE)))
   USEMODULE += suit
 endif
 
+ifneq (,$(filter nanonet,$(USEMODULE)))
+  include $(RIOTBASE)/sys/net/nano/Makefile.dep
+endif
+
 # Enable periph_uart when periph_uart_nonblocking is enabled
 ifneq (,$(filter periph_uart_nonblocking,$(USEMODULE)))
   FEATURES_REQUIRED += periph_uart

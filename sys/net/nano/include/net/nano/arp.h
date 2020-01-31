@@ -2,8 +2,8 @@
 #define NANO_ARP_H
 
 #include <stdint.h>
-#include "nano_ctx.h"
-#include "nano_dev.h"
+#include "net/nano/ctx.h"
+#include "net/nano/dev.h"
 
 int arp_handle(nano_ctx_t *ctx, size_t offset);
 

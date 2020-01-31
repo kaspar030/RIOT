@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#include "nano_config.h"
+#include "net/nano/config.h"
 
 #include "net/netdev.h"
 

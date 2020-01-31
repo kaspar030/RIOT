@@ -5,7 +5,7 @@
 #include <string.h>
 
 #include "iolist.h"
-#include "nano_ctx.h"
+#include "net/nano/ctx.h"
 
 #define IPV6_ADDR_LEN   (16)
 

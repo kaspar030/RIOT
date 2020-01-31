@@ -31,9 +31,11 @@
 #include "log.h"
 
 #include "net/netdev/eth.h"
-//#include "net/netdev/ieee802154.h"
 
-#include "nanonet.h"
+#include "net/nano.h"
+#include "net/nano/dev.h"
+#include "net/nano/eth.h"
+#include "net/nano/ipv6.h"
 
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
@@ -146,7 +148,7 @@ static int _send_raw(nano_dev_t *dev, uint8_t *buf, size_t len)
     return 0;
 }
 
-#ifdef NANONET_IEEE802154
+#ifdef MODULE_NANONET_IEEE802154
 int nanonet_init_netdev_ieee802154(unsigned devnum)
 {
     DEBUG("nanonet_init_netdev\n");

@@ -3,11 +3,11 @@
 #include "byteorder.h"
 #include "iolist.h"
 
-#include "nano_udp.h"
-#include "nano_ctx.h"
-#include "nano_icmp.h"
-#include "nano_ipv4.h"
-#include "nano_ipv6.h"
+#include "net/nano/udp.h"
+#include "net/nano/ctx.h"
+#include "net/nano/icmp.h"
+#include "net/nano/ipv4.h"
+#include "net/nano/ipv6.h"
 
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
@@ -65,7 +65,7 @@ int udp_handle(nano_ctx_t *ctx, size_t offset)
     }
     else {
         if (is_ipv4_hdr(ctx->l3_hdr_start)) {
-#ifdef NANONET_IPV4
+#ifdef MODULE_NANONET_IPV4
             /* unless this packet was broadcast, send ICMP unreachable */
             if (! (ctx->src_addr.ipv4 || (~ctx->dst_addr.ipv4))) {
                 DEBUG("udp: unreachable port %u\n", dst_port);
@@ -111,11 +111,11 @@ int udp_reply(nano_ctx_t *ctx)
     hdr->chksum = 0x0;
 
     switch (is_ipv4_hdr(ctx->l3_hdr_start)) {
-#ifdef NANONET_IPV4
+#ifdef MODULE_NANONET_IPV4
         case 1:
             return ipv4_reply(ctx);
 #endif
-#ifdef NANONET_IPV6
+#ifdef MODULE_NANONET_IPV6
         case 0:
             return ipv6_reply(ctx);
 #endif
@@ -124,7 +124,7 @@ int udp_reply(nano_ctx_t *ctx)
     }
 }
 
-#ifdef NANONET_IPV4
+#ifdef MODULE_NANONET_IPV4
 int udp_send(const iolist_t *iolist, uint32_t dst_ip, uint16_t dst_port, uint16_t src_port)
 {
     DEBUG("udp: sending packet to 0x%08x\n", (unsigned int)dst_ip);
@@ -137,7 +137,7 @@ int udp_send(const iolist_t *iolist, uint32_t dst_ip, uint16_t dst_port, uint16_
 }
 #endif
 
-#ifdef NANONET_IPV6
+#ifdef MODULE_NANONET_IPV6
 int udp6_send(const iolist_t *iolist, uint8_t *dst_ip, uint16_t dst_port, uint16_t src_port, nano_dev_t *dev)
 {
     DEBUG("udp: sending udpv6 packet packet\n");

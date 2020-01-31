@@ -72,6 +72,7 @@ PSEUDOMODULES += lora
 PSEUDOMODULES += mpu_stack_guard
 PSEUDOMODULES += mpu_noexec_ram
 PSEUDOMODULES += nanocoap_%
+PSEUDOMODULES += nanonet_%
 PSEUDOMODULES += netdev_default
 PSEUDOMODULES += netdev_ieee802154_%
 PSEUDOMODULES += netdev_register

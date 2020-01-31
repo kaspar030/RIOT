@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "nano_ctx.h"
-#include "nano_ipv6.h"
+#include "net/nano/ctx.h"
+#include "net/nano/ipv6.h"
 
 #define IPV6_NEXTHDR_UDP        (17U)
 #define IPV6_NEXTHDR_ICMP       (58U)

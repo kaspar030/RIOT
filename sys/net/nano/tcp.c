@@ -1,9 +1,9 @@
 #include "byteorder.h"
 #include "clist.h"
 #include "iolist.h"
-#include "nano_icmp.h"
-#include "nano_tcp.h"
-#include "nano_util.h"
+#include "net/nano/icmp.h"
+#include "net/nano/tcp.h"
+#include "net/nano/util.h"
 #include "random.h"
 #include "tsrb.h"
 

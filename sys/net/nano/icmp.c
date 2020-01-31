@@ -2,10 +2,10 @@
 
 #include "byteorder.h"
 
-#include "nano_icmp.h"
-#include "nano_ipv4.h"
-#include "nano_util.h"
-#include "nano_config.h"
+#include "net/nano/icmp.h"
+#include "net/nano/ipv4.h"
+#include "net/nano/util.h"
+#include "net/nano/config.h"
 
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"

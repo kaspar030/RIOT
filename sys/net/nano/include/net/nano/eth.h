@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+#include "net/nano/dev.h"
+#include "net/nano/ctx.h"
+
 typedef struct __attribute__((packed)) eth_hdr {
     uint8_t dst[6];
     uint8_t src[6];

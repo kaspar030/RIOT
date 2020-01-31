@@ -6,9 +6,9 @@
 
 #include "clist.h"
 
-#include "nano_ctx.h"
-#include "nano_ipv4.h"
-#include "nano_ipv6.h"
+#include "net/nano/ctx.h"
+#include "net/nano/ipv4.h"
+#include "net/nano/ipv6.h"
 
 typedef struct __attribute__((packed)) udp_hdr {
     uint16_t src_port;

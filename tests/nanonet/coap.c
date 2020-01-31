@@ -10,7 +10,9 @@
 #include <string.h>
 
 #include "net/nanocoap.h"
-#include "nanonet.h"
+#include "net/nano.h"
+#include "net/nano/ctx.h"
+#include "net/nano/udp.h"
 
 #define ENABLE_DEBUG (0)
 #include "debug.h"

@@ -3,17 +3,17 @@
 
 #include "byteorder.h"
 
-#include "nano_dev.h"
-#include "nano_ipv6.h"
-#include "nano_icmpv6.h"
-#include "nano_route.h"
-#include "nano_util.h"
-#include "nano_udp.h"
-#include "nano_ndp.h"
-#include "nano_config.h"
-#include "nano_6lp.h"
-#include "nano_eth.h"
-#include "nano_ieee802154.h"
+#include "net/nano/dev.h"
+#include "net/nano/ipv6.h"
+#include "net/nano/icmpv6.h"
+#include "net/nano/route.h"
+#include "net/nano/util.h"
+#include "net/nano/udp.h"
+#include "net/nano/ndp.h"
+#include "net/nano/config.h"
+#include "net/nano/6lp.h"
+#include "net/nano/eth.h"
+#include "net/nano/ieee802154.h"
 
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
@@ -89,7 +89,7 @@ static int _ipv6_reply(nano_ctx_t *ctx)
     return ctx->dev->reply(ctx);
 }
 
-#ifdef NANONET_6LP
+#ifdef MODULE_NANONET_6LP
 static int is_6lowpan(nano_ctx_t *ctx)
 {
     /* TODO: hacky*/
@@ -109,7 +109,7 @@ int ipv6_reply(nano_ctx_t *ctx)
     ipv6_get_src_addr(ctx->src_addr.ipv6, ctx->dev, ctx->dst_addr.ipv6);
 
     if (is_6lowpan(ctx)) {
-#ifdef NANONET_6LP
+#ifdef MODULE_NANONET_6LP
         return nano_6lp_reply(ctx);
 #else
         return 0;
@@ -197,7 +197,7 @@ int ipv6_send(const iolist_t *iolist, uint8_t *dst_ip, int protocol, nano_dev_t 
     }
 
     if (0) {}
-#ifdef NANONET_IEEE802154
+#ifdef MODULE_NANONET_IEEE802154
     else if (dev->handle_rx == nano_ieee802154_handle) {
         DEBUG("ipv6_send(): 6lp send not implemented.\n");
         (void)iolist;
@@ -205,7 +205,7 @@ int ipv6_send(const iolist_t *iolist, uint8_t *dst_ip, int protocol, nano_dev_t 
         return -ENOSPC;
     }
 #endif
-#ifdef NANONET_ETH
+#ifdef MODULE_NANONET_ETH
     else if (dev->handle_rx == nano_eth_handle) {
         ipv6_hdr_t hdr = {
             /* set version to 6, traffic class + flow label to 0 */

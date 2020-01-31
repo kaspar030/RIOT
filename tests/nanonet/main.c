@@ -21,7 +21,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "nanonet.h"
+#include "net/nano.h"
+#include "net/nano/ipv4.h"
+#include "net/nano/ipv6.h"
+#include "net/nano/route.h"
+#include "net/nano/udp.h"
 #include "nano_coap.h"
 
 #include "log.h"
@@ -37,12 +41,12 @@ int nano_dummy_handler(nano_ctx_t *ctx, size_t offset, ...) {
     return 0;
 }
 
-#ifdef NANONET_IPV4
+#ifdef MODULE_NANONET_IPV4
 ipv4_route_t ipv4_routes[] = {
     { 0xc0a86f00, 0xffffff00, 0, &nanonet_devices[0] }, /* 192.168.111.0/24 for dev 0 */
     {0}
 };
-#endif /* NANONET_IPV4 */
+#endif /* MODULE_NANONET_IPV4 */
 
 ipv6_route_t ipv6_routes[] = {
     { {0}, 0, {0}, 0}
@@ -62,9 +66,9 @@ int main(void)
     clist_rpush(&nano_udp_binds, &_dummy_bind.next);
 
     /* set IP */
-#ifdef NANONET_IPV4
+#ifdef MODULE_NANONET_IPV4
     nanonet_devices[0].ipv4 = 0xc0a86f02; /* 0xc0a86f02 = 192.168.111.2 */
-#endif /* NANONET_IPV4 */
+#endif /* MODULE_NANONET_IPV4 */
 
     /* start nanonet event loop, will not return */
     nanonet_loop();

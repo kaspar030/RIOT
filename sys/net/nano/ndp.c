@@ -23,10 +23,10 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "nano_config.h"
-#include "nano_ipv6.h"
-#include "nano_ndp.h"
-#include "nano_util.h"
+#include "net/nano/config.h"
+#include "net/nano/ipv6.h"
+#include "net/nano/ndp.h"
+#include "net/nano/util.h"
 
 #define ENABLE_DEBUG    ENABLE_NANONET_DEBUG
 #include "debug.h"
