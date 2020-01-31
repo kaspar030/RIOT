@@ -2,8 +2,10 @@
 #define NANO_UTIL_H
 
 #include <stdint.h>
+#include "iolist.h"
 
 uint16_t nano_util_calcsum(uint32_t csum, const uint8_t *buffer, size_t len);
+uint16_t nano_util_calcsum_iolist(uint32_t sum, const iolist_t *iolist);
 
 void nano_util_addr_dump(uint8_t *addr, size_t len);
 
