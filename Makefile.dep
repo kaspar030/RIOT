@@ -85,11 +85,9 @@ ifneq (,$(filter tinydtls_sock_dtls, $(USEMODULE)))
 endif
 
 ifneq (,$(filter nanonet,$(USEMODULE)))
-  USEMODULE += iolist
-  USEMODULE += tsrb
-  USEMODULE += event
-  USEMODULE += nanonet_netdev
+  include $(RIOTBASE)/sys/net/nano/Makefile.dep
 endif
+
 # always select gpio (until explicit dependencies are sorted out)
 FEATURES_OPTIONAL += periph_gpio
 

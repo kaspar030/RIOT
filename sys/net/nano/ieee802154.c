@@ -1,10 +1,10 @@
 #include <string.h>
 
 #include "byteorder.h"
-#include "nanonet.h"
+#include "net/nano.h"
 
-#ifdef NANONET_6LP
-#include "nano_6lp.h"
+#ifdef MODULE_NANONET_6LP
+#include "net/nano/6lp.h"
 #endif
 
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
@@ -13,8 +13,6 @@
 #if ENABLE_DEBUG
 #include "fmt.h"
 #endif
-
-#ifdef NANONET_IEEE802154
 
 /*
  * IEEE 802.15.4 MAC header
@@ -228,7 +226,7 @@ void nano_ieee802154_handle(nano_dev_t *dev, uint8_t *buf, size_t len)
         print(addrbuf, ctx.dst_mac_len * 2);
         print_str("\n");
 #endif
-#ifdef NANONET_6LP
+#ifdef MODULE_NANONET_6LP
         ctx.l3_hdr_start = ctx.buf + hdrlen;
         nano_6lp_handle(&ctx, hdrlen);
 #endif
@@ -237,5 +235,3 @@ void nano_ieee802154_handle(nano_dev_t *dev, uint8_t *buf, size_t len)
         DEBUG("nano_ieee802154_handle(): dropping pkt due to hdr parsing error.\n");
     }
 }
-
-#endif /* NANONET_IEEE802154 */

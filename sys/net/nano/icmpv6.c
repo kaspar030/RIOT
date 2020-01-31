@@ -21,12 +21,12 @@
 
 #include <stdint.h>
 
-#include "nano_config.h"
-#include "nano_ctx.h"
-#include "nano_ipv6.h"
-#include "nano_icmpv6.h"
-#include "nano_util.h"
-#include "nano_ndp.h"
+#include "net/nano/config.h"
+#include "net/nano/ctx.h"
+#include "net/nano/ipv6.h"
+#include "net/nano/icmpv6.h"
+#include "net/nano/util.h"
+#include "net/nano/ndp.h"
 
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
