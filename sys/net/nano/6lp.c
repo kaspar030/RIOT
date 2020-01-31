@@ -2,14 +2,12 @@
 #include <errno.h>
 
 #include "byteorder.h"
-#include "nanonet.h"
+#include "net/nano.h"
 
-#include "nano_icmpv6.h"
+#include "net/nano/icmpv6.h"
 
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
-
-#ifdef NANONET_6LP
 
 /*
  * rfc6282 LOWPAN_IPHC header
@@ -408,5 +406,3 @@ int nano_6lp_handle(nano_ctx_t *ctx, size_t offset)
 
     return 0;
 }
-
-#endif /* NANONET_6LP */

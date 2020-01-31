@@ -2,9 +2,11 @@
 
 #include "byteorder.h"
 
-#include "nanonet.h"
-
-#ifdef NANONET_ETH
+#include "net/nano.h"
+#include "net/nano/arp.h"
+#include "net/nano/eth.h"
+#include "net/nano/ipv4.h"
+#include "net/nano/ipv6.h"
 
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
@@ -24,7 +26,7 @@ void nano_eth_handle(nano_dev_t *dev, uint8_t *buf, size_t len)
     int (*handler)(nano_ctx_t *, size_t) = NULL;
 
     switch (ntohs(pkt->ethertype)) {
-#ifdef NANONET_IPV4
+#ifdef MODULE_NANONET_IPV4
         case 0x0800:
             handler = ipv4_handle;
             break;
@@ -32,7 +34,7 @@ void nano_eth_handle(nano_dev_t *dev, uint8_t *buf, size_t len)
             handler = arp_handle;
             break;
 #endif
-#ifdef NANONET_IPV6
+#ifdef MODULE_NANONET_IPV6
         case 0x86DD:
             handler = ipv6_handle;
             break;
@@ -79,5 +81,3 @@ void nano_eth_get_iid(uint8_t *eui64, const uint8_t *mac)
     eui64[6] = mac[4];
     eui64[7] = mac[5];
 }
-
-#endif /* NANONET_ETH */

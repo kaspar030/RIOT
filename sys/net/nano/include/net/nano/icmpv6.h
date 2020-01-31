@@ -25,7 +25,7 @@
 #include <stddef.h>
 
 #include "byteorder.h"
-#include "nano_ctx.h"
+#include "net/nano/ctx.h"
 
 #ifdef __cplusplus
  extern "C" {

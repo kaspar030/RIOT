@@ -4,17 +4,15 @@
 #include "byteorder.h"
 #include "iolist.h"
 
-#include "nano_config.h"
+#include "net/nano/config.h"
 
-#ifdef NANONET_IPV4
-
-#include "nano_arp.h"
-#include "nano_icmp.h"
-#include "nano_ipv4.h"
-#include "nano_route.h"
-#include "nano_tcp.h"
-#include "nano_udp.h"
-#include "nano_util.h"
+#include "net/nano/arp.h"
+#include "net/nano/icmp.h"
+#include "net/nano/ipv4.h"
+#include "net/nano/route.h"
+#include "net/nano/tcp.h"
+#include "net/nano/udp.h"
+#include "net/nano/util.h"
 
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
@@ -44,12 +42,16 @@ int ipv4_handle(nano_ctx_t *ctx, size_t offset) {
             case 0x1:
                 icmp_handle(ctx, offset+hdr_len);
                 break;
+#ifdef MODULE_NANONET_TCP
             case 0x6:
                 tcp_handle(ctx, offset+hdr_len);
                 break;
+#endif
+#ifdef MODULE_NANONET_UDP
             case 0x11:
                 udp_handle(ctx, offset+hdr_len);
                 break;
+#endif
             default:
                 DEBUG("ipv4: unknown protocol.\n");
         }
@@ -175,5 +177,3 @@ int ipv4_reply(nano_ctx_t *ctx)
 
     return ctx->dev->reply(ctx);
 }
-
-#endif /* NANONET_IPV4 */

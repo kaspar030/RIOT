@@ -1,13 +1,12 @@
 include ../Makefile.tests_common
 
-USEMODULE += nanonet
-USEMODULE += core_thread_flags
 USEMODULE += nanocoap
 
 USEMODULE += netdev_default
 
-DISABLE_MODULE += core_msg
+USEMODULE += nanonet nanonet_udp nanonet_ipv6 nanonet_eth nanonet_ipv4
 
+DISABLE_MODULE += core_msg
 #
 # uncomment this to use ethos
 #

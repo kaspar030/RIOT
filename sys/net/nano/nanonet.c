@@ -31,7 +31,8 @@
 #include "periph/gpio.h"
 #include "periph/spi.h"
 
-#include "nanonet.h"
+#include "net/nano.h"
+#include "net/nano/dev.h"
 
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"

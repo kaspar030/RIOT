@@ -23,8 +23,8 @@
 
 #include <stdint.h>
 
-#include "nano_config.h"
-#include "nano_dev.h"
+#include "net/nano/config.h"
+#include "net/nano/dev.h"
 
 struct nano_ctx {
     nano_dev_t *dev;

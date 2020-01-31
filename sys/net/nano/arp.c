@@ -1,12 +1,10 @@
 #include <string.h>
 
-#include "nano_config.h"
+#include "net/nano/config.h"
 
-#ifdef NANONET_IPV4
-
-#include "nano_dev.h"
-#include "nano_arp.h"
-#include "nano_eth.h"
+#include "net/nano/dev.h"
+#include "net/nano/arp.h"
+#include "net/nano/eth.h"
 
 #include "byteorder.h"
 
@@ -261,5 +259,3 @@ void arp_cache_update(nano_dev_t *dev, uint32_t dest_ip, uint8_t *mac)
 
     arp_cache_put(dev, dest_ip, mac, n);
 }
-
-#endif /* NANONET_IPV4 */
