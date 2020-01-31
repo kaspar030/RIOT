@@ -91,9 +91,7 @@ static uint16_t calcsum(ipv4_hdr_t *hdr, const iolist_t *payload, size_t payload
     csum = nano_util_calcsum(csum, protocol, sizeof(protocol));
     csum = nano_util_calcsum(csum, (uint8_t *)&_payload_len, 2);
 
-    /* add actual data fields */
-    /* TODO: iterate iolist */
-    csum = nano_util_calcsum(csum, payload->iol_base, payload_len);
+    csum = nano_util_calcsum_iolist(csum, payload);
 
     return csum;
 }
