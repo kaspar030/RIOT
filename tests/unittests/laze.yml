@@ -16,6 +16,7 @@ app:
         - tests-div
         - tests-ecc
         - tests-flashpage
+        - tests-fmt
         - tests-gnrc_ipv6_nib
 
     blacklist:
@@ -55,12 +56,12 @@ subdirs:
     - tests-div
     - tests-ecc
     - tests-flashpage
+    - tests-fmt
     - tests-gnrc_ipv6_nib
 
       #- tests-fib
       #- tests-fib_sr
       #- tests-flashpage
-      #- tests-fmt
       #- tests-frac
       #- tests-gcoap
       #- tests-gnrc_ipv6
