@@ -15,6 +15,7 @@ app:
         - tests-credman
         - tests-div
         - tests-ecc
+        - tests-fib
         - tests-flashpage
         - tests-fmt
         - tests-gnrc_ipv6_nib
@@ -55,11 +56,11 @@ subdirs:
     - tests-credman
     - tests-div
     - tests-ecc
+    - tests-fib
     - tests-flashpage
     - tests-fmt
     - tests-gnrc_ipv6_nib
 
-      #- tests-fib
       #- tests-fib_sr
       #- tests-flashpage
       #- tests-frac
