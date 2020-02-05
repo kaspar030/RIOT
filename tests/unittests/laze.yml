@@ -11,6 +11,7 @@ app:
         - tests-checksum
         - tests-color
         - tests-core
+        - tests-clif
         - tests-flashpage
         - tests-gnrc_ipv6_nib
 
@@ -43,13 +44,12 @@ subdirs:
     - tests-bloom
     - tests-bluetil
     - tests-checksum
+    - tests-clif
     - tests-color
     - tests-core
     - tests-flashpage
     - tests-gnrc_ipv6_nib
 
-      #- tests-checksum
-      #- tests-clif
       #- tests-color
       #- tests-core
       #- tests-credman

@@ -1,0 +1,7 @@
+module:
+    - name: clif
+      sources: clif.c
+      export_vars:
+          includes:
+              - ${relpath}/include
+
