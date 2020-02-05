@@ -1,0 +1,13 @@
+app:
+    depends:
+        - tests-fmt
+
+module:
+    - name: tests-fmt
+      sources: tests-fmt.c
+      depends:
+          - fmt
+          - unittests-base
+      global_vars:
+          testsuites:
+              - fmt
