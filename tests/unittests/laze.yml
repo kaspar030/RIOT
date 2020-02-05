@@ -19,6 +19,7 @@ app:
         - tests-fib_sr
         - tests-flashpage
         - tests-fmt
+        - tests-frac
         - tests-gnrc_ipv6_nib
 
     blacklist:
@@ -61,10 +62,9 @@ subdirs:
     - tests-fib_sr
     - tests-flashpage
     - tests-fmt
+    - tests-frac
     - tests-gnrc_ipv6_nib
 
-      #- tests-flashpage
-      #- tests-frac
       #- tests-gcoap
       #- tests-gnrc_ipv6
       #- tests-gnrc_ipv6_hdr
