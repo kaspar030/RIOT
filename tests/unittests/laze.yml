@@ -7,6 +7,7 @@ app:
         - tests-bcd
         - tests-bitfield
         - tests-bloom
+        - tests-bluetil
         - tests-checksum
         - tests-color
         - tests-core
@@ -40,17 +41,13 @@ subdirs:
     - tests-bcd
     - tests-bitfield
     - tests-bloom
+    - tests-bluetil
     - tests-checksum
     - tests-color
     - tests-core
     - tests-flashpage
     - tests-gnrc_ipv6_nib
 
-      #- tests-base64
-      #- tests-bcd
-      #- tests-bitfield
-      #- tests-bloom
-      #- tests-bluetil
       #- tests-checksum
       #- tests-clif
       #- tests-color
