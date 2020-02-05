@@ -1,0 +1,13 @@
+app:
+    depends:
+        - tests-div
+
+module:
+    - name: tests-div
+      sources: tests-div.c
+      depends:
+          - div
+          - unittests-base
+      global_vars:
+          testsuites:
+              - div
