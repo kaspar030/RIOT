@@ -12,6 +12,7 @@ app:
         - tests-color
         - tests-core
         - tests-clif
+        - tests-credman
         - tests-flashpage
         - tests-gnrc_ipv6_nib
 
@@ -20,21 +21,22 @@ app:
         - atmega_common
 
 module:
-    name: unittests-base
-    sources:
-      - main.c
-    depends:
-        - board
-        - embunit
-        - test_utils_interactive_sync
-    uses:
-        - xtimer
-    vars:
-        CFLAGS:
-            - ${testsuites}
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/common
+    - name: unittests-base
+      sources:
+        - main.c
+      depends:
+          - board
+          - embunit
+          - test_utils_interactive_sync
+      uses:
+          - xtimer
+      vars:
+          CFLAGS:
+              - ${testsuites}
+
+      export_vars:
+          CFLAGS:
+              - -I${relpath}/common
 
 subdirs:
     - tests-analog_util
@@ -47,12 +49,10 @@ subdirs:
     - tests-clif
     - tests-color
     - tests-core
+    - tests-credman
     - tests-flashpage
     - tests-gnrc_ipv6_nib
 
-      #- tests-color
-      #- tests-core
-      #- tests-credman
       #- tests-div
       #- tests-ecc
       #- tests-fib

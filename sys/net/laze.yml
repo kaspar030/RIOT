@@ -4,6 +4,7 @@ module:
 subdirs:
         - application_layer
         - ble
+        - credman
         - crosslayer
         - gnrc
         - link_layer
