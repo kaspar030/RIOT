@@ -1,0 +1,16 @@
+app:
+    depends:
+        - tests-fib_sr
+
+module:
+    - name: tests-fib_sr
+      sources: tests-fib_sr.c
+      depends:
+          - fib
+          - unittests-base
+          - xtimer
+      global_vars:
+          testsuites:
+              - fib_sr
+          CFLAGS:
+              - -DFIB_DEVEL_HELPER -DUNIVERSAL_ADDRESS_SIZE=16 -DUNIVERSAL_ADDRESS_MAX_ENTRIES=40
