@@ -14,6 +14,7 @@ app:
         - tests-clif
         - tests-credman
         - tests-div
+        - tests-ecc
         - tests-flashpage
         - tests-gnrc_ipv6_nib
 
@@ -52,10 +53,10 @@ subdirs:
     - tests-core
     - tests-credman
     - tests-div
+    - tests-ecc
     - tests-flashpage
     - tests-gnrc_ipv6_nib
 
-      #- tests-ecc
       #- tests-fib
       #- tests-fib_sr
       #- tests-flashpage
