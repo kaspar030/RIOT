@@ -18,6 +18,8 @@ context:
             - -L${relpath}/ldscripts
             - -static
             - -nostartfiles
+            - -Wl,--defsym=_rom_length=${ROM_LEN}
+            - -Wl,--defsym=_ram_length=${RAM_LEN}
         includes:
             - ${relpath}/include
             - ${relpath}/include/vendor
@@ -25,9 +27,12 @@ context:
         libs:
             - -lm
 
+defaults:
+    module:
+        context: cortexm
+
 module:
-    - context: cortexm
-      name: cortexm
+    - name: cortexm
       sources:
        - cortexm_init.c
        - irq_arch.c
@@ -47,20 +52,32 @@ module:
           - cortexm_common_periph
 
     - name: feature/arch_32bit
-      context: cortexm
 
     - name: mpu_stack_guard
-      context: cortexm
+
     - name: printf_float
-      context: cortexm
+      global_vars:
+          LINKFLAGS:
+              - -u _printf_float
+
+    - name: scanf_float
+      global_vars:
+          LINKFLAGS:
+              - -u _scanf_float
 
     - name: feature/cpp
-      context: cortexm
       global_vars:
         LINK:
           - remove:
             - arm-none-eabi-gcc
           - arm-none-eabi-g++
+
+    - name: feature/stack_protector
+
+    - name: riotboot_config
+      export_vars:
+          CFLAGS:
+              - -DSLOT0_OFFSET=0x4000
 
 subdirs:
     - periph
