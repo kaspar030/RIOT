@@ -1,5 +1,6 @@
 module:
   - name: ssp
+    depends: feature/stack_protector
     global_vars:
       CFLAGS:
         - -fstack-protector
