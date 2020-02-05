@@ -16,6 +16,7 @@ subdirs:
     - cb_mux
     - cbor
     - checksum
+    - clif
     - color
     - cpp11-compat
     - crypto
