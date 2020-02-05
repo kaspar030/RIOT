@@ -1,0 +1,4 @@
+module:
+    - name: frac
+      sources:
+          - frac.c
