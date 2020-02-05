@@ -2,6 +2,7 @@ app:
     name: unittests
     depends:
         - unittests-base
+        - tests-analog_util
         - tests-base64
         - tests-bcd
         - tests-bitfield
@@ -34,6 +35,7 @@ module:
             - -I${relpath}/common
 
 subdirs:
+    - tests-analog_util
     - tests-base64
     - tests-bcd
     - tests-bitfield
@@ -43,3 +45,59 @@ subdirs:
     - tests-core
     - tests-flashpage
     - tests-gnrc_ipv6_nib
+
+      #- tests-base64
+      #- tests-bcd
+      #- tests-bitfield
+      #- tests-bloom
+      #- tests-bluetil
+      #- tests-checksum
+      #- tests-clif
+      #- tests-color
+      #- tests-core
+      #- tests-credman
+      #- tests-div
+      #- tests-ecc
+      #- tests-fib
+      #- tests-fib_sr
+      #- tests-flashpage
+      #- tests-fmt
+      #- tests-frac
+      #- tests-gcoap
+      #- tests-gnrc_ipv6
+      #- tests-gnrc_ipv6_hdr
+      #- tests-gnrc_ipv6_nib
+      #- tests-gnrc_mac_internal
+      #- tests-gnrc_sixlowpan_frag_vrb
+      #- tests-gnrc_udp
+      #- tests-hashes
+      #- tests-ieee802154
+      #- tests-inet_csum
+      #- tests-ipv4_addr
+      #- tests-ipv6_addr
+      #- tests-ipv6_hdr
+      #- tests-luid
+      #- tests-matstat
+      #- tests-mtd
+      #- tests-nanocoap
+      #- tests-netopt
+      #- tests-netreg
+      #- tests-phydat
+      #- tests-pkt
+      #- tests-pktbuf
+      #- tests-pktqueue
+      #- tests-printf_float
+      #- tests-priority_pktqueue
+      #- tests-rtc
+      #- tests-saul_reg
+      #- tests-scanf_float
+      #- tests-seq
+      #- tests-sht1x
+      #- tests-sixlowpan
+      #- tests-sixlowpan_ctx
+      #- tests-sixlowpan_sfr
+      #- tests-sock_util
+      #- tests-timex
+      #- tests-tsrb
+      #- tests-uuid
+      #- tests-vfs

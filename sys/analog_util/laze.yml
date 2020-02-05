@@ -1,0 +1,5 @@
+module:
+    - name: analog_util
+      sources:
+          - adc_util.c
+          - dac_util.c
