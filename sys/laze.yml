@@ -27,6 +27,7 @@ subdirs:
     - event
     - evtimer
     - fmt
+    - frac
     - fs
     - hashes
     - iolist
