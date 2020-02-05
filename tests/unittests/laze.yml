@@ -13,6 +13,7 @@ app:
         - tests-core
         - tests-clif
         - tests-credman
+        - tests-div
         - tests-flashpage
         - tests-gnrc_ipv6_nib
 
@@ -50,10 +51,10 @@ subdirs:
     - tests-color
     - tests-core
     - tests-credman
+    - tests-div
     - tests-flashpage
     - tests-gnrc_ipv6_nib
 
-      #- tests-div
       #- tests-ecc
       #- tests-fib
       #- tests-fib_sr
