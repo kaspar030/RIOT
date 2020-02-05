@@ -1,0 +1,13 @@
+app:
+    depends:
+        - tests-bluetil
+
+module:
+    - name: tests-bluetil
+      sources: tests-bluetil.c
+      depends:
+          - bluetil_addr
+          - unittests-base
+      global_vars:
+          testsuites:
+              - bluetil
