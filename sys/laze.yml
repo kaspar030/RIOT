@@ -4,8 +4,9 @@ defaults:
           - core
 
 subdirs:
-  #- arduino (missing cpp support)
+    #- arduino (missing cpp support)
     - app_metadata
+    - analog_util
     - auto_init
     - base64
     - benchmark
