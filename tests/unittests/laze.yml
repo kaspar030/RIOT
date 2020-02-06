@@ -8,9 +8,9 @@ app:
         - tests-bloom
         - tests-bluetil
         - tests-checksum
+        - tests-clif
         - tests-color
         - tests-core
-        - tests-clif
         - tests-credman
         - tests-div
         - tests-ecc
@@ -20,6 +20,8 @@ app:
         - tests-fmt
         - tests-frac
         - tests-gcoap
+        - tests-gnrc_ipv6
+        - tests-gnrc_ipv6_hdr
         - tests-gnrc_ipv6_nib
 
     blacklist:
@@ -38,11 +40,31 @@ module:
           - xtimer
       vars:
           CFLAGS:
-              - ${testsuites}
+            # individual unittests might use "test_suites_define" to set
+            # "-DTEST_SUITES", but the unittest main.c needs to get the full
+            # "-DTEST_SUITES=foo,bar,..."
+            # As the former is inherited through "test_suites_define"'s export_vars,
+            # undefine it here before ${test_suites} is expanded.
+            - -UTEST_SUITES
+            - ${testsuites}
 
       export_vars:
           CFLAGS:
               - -I${relpath}/common
+
+    # some modules (e.g., gnrc_pktbuf) trigger conditional compiles
+    # on "#if defined(TEST_SUITES)".
+    # provide a module here that defines that. unittests depend on it.
+    # modules that do use e.g., "#ifdef TEST_SUITES..." can "use:" this.
+    # use "prefix:" so it is guaranteed to end up before "unittests-base" full
+    # version ("-DTEST_SUITES=foo,bar,...".
+    # (This way the individual tests don't get compiled with varying test
+    # suite lists, in order to improve cacheability.)
+    - name: test_suites_define
+      export_vars:
+          CFLAGS:
+              - prefix:
+                  - -DTEST_SUITES
 
 subdirs:
     - tests-analog_util
@@ -64,11 +86,9 @@ subdirs:
     - tests-fmt
     - tests-frac
     - tests-gcoap
+    - tests-gnrc_ipv6
+    - tests-gnrc_ipv6_hdr
     - tests-gnrc_ipv6_nib
-
-      #- tests-gnrc_ipv6
-      #- tests-gnrc_ipv6_hdr
-      #- tests-gnrc_ipv6_nib
       #- tests-gnrc_mac_internal
       #- tests-gnrc_sixlowpan_frag_vrb
       #- tests-gnrc_udp
