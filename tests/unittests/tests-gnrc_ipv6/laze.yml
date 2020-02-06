@@ -1,0 +1,16 @@
+app:
+    depends:
+        - tests-gnrc_ipv6
+    blacklist:
+        # insufficient memory
+        - atmega_common
+
+module:
+    - name: tests-gnrc_ipv6
+      sources: tests-gnrc_ipv6.c
+      depends:
+          - gnrc_ipv6
+          - unittests-base
+      global_vars:
+          testsuites:
+              - gnrc_ipv6
