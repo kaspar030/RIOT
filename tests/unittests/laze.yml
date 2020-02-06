@@ -1,7 +1,6 @@
 app:
     name: unittests
     depends:
-        - unittests-base
         - tests-analog_util
         - tests-base64
         - tests-bcd
@@ -20,6 +19,7 @@ app:
         - tests-flashpage
         - tests-fmt
         - tests-frac
+        - tests-gcoap
         - tests-gnrc_ipv6_nib
 
     blacklist:
@@ -63,9 +63,9 @@ subdirs:
     - tests-flashpage
     - tests-fmt
     - tests-frac
+    - tests-gcoap
     - tests-gnrc_ipv6_nib
 
-      #- tests-gcoap
       #- tests-gnrc_ipv6
       #- tests-gnrc_ipv6_hdr
       #- tests-gnrc_ipv6_nib

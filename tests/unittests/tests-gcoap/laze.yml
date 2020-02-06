@@ -1,0 +1,18 @@
+app:
+    depends:
+        - tests-gcoap
+    blacklist:
+        # insufficient memory
+        - atmega_common
+
+module:
+    - name: tests-gcoap
+      sources: tests-gcoap.c
+      depends:
+          - gcoap
+          - gnrc_ipv6
+          - random
+          - unittests-base
+      global_vars:
+          testsuites:
+              - gcoap
