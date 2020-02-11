@@ -5,6 +5,3 @@ app:
         - ps
         - shell
         - shell_commands
-    global_vars:
-        CFLAGS:
-            - -DDEVELHELP

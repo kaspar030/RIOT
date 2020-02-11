@@ -24,9 +24,8 @@ app:
         - netstats_ipv6
         - netstats_rpl
 
-    global_vars:
-        CFLAGS:
-            - -DDEVELHELP
+        #
+        - develhelp
 
     blacklist:
         # insufficient memory

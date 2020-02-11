@@ -10,6 +10,8 @@ app:
         - stack.c
     global_vars:
         CFLAGS:
-            - -DDEVELHELP
             - -DGNRC_PKTBUF_SIZE="400"
             - -DTEST_SUITES
+    blacklist:
+        # insufficient memory
+        - atmega_common

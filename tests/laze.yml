@@ -10,9 +10,7 @@ defaults:
             - board
             - riot
             - test_utils_interactive_sync
-        global_vars:
-            CFLAGS:
-                - -DDEVELHELP
+            - ?develhelp
 
 subdirs:
   - bench_msg_pingpong
@@ -268,9 +266,7 @@ defaults:
         depends:
             - board
             - riot
-        global_vars:
-            CFLAGS:
-                - -DDEVELHELP
+            - ?develhelp
         tools:
             test:
                 cmd:

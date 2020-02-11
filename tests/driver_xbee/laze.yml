@@ -10,5 +10,4 @@ app:
     global_vars:
         CFLAGS:
             - -DGNRC_PKTBUF_SIZE="512"
-            - -DDEVELHELP
             - -I${relpath}

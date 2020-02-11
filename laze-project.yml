@@ -70,6 +70,7 @@ context:
       vars:
           CFLAGS_DEFINES:
             - '-DRIOT_VERSION=\"laze\"'
+            - -DNDEBUG
           CFLAGS_CODEGEN:
             - -fdata-sections
             - -ffunction-sections
@@ -138,6 +139,14 @@ module:
       global_vars:
           CFLAGS:
               - -flto -ffat-lto-objects
+
+    - name: develhelp
+      context: riot
+      global_vars:
+          CFLAGS_DEFINES:
+              - -DDEVELHELP
+              - remove:
+                  - -DNDEBUG
 
 subdirs:
     [ dist, core, boards, cpu, drivers, sys, examples, tests, pkg, bootloaders ]
