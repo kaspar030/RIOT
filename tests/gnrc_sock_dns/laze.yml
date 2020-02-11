@@ -9,9 +9,6 @@ app:
         - shell
         - shell_commands
         - sock_dns
-    global_vars:
-        CFLAGS:
-            - -DDEVELHELP
 
     blacklist:
         # insufficient memory

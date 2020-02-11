@@ -12,6 +12,5 @@ app:
         - shell_commands
     global_vars:
         CFLAGS:
-            - -DDEVELHELP
             - -DGNRC_PKTBUF_SIZE="1024"
             - -DIEEE802154_DEFAULT_CHANNEL="26"

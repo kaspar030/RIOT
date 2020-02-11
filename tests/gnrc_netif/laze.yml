@@ -23,7 +23,6 @@ app:
             - -DGNRC_NETIF_GROUPS_NUMOF="8"
             - -DLOG_LEVEL="LOG_NONE"
             - -DTEST_SUITES
-            - -DDEVELHELP
             - -DDEBUG_ASSERT_VERBOSE
             - -g
 

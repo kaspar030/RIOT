@@ -10,9 +10,6 @@ app:
         - gnrc_udp
         - ps
         - shell
-    global_vars:
-        CFLAGS:
-            - -DDEVELHELP
 
     blacklist:
         # insufficient memory

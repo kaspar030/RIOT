@@ -7,6 +7,3 @@ app:
         - shell
         - shell_commands
         - sntp
-    global_vars:
-        CFLAGS:
-            - -DDEVELHELP
