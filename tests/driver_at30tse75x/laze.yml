@@ -4,6 +4,3 @@ app:
         - periph_i2c
         - shell
         - shell_commands
-    global_vars:
-        CFLAGS:
-            - -DDEVELHELP

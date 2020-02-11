@@ -5,7 +5,5 @@ app:
         - ps
         - app_metadata
         - -test_utils_interactive_sync
-    global_vars:
-        CFLAGS:
-            - remove:
-                - -DDEVELHELP
+    disable_module:
+        - develhelp

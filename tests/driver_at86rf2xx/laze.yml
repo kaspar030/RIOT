@@ -11,6 +11,3 @@ app:
         - addr.c
         - cmd.c
         - recv.c
-    global_vars:
-        CFLAGS:
-            - -DDEVELHELP

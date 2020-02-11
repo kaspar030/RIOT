@@ -5,6 +5,3 @@ app:
         - gnrc_pktdump
         - gnrc_sixlowpan_default
         - gnrc_udp
-    global_vars:
-        CFLAGS:
-            - -DDEVELHELP
