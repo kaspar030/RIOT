@@ -1,0 +1,19 @@
+app:
+    depends:
+        - tests-gnrc_mac_internal
+    blacklist:
+        - atmega_common
+
+module:
+    - name: tests-gnrc_mac_internal
+      sources: tests-gnrc_mac_internal.c
+      depends:
+          - gnrc_priority_pktqueue
+          - gnrc_mac
+          - unittests-base
+      global_vars:
+          testsuites:
+              - gnrc_mac_internal
+          CFLAGS:
+              - -DGNRC_MAC_TX_QUEUE_SIZE=4
+              - -DGNRC_MAC_NEIGHBOR_COUNT=4
