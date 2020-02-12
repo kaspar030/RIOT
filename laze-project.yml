@@ -63,7 +63,7 @@ context:
             - -Werror
           CFLAGS:
             - -Os
-              #            - -g
+            - -g
 
     - name: riot
       parent: default
