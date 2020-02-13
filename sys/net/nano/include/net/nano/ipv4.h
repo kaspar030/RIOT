@@ -6,6 +6,9 @@
 #include "iolist.h"
 #include "net/nano/ctx.h"
 
+#define IP4(a, b, c, d) \
+    ((uint32_t)a << 24 | (uint32_t)b << 16 | (uint32_t)c << 8 | d)
+
 int ipv4_handle(nano_ctx_t *ctx, size_t offset);
 int ipv4_send(const iolist_t *iolist, uint32_t dest_ip, int protocol);
 int ipv4_reply(nano_ctx_t *ctx);
