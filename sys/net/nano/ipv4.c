@@ -21,7 +21,12 @@ int ipv4_handle(nano_ctx_t *ctx, size_t offset) {
     ipv4_hdr_t *hdr = (ipv4_hdr_t*) (ctx->buf+offset);
     nano_dev_t *dev = ctx->dev;
 
-    ctx->l3_hdr_start = (void*) hdr;
+    ctx->l3_hdr_start = (void *)hdr;
+
+    if (!is_ipv4_hdr((uint8_t *)hdr)) {
+        DEBUG("ipv4: invalid packet received.\n");
+        return -1;
+    }
 
     if (ctx->len - offset < ntohs(hdr->total_len)) {
         DEBUG("ipv4: truncated packet received.\n");
