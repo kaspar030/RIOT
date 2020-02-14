@@ -8,6 +8,7 @@
 #include "net/nano/icmp.h"
 #include "net/nano/ipv4.h"
 #include "net/nano/ipv6.h"
+#include "net/nano/util.h"
 
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
