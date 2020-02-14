@@ -1,7 +1,14 @@
 app:
     depends:
-        - auto_init_gnrc_netif
-        - gnrc_netdev_default
-        - gnrc_pktdump
+        # use IEEE 802.15.4 as link-layer protocol
+        - netdev_ieee802154
+        - netdev_test
+        # 6LoWPAN and its extensions
         - gnrc_sixlowpan_default
+        # UDP
         - gnrc_udp
+        # Dumps packets
+        - gnrc_pktdump
+    blacklist:
+        # insufficient memory
+        - atmega_common
