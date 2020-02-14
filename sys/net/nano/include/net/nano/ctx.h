@@ -38,7 +38,7 @@ struct nano_ctx {
     uint8_t *src_mac;
     uint8_t *dst_mac;
 
-#ifdef NANONET_IEEE802154
+#ifdef MODULE_NANONET_IEEE802154
     uint16_t src_pan;
     uint16_t dst_pan;
     uint8_t src_mac_len;
