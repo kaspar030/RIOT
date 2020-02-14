@@ -28,7 +28,7 @@ typedef struct __attribute__((packed)) ipv4_hdr {
 
 static inline int is_ipv4_hdr(uint8_t *buf)
 {
-#ifdef NANONET_IPV4
+#ifdef MODULE_NANONET_IPV4
     ipv4_hdr_t* hdr = (ipv4_hdr_t*)buf;
     return (hdr->ver_ihl>>4) == 4;
 #else
