@@ -87,7 +87,7 @@ static int _manifest_handler(suit_v3_manifest_t *manifest, int key,
     cose_key_t pkey;
     cose_key_init(&pkey);
     cose_key_set_keys(&pkey, COSE_EC_CURVE_ED25519, COSE_ALGO_EDDSA,
-                      public_key, NULL, NULL);
+                      (uint8_t *)public_key, NULL, NULL);
 
     LOG_INFO("suit: verifying manifest signature...\n");
     int verification = cose_sign_verify(&manifest->verify, &signature,
