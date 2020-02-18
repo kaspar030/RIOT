@@ -30,17 +30,26 @@ def main(options):
         password=None,
         backend=default_backend()
     )
-    public_numbers = private_key.public_key().public_numbers()
-    x = public_numbers.x
-    y = public_numbers.y
-    uecc_bytes = x.to_bytes(
-        (x.bit_length() + 7) // 8, byteorder='big'
-    ) + y.to_bytes(
-        (y.bit_length() + 7) // 8, byteorder='big'
+    #public_numbers = private_key.public_key().public_numbers()
+    #x = public_numbers.x
+    #y = public_numbers.y
+    #uecc_bytes = x.to_bytes(
+    #    (x.bit_length() + 7) // 8, byteorder='big'
+    #) + y.to_bytes(
+    #    (y.bit_length() + 7) // 8, byteorder='big'
+    #)
+    #uecc_c_def = ['const uint8_t public_key[] = {'] + textwrap.wrap(
+    #    ', '.join(['{:0=#4x}'.format(x) for x in uecc_bytes]),
+    #    76
+    #)
+    public_bytes = private_key.public_key().public_bytes(
+        encoding=ks.Encoding.Raw,
+        format=ks.PublicFormat.Raw
     )
-    uecc_c_def = ['const uint8_t public_key[] = {'] + textwrap.wrap(
-        ', '.join(['{:0=#4x}'.format(x) for x in uecc_bytes]),
+
+    c_def = ['const uint8_t public_key[] = {'] + textwrap.wrap(
+        ', '.join(['{:0=#4x}'.format(x) for x in public_bytes]),
         76
     )
-    print('\n    '.join(uecc_c_def) + '\n};')
+    print('\n    '.join(c_def) + '\n};')
     return 0
