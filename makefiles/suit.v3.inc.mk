@@ -5,13 +5,13 @@ SUIT_COAP_ROOT ?= coap://$(SUIT_COAP_SERVER)/$(SUIT_COAP_BASEPATH)
 SUIT_COAP_FSROOT ?= $(RIOTBASE)/coaproot
 
 #
-SUIT_MANIFEST ?= $(BINDIR_APP)-riot.suitv4.$(APP_VER).bin
-SUIT_MANIFEST_LATEST ?= $(BINDIR_APP)-riot.suitv4.latest.bin
-SUIT_MANIFEST_SIGNED ?= $(BINDIR_APP)-riot.suitv4_signed.$(APP_VER).bin
-SUIT_MANIFEST_SIGNED_LATEST ?= $(BINDIR_APP)-riot.suitv4_signed.latest.bin
+SUIT_MANIFEST ?= $(BINDIR_APP)-riot.suitv3.$(APP_VER).bin
+SUIT_MANIFEST_LATEST ?= $(BINDIR_APP)-riot.suitv3.latest.bin
+SUIT_MANIFEST_SIGNED ?= $(BINDIR_APP)-riot.suitv3_signed.$(APP_VER).bin
+SUIT_MANIFEST_SIGNED_LATEST ?= $(BINDIR_APP)-riot.suitv3_signed.latest.bin
 
 SUIT_NOTIFY_VERSION ?= latest
-SUIT_NOTIFY_MANIFEST ?= $(APPLICATION)-riot.suitv4_signed.$(SUIT_NOTIFY_VERSION).bin
+SUIT_NOTIFY_MANIFEST ?= $(APPLICATION)-riot.suitv3_signed.$(SUIT_NOTIFY_VERSION).bin
 
 # Long manifest names require more buffer space when parsing
 export CFLAGS += -DCONFIG_SOCK_URLPATH_MAXLEN=128
@@ -19,6 +19,9 @@ export CFLAGS += -DCONFIG_SOCK_URLPATH_MAXLEN=128
 SUIT_VENDOR ?= "riot-os.org"
 SUIT_SEQNR ?= $(APP_VER)
 SUIT_CLASS ?= $(BOARD)
+
+# path to suit-tool
+SUIT_TOOL ?= python $(RIOTBASE)/dist/tools/suit_v3/suit-manifest-generator/bin/suit-tool
 
 #
 # SUIT encryption keys
@@ -35,45 +38,46 @@ else
   SUIT_KEY_DIR ?= $(RIOTBASE)/keys
 endif
 
-SUIT_SEC ?= $(SUIT_KEY_DIR)/$(SUIT_KEY)
-SUIT_PUB ?= $(SUIT_KEY_DIR)/$(SUIT_KEY).pub
+SUIT_SEC ?= $(SUIT_KEY_DIR)/$(SUIT_KEY).pem
 
 SUIT_PUB_HDR = $(BINDIR)/riotbuild/public_key.h
 SUIT_PUB_HDR_DIR = $(dir $(SUIT_PUB_HDR))
 CFLAGS += -I$(SUIT_PUB_HDR_DIR)
 BUILDDEPS += $(SUIT_PUB_HDR)
 
-$(SUIT_SEC) $(SUIT_PUB): $(CLEAN)
-	@echo suit: generating key pair in $(SUIT_KEY_DIR)
+$(SUIT_SEC): $(CLEAN)
+	@echo suit: generating key in $(SUIT_KEY_DIR)
 	@mkdir -p $(SUIT_KEY_DIR)
-	@$(RIOTBASE)/dist/tools/suit_v4/gen_key.py $(SUIT_SEC) $(SUIT_PUB)
+	@$(RIOTBASE)/dist/tools/suit_v3/gen_key.py $(SUIT_SEC)
 
 # set FORCE so switching between keys using "SUIT_KEY=foo make ..."
 # triggers a rebuild even if the new key would otherwise not (because the other
 # key's mtime is too far back).
-$(SUIT_PUB_HDR): $(SUIT_PUB) FORCE | $(CLEAN)
+$(SUIT_PUB_HDR): $(SUIT_SEC) FORCE | $(CLEAN)
 	@mkdir -p $(SUIT_PUB_HDR_DIR)
-	@cp $(SUIT_PUB) $(SUIT_PUB_HDR_DIR)/public.key
-	@cd $(SUIT_PUB_HDR_DIR) && xxd -i public.key \
+	@$(SUIT_TOOL) pubkey -k $(SUIT_SEC) \
 	  | '$(LAZYSPONGE)' $(LAZYSPONGE_FLAGS) '$@'
 
-suit/genkey: $(SUIT_SEC) $(SUIT_PUB)
+suit/genkey: $(SUIT_SEC)
 
 #
 $(SUIT_MANIFEST): $(SLOT0_RIOT_BIN) $(SLOT1_RIOT_BIN)
-	$(RIOTBASE)/dist/tools/suit_v4/gen_manifest.py \
-	  --template $(RIOTBASE)/dist/tools/suit_v4/test-2img.json \
+	$(RIOTBASE)/dist/tools/suit_v3/gen_manifest.py \
 	  --urlroot $(SUIT_COAP_ROOT) \
 	  --seqnr $(SUIT_SEQNR) \
 	  --uuid-vendor $(SUIT_VENDOR) \
 	  --uuid-class $(SUIT_CLASS) \
-	  --offsets $(SLOT0_OFFSET),$(SLOT1_OFFSET) \
-	  -o $@ \
-	  $^
+	  -o $@.tmp \
+	  $(SLOT0_RIOT_BIN):$(SLOT0_OFFSET) \
+	  $(SLOT1_RIOT_BIN):$(SLOT1_OFFSET)
+	
+	$(SUIT_TOOL) create -f suit -i $@.tmp -o $@
 
-$(SUIT_MANIFEST_SIGNED): $(SUIT_MANIFEST) $(SUIT_SEC) $(SUIT_PUB)
-	$(RIOTBASE)/dist/tools/suit_v4/sign-04.py \
-	  $(SUIT_SEC) $(SUIT_PUB) $< $@
+	rm -f $@.tmp
+
+
+$(SUIT_MANIFEST_SIGNED): $(SUIT_MANIFEST) $(SUIT_SEC)
+	$(SUIT_TOOL) sign -k $(SUIT_SEC) -m $(SUIT_MANIFEST) -o $@
 
 $(SUIT_MANIFEST_LATEST): $(SUIT_MANIFEST)
 	@ln -f -s $< $@
