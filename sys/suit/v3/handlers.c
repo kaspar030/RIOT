@@ -6,11 +6,11 @@
  * directory for more details.
  */
 /**
- * @ingroup     sys_suit_v4
+ * @ingroup     sys_suit_v3
  * @{
  *
  * @file
- * @brief       SUIT v4
+ * @brief       SUIT v3
  *
  * @author      Koen Zandberg <koen@bergzand.net>
  *
@@ -21,10 +21,10 @@
 
 #include "suit/coap.h"
 #include "suit/conditions.h"
-#include "suit/v4/suit.h"
-#include "suit/v4/handlers.h"
-#include "suit/v4/policy.h"
-#include "suit/v4/suit.h"
+#include "suit/v3/suit.h"
+#include "suit/v3/handlers.h"
+#include "suit/v3/policy.h"
+#include "suit/v3/suit.h"
 #include "riotboot/hdr.h"
 #include "riotboot/slot.h"
 #include <nanocbor/nanocbor.h>
@@ -33,12 +33,12 @@
 
 #define HELLO_HANDLER_MAX_STRLEN 32
 
-static int _handle_command_sequence(suit_v4_manifest_t *manifest, nanocbor_value_t *it,
+static int _handle_command_sequence(suit_v3_manifest_t *manifest, nanocbor_value_t *it,
         suit_manifest_handler_t handler);
-static int _common_handler(suit_v4_manifest_t *manifest, int key, nanocbor_value_t *it);
-static int _common_sequence_handler(suit_v4_manifest_t *manifest, int key, nanocbor_value_t *it);
+static int _common_handler(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *it);
+static int _common_sequence_handler(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *it);
 
-static int _validate_uuid(suit_v4_manifest_t *manifest, nanocbor_value_t *it, uuid_t *uuid)
+static int _validate_uuid(suit_v3_manifest_t *manifest, nanocbor_value_t *it, uuid_t *uuid)
 {
     (void)manifest;
     const uint8_t *uuid_manifest_ptr;
@@ -55,7 +55,7 @@ static int _validate_uuid(suit_v4_manifest_t *manifest, nanocbor_value_t *it, uu
     return uuid_equal(uuid, (uuid_t *)uuid_manifest_ptr) ? 0 : -1;
 }
 
-static int _cond_vendor_handler(suit_v4_manifest_t *manifest, int key, nanocbor_value_t *it)
+static int _cond_vendor_handler(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *it)
 {
     (void)key;
     LOG_INFO("validating vendor ID\n");
@@ -67,7 +67,7 @@ static int _cond_vendor_handler(suit_v4_manifest_t *manifest, int key, nanocbor_
     return rc;
 }
 
-static int _cond_class_handler(suit_v4_manifest_t *manifest, int key, nanocbor_value_t *it)
+static int _cond_class_handler(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *it)
 {
     (void)key;
     LOG_INFO("validating class id\n");
@@ -79,7 +79,7 @@ static int _cond_class_handler(suit_v4_manifest_t *manifest, int key, nanocbor_v
     return rc;
 }
 
-static int _cond_comp_offset(suit_v4_manifest_t *manifest, int key, nanocbor_value_t *it)
+static int _cond_comp_offset(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *it)
 {
     (void)manifest;
     (void)key;
@@ -92,7 +92,7 @@ static int _cond_comp_offset(suit_v4_manifest_t *manifest, int key, nanocbor_val
     return other_offset == offset ? 0 : -1;
 }
 
-static int _dtv_set_comp_idx(suit_v4_manifest_t *manifest, int key, nanocbor_value_t *it)
+static int _dtv_set_comp_idx(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *it)
 {
     (void)key;
     if (nanocbor_get_type(it) == NANOCBOR_TYPE_FLOAT) {
@@ -106,7 +106,7 @@ static int _dtv_set_comp_idx(suit_v4_manifest_t *manifest, int key, nanocbor_val
     return 0;
 }
 
-static int _dtv_run_seq_cond(suit_v4_manifest_t *manifest, int key, nanocbor_value_t *it)
+static int _dtv_run_seq_cond(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *it)
 {
     (void)key;
     LOG_DEBUG("Starting conditional sequence handler\n");
@@ -114,20 +114,20 @@ static int _dtv_run_seq_cond(suit_v4_manifest_t *manifest, int key, nanocbor_val
     return 0;
 }
 
-static int _param_get_uri_list(suit_v4_manifest_t *manifest, nanocbor_value_t *it)
+static int _param_get_uri_list(suit_v3_manifest_t *manifest, nanocbor_value_t *it)
 {
     LOG_DEBUG("got url list\n");
     manifest->components[manifest->component_current].url = *it;
     return 0;
 }
-static int _param_get_digest(suit_v4_manifest_t *manifest, nanocbor_value_t *it)
+static int _param_get_digest(suit_v3_manifest_t *manifest, nanocbor_value_t *it)
 {
     LOG_DEBUG("got digest\n");
     manifest->components[manifest->component_current].digest = *it;
     return 0;
 }
 
-static int _param_get_img_size(suit_v4_manifest_t *manifest, nanocbor_value_t *it)
+static int _param_get_img_size(suit_v3_manifest_t *manifest, nanocbor_value_t *it)
 {
     int res = nanocbor_get_uint32(it, &manifest->components[0].size);
     if (res < 0) {
@@ -137,7 +137,7 @@ static int _param_get_img_size(suit_v4_manifest_t *manifest, nanocbor_value_t *i
     return res;
 }
 
-static int _dtv_set_param(suit_v4_manifest_t *manifest, int key, nanocbor_value_t *it)
+static int _dtv_set_param(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *it)
 {
     (void)key;
     /* `it` points to the entry of the map containing the type and value */
@@ -175,7 +175,7 @@ static int _dtv_set_param(suit_v4_manifest_t *manifest, int key, nanocbor_value_
     return SUIT_OK;
 }
 
-static int _dtv_fetch(suit_v4_manifest_t *manifest, int key, nanocbor_value_t *_it)
+static int _dtv_fetch(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *_it)
 {
     (void)key; (void)_it; (void)manifest;
     LOG_DEBUG("_dtv_fetch() key=%i\n", key);
@@ -275,7 +275,7 @@ static int _dtv_fetch(suit_v4_manifest_t *manifest, int key, nanocbor_value_t *_
     return SUIT_OK;
 }
 
-static int _version_handler(suit_v4_manifest_t *manifest, int key,
+static int _version_handler(suit_v3_manifest_t *manifest, int key,
                             nanocbor_value_t *it)
 {
     (void)manifest;
@@ -295,7 +295,7 @@ static int _version_handler(suit_v4_manifest_t *manifest, int key,
     return -1;
 }
 
-static int _seq_no_handler(suit_v4_manifest_t *manifest, int key, nanocbor_value_t *it)
+static int _seq_no_handler(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *it)
 {
     (void)key;
 
@@ -326,7 +326,7 @@ static int _seq_no_handler(suit_v4_manifest_t *manifest, int key, nanocbor_value
 
 }
 
-static int _dependencies_handler(suit_v4_manifest_t *manifest, int key,
+static int _dependencies_handler(suit_v3_manifest_t *manifest, int key,
                                  nanocbor_value_t *it)
 {
     (void)manifest;
@@ -336,7 +336,7 @@ static int _dependencies_handler(suit_v4_manifest_t *manifest, int key,
     return 0;
 }
 
-static int _component_handler(suit_v4_manifest_t *manifest, int key,
+static int _component_handler(suit_v3_manifest_t *manifest, int key,
                               nanocbor_value_t *it)
 {
     (void)manifest;
@@ -352,7 +352,7 @@ static int _component_handler(suit_v4_manifest_t *manifest, int key,
     unsigned n = 0;
     while (!nanocbor_at_end(&arr)) {
         nanocbor_value_t map;
-        if (n < SUIT_V4_COMPONENT_MAX) {
+        if (n < SUIT_V3_COMPONENT_MAX) {
             manifest->components_len += 1;
         }
         else {
@@ -361,11 +361,11 @@ static int _component_handler(suit_v4_manifest_t *manifest, int key,
         }
 
         if (nanocbor_enter_map(&arr, &map) < 0) {
-            LOG_DEBUG("suit _v4_parse(): manifest not a map!\n");
+            LOG_DEBUG("suit _v3_parse(): manifest not a map!\n");
             return SUIT_ERR_INVALID_MANIFEST;
         }
 
-        suit_v4_component_t *current = &manifest->components[n];
+        suit_v3_component_t *current = &manifest->components[n];
 
         while (!nanocbor_at_end(&map)) {
 
@@ -456,7 +456,7 @@ suit_manifest_handler_t suit_manifest_get_manifest_handler(int key)
                                       global_handlers_len);
 }
 
-static int _common_sequence_handler(suit_v4_manifest_t *manifest, int key,
+static int _common_sequence_handler(suit_v3_manifest_t *manifest, int key,
                                     nanocbor_value_t *it)
 {
 
@@ -473,13 +473,13 @@ static int _common_sequence_handler(suit_v4_manifest_t *manifest, int key,
     }
 }
 
-static int _common_handler(suit_v4_manifest_t *manifest, int key, nanocbor_value_t *it)
+static int _common_handler(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *it)
 {
     (void)key;
     return _handle_command_sequence(manifest, it, _common_sequence_handler);
 }
 
-int _handle_command_sequence(suit_v4_manifest_t *manifest, nanocbor_value_t *bseq,
+int _handle_command_sequence(suit_v3_manifest_t *manifest, nanocbor_value_t *bseq,
         suit_manifest_handler_t handler)
 {
 

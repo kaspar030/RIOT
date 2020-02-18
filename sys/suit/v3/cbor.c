@@ -23,9 +23,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "suit/v4/handlers.h"
-#include "suit/v4/suit.h"
-#include "suit/v4/policy.h"
+#include "suit/v3/handlers.h"
+#include "suit/v3/suit.h"
+#include "suit/v3/policy.h"
 #include "nanocbor/nanocbor.h"
 #include "cose/sign.h"
 
@@ -51,7 +51,7 @@ int suit_cbor_subparse(nanocbor_value_t *bseq, nanocbor_value_t *it)
     return SUIT_OK;
 }
 
-int _v4_parse(suit_v4_manifest_t *manifest, const uint8_t *buf,
+int _v3_parse(suit_v3_manifest_t *manifest, const uint8_t *buf,
               size_t len, suit_manifest_handler_getter_t getter)
 {
     nanocbor_value_t it, map;
@@ -61,7 +61,7 @@ int _v4_parse(suit_v4_manifest_t *manifest, const uint8_t *buf,
     map = it;
 
     if (nanocbor_enter_map(&map, &it) < 0) {
-        LOG_DEBUG("suit _v4_parse(): manifest not a map!\n");
+        LOG_DEBUG("suit _v3_parse(): manifest not a map!\n");
         return SUIT_ERR_INVALID_MANIFEST;
     }
 
@@ -94,15 +94,15 @@ int _v4_parse(suit_v4_manifest_t *manifest, const uint8_t *buf,
     return SUIT_OK;
 }
 
-int suit_v4_parse(suit_v4_manifest_t *manifest, const uint8_t *buf,
+int suit_v3_parse(suit_v3_manifest_t *manifest, const uint8_t *buf,
                   size_t len)
 {
     manifest->buf = buf;
     manifest->len = len;
-    return _v4_parse(manifest, buf, len, _manifest_get_auth_wrapper_handler);
+    return _v3_parse(manifest, buf, len, _manifest_get_auth_wrapper_handler);
 }
 
-static int _auth_handler(suit_v4_manifest_t *manifest, int key,
+static int _auth_handler(suit_v3_manifest_t *manifest, int key,
                          nanocbor_value_t *it)
 {
     (void)key;
@@ -122,7 +122,7 @@ static int _auth_handler(suit_v4_manifest_t *manifest, int key,
     return 0;
 }
 
-static int _manifest_handler(suit_v4_manifest_t *manifest, int key,
+static int _manifest_handler(suit_v3_manifest_t *manifest, int key,
                              nanocbor_value_t *it)
 {
     (void)key;
@@ -157,7 +157,7 @@ static int _manifest_handler(suit_v4_manifest_t *manifest, int key,
         return SUIT_ERR_SIGNATURE;
     }
 
-    return _v4_parse(manifest, manifest_buf,
+    return _v3_parse(manifest, manifest_buf,
                      manifest_len, suit_manifest_get_manifest_handler);
 }
 

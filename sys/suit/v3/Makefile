@@ -1,2 +1,2 @@
-MODULE := suit_v4
+MODULE := suit_v3
 include $(RIOTBASE)/Makefile.base

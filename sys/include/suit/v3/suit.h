@@ -7,9 +7,11 @@
  * directory for more details.
  */
 /**
- * @defgroup    sys_suit_v4 SUIT draft v4
+ * @defgroup    sys_suit_v3 SUIT draft v3
  * @ingroup     sys_suit
  * @brief       SUIT manifest handling
+ *
+ * @see https://tools.ietf.org/html/draft-ietf-suit-manifest-03
  *
  * @{
  *
@@ -19,8 +21,8 @@
  *
  */
 
-#ifndef SUIT_V4_SUIT_H
-#define SUIT_V4_SUIT_H
+#ifndef SUIT_V3_SUIT_H
+#define SUIT_V3_SUIT_H
 
 #include <stddef.h>
 #include <stdint.h>
@@ -42,9 +44,9 @@ extern "C" {
 #endif
 
 /**
- * @brief   Maximum number of components used for SUIT v4
+ * @brief   Maximum number of components used for SUIT v3
  */
-#define SUIT_V4_COMPONENT_MAX           (1U)
+#define SUIT_V3_COMPONENT_MAX           (1U)
 
 /**
  * @brief Supported SUIT manifest version
@@ -71,7 +73,7 @@ typedef enum {
     SUIT_ERR_SEQUENCE_NUMBER    = -5,   /**< Sequence number less or equal to
                                              current sequence number */
     SUIT_ERR_SIGNATURE          = -6,   /**< Unable to verify signature */
-} suit_v4_error_t;
+} suit_v3_error_t;
 
 /**
  * @brief SUIT payload digest algorithms
@@ -84,7 +86,7 @@ typedef enum {
     SUIT_DIGEST_SHA256  = 1,    /**< SHA256 */
     SUIT_DIGEST_SHA384  = 2,    /**< SHA384 */
     SUIT_DIGEST_SHA512  = 3,    /**< SHA512 */
-} suit_v4_digest_t;
+} suit_v3_digest_t;
 
 /**
  * @brief SUIT payload digest types
@@ -97,7 +99,7 @@ typedef enum {
     SUIT_DIGEST_TYPE_INSTALLED  = 2,    /**< Installed firmware digest */
     SUIT_DIGEST_TYPE_CIPHERTEXT = 3,    /**< Ciphertext digest */
     SUIT_DIGEST_TYPE_PREIMAGE   = 4     /**< Pre-image digest */
-} suit_v4_digest_type_t;
+} suit_v3_digest_type_t;
 
 /**
  * @brief SUIT component types
@@ -112,14 +114,14 @@ enum {
 };
 
 /**
- * @brief SUIT v4 component struct
+ * @brief SUIT v3 component struct
  */
 typedef struct {
     uint32_t size;                      /**< Size */
     nanocbor_value_t identifier;        /**< Identifier*/
     nanocbor_value_t url;               /**< Url */
     nanocbor_value_t digest;            /**< Digest */
-} suit_v4_component_t;
+} suit_v3_component_t;
 
 /**
  * @brief SUIT manifest struct
@@ -132,7 +134,7 @@ typedef struct {
     uint32_t state;                 /**< bitfield holding state information */
 
     /** List of components in the manifest */
-    suit_v4_component_t components[SUIT_V4_COMPONENT_MAX];
+    suit_v3_component_t components[SUIT_V3_COMPONENT_MAX];
     unsigned components_len;        /**< Current number of components */
     int32_t component_current;      /**< Current component index */
     riotboot_flashwrite_t *writer;  /**< Pointer to the riotboot flash writer */
@@ -141,7 +143,7 @@ typedef struct {
     cose_key_t *key;                /**< Ptr to the public key for validation */
     char *urlbuf;                   /**< Buffer containing the manifest url */
     size_t urlbuf_len;              /**< Length of the manifest url */
-} suit_v4_manifest_t;
+} suit_v3_manifest_t;
 
 /**
  * @brief Bit flags used to determine if SUIT manifest contains components
@@ -163,9 +165,9 @@ typedef struct {
  * @param[in]   len         length of the manifest data in the buffer
  *
  * @return                  SUIT_OK on parseable manifest
- * @return                  negative @ref suit_v4_error_t code on error
+ * @return                  negative @ref suit_v3_error_t code on error
  */
-int suit_v4_parse(suit_v4_manifest_t *manifest, const uint8_t *buf, size_t len);
+int suit_v3_parse(suit_v3_manifest_t *manifest, const uint8_t *buf, size_t len);
 
 /**
  * @brief Check a manifest policy
@@ -175,7 +177,7 @@ int suit_v4_parse(suit_v4_manifest_t *manifest, const uint8_t *buf, size_t len);
  * @return                  0 on valid manifest policy
  * @return                  -1 on invalid manifest policy
  */
-int suit_v4_policy_check(suit_v4_manifest_t *manifest);
+int suit_v3_policy_check(suit_v3_manifest_t *manifest);
 
 /**
  * @brief Iterate over a cbor map container
@@ -220,5 +222,5 @@ int suit_flashwrite_helper(void *arg, size_t offset, uint8_t *buf, size_t len,
 }
 #endif
 
-#endif /* SUIT_V4_SUIT_H */
+#endif /* SUIT_V3_SUIT_H */
 /** @} */
