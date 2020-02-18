@@ -105,8 +105,8 @@ static int _manifest_handler(suit_v3_manifest_t *manifest, int key,
 /* begin{code-style-ignore} */
 const suit_manifest_handler_t suit_container_handlers[] = {
     [ 0] = NULL,
-    [ 1] = _auth_handler,
-    [ 2] = _manifest_handler,
+    [ 2] = _auth_handler,
+    [ 3] = _manifest_handler,
 };
 /* end{code-style-ignore} */
 

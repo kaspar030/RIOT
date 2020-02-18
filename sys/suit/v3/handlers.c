@@ -41,20 +41,15 @@ static suit_manifest_handler_t _get_handler(int key,
     return handlers[key];
 }
 
-int suit_handle_command_sequence(suit_v3_manifest_t *manifest, nanocbor_value_t *bseq,
+int suit_handle_command_sequence(suit_v3_manifest_t *manifest, nanocbor_value_t *it,
                                  const suit_manifest_handler_t *handlers, size_t handlers_len)
 {
 
     LOG_DEBUG("Handling command sequence\n");
-    nanocbor_value_t it, container;
+    nanocbor_value_t container;
 
-    int err = suit_cbor_subparse(bseq, &it);
-    if (err < 0) {
-        return err;
-    }
-
-    if ((nanocbor_enter_array(&it, &container) < 0) &&
-            (nanocbor_enter_map(&it, &container) < 0)) {
+    if ((nanocbor_enter_array(it, &container) < 0) &&
+            (nanocbor_enter_map(it, &container) < 0)) {
         return SUIT_ERR_INVALID_MANIFEST;
     }
 
@@ -76,7 +71,7 @@ int suit_handle_command_sequence(suit_v3_manifest_t *manifest, nanocbor_value_t 
         }
         nanocbor_skip(&container);
     }
-    nanocbor_leave_container(&it, &container);
+    nanocbor_leave_container(it, &container);
 
     return 0;
 }
