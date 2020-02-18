@@ -15,16 +15,16 @@
 import sys
 
 from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.asymmetric import ec
+#from cryptography.hazmat.primitives.asymmetric import ec
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat, NoEncryption
 
 def main():
     if len(sys.argv) != 2:
         print("usage: gen_key.py <secret filename>")
-        print("... creates an SECP384R1 elliptic curve key in PKCS8 PEM format.")
         sys.exit(1)
 
-    pk = ec.generate_private_key(ec.SECP256R1(), default_backend())
+    pk = Ed25519PrivateKey.generate()
     pem = pk.private_bytes(encoding=Encoding.PEM,
                            format=PrivateFormat.PKCS8,
                            encryption_algorithm=NoEncryption()
