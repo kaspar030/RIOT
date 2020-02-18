@@ -369,10 +369,10 @@ see 6 pairs of messages indicating where (filepath) the file was published and
 the corresponding coap resource URI
 
     ...
-    published "/home/francisco/workspace/RIOT/examples/suit_update/bin/samr21-xpro/suit_update-riot.suitv4_signed.1557135946.bin"
-           as "coap://[2001:db8::1]/fw/samr21-xpro/suit_update-riot.suitv4_signed.1557135946.bin"
-    published "/home/francisco/workspace/RIOT/examples/suit_update/bin/samr21-xpro/suit_update-riot.suitv4_signed.latest.bin"
-           as "coap://[2001:db8::1]/fw/samr21-xpro/suit_update-riot.suitv4_signed.latest.bin"
+    published "/home/francisco/workspace/RIOT/examples/suit_update/bin/samr21-xpro/suit_update-riot.suitv3_signed.1557135946.bin"
+           as "coap://[2001:db8::1]/fw/samr21-xpro/suit_update-riot.suitv3_signed.1557135946.bin"
+    published "/home/francisco/workspace/RIOT/examples/suit_update/bin/samr21-xpro/suit_update-riot.suitv3_signed.latest.bin"
+           as "coap://[2001:db8::1]/fw/samr21-xpro/suit_update-riot.suitv3_signed.latest.bin"
     ...
 
 ### Notify an update to the device
@@ -394,7 +394,7 @@ wireless device it will be reachable via its global address, something like `200
 This notifies the node of a new available manifest. Once the notification is
 received by the device, it fetches it.
 
-If using `suit-v4` the node hangs for a couple of seconds when verifying the
+If using `suit-v3` the node hangs for a couple of seconds when verifying the
 signature:
 
     ....
@@ -439,7 +439,7 @@ success, the application reboots on the new slot:
     2019-04-05 16:19:26,708 - INFO # got key val=12
     2019-04-05 16:19:26,709 - INFO # no handler found
     2019-04-05 16:19:26,711 - INFO # handler res=0
-    2019-04-05 16:19:26,713 - INFO # suit_v4_parse() success
+    2019-04-05 16:19:26,713 - INFO # suit_v3_parse() success
     2019-04-05 16:19:26,715 - INFO # SUIT policy check OK.
     2019-04-05 16:19:26,718 - INFO # suit_coap: finalizing image flash
     2019-04-05 16:19:26,725 - INFO # riotboot_flashwrite: riotboot flashing completed successfully
@@ -470,7 +470,7 @@ in a RIOT application:
 * riotboot_slot
 * suit
     * suit_coap
-    * suit_v4
+    * suit_v3
 
 #### riotboot
 
@@ -533,9 +533,9 @@ When a new manifest url is received on the trigger resource a message is resent
 to the coap thread with the manifest's url. The thread will then fetch the
 manifest by a block coap request to the specified url.
 
-- **support for v4**
+- **support for v3**
 
-This includes v4 manifest support. When a url is received in the /suit/trigger
+This includes v3 manifest support. When a url is received in the /suit/trigger
 coap resource it will trigger a coap blockwise fetch of the manifest. When this
 manifest is received it will be parsed. The signature of the manifest will be
 verified and then the rest of the manifest content. If the received manifest is valid it
@@ -610,10 +610,10 @@ The following variables are defined in makefiles/suit.inc.mk:
 
 The following convention is used when naming a manifest
 
-    SUIT_MANIFEST ?= $(BINDIR_APP)-riot.suitv4.$(APP_VER).bin
-    SUIT_MANIFEST_LATEST ?= $(BINDIR_APP)-riot.suitv4.latest.bin
-    SUIT_MANIFEST_SIGNED ?= $(BINDIR_APP)-riot.suitv4_signed.$(APP_VER).bin
-    SUIT_MANIFEST_SIGNED_LATEST ?= $(BINDIR_APP)-riot.suitv4_signed.latest.bin
+    SUIT_MANIFEST ?= $(BINDIR_APP)-riot.suitv3.$(APP_VER).bin
+    SUIT_MANIFEST_LATEST ?= $(BINDIR_APP)-riot.suitv3.latest.bin
+    SUIT_MANIFEST_SIGNED ?= $(BINDIR_APP)-riot.suitv3_signed.$(APP_VER).bin
+    SUIT_MANIFEST_SIGNED_LATEST ?= $(BINDIR_APP)-riot.suitv3_signed.latest.bin
 
 The following default values are using for generating the manifest:
 
