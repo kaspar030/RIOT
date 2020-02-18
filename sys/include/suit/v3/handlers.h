@@ -83,14 +83,21 @@ extern "C" {
 typedef int (*suit_manifest_handler_t)(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *it);
 
 /**
- * @brief    Get suit manifest handler for given integer key
- *
- * @param[in]   key: integer key
- *
- * @return      ptr to handler function
- * @return      NULL (if handler unavailable or key out of range)
+ * @brief global handler reference
  */
-suit_manifest_handler_t suit_manifest_get_manifest_handler(int key);
+extern const suit_manifest_handler_t suit_global_handlers[];
+extern const size_t suit_global_handlers_len;
+
+/**
+ * @brief sequence handler reference
+ */
+extern const suit_manifest_handler_t suit_sequence_handlers[];
+extern const size_t suit_sequence_handlers_len;
+extern const suit_manifest_handler_t suit_container_handlers[];
+extern const size_t suit_container_handlers_len;
+
+int suit_handle_command_sequence(suit_v3_manifest_t *manifest, nanocbor_value_t *bseq,
+                                 const suit_manifest_handler_t *handler, size_t handler_len);
 
 #ifdef __cplusplus
 }
