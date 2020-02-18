@@ -9,13 +9,10 @@
 # directory for more details.
 #
 
-import os
-import hashlib
-import json
-import uuid
 import argparse
-
-from suit_manifest_encoder_04 import compile_to_suit
+import json
+import os
+import uuid
 
 
 def str2int(x):
@@ -25,27 +22,19 @@ def str2int(x):
         return int(x)
 
 
-def sha256_from_file(filepath):
-    sha256 = hashlib.sha256()
-    sha256.update(open(filepath, "rb").read())
-    return sha256.digest()
-
-
 def parse_arguments():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--template', '-t', help='Manifest template file path')
-    parser.add_argument('--urlroot', '-u', help='')
-    parser.add_argument('--offsets', '-O', help='')
-    parser.add_argument('--seqnr', '-s',
+    parser.add_argument('--urlroot', '-u', help='', default="coap://example.org")
+    parser.add_argument('--seqnr', '-s', default=0,
                         help='Sequence number of the manifest')
-    parser.add_argument('--output', '-o', nargs='?',
+    parser.add_argument('--output', '-o', default="out.json",
                         help='Manifest output binary file path')
-    parser.add_argument('--uuid-vendor', '-V',
+    parser.add_argument('--uuid-vendor', '-V', default="riot-os.org",
                         help='Manifest vendor uuid')
-    parser.add_argument('--uuid-class', '-C',
+    parser.add_argument('--uuid-class', '-C', default="native",
                         help='Manifest class uuid')
-    parser.add_argument('slotfiles', nargs=2,
+    parser.add_argument('slotfiles', nargs="+",
                         help='The list of slot file paths')
     return parser.parse_args()
 
@@ -53,40 +42,45 @@ def parse_arguments():
 def main(args):
     uuid_vendor = uuid.uuid5(uuid.NAMESPACE_DNS, args.uuid_vendor)
     uuid_class = uuid.uuid5(uuid_vendor, args.uuid_class)
-    with open(args.template, 'r') as f:
-        template = json.load(f)
 
-    template["sequence-number"] = int(args.seqnr)
-    template["conditions"] = [
-            {"condition-vendor-id": uuid_vendor.hex},
-            {"condition-class-id": uuid_class.hex},
-        ]
+    template = {}
 
-    offsets = [str2int(offset) for offset in args.offsets.split(",")]
+    template["manifest-version"] = int(1)
+    template["manifest-sequence-number"] = int(args.seqnr)
 
-    for slot, slotfile in enumerate(args.slotfiles):
-        filename = slotfile
-        size = os.path.getsize(filename)
+    images = []
+    for filename_offset in args.slotfiles:
+        split = filename_offset.split(":")
+        if len(split) == 1:
+            filename, offset = split[0], 0
+        else:
+            filename, offset = split[0], str2int(split[1])
+
+        images.append((filename, offset))
+
+    template["components"] = []
+
+    for slot, image in enumerate(images):
+        filename, offset = image
+
         uri = os.path.join(args.urlroot, os.path.basename(filename))
-        offset = offsets[slot]
 
-        _image_slot = template["components"][0]["images"][slot]
-        _image_slot.update({
+        component = {
+            "install-id" : ["00"],
+            "vendor-id": uuid_vendor.hex,
+            "class-id": uuid_class.hex,
             "file": filename,
             "uri": uri,
-            "size": size,
-            "digest": sha256_from_file(slotfile),
-            })
+            "bootable": True,
+        }
 
-        _image_slot["conditions"][0]["condition-component-offset"] = offset
-        _image_slot["file"] = filename
+        if offset:
+            component.update({"offset": str(hex(offset))})
 
-    result = compile_to_suit(template)
-    if args.output is not None:
-        with open(args.output, 'wb') as f:
-            f.write(result)
-    else:
-        print(result)
+        template["components"].append(component)
+
+    with open(args.output, 'w') as f:
+        json.dump(template, f, indent=4)
 
 
 if __name__ == "__main__":
