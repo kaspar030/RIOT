@@ -40,8 +40,8 @@
 #include "riotboot/flashwrite.h"
 #endif
 
-#ifdef MODULE_SUIT_V4
-#include "suit/v4/suit.h"
+#ifdef MODULE_SUIT_V3
+#include "suit/v3/suit.h"
 #endif
 
 #if defined(MODULE_PROGRESS_BAR)
@@ -74,7 +74,7 @@ static char _stack[SUIT_COAP_STACKSIZE];
 static char _url[SUIT_URL_MAX];
 static uint8_t _manifest_buf[SUIT_MANIFEST_BUFSIZE];
 
-#ifdef MODULE_SUIT_V4
+#ifdef MODULE_SUIT_V3
 static inline void _print_download_progress(size_t offset, size_t len, uint32_t image_size)
 {
     (void)offset;
@@ -363,8 +363,8 @@ static void _suit_handle_url(const char *url)
         LOG_INFO("suit_coap: got manifest with size %u\n", (unsigned)size);
 
         riotboot_flashwrite_t writer;
-#ifdef MODULE_SUIT_V4
-        suit_v4_manifest_t manifest;
+#ifdef MODULE_SUIT_V3
+        suit_v3_manifest_t manifest;
         memset(&manifest, 0, sizeof(manifest));
 
         manifest.writer = &writer;
@@ -372,18 +372,18 @@ static void _suit_handle_url(const char *url)
         manifest.urlbuf_len = SUIT_URL_MAX;
 
         int res;
-        if ((res = suit_v4_parse(&manifest, _manifest_buf, size)) != SUIT_OK) {
-            LOG_INFO("suit_v4_parse() failed. res=%i\n", res);
+        if ((res = suit_v3_parse(&manifest, _manifest_buf, size)) != SUIT_OK) {
+            LOG_INFO("suit_v3_parse() failed. res=%i\n", res);
             return;
         }
 
-        LOG_INFO("suit_v4_parse() success\n");
+        LOG_INFO("suit_v3_parse() success\n");
         if (!(manifest.state & SUIT_MANIFEST_HAVE_IMAGE)) {
             LOG_INFO("manifest parsed, but no image fetched\n");
             return;
         }
 
-        res = suit_v4_policy_check(&manifest);
+        res = suit_v3_policy_check(&manifest);
         if (res) {
             return;
         }
@@ -414,7 +414,7 @@ static void _suit_handle_url(const char *url)
 int suit_flashwrite_helper(void *arg, size_t offset, uint8_t *buf, size_t len,
                            int more)
 {
-    suit_v4_manifest_t *manifest = (suit_v4_manifest_t *)arg;
+    suit_v3_manifest_t *manifest = (suit_v3_manifest_t *)arg;
     riotboot_flashwrite_t *writer = manifest->writer;
 
     if (offset == 0) {

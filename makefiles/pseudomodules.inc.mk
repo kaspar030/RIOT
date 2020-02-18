@@ -94,8 +94,8 @@ PSEUDOMODULES += suit_%
 PSEUDOMODULES += wakaama_objects_%
 PSEUDOMODULES += zptr
 
-# handle suit_v4 being a distinct module
-NO_PSEUDOMODULES += suit_v4
+# handle suit_v3 being a distinct module
+NO_PSEUDOMODULES += suit_v3
 
 # print ascii representation in function od_hex_dump()
 PSEUDOMODULES += od_string
