@@ -17,9 +17,9 @@ ifeq (native, $(BOARD))
   CFLAGS += -DFLASHPAGE_SIZE=256 -DFLASHPAGE_NUMOF=16
 endif
 
-include $(RIOTBASE)/Makefile.include
-
 BUILDDEPS += create_test_data
+
+include $(RIOTBASE)/Makefile.include
 
 export SUIT_TOOL
 export SUIT_SEC
