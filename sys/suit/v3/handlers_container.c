@@ -62,7 +62,9 @@ static int _manifest_handler(suit_v3_manifest_t *manifest, int key,
     const uint8_t *manifest_buf;
     size_t manifest_len;
 
-    nanocbor_get_bstr(it, &manifest_buf, &manifest_len);
+    nanocbor_value_t cbor_buf = *it;
+
+    nanocbor_get_bstr(&cbor_buf, &manifest_buf, &manifest_len);
 
     /* Validate the COSE struct first now that we have the payload */
     cose_sign_decode_set_payload(&manifest->verify, manifest_buf, manifest_len);
