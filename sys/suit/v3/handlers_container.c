@@ -83,11 +83,10 @@ static int _manifest_handler(suit_v3_manifest_t *manifest, int key,
     cose_key_set_keys(&pkey, COSE_EC_CURVE_ED25519, COSE_ALGO_EDDSA,
                       (uint8_t *)public_key, NULL, NULL);
 
-    LOG_INFO("suit: verifying manifest signature...\n");
-    int verification = cose_sign_verify(&manifest->verify, &signature,
+    LOG_INFO("suit: verifying manifest signature... (skipped)\n");
+    int verification = 0; /*cose_sign_verify(&manifest->verify, &signature,
                                         &pkey, manifest->validation_buf,
-                                        SUIT_COSE_BUF_SIZE);
-    verification = 0;
+                                        SUIT_COSE_BUF_SIZE);*/
     if (verification != 0) {
         LOG_INFO("Unable to validate signature\n");
         return SUIT_ERR_SIGNATURE;
