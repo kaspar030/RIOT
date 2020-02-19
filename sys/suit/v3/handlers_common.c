@@ -18,7 +18,6 @@
  * @}
  */
 
-<<<<<<< HEAD
 #include <inttypes.h>
 
 #ifdef MODULE_SUIT_COAP
@@ -26,8 +25,6 @@
 #endif
 
 #include "kernel_defines.h"
-=======
->>>>>>> suit: WIP: add common section support
 #include "suit/conditions.h"
 #include "suit/v3/suit.h"
 #include "suit/v3/handlers.h"
