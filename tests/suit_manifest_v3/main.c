@@ -26,26 +26,27 @@
 
 #include "blob/manifests/manifest0.bin.h"
 #include "blob/manifests/manifest1.bin.h"
-#include "blob/manifests/manifest2.bin.h"
-#include "blob/manifests/manifest3.bin.h"
-#include "blob/manifests/manifest4.bin.h"
+//#include "blob/manifests/manifest2.bin.h"
+//#include "blob/manifests/manifest3.bin.h"
+//#include "blob/manifests/manifest4.bin.h"
 
 #define SUIT_URL_MAX            128
 
 typedef struct {
     const unsigned char *data;
     size_t len;
-} blob_t;
+    int expected;
+} manifest_blob_t;
 
-const blob_t bad[] = {
-    { manifest0_bin, manifest0_bin_len },
-    { manifest1_bin, manifest1_bin_len },
-    { manifest2_bin, manifest2_bin_len },
-    { manifest3_bin, manifest3_bin_len },
-    { manifest4_bin, manifest4_bin_len },
+const manifest_blob_t manifest_blobs[] = {
+    { manifest0_bin, manifest0_bin_len,  -1},
+    { manifest1_bin, manifest1_bin_len,  -1},
+    /* { manifest2_bin, manifest2_bin_len }, */
+    /* { manifest3_bin, manifest3_bin_len }, */
+    /* { manifest4_bin, manifest4_bin_len }, */
 };
 
-const unsigned bad_numof = ARRAY_SIZE(bad);
+const unsigned manifest_blobs_numof = ARRAY_SIZE(manifest_blobs);
 
 static int test_suitv3_manifest(const unsigned char *manifest_bin, size_t manifest_bin_len)
 {
@@ -66,19 +67,20 @@ static int test_suitv3_manifest(const unsigned char *manifest_bin, size_t manife
     return res;
 }
 
-static void test_suitv3_manifest_01_bad_manifests(void)
+static void test_suitv3_manifest_01_manifests(void)
 {
-    for (unsigned i = 0; i < bad_numof; i++) {
-        printf("\n--- testing bad manifest %u\n", i);
-        int res = test_suitv3_manifest(bad[i].data, bad[i].len);
-        TEST_ASSERT_EQUAL_INT(-1, res);
+    for (unsigned i = 0; i < manifest_blobs_numof; i++) {
+        printf("\n--- testing manifest %u\n", i);
+        int res = \
+                  test_suitv3_manifest(manifest_blobs[i].data, manifest_blobs[i].len);
+        TEST_ASSERT_EQUAL_INT(manifest_blobs[i].expected, res);
     }
 }
 
 Test *tests_suitv3_manifest(void)
 {
     EMB_UNIT_TESTFIXTURES(fixtures) {
-        new_TestFixture(test_suitv3_manifest_01_bad_manifests),
+        new_TestFixture(test_suitv3_manifest_01_manifests),
     };
 
     EMB_UNIT_TESTCALLER(suitv3_manifest_tests, NULL, NULL, fixtures);

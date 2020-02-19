@@ -6,7 +6,6 @@ USEMODULE += embunit
 
 CFLAGS += -DTHREAD_STACKSIZE_MAIN=\(6*THREAD_STACKSIZE_DEFAULT\)
 
-CFLAGS += -I$(CURDIR)/keys
 CFLAGS += -g -DDEVELHELP
 
 PSEUDOMODULES += suit_v3_test
@@ -18,7 +17,12 @@ ifeq (native, $(BOARD))
   CFLAGS += -DFLASHPAGE_SIZE=256 -DFLASHPAGE_NUMOF=16
 endif
 
+all: create_test_data
+
 include $(RIOTBASE)/Makefile.include
 
-create_test_data:
+export SUIT_TOOL
+export SUIT_SEC
+
+create_test_data: $(SUIT_SEC)
 	sh create_test_data.sh

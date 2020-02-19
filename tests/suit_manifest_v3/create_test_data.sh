@@ -8,37 +8,32 @@ gen_manifest() {
   local seqnr="$1"
   shift
 
-  ${RIOTBASE}/dist/tools/suit_v4/gen_manifest.py \
-    --template ${RIOTBASE}/dist/tools/suit_v4/test-2img.json \
+
+  ${RIOTBASE}/dist/tools/suit_v3/gen_manifest.py \
     --urlroot "test://test" \
     --seqnr $seqnr \
     --uuid-vendor "riot-os.org" \
-    --uuid-class $BOARD \
-    --offsets 0x1000,0x2000 \
-    -o "$out" \
-    $*
+    --uuid-class ${BOARD} \
+    -o "$out.tmp" \
+    ${1}:0x1000 ${2}:0x2000
+
+      ${SUIT_TOOL} create -f suit -i $out.tmp -o $out
+      rm -f $out.tmp
 }
 
 sign_manifest() {
   local in="$1"
   local out="$2"
 
-  ${RIOTBASE}/dist/tools/suit_v4/sign-04.py keys/private_key keys/public_key "$in" "$out"
+  ${SUIT_TOOL} sign -k ${SUIT_SEC} -m "$in" -o "$out"
 }
 
-# random invalid manifest
-echo foo > manifests/manifest0.bin
+# random invalid data files
+echo foo > manifests/file1.bin
+echo bar > manifests/file2.bin
 
-# random valid cbor
-gen_manifest manifests/manifest1.bin 1 manifests/manifest0.bin manifests/manifest0.bin
+# random valid cbor (manifest but not signed, missing cose auth)
+gen_manifest manifests/manifest0.bin 1 manifests/file1.bin manifests/file1.bin
 
 # manifest with invalid seqnr
-sign_manifest manifests/manifest1.bin manifests/manifest2.bin
-
-# manifest with valid seqnr, invalid class id
-( BOARD=invalid gen_manifest manifests/manifest3_unsigned.bin 2 manifests/manifest0.bin manifests/manifest0.bin)
-sign_manifest manifests/manifest3_unsigned.bin manifests/manifest3.bin
-
-# manifest with valid seqnr, valid class id
-gen_manifest manifests/manifest4_unsigned.bin 2 manifests/manifest0.bin manifests/manifest0.bin
-sign_manifest manifests/manifest4_unsigned.bin manifests/manifest4.bin
+sign_manifest manifests/manifest0.bin manifests/manifest1.bin
