@@ -1,0 +1,24 @@
+include ../Makefile.tests_common
+
+USEMODULE += suit_v3
+USEMODULE += riotboot_hdr
+USEMODULE += embunit
+
+CFLAGS += -DTHREAD_STACKSIZE_MAIN=\(6*THREAD_STACKSIZE_DEFAULT\)
+
+CFLAGS += -I$(CURDIR)/keys
+CFLAGS += -g -DDEVELHELP
+
+PSEUDOMODULES += suit_v3_test
+USEMODULE += suit_v3_test
+
+BLOBS += $(wildcard manifests/manifest*.bin)
+
+ifeq (native, $(BOARD))
+  CFLAGS += -DFLASHPAGE_SIZE=256 -DFLASHPAGE_NUMOF=16
+endif
+
+include $(RIOTBASE)/Makefile.include
+
+create_test_data:
+	sh create_test_data.sh
