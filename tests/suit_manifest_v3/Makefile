@@ -25,4 +25,5 @@ export SUIT_TOOL
 export SUIT_SEC
 
 create_test_data: $(SUIT_SEC)
+	@mkdir -p manifests
 	sh create_test_data.sh
