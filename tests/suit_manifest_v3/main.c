@@ -26,7 +26,7 @@
 
 #include "blob/manifests/manifest0.bin.h"
 #include "blob/manifests/manifest1.bin.h"
-//#include "blob/manifests/manifest2.bin.h"
+#include "blob/manifests/manifest2.bin.h"
 //#include "blob/manifests/manifest3.bin.h"
 //#include "blob/manifests/manifest4.bin.h"
 
@@ -41,7 +41,7 @@ typedef struct {
 const manifest_blob_t manifest_blobs[] = {
     { manifest0_bin, manifest0_bin_len,  -1},
     { manifest1_bin, manifest1_bin_len,  -1},
-    /* { manifest2_bin, manifest2_bin_len }, */
+    { manifest2_bin, manifest2_bin_len,   0},
     /* { manifest3_bin, manifest3_bin_len }, */
     /* { manifest4_bin, manifest4_bin_len }, */
 };

@@ -37,3 +37,7 @@ gen_manifest manifests/manifest0.bin 1 manifests/file1.bin manifests/file1.bin
 
 # manifest with invalid seqnr
 sign_manifest manifests/manifest0.bin manifests/manifest1.bin
+
+# valid manifest, valid seqnr, signed
+gen_manifest manifests/manifest2.bin.unsigned 2 manifests/file1.bin manifests/file1.bin
+sign_manifest manifests/manifest2.bin.unsigned manifests/manifest2.bin
