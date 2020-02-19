@@ -18,7 +18,13 @@
  * @}
  */
 
+#include <inttypes.h>
+
+#ifdef MODULE_SUIT_COAP
 #include "suit/coap.h"
+#endif
+
+#include "kernel_defines.h"
 #include "suit/conditions.h"
 #include "suit/v3/suit.h"
 #include "suit/v3/handlers.h"
@@ -235,8 +241,27 @@ static int _dtv_fetch(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *_
 
     int target_slot = riotboot_slot_other();
     riotboot_flashwrite_init(manifest->writer, target_slot);
-    int res = suit_coap_get_blockwise_url(manifest->urlbuf, COAP_BLOCKSIZE_64,
-                                          suit_flashwrite_helper, manifest);
+
+    int res = -1;
+
+    if (0) {}
+#ifdef MODULE_SUIT_COAP
+    else if (strncmp(manifest->urlbuf, "coap://", 7) == 0) {
+        res = suit_coap_get_blockwise_url(manifest->urlbuf, COAP_BLOCKSIZE_64,
+                                          suit_flashwrite_helper,
+                                          manifest);
+    }
+#endif
+#ifdef MODULE_SUIT_V3_TEST
+    else if (strncmp(manifest->urlbuf, "test://", 7) == 0) {
+        res = SUIT_OK;
+    }
+
+#endif
+    else {
+        LOG_WARNING("suit: unsupported URL scheme!\n)");
+        return res;
+    }
 
     if (res) {
         LOG_INFO("image download failed\n)");

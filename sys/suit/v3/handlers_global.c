@@ -18,6 +18,8 @@
  * @}
  */
 
+#include <inttypes.h>
+
 #include "suit/coap.h"
 #include "suit/conditions.h"
 #include "suit/v3/suit.h"
