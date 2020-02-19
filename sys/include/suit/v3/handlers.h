@@ -36,7 +36,23 @@ extern "C" {
 #endif
 
 /**
- * @name SUIT condition codes
+ * @name SUIT container identifiers
+ * @{
+ */
+#define SUIT_CONTAINER_VERSION              (1)
+#define SUIT_CONTAINER_SEQ_NO               (2)
+#define SUIT_CONTAINER_COMMON               (3)
+#define SUIT_CONTAINER_DEPS_RESOLUTION      (7)
+#define SUIT_CONTAINER_PAYLOAD_FETCH        (8)
+#define SUIT_CONTAINER_INSTALL              (9)
+#define SUIT_CONTAINER_VALIDATE            (10)
+#define SUIT_CONTAINER_LOAD                (11)
+#define SUIT_CONTAINER_RUN                 (12)
+#define SUIT_CONTAINER_TEXT                (13)
+/* @} */
+
+/**
+ * @name SUIT condition identifiers
  * @{
  */
 #define SUIT_COND_VENDOR_ID     (1)
@@ -52,7 +68,7 @@ extern "C" {
 /* @} */
 
 /**
- * @name SUIT directive codes
+ * @name SUIT directive identifiers
  * @{
  */
 #define SUIT_DIR_SET_COMPONENT_IDX  (12)
@@ -95,9 +111,13 @@ extern const suit_manifest_handler_t suit_sequence_handlers[];
 extern const size_t suit_sequence_handlers_len;
 extern const suit_manifest_handler_t suit_container_handlers[];
 extern const size_t suit_container_handlers_len;
+extern const suit_manifest_handler_t suit_common_handlers[];
+extern const size_t suit_common_handlers_len;
 
-int suit_handle_command_sequence(suit_v3_manifest_t *manifest, nanocbor_value_t *bseq,
-                                 const suit_manifest_handler_t *handler, size_t handler_len);
+int suit_handle_manifest_structure(suit_v3_manifest_t *manifest, nanocbor_value_t *it,
+                                   const suit_manifest_handler_t *handlers, size_t handlers_len);
+int suit_handle_manifest_structure_bstr(suit_v3_manifest_t *manifest, nanocbor_value_t *bseq,
+                                   const suit_manifest_handler_t *handlers, size_t handlers_len);
 
 #ifdef __cplusplus
 }

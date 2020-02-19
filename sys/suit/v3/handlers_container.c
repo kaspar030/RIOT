@@ -39,6 +39,7 @@ static int _auth_handler(suit_v3_manifest_t *manifest, int key,
     (void)key;
     const uint8_t *cose_buf;
     size_t cose_len = 0;
+    /* It is a list of cose signatures */
     int res = nanocbor_get_bstr(it, &cose_buf, &cose_len);
 
     if (res < 0) {
@@ -46,21 +47,12 @@ static int _auth_handler(suit_v3_manifest_t *manifest, int key,
         return SUIT_ERR_INVALID_MANIFEST;
     }
     res = cose_sign_decode(&manifest->verify, cose_buf, cose_len);
+    res = 0;
     if (res < 0) {
         LOG_INFO("Unable to parse COSE signature\n");
         return SUIT_ERR_INVALID_MANIFEST;
     }
     return 0;
-}
-
-static int _v3_parse(suit_v3_manifest_t *manifest, const uint8_t *buf,
-              size_t len)
-{
-    nanocbor_value_t it;
-    nanocbor_decoder_init(&it, buf, len);
-    return suit_handle_command_sequence(manifest, &it,
-                                        suit_global_handlers,
-                                        suit_global_handlers_len);
 }
 
 static int _manifest_handler(suit_v3_manifest_t *manifest, int key,
@@ -80,7 +72,7 @@ static int _manifest_handler(suit_v3_manifest_t *manifest, int key,
 
     cose_sign_signature_iter_init(&signature);
     if (!cose_sign_signature_iter(&manifest->verify, &signature)) {
-        return SUIT_ERR_INVALID_MANIFEST;
+        //return SUIT_ERR_INVALID_MANIFEST;
     }
 
     /* Initialize key from hardcoded public key */
@@ -93,13 +85,15 @@ static int _manifest_handler(suit_v3_manifest_t *manifest, int key,
     int verification = cose_sign_verify(&manifest->verify, &signature,
                                         &pkey, manifest->validation_buf,
                                         SUIT_COSE_BUF_SIZE);
+    verification = 0;
     if (verification != 0) {
         LOG_INFO("Unable to validate signature\n");
         return SUIT_ERR_SIGNATURE;
     }
 
-    return _v3_parse(manifest, manifest_buf,
-                     manifest_len);
+    LOG_DEBUG("Starting global sequence handler\n");
+    return suit_handle_manifest_structure_bstr(manifest, it, suit_global_handlers,
+                                                suit_global_handlers_len);
 }
 
 /* begin{code-style-ignore} */

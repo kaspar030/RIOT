@@ -53,6 +53,7 @@ int suit_v3_parse(suit_v3_manifest_t *manifest, const uint8_t *buf,
     manifest->buf = buf;
     manifest->len = len;
     nanocbor_decoder_init(&it, buf, len);
-    return suit_handle_command_sequence(manifest, &it, suit_container_handlers,
-                                        suit_container_handlers_len);
+    LOG_DEBUG("Starting container sequence handler\n");
+    return suit_handle_manifest_structure(manifest, &it,
+                                        suit_container_handlers, suit_container_handlers_len);
 }

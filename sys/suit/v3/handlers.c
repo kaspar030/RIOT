@@ -41,10 +41,9 @@ static suit_manifest_handler_t _get_handler(int key,
     return handlers[key];
 }
 
-int suit_handle_command_sequence(suit_v3_manifest_t *manifest, nanocbor_value_t *it,
-                                 const suit_manifest_handler_t *handlers, size_t handlers_len)
+int suit_handle_manifest_structure(suit_v3_manifest_t *manifest, nanocbor_value_t *it,
+                                   const suit_manifest_handler_t *handlers, size_t handlers_len)
 {
-
     LOG_DEBUG("Handling command sequence\n");
     nanocbor_value_t container;
 
@@ -59,6 +58,7 @@ int suit_handle_command_sequence(suit_v3_manifest_t *manifest, nanocbor_value_t 
             return SUIT_ERR_INVALID_MANIFEST;
         }
         nanocbor_value_t value = container;
+        LOG_DEBUG("Executing handler with key %"PRIi32"\n", key);
         suit_manifest_handler_t handler = _get_handler(key, handlers,
                                                        handlers_len);
         if (!handler) {
@@ -74,4 +74,18 @@ int suit_handle_command_sequence(suit_v3_manifest_t *manifest, nanocbor_value_t 
     nanocbor_leave_container(it, &container);
 
     return 0;
+}
+
+int suit_handle_manifest_structure_bstr(suit_v3_manifest_t *manifest, nanocbor_value_t *bseq,
+                                        const suit_manifest_handler_t *handlers, size_t handlers_len)
+{
+    const uint8_t *buf;
+    size_t len;
+    if (nanocbor_get_bstr(bseq, &buf, &len) < 0) {
+        return SUIT_ERR_INVALID_MANIFEST;
+    }
+
+    nanocbor_value_t it;
+    nanocbor_decoder_init(&it, buf, len);
+    return suit_handle_manifest_structure(manifest, &it, handlers, handlers_len);
 }
