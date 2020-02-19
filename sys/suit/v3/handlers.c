@@ -81,6 +81,7 @@ int suit_handle_manifest_structure_bstr(suit_v3_manifest_t *manifest, nanocbor_v
 {
     const uint8_t *buf;
     size_t len;
+    LOG_DEBUG("Handling command sequence starting with CBOR type %d\n", nanocbor_get_type(bseq));
     if (nanocbor_get_bstr(bseq, &buf, &len) < 0) {
         return SUIT_ERR_INVALID_MANIFEST;
     }

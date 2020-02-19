@@ -41,12 +41,19 @@ static int _component_handler(suit_v3_manifest_t *manifest, int key,
 {
     (void)manifest;
     (void)key;
+    LOG_DEBUG("storing components\n)");
+    return 0;
 
+    const uint8_t *bstr;
+    size_t bstr_len;
+
+    nanocbor_get_bstr(it, &bstr, &bstr_len);
+    nanocbor_value_t sub;
+    nanocbor_decoder_init(&sub, bstr, bstr_len);
     nanocbor_value_t arr;
 
-    LOG_DEBUG("storing components\n)");
-    if (nanocbor_enter_array(it, &arr) < 0) {
-        LOG_DEBUG("components field not an array\n");
+    if (nanocbor_enter_array(&sub, &arr) < 0) {
+        LOG_DEBUG("components field not an array %d\n", nanocbor_get_type(&sub));
         return -1;
     }
     unsigned n = 0;
@@ -61,7 +68,7 @@ static int _component_handler(suit_v3_manifest_t *manifest, int key,
         }
 
         if (nanocbor_enter_map(&arr, &map) < 0) {
-            LOG_DEBUG("suit _v3_parse(): manifest not a map!\n");
+            LOG_DEBUG("suit _v3_parse(): manifest not a map: %d!\n", nanocbor_get_type(&arr));
             return SUIT_ERR_INVALID_MANIFEST;
         }
 
@@ -96,7 +103,7 @@ static int _component_handler(suit_v3_manifest_t *manifest, int key,
         nanocbor_leave_container(&arr, &map);
         n++;
     }
-    nanocbor_leave_container(it, &arr);
+    nanocbor_leave_container(&sub, &arr);
 
     manifest->state |= SUIT_MANIFEST_HAVE_COMPONENTS;
 
