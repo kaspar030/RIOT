@@ -73,6 +73,7 @@ static void test_suitv3_manifest_01_manifests(void)
         printf("\n--- testing manifest %u\n", i);
         int res = \
                   test_suitv3_manifest(manifest_blobs[i].data, manifest_blobs[i].len);
+        printf("---- res=%i (expected=%i)\n", res, manifest_blobs[i].expected);
         TEST_ASSERT_EQUAL_INT(manifest_blobs[i].expected, res);
     }
 }
