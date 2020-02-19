@@ -1,4 +1,9 @@
 #
+# This file contains stuff related to SUIT manifest generation.
+# It depends on SUIT key generation, which can be found in
+# makefiles/suit.v3.base.inc.mk
+#
+#
 SUIT_COAP_BASEPATH ?= fw/$(BOARD)
 SUIT_COAP_SERVER ?= localhost
 SUIT_COAP_ROOT ?= coap://$(SUIT_COAP_SERVER)/$(SUIT_COAP_BASEPATH)
@@ -19,46 +24,6 @@ export CFLAGS += -DCONFIG_SOCK_URLPATH_MAXLEN=128
 SUIT_VENDOR ?= "riot-os.org"
 SUIT_SEQNR ?= $(APP_VER)
 SUIT_CLASS ?= $(BOARD)
-
-# path to suit-tool
-SUIT_TOOL ?= python $(RIOTBASE)/dist/tools/suit_v3/suit-manifest-generator/bin/suit-tool
-
-#
-# SUIT encryption keys
-#
-
-# Specify key to use.
-# Will use $(SUIT_KEY_DIR)/$(SUIT_KEY) $(SUIT_KEY_DIR)/$(SUIT_KEY).pub as
-# private/public key files, similar to how ssh names its key files.
-SUIT_KEY ?= default
-
-ifeq (1, $(RIOT_CI_BUILD))
-  SUIT_KEY_DIR ?= $(BINDIR)
-else
-  SUIT_KEY_DIR ?= $(RIOTBASE)/keys
-endif
-
-SUIT_SEC ?= $(SUIT_KEY_DIR)/$(SUIT_KEY).pem
-
-SUIT_PUB_HDR = $(BINDIR)/riotbuild/public_key.h
-SUIT_PUB_HDR_DIR = $(dir $(SUIT_PUB_HDR))
-CFLAGS += -I$(SUIT_PUB_HDR_DIR)
-BUILDDEPS += $(SUIT_PUB_HDR)
-
-$(SUIT_SEC): $(CLEAN)
-	@echo suit: generating key in $(SUIT_KEY_DIR)
-	@mkdir -p $(SUIT_KEY_DIR)
-	@$(RIOTBASE)/dist/tools/suit_v3/gen_key.py $(SUIT_SEC)
-
-# set FORCE so switching between keys using "SUIT_KEY=foo make ..."
-# triggers a rebuild even if the new key would otherwise not (because the other
-# key's mtime is too far back).
-$(SUIT_PUB_HDR): $(SUIT_SEC) FORCE | $(CLEAN)
-	@mkdir -p $(SUIT_PUB_HDR_DIR)
-	@$(SUIT_TOOL) pubkey -k $(SUIT_SEC) \
-	  | '$(LAZYSPONGE)' $(LAZYSPONGE_FLAGS) '$@'
-
-suit/genkey: $(SUIT_SEC)
 
 #
 $(SUIT_MANIFEST): $(SLOT0_RIOT_BIN) $(SLOT1_RIOT_BIN)
