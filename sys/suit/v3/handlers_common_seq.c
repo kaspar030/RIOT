@@ -78,9 +78,19 @@ static int _cond_comp_offset(suit_v3_manifest_t *manifest, int key, nanocbor_val
     (void)manifest;
     (void)key;
     uint32_t offset;
-    nanocbor_get_uint32(it, &offset);
-    uint32_t other_offset = (uint32_t)riotboot_slot_get_hdr(riotboot_slot_other()) \
-                            - CPU_FLASH_BASE;
+
+    int rc = nanocbor_get_uint32(it, &offset);
+    if (rc < 0) {
+        LOG_WARNING("_cond_comp_offset(): expected int, got rc=%i type=%i\n",
+                rc, nanocbor_get_type(it));
+        const uint8_t *tmp;
+        size_t size;
+        nanocbor_get_tstr(it, &tmp, &size);
+        printf("\"%.*s\"\n", size, tmp);
+        return SUIT_ERR_INVALID_MANIFEST;
+    }
+    uint32_t other_offset = (uint32_t)riotboot_slot_offset(riotboot_slot_other());
+
     LOG_INFO("Comparing manifest offset %u with other slot offset %u\n",
            (unsigned)offset, (unsigned)other_offset);
     return other_offset == offset ? 0 : -1;
@@ -106,6 +116,34 @@ static int _dtv_run_seq_cond(suit_v3_manifest_t *manifest, int key, nanocbor_val
     LOG_DEBUG("Starting conditional sequence handler\n");
     return suit_handle_manifest_structure_bstr(manifest, it, suit_sequence_handlers,
                                                suit_sequence_handlers_len);
+}
+
+static int _dtv_try_each(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *it)
+{
+    (void)key;
+    LOG_DEBUG("Starting suit-directive-try-each handler\n");
+    nanocbor_value_t container;
+
+    if ((nanocbor_enter_array(it, &container) < 0) &&
+            (nanocbor_enter_map(it, &container) < 0)) {
+        return SUIT_ERR_INVALID_MANIFEST;
+    }
+
+    int res = SUIT_ERR_INVALID_MANIFEST;
+    while (!nanocbor_at_end(&container)) {
+        nanocbor_value_t _container = container;
+        /* should be _bstr */
+        res = suit_handle_manifest_structure(manifest, &_container, suit_sequence_handlers,
+                                               suit_sequence_handlers_len);
+
+        nanocbor_skip(&container);
+
+        if (res == SUIT_OK) {
+            break;
+        }
+    }
+
+    return res;
 }
 
 static int _param_get_uri_list(suit_v3_manifest_t *manifest, nanocbor_value_t *it)
@@ -293,15 +331,16 @@ const suit_manifest_handler_t suit_sequence_handlers[] = {
     [ 0] = NULL,
     [ 1] = _cond_vendor_handler,
     [ 2] = _cond_class_handler,
-    [10] = _cond_comp_offset,
+    [5] = _cond_comp_offset,
     /* Directives */
-    [11] = _dtv_set_comp_idx,
-    /* [12] = _dtv_set_man_idx, */
-    /* [13] = _dtv_run_seq, */
-    [14] = _dtv_run_seq_cond,
-    [16] = _dtv_set_param,
-    [20] = _dtv_fetch,
-    /* [22] = _dtv_run, */
+    [12] = _dtv_set_comp_idx,
+    [15] = _dtv_try_each,
+    [19] = _dtv_set_param,
+    [20] = _dtv_set_param,
+    [21] = _dtv_fetch,
+    /* [23] = _dtv_run, */
+    [30] = _dtv_run_seq_cond,
+    /* [30] = _dtv_run_seq, */
 };
 /* end{code-style-ignore} */
 

@@ -3,22 +3,23 @@
 set -e
 
 gen_manifest() {
-  local out="$1"
-  shift
-  local seqnr="$1"
-  shift
+   local out="$1"
+   shift
+   local seqnr="$1"
+   shift
 
 
-  ${RIOTBASE}/dist/tools/suit_v3/gen_manifest.py \
-    --urlroot "test://test" \
-    --seqnr $seqnr \
-    --uuid-vendor "riot-os.org" \
-    --uuid-class ${BOARD} \
-    -o "$out.tmp" \
-    ${1}:0x1000 ${2}:0x2000
+   ${RIOTBASE}/dist/tools/suit_v3/gen_manifest.py \
+     --urlroot "test://test" \
+     --seqnr $seqnr \
+     --uuid-vendor "riot-os.org" \
+     --uuid-class ${BOARD} \
+     -o "$out.tmp" \
+     ${1}:$((0x1000)) ${2}:$((0x2000))
 
-      ${SUIT_TOOL} create -f suit -i $out.tmp -o $out
-      rm -f $out.tmp
+    ${SUIT_TOOL} create -f suit -i $out.tmp -o $out
+
+    rm -f $out.tmp
 }
 
 sign_manifest() {

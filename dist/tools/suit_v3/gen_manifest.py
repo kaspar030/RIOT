@@ -75,7 +75,7 @@ def main(args):
         }
 
         if offset:
-            component.update({"offset": str(hex(offset))})
+            component.update({"offset": offset})
 
         template["components"].append(component)
 
