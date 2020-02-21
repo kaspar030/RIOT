@@ -91,8 +91,8 @@ def main(options):
         b'',
         cose_signature.payload.to_suit(),
     ], sort_keys = True)
-    sig_val = cbor.dumps(Sig_structure, sort_keys = True)
-    LOG.debug('Signing: {}'.format(binascii.b2a_hex(sig_val).decode('utf-8')))
+    sig_val = Sig_structure
+    LOG.info('Signing: {}'.format(binascii.b2a_hex(sig_val).decode('utf-8')))
 
     signature_bytes = {
         'ES256' : get_cose_es_bytes,
