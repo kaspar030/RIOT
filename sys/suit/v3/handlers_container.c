@@ -86,8 +86,11 @@ static int _manifest_handler(suit_v3_manifest_t *manifest, int key,
     nanocbor_get_subcbor(&cbor_buf, &manifest_buf, &manifest_len);
 
     uint8_t digest_struct[4 + SHA256_DIGEST_LENGTH] =
+        /* CBOR array of length 2, sha256 digest and a bytestring of SHA256
+         * length
+         */
         { 0x82, 0x02, 0x58, SHA256_DIGEST_LENGTH };
-    sha256(manifest_buf+3, manifest_len-3, digest_struct + 4);
+    sha256(manifest_buf, manifest_len, digest_struct + 4);
 
     /* Validate the COSE struct first now that we have the payload */
     cose_sign_decode_set_payload(&manifest->verify, digest_struct, sizeof(digest_struct));
@@ -101,7 +104,6 @@ static int _manifest_handler(suit_v3_manifest_t *manifest, int key,
         return SUIT_ERR_INVALID_MANIFEST;
     }
 
-
     /* Initialize key from hardcoded public key */
     cose_key_t pkey;
     cose_key_init(&pkey);
@@ -113,7 +115,8 @@ static int _manifest_handler(suit_v3_manifest_t *manifest, int key,
                                         &pkey, manifest->validation_buf,
                                         SUIT_COSE_BUF_SIZE);
     if (verification != 0) {
-        LOG_INFO("Unable to validate signature: %d (SOFTFAIL)\n", verification);
+        LOG_INFO("Unable to validate signature: %d\n", verification);
+        return SUIT_ERR_SIGNATURE;
     }
 
     LOG_DEBUG("Starting global sequence handler\n");
