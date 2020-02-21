@@ -18,6 +18,7 @@
  * @}
  */
 
+#include "hashes/sha256.h"
 #include "suit/coap.h"
 #include "suit/conditions.h"
 #include "suit/v3/suit.h"
@@ -38,16 +39,34 @@ static int _auth_handler(suit_v3_manifest_t *manifest, int key,
 {
     (void)key;
     const uint8_t *cose_buf;
+    const uint8_t *cose_container;
+    size_t container_len;
     size_t cose_len = 0;
     /* It is a list of cose signatures */
-    int res = nanocbor_get_bstr(it, &cose_buf, &cose_len);
-
+    int res = nanocbor_get_bstr(it, &cose_container, &container_len);
     if (res < 0) {
         LOG_INFO("Unable to get COSE signature\n");
         return SUIT_ERR_INVALID_MANIFEST;
     }
+
+    nanocbor_value_t _cont, arr;
+    nanocbor_decoder_init(&_cont, cose_container, container_len);
+
+    int rc = nanocbor_enter_array(&_cont, &arr);
+    if (rc < 0) {
+        LOG_INFO("Unable to enter COSE signatures\n");
+        return SUIT_ERR_INVALID_MANIFEST;
+    }
+
+    uint32_t tag;
+    nanocbor_get_tag(&arr, &tag);
+    arr.remaining++;
+    res = nanocbor_get_subcbor(&arr, &cose_buf, &cose_len);
+    if (res < 0) {
+        LOG_INFO("Unable to get subcbor: %d\n", res);
+    }
+
     res = cose_sign_decode(&manifest->verify, cose_buf, cose_len);
-    res = 0;
     if (res < 0) {
         LOG_INFO("Unable to parse COSE signature\n");
         return SUIT_ERR_INVALID_MANIFEST;
@@ -64,18 +83,24 @@ static int _manifest_handler(suit_v3_manifest_t *manifest, int key,
 
     nanocbor_value_t cbor_buf = *it;
 
-    nanocbor_get_bstr(&cbor_buf, &manifest_buf, &manifest_len);
+    nanocbor_get_subcbor(&cbor_buf, &manifest_buf, &manifest_len);
+
+    uint8_t digest_struct[4 + SHA256_DIGEST_LENGTH] =
+        { 0x82, 0x02, 0x58, SHA256_DIGEST_LENGTH };
+    sha256(manifest_buf+3, manifest_len-3, digest_struct + 4);
 
     /* Validate the COSE struct first now that we have the payload */
-    cose_sign_decode_set_payload(&manifest->verify, manifest_buf, manifest_len);
+    cose_sign_decode_set_payload(&manifest->verify, digest_struct, sizeof(digest_struct));
 
     /* Iterate over signatures, should only be a single signature */
     cose_signature_dec_t signature;
 
     cose_sign_signature_iter_init(&signature);
     if (!cose_sign_signature_iter(&manifest->verify, &signature)) {
-        //return SUIT_ERR_INVALID_MANIFEST;
+        LOG_INFO("Unable to get signature iteration\n");
+        return SUIT_ERR_INVALID_MANIFEST;
     }
+
 
     /* Initialize key from hardcoded public key */
     cose_key_t pkey;
@@ -83,13 +108,12 @@ static int _manifest_handler(suit_v3_manifest_t *manifest, int key,
     cose_key_set_keys(&pkey, COSE_EC_CURVE_ED25519, COSE_ALGO_EDDSA,
                       (uint8_t *)public_key, NULL, NULL);
 
-    LOG_INFO("suit: verifying manifest signature... (skipped)\n");
-    int verification = 0; /*cose_sign_verify(&manifest->verify, &signature,
+    LOG_INFO("suit: verifying manifest signature\n");
+    int verification = cose_sign_verify(&manifest->verify, &signature,
                                         &pkey, manifest->validation_buf,
-                                        SUIT_COSE_BUF_SIZE);*/
+                                        SUIT_COSE_BUF_SIZE);
     if (verification != 0) {
-        LOG_INFO("Unable to validate signature\n");
-        return SUIT_ERR_SIGNATURE;
+        LOG_INFO("Unable to validate signature: %d (SOFTFAIL)\n", verification);
     }
 
     LOG_DEBUG("Starting global sequence handler\n");

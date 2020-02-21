@@ -140,8 +140,7 @@ static int _dependencies_handler(suit_v3_manifest_t *manifest, int key,
     return SUIT_ERR_UNSUPPORTED;
 }
 
-
-static int _common_sequence_handler(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *it)
+int _common_sequence_handler(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *it)
 {
     (void)key;
     LOG_DEBUG("Starting conditional sequence handler\n");

@@ -49,12 +49,14 @@ int suit_handle_manifest_structure(suit_v3_manifest_t *manifest, nanocbor_value_
 
     if ((nanocbor_enter_array(it, &container) < 0) &&
             (nanocbor_enter_map(it, &container) < 0)) {
+        LOG_DEBUG("Neither array nor map: %d\n", nanocbor_get_type(it));
         return SUIT_ERR_INVALID_MANIFEST;
     }
 
     while (!nanocbor_at_end(&container)) {
         int32_t key;
         if (nanocbor_get_int32(&container, &key) < 0) {
+            LOG_DEBUG("No key found: %d\n", nanocbor_get_type(&container));
             return SUIT_ERR_INVALID_MANIFEST;
         }
         nanocbor_value_t value = container;
@@ -72,6 +74,7 @@ int suit_handle_manifest_structure(suit_v3_manifest_t *manifest, nanocbor_value_
         nanocbor_skip(&container);
     }
     nanocbor_leave_container(it, &container);
+    LOG_DEBUG("Leaving sequence handler\n");
 
     return 0;
 }

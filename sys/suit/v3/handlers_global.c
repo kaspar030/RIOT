@@ -32,6 +32,8 @@
 
 #include "log.h"
 
+extern int _common_sequence_handler(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *it);
+
 static int _version_handler(suit_v3_manifest_t *manifest, int key,
                             nanocbor_value_t *it)
 {
@@ -97,6 +99,8 @@ const suit_manifest_handler_t suit_global_handlers[] = {
     [ 1] = _version_handler,
     [ 2] = _seq_no_handler,
     [ 3] = _common_handler,
+    [ 9] = _common_sequence_handler, /* Install section */
+    [10] = _common_sequence_handler, /* verify section */
 };
 /* end{code-style-ignore} */
 

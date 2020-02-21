@@ -195,6 +195,7 @@ static int _dtv_set_param(suit_v3_manifest_t *manifest, int key, nanocbor_value_
                 res = _param_get_img_size(manifest, &map);
                 break;
             default:
+                LOG_DEBUG("Unsupported parameter %"PRIi32"\n", param_key);
                 res = SUIT_ERR_UNSUPPORTED;
         }
 
@@ -209,7 +210,7 @@ static int _dtv_set_param(suit_v3_manifest_t *manifest, int key, nanocbor_value_
 
 static int _dtv_fetch(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *_it)
 {
-    (void)key; (void)_it; (void)manifest;
+    (void)key; (void)_it;
     LOG_DEBUG("_dtv_fetch() key=%i\n", key);
 
     const uint8_t *url;
@@ -217,57 +218,14 @@ static int _dtv_fetch(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *_
 
     /* TODO: there must be a simpler way */
     {
-        /* the url list is a binary sequence containing a cbor array of
-         * (priority, url) tuples (represented as array with length two)
-         * */
-
-        nanocbor_value_t it;
-
-        /* open sequence with cbor parser */
-        int err = suit_cbor_subparse(&manifest->components[0].url, &it);
+        int err = nanocbor_get_tstr(&manifest->components[0].url, &url, &url_len);
         if (err < 0) {
-            LOG_DEBUG("subparse failed\n)");
+            LOG_DEBUG("URL parsing failed\n)");
             return err;
-        }
-
-        nanocbor_value_t url_it;
-        /* enter container, confirm it is an array, too */
-        if (nanocbor_enter_array(&it, &url_it) < 0) {
-            LOG_DEBUG("url list no array\n)");
-            return SUIT_ERR_INVALID_MANIFEST;
-        }
-
-        nanocbor_value_t url_value_it;
-        if (nanocbor_enter_array(&url_it, &url_value_it) < 0) {
-            LOG_DEBUG("url entry no array\n)");
-            return SUIT_ERR_INVALID_MANIFEST;
-        }
-
-        /* expect two entries: priority as int, url as byte string. bail out if not. */
-        uint32_t prio;
-        /* check that first array entry is an int (the priority of the url) */
-        if (nanocbor_get_uint32(&url_value_it, &prio) < 0) {
-            LOG_DEBUG("expected URL priority (int), got %d\n",
-                      nanocbor_get_type(&url_value_it));
-            return -1;
-        }
-        LOG_DEBUG("URL priority %"PRIu32"\n", prio);
-
-        int res = nanocbor_get_tstr(&url_value_it, &url, &url_len);
-        if (res < 0) {
-            LOG_DEBUG("error parsing URL\n)");
-            return SUIT_ERR_INVALID_MANIFEST;
-        }
-        if (url_len >= manifest->urlbuf_len) {
-            LOG_INFO("url too large: %u>%u\n)", (unsigned)url_len,
-                     (unsigned)manifest->urlbuf_len);
-            return SUIT_ERR_UNSUPPORTED;
         }
         memcpy(manifest->urlbuf, url, url_len);
         manifest->urlbuf[url_len] = '\0';
 
-        nanocbor_leave_container(&url_it, &url_value_it);
-        nanocbor_leave_container(&it, &url_it);
     }
 
     LOG_DEBUG("_dtv_fetch() fetching \"%s\" (url_len=%u)\n", manifest->urlbuf,
@@ -302,11 +260,30 @@ static int _dtv_fetch(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *_
         return res;
     }
 
+    if (res) {
+        LOG_INFO("image verification failed\n");
+        return res;
+    }
+
+    manifest->state |= SUIT_MANIFEST_HAVE_IMAGE;
+
+    LOG_DEBUG("Update OK\n");
+    return SUIT_OK;
+}
+
+static int _dtv_verify_image_match(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *_it)
+{
+    (void)key; (void)_it;
+    LOG_DEBUG("dtv_image_match\n");
     const uint8_t *digest;
     size_t digest_len;
+    int target_slot = riotboot_slot_other();
 
-    res = nanocbor_get_bstr(&manifest->components[0].digest, &digest, &digest_len);
+    LOG_INFO("Verifying image digest\n");
+    nanocbor_value_t _v = manifest->components[0].digest;
+    int res = nanocbor_get_subcbor(&_v, &digest, &digest_len);
     if (res < 0) {
+        LOG_DEBUG("Unable to parse digest structure\n");
         return SUIT_ERR_INVALID_MANIFEST;
     }
 
@@ -315,14 +292,7 @@ static int _dtv_fetch(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *_
      * so shift the pointer accordingly.
      */
     res = riotboot_flashwrite_verify_sha256(digest + 4, manifest->components[0].size,
-                                            target_slot);
-    if (res) {
-        LOG_INFO("image verification failed\n");
-        return res;
-    }
-
-    manifest->state |= SUIT_MANIFEST_HAVE_IMAGE;
-
+                                                target_slot);
     return SUIT_OK;
 }
 
@@ -331,7 +301,8 @@ const suit_manifest_handler_t suit_sequence_handlers[] = {
     [ 0] = NULL,
     [ 1] = _cond_vendor_handler,
     [ 2] = _cond_class_handler,
-    [5] = _cond_comp_offset,
+    [ 3] = _dtv_verify_image_match,
+    [ 5] = _cond_comp_offset,
     /* Directives */
     [12] = _dtv_set_comp_idx,
     [15] = _dtv_try_each,
