@@ -64,6 +64,10 @@ context:
           CFLAGS:
             - -Os
             - -g
+      tools:
+          info:
+              cmd:
+                - "echo binary: $$(realpath --relative-to ${relpath} ${out})"
 
     - name: riot
       parent: default
