@@ -29,6 +29,7 @@ app:
         - tests-hashes
         - tests-ieee802154
         - tests-inet_csum
+        - tests-ipv4_addr
 
     blacklist:
         # insufficient memory
@@ -101,7 +102,7 @@ subdirs:
     - tests-hashes
     - tests-ieee802154
     - tests-inet_csum
-      #- tests-ipv4_addr
+    - tests-ipv4_addr
       #- tests-ipv6_addr
       #- tests-ipv6_hdr
       #- tests-luid
