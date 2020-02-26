@@ -3,8 +3,10 @@ module:
       depends:
           - gnrc_sock
           - gnrc_udp
+          - sock_udp
       uses:
           - gnrc_sock_check_reuse
+          - gnrc_sock_async
       sources:
           - gnrc_sock_udp.c
 

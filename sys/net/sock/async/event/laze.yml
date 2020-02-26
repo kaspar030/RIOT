@@ -1,0 +1,10 @@
+module:
+    - name: sock_async_event
+      sources:
+          - sock_async_event.c
+      depends:
+          - event
+          - sock_async
+      export_vars:
+          includes:
+              - ${relpath}
