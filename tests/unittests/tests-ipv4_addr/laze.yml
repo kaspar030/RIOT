@@ -1,0 +1,13 @@
+app:
+    depends:
+        - tests-ipv4_addr
+
+module:
+    - name: tests-ipv4_addr
+      sources: tests-ipv4_addr.c
+      depends:
+          - ipv4_addr
+          - unittests-base
+      global_vars:
+          testsuites:
+              - ipv4_addr
