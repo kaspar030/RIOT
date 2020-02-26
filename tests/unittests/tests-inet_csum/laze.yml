@@ -1,0 +1,13 @@
+app:
+    depends:
+        - tests-inet_csum
+
+module:
+    - name: tests-inet_csum
+      sources: tests-inet_csum.c
+      depends:
+          - inet_csum
+          - unittests-base
+      global_vars:
+          testsuites:
+              - inet_csum
