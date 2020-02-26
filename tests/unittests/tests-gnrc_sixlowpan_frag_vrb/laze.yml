@@ -1,0 +1,15 @@
+app:
+    depends:
+        - tests-gnrc_sixlowpan_frag_vrb
+
+module:
+    - name: tests-gnrc_sixlowpan_frag_vrb
+      sources: tests-gnrc_sixlowpan_frag_vrb.c
+      depends:
+          - gnrc_sixlowpan_frag_vrb
+          - xtimer
+          - unittests-base
+          - test_suites_define
+      global_vars:
+          testsuites:
+              - gnrc_sixlowpan_frag_vrb
