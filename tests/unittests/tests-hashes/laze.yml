@@ -1,0 +1,27 @@
+app:
+    depends:
+        - tests-hashes
+    blacklist:
+        # insufficient memory
+        - atmega_common
+
+module:
+    - name: tests-hashes
+      sources:
+        - tests-hashes.c
+        - tests-hashes-cmac.c
+        - tests-hashes-md5.c
+        - tests-hashes-sha1.c
+        - tests-hashes-sha256.c
+        - tests-hashes-sha256-chain.c
+        - tests-hashes-sha256-hmac.c
+        - tests-hashes-sha3.c
+      depends:
+          - crypto
+          - hashes
+          - unittests-base
+      global_vars:
+          testsuites:
+              - hashes
+          CFLAGS:
+              - -DCRYPTO_AES

@@ -26,6 +26,7 @@ app:
         - tests-gnrc_mac_internal
         - tests-gnrc_sixlowpan_frag_vrb
         - tests-gnrc_udp
+        - tests-hashes
 
     blacklist:
         # insufficient memory
@@ -95,7 +96,7 @@ subdirs:
     - tests-gnrc_mac_internal
     - tests-gnrc_sixlowpan_frag_vrb
     - tests-gnrc_udp
-      #- tests-hashes
+    - tests-hashes
       #- tests-ieee802154
       #- tests-inet_csum
       #- tests-ipv4_addr
