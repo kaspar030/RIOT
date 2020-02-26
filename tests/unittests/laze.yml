@@ -24,6 +24,7 @@ app:
         - tests-gnrc_ipv6_hdr
         - tests-gnrc_ipv6_nib
         - tests-gnrc_mac_internal
+        - tests-gnrc_sixlowpan_frag_vrb
 
     blacklist:
         # insufficient memory
@@ -91,7 +92,7 @@ subdirs:
     - tests-gnrc_ipv6_hdr
     - tests-gnrc_ipv6_nib
     - tests-gnrc_mac_internal
-      #- tests-gnrc_sixlowpan_frag_vrb
+    - tests-gnrc_sixlowpan_frag_vrb
       #- tests-gnrc_udp
       #- tests-hashes
       #- tests-ieee802154
