@@ -5,4 +5,8 @@ module:
       depends:
         - nanocoap
         - gnrc_sock_udp
+        - gnrc_sock_async
+        - sock_async_event
         - sock_util
+        - event_timeout
+        - event_callback
