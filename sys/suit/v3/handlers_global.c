@@ -45,13 +45,10 @@ static int _version_handler(suit_v3_manifest_t *manifest, int key,
         if (version == SUIT_VERSION) {
             manifest->validated |= SUIT_VALIDATED_VERSION;
             LOG_INFO("suit: validated manifest version\n)");
-            return 0;
-        }
-        else {
-            return -1;
+            return SUIT_OK;
         }
     }
-    return -1;
+    return SUIT_ERR_SEQUENCE_NUMBER;
 }
 
 static int _seq_no_handler(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *it)
@@ -68,7 +65,7 @@ static int _seq_no_handler(suit_v3_manifest_t *manifest, int key, nanocbor_value
     if (seq_nr <= (int32_t)hdr->version) {
         LOG_INFO("%"PRId32" <= %"PRId32"\n", seq_nr, hdr->version);
         LOG_INFO("seq_nr <= running image\n)");
-        return -1;
+        return SUIT_ERR_SEQUENCE_NUMBER;
     }
 
     hdr = riotboot_slot_get_hdr(riotboot_slot_other());
@@ -76,12 +73,12 @@ static int _seq_no_handler(suit_v3_manifest_t *manifest, int key, nanocbor_value
         if (seq_nr<= (int32_t)hdr->version) {
             LOG_INFO("%"PRIu32" <= %"PRIu32"\n", seq_nr, hdr->version);
             LOG_INFO("seq_nr <= other image\n)");
-            return -1;
+            return SUIT_ERR_SEQUENCE_NUMBER;
         }
     }
     LOG_INFO("suit: validated sequence number\n)");
     manifest->validated |= SUIT_VALIDATED_SEQ_NR;
-    return 0;
+    return SUIT_OK;
 
 }
 

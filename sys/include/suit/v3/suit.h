@@ -40,7 +40,7 @@ extern "C" {
  * @brief   Buffer size used for Cose
  */
 #ifndef SUIT_COSE_BUF_SIZE
-#define SUIT_COSE_BUF_SIZE              (512U)
+#define SUIT_COSE_BUF_SIZE              (180U)
 #endif
 
 /**
@@ -62,6 +62,16 @@ extern "C" {
 #define SUIT_VERSION                    (1)
 
 /**
+ * @brief COSE signature OK
+ */
+#define SUIT_STATE_COSE_AUTHENTICATED        (1 << 1)
+
+/**
+ * @brief COSE payload matches SUIT manifest digest
+ */
+#define SUIT_STATE_FULLY_AUTHENTICATED        (1 << 2)
+
+/**
  * @brief SUIT error codes
  */
 typedef enum {
@@ -73,6 +83,7 @@ typedef enum {
     SUIT_ERR_SEQUENCE_NUMBER    = -5,   /**< Sequence number less or equal to
                                              current sequence number */
     SUIT_ERR_SIGNATURE          = -6,   /**< Unable to verify signature */
+    SUIT_ERR_DIGEST_MISMATCH    = -7,   /**< Mismatch between COSE and SUIT digest */
 } suit_v3_error_t;
 
 /**
@@ -127,20 +138,20 @@ typedef struct {
  * @brief SUIT manifest struct
  */
 typedef struct {
-    cose_sign_dec_t verify;         /**< COSE signature validation struct */
     const uint8_t *buf;             /**< ptr to the buffer of the manifest */
     size_t len;                     /**< length of the manifest */
+    const uint8_t *cose_payload;    /**< ptr to the payload of the COSE sign */
+    size_t cose_payload_len;        /**< length of the COSE payload */
     uint32_t validated;             /**< bitfield of validated policies */
     uint32_t state;                 /**< bitfield holding state information */
 
     /** List of components in the manifest */
     suit_v3_component_t components[SUIT_V3_COMPONENT_MAX];
     unsigned components_len;        /**< Current number of components */
-    int32_t component_current;      /**< Current component index */
+    uint32_t component_current;      /**< Current component index */
     riotboot_flashwrite_t *writer;  /**< Pointer to the riotboot flash writer */
     /** Manifest validation buffer */
     uint8_t validation_buf[SUIT_COSE_BUF_SIZE];
-    cose_key_t *key;                /**< Ptr to the public key for validation */
     char *urlbuf;                   /**< Buffer containing the manifest url */
     size_t urlbuf_len;              /**< Length of the manifest url */
 } suit_v3_manifest_t;

@@ -41,92 +41,46 @@ static int _component_handler(suit_v3_manifest_t *manifest, int key,
 {
     (void)manifest;
     (void)key;
-    LOG_DEBUG("storing components\n)");
-    return 0;
+    const uint8_t *subcbor;
+    size_t sub_size;
+    nanocbor_value_t _it;
+    nanocbor_get_bstr(it, &subcbor, &sub_size);
+    nanocbor_decoder_init(&_it, subcbor, sub_size);
 
+    /* This is a list of lists, something like:
+     * [
+     *   [ "sda" "firmwareA" ],
+     *   [ "sda" "firmwareB" ]
+     * ]
+     * */
     nanocbor_value_t arr;
-
-    if (nanocbor_enter_array(it, &arr) < 0) {
+    if (nanocbor_enter_array(&_it, &arr) < 0) {
         LOG_DEBUG("components field not an array %d\n", nanocbor_get_type(it));
-        return -1;
+        return SUIT_ERR_INVALID_MANIFEST;
     }
     unsigned n = 0;
     while (!nanocbor_at_end(&arr)) {
-        nanocbor_value_t map;
-        if (n < SUIT_V3_COMPONENT_MAX) {
-            manifest->components_len += 1;
-        }
-        else {
-            LOG_DEBUG("too many components\n)");
+        nanocbor_value_t comp;
+        if (nanocbor_enter_array(&arr, &comp) < 0) {
+            LOG_DEBUG("component elements field not an array %d\n", nanocbor_get_type(it));
             return SUIT_ERR_INVALID_MANIFEST;
         }
-
-        if (nanocbor_enter_map(&arr, &map) < 0) {
-            LOG_DEBUG("suit _v3_parse(): manifest not a map: %d!\n", nanocbor_get_type(&arr));
-            return SUIT_ERR_INVALID_MANIFEST;
-        }
-
-        suit_v3_component_t *current = &manifest->components[n];
-
-        while (!nanocbor_at_end(&map)) {
-
-            /* handle key, value */
-            int32_t integer_key;
-            if (nanocbor_get_int32(&map, &integer_key) < 0) {
+        while (!nanocbor_at_end(&comp)) {
+            const uint8_t *identifier;
+            size_t id_len;
+            if (nanocbor_get_bstr(&comp, &identifier, &id_len) < 0) {
+                LOG_DEBUG("Component name not a byte string\n");
                 return SUIT_ERR_INVALID_MANIFEST;
             }
-
-            switch (integer_key) {
-                case SUIT_COMPONENT_IDENTIFIER:
-                    current->identifier = map;
-                    break;
-                case SUIT_COMPONENT_SIZE:
-                    LOG_DEBUG("skipping SUIT_COMPONENT_SIZE");
-                    break;
-                case SUIT_COMPONENT_DIGEST:
-                    current->digest = map;
-                    break;
-                default:
-                    LOG_DEBUG("ignoring unexpected component data (nr. %" PRIi32 ")\n",
-                              integer_key);
-            }
-            nanocbor_skip(&map);
-
-            LOG_DEBUG("component %u parsed\n", n);
         }
-        nanocbor_leave_container(&arr, &map);
+        nanocbor_leave_container(&arr, &comp);
         n++;
     }
-    nanocbor_leave_container(it, &arr);
-
+    if (n > 1) {
+        LOG_INFO("More than 1 component found, exiting\n");
+        return SUIT_ERR_UNSUPPORTED;
+    }
     manifest->state |= SUIT_MANIFEST_HAVE_COMPONENTS;
-
-    int target_slot = riotboot_slot_other();
-    riotboot_flashwrite_init(manifest->writer, target_slot);
-
-    int res = -1;
-
-    if (0) {}
-#ifdef MODULE_SUIT_COAP
-    else if (strncmp(manifest->urlbuf, "coap://", 7) == 0) {
-        res = suit_coap_get_blockwise_url(manifest->urlbuf, COAP_BLOCKSIZE_64,
-                                          suit_flashwrite_helper,
-                                          manifest);
-    }
-#endif
-#ifdef MODULE_SUIT_V3_TEST
-    else if (strncmp(manifest->urlbuf, "test://", 7) == 0) {
-        res = SUIT_OK;
-    }
-
-#endif
-    else {
-        LOG_WARNING("suit: unsupported URL scheme!\n)");
-        return res;
-    }
-
-    LOG_DEBUG("storing components done\n)");
-
     return 0;
 }
 

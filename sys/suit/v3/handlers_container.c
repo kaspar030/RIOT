@@ -38,6 +38,7 @@ static int _auth_handler(suit_v3_manifest_t *manifest, int key,
                          nanocbor_value_t *it)
 {
     (void)key;
+    cose_sign_dec_t verify;
     const uint8_t *cose_buf;
     const uint8_t *cose_container;
     size_t container_len;
@@ -66,11 +67,40 @@ static int _auth_handler(suit_v3_manifest_t *manifest, int key,
         LOG_INFO("Unable to get subcbor: %d\n", res);
     }
 
-    res = cose_sign_decode(&manifest->verify, cose_buf, cose_len);
+    res = cose_sign_decode(&verify, cose_buf, cose_len);
     if (res < 0) {
         LOG_INFO("Unable to parse COSE signature\n");
         return SUIT_ERR_INVALID_MANIFEST;
     }
+
+    /* Iterate over signatures, should only be a single signature */
+    cose_signature_dec_t signature;
+
+    cose_sign_signature_iter_init(&signature);
+    if (!cose_sign_signature_iter(&verify, &signature)) {
+        LOG_INFO("Unable to get signature iteration\n");
+        return SUIT_ERR_INVALID_MANIFEST;
+    }
+
+    /* Initialize key from hardcoded public key */
+    cose_key_t pkey;
+    cose_key_init(&pkey);
+    cose_key_set_keys(&pkey, COSE_EC_CURVE_ED25519, COSE_ALGO_EDDSA,
+                      (uint8_t *)public_key, NULL, NULL);
+
+    LOG_INFO("suit: verifying manifest signature\n");
+    int verification = cose_sign_verify(&verify, &signature,
+                                        &pkey, manifest->validation_buf,
+                                        SUIT_COSE_BUF_SIZE);
+    if (verification != 0) {
+        LOG_INFO("Unable to validate signature: %d\n", verification);
+        return SUIT_ERR_SIGNATURE;
+    }
+
+    manifest->cose_payload = verify.payload;
+    manifest->cose_payload_len = verify.payload_len;
+    manifest->state |= SUIT_STATE_COSE_AUTHENTICATED;
+
     return 0;
 }
 
@@ -80,6 +110,10 @@ static int _manifest_handler(suit_v3_manifest_t *manifest, int key,
     (void)key;
     const uint8_t *manifest_buf;
     size_t manifest_len;
+
+    if (!(manifest->state & SUIT_STATE_COSE_AUTHENTICATED)) {
+        return SUIT_ERR_SIGNATURE;
+    }
 
     nanocbor_value_t cbor_buf = *it;
 
@@ -92,32 +126,15 @@ static int _manifest_handler(suit_v3_manifest_t *manifest, int key,
         { 0x82, 0x02, 0x58, SHA256_DIGEST_LENGTH };
     sha256(manifest_buf, manifest_len, digest_struct + 4);
 
-    /* Validate the COSE struct first now that we have the payload */
-    cose_sign_decode_set_payload(&manifest->verify, digest_struct, sizeof(digest_struct));
-
-    /* Iterate over signatures, should only be a single signature */
-    cose_signature_dec_t signature;
-
-    cose_sign_signature_iter_init(&signature);
-    if (!cose_sign_signature_iter(&manifest->verify, &signature)) {
-        LOG_INFO("Unable to get signature iteration\n");
-        return SUIT_ERR_INVALID_MANIFEST;
+    /* The COSE payload and the sha256 of the manifest itself is public info and
+     * verification does not depend on secret info. No need for cryptographic
+     * memcmp here */
+    if (memcmp(digest_struct, manifest->cose_payload, sizeof(digest_struct)) != 0) {
+        LOG_ERROR("SUIT manifest digest and COSE digest mismatch\n");
+        return SUIT_ERR_DIGEST_MISMATCH;
     }
 
-    /* Initialize key from hardcoded public key */
-    cose_key_t pkey;
-    cose_key_init(&pkey);
-    cose_key_set_keys(&pkey, COSE_EC_CURVE_ED25519, COSE_ALGO_EDDSA,
-                      (uint8_t *)public_key, NULL, NULL);
-
-    LOG_INFO("suit: verifying manifest signature\n");
-    int verification = cose_sign_verify(&manifest->verify, &signature,
-                                        &pkey, manifest->validation_buf,
-                                        SUIT_COSE_BUF_SIZE);
-    if (verification != 0) {
-        LOG_INFO("Unable to validate signature: %d\n", verification);
-        return SUIT_ERR_SIGNATURE;
-    }
+    manifest->state |= SUIT_STATE_FULLY_AUTHENTICATED;
 
     LOG_DEBUG("Starting global sequence handler\n");
     return suit_handle_manifest_structure_bstr(manifest, it, suit_global_handlers,

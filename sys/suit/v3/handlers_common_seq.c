@@ -46,7 +46,7 @@ static int _validate_uuid(suit_v3_manifest_t *manifest, nanocbor_value_t *it, uu
     uuid_to_string((uuid_t *)uuid_manifest_ptr, uuid_str);
     uuid_to_string(uuid, uuid_str2);
     LOG_INFO("Comparing %s to %s from manifest\n", uuid_str2, uuid_str);
-    return uuid_equal(uuid, (uuid_t *)uuid_manifest_ptr) ? 0 : -1;
+    return uuid_equal(uuid, (uuid_t *)uuid_manifest_ptr) ? SUIT_OK : SUIT_ERR_COND;
 }
 
 static int _cond_vendor_handler(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *it)
@@ -93,7 +93,7 @@ static int _cond_comp_offset(suit_v3_manifest_t *manifest, int key, nanocbor_val
 
     LOG_INFO("Comparing manifest offset %u with other slot offset %u\n",
            (unsigned)offset, (unsigned)other_offset);
-    return other_offset == offset ? 0 : -1;
+    return other_offset == offset ? SUIT_OK : SUIT_ERR_COND;
 }
 
 static int _dtv_set_comp_idx(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *it)
@@ -103,7 +103,7 @@ static int _dtv_set_comp_idx(suit_v3_manifest_t *manifest, int key, nanocbor_val
         LOG_DEBUG("_dtv_set_comp_idx() ignoring boolean and floats\n)");
         nanocbor_skip(it);
     }
-    else if (nanocbor_get_int32(it, &manifest->component_current) < 0) {
+    else if (nanocbor_get_uint32(it, &manifest->component_current) < 0) {
         return SUIT_ERR_INVALID_MANIFEST;
     }
     LOG_DEBUG("Setting component index to %d\n", (int)manifest->component_current);
@@ -129,7 +129,7 @@ static int _dtv_try_each(suit_v3_manifest_t *manifest, int key, nanocbor_value_t
         return SUIT_ERR_INVALID_MANIFEST;
     }
 
-    int res = SUIT_ERR_INVALID_MANIFEST;
+    int res = SUIT_ERR_COND;
     while (!nanocbor_at_end(&container)) {
         nanocbor_value_t _container = container;
         /* should be _bstr */
@@ -138,7 +138,7 @@ static int _dtv_try_each(suit_v3_manifest_t *manifest, int key, nanocbor_value_t
 
         nanocbor_skip(&container);
 
-        if (res == SUIT_OK) {
+        if (res != SUIT_ERR_COND) {
             break;
         }
     }
@@ -216,17 +216,13 @@ static int _dtv_fetch(suit_v3_manifest_t *manifest, int key, nanocbor_value_t *_
     const uint8_t *url;
     size_t url_len;
 
-    /* TODO: there must be a simpler way */
-    {
-        int err = nanocbor_get_tstr(&manifest->components[0].url, &url, &url_len);
-        if (err < 0) {
-            LOG_DEBUG("URL parsing failed\n)");
-            return err;
-        }
-        memcpy(manifest->urlbuf, url, url_len);
-        manifest->urlbuf[url_len] = '\0';
-
+    int err = nanocbor_get_tstr(&manifest->components[0].url, &url, &url_len);
+    if (err < 0) {
+        LOG_DEBUG("URL parsing failed\n)");
+        return err;
     }
+    memcpy(manifest->urlbuf, url, url_len);
+    manifest->urlbuf[url_len] = '\0';
 
     LOG_DEBUG("_dtv_fetch() fetching \"%s\" (url_len=%u)\n", manifest->urlbuf,
               (unsigned)url_len);
