@@ -1,19 +1,29 @@
 module:
-    name: gnrc_sock
-    depends:
-        - gnrc_core
-        - gnrc_netapi_mbox
-        - core_mbox
-    uses:
-        - gnrc_neterr
-        - xtimer
-    sources:
-        - gnrc_sock.c
-    export_vars:
-        CFLAGS:
-            - -DSOCK_HAS_IPV6
-        includes:
-            - ${relpath}/include
+   - name: gnrc_sock
+     depends:
+         - gnrc_core
+         - gnrc_netapi_mbox
+         - core_mbox
+         - sock
+     uses:
+         - gnrc_neterr
+         - gnrc_sock_async
+         - xtimer
+     sources:
+         - gnrc_sock.c
+     export_vars:
+         CFLAGS:
+             - -DSOCK_HAS_IPV6
+         includes:
+             - ${relpath}/include
+
+   - name: gnrc_sock_async
+     depends:
+         - gnrc_sock
+         - sock_async
+         - gnrc_netapi_callbacks
+     uses:
+        - sock_async_event
 
 subdirs:
         - ip

@@ -2,6 +2,10 @@ module:
     - name: sock
       uses:
         - gnrc_sock
+        - sock_async
+        - sock_udp
+        - sock_tcp
+        - sock_dtls
 
     - name: sock_udp
       depends: sock
@@ -16,3 +20,16 @@ module:
               - fmt
           - posix_inet
           - sock
+
+    - name: sock_async
+      depends:
+          - sock
+      uses:
+          - sock_async_event
+      export_vars:
+          CFLAGS:
+            - -DSOCK_HAS_ASYNC
+            - -DSOCK_HAS_ASYNC_CTX
+
+subdirs:
+    - async
