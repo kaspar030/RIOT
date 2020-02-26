@@ -1,3 +1,7 @@
+defaults:
+    app:
+        disable_modules:
+            - auto_init
 app:
     name: unittests
     depends:
@@ -30,6 +34,7 @@ app:
         - tests-ieee802154
         - tests-inet_csum
         - tests-ipv4_addr
+        - tests-ipv6_addr
 
     blacklist:
         # insufficient memory
@@ -103,7 +108,7 @@ subdirs:
     - tests-ieee802154
     - tests-inet_csum
     - tests-ipv4_addr
-      #- tests-ipv6_addr
+    - tests-ipv6_addr
       #- tests-ipv6_hdr
       #- tests-luid
       #- tests-matstat
