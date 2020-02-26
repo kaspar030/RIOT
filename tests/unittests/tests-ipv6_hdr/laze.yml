@@ -1,0 +1,14 @@
+app:
+    depends:
+        - tests-ipv6_hdr
+
+module:
+    - name: tests-ipv6_hdr
+      sources: tests-ipv6_hdr.c
+      depends:
+          - ipv6_hdr
+          - inet_csum
+          - unittests-base
+      global_vars:
+          testsuites:
+              - ipv6_hdr
