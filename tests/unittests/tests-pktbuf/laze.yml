@@ -1,0 +1,14 @@
+app:
+    depends:
+        - tests-pktbuf
+
+module:
+    - name: tests-pktbuf
+      sources: tests-pktbuf.c
+      depends:
+          - gnrc_pktbuf_static
+          - test_suites_define
+          - unittests-base
+      global_vars:
+          testsuites:
+              - pktbuf

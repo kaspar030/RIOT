@@ -44,6 +44,7 @@ app:
         - tests-netreg
         - tests-phydat
         - tests-pkt
+        - tests-pktbuf
 
     blacklist:
         # insufficient memory
@@ -127,7 +128,7 @@ subdirs:
     - tests-netreg
     - tests-phydat
     - tests-pkt
-      #- tests-pktbuf
+    - tests-pktbuf
       #- tests-pktqueue
       #- tests-printf_float
       #- tests-priority_pktqueue
