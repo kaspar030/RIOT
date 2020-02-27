@@ -41,6 +41,7 @@ app:
         - tests-mtd
         - tests-nanocoap
         - tests-netopt
+        - tests-netreg
 
     blacklist:
         # insufficient memory
@@ -121,7 +122,7 @@ subdirs:
     - tests-mtd
     - tests-nanocoap
     - tests-netopt
-      #- tests-netreg
+    - tests-netreg
       #- tests-phydat
       #- tests-pkt
       #- tests-pktbuf
