@@ -1,0 +1,17 @@
+app:
+    depends:
+        - tests-priority_pktqueue
+    blacklist:
+        # insufficient memory
+        - atmega_common
+
+module:
+    - name: tests-priority_pktqueue
+      sources: tests-priority_pktqueue.c
+      depends:
+          - gnrc_priority_pktqueue
+          - test_suites_define
+          - unittests-base
+      global_vars:
+          testsuites:
+              - priority_pktqueue
