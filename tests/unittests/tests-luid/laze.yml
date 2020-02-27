@@ -1,0 +1,13 @@
+app:
+    depends:
+        - tests-luid
+
+module:
+    - name: tests-luid
+      sources: tests-luid.c
+      depends:
+          - luid
+          - unittests-base
+      global_vars:
+          testsuites:
+              - luid

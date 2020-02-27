@@ -36,6 +36,7 @@ app:
         - tests-ipv4_addr
         - tests-ipv6_addr
         - tests-ipv6_hdr
+        - tests-luid
 
     blacklist:
         # insufficient memory
@@ -111,7 +112,7 @@ subdirs:
     - tests-ipv4_addr
     - tests-ipv6_addr
     - tests-ipv6_hdr
-      #- tests-luid
+    - tests-luid
       #- tests-matstat
       #- tests-mtd
       #- tests-nanocoap
