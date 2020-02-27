@@ -1,0 +1,14 @@
+app:
+    depends:
+        - tests-netreg
+
+module:
+    - name: tests-netreg
+      sources: tests-netreg.c
+      depends:
+          - gnrc_netreg
+          - test_suites_define
+          - unittests-base
+      global_vars:
+          testsuites:
+              - netreg
