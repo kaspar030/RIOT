@@ -1,0 +1,13 @@
+app:
+    depends:
+        - tests-pktqueue
+
+module:
+    - name: tests-pktqueue
+      sources: tests-pktqueue.c
+      depends:
+          - pktqueue
+          - unittests-base
+      global_vars:
+          testsuites:
+              - pktqueue
