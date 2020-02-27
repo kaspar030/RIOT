@@ -1,0 +1,13 @@
+app:
+    depends:
+        - tests-matstat
+
+module:
+    - name: tests-matstat
+      sources: tests-matstat.c
+      depends:
+          - matstat
+          - unittests-base
+      global_vars:
+          testsuites:
+              - matstat
