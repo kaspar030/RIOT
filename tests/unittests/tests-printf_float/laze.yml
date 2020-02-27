@@ -1,0 +1,13 @@
+app:
+    depends:
+        - tests-printf_float
+
+module:
+    - name: tests-printf_float
+      sources: tests-printf_float.c
+      depends:
+          - printf_float
+          - unittests-base
+      global_vars:
+          testsuites:
+              - printf_float
