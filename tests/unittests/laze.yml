@@ -45,6 +45,7 @@ app:
         - tests-phydat
         - tests-pkt
         - tests-pktbuf
+        - tests-pktqueue
 
     blacklist:
         # insufficient memory
@@ -129,7 +130,7 @@ subdirs:
     - tests-phydat
     - tests-pkt
     - tests-pktbuf
-      #- tests-pktqueue
+    - tests-pktqueue
       #- tests-printf_float
       #- tests-priority_pktqueue
       #- tests-rtc
