@@ -38,6 +38,7 @@ app:
         - tests-ipv6_hdr
         - tests-luid
         - tests-matstat
+        - tests-mtd
 
     blacklist:
         # insufficient memory
@@ -115,7 +116,7 @@ subdirs:
     - tests-ipv6_hdr
     - tests-luid
     - tests-matstat
-      #- tests-mtd
+    - tests-mtd
       #- tests-nanocoap
       #- tests-netopt
       #- tests-netreg
