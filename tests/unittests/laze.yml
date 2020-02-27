@@ -39,6 +39,7 @@ app:
         - tests-luid
         - tests-matstat
         - tests-mtd
+        - tests-nanocoap
 
     blacklist:
         # insufficient memory
@@ -117,7 +118,7 @@ subdirs:
     - tests-luid
     - tests-matstat
     - tests-mtd
-      #- tests-nanocoap
+    - tests-nanocoap
       #- tests-netopt
       #- tests-netreg
       #- tests-phydat

@@ -1,0 +1,13 @@
+app:
+    depends:
+        - tests-nanocoap
+
+module:
+    - name: tests-nanocoap
+      sources: tests-nanocoap.c
+      depends:
+          - nanocoap
+          - unittests-base
+      global_vars:
+          testsuites:
+              - nanocoap
