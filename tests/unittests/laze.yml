@@ -51,6 +51,7 @@ app:
         - tests-rtc
         - tests-saul_reg
         - tests-scanf_float
+        - tests-seq
 
     blacklist:
         # insufficient memory
@@ -141,7 +142,7 @@ subdirs:
     - tests-rtc
     - tests-saul_reg
     - tests-scanf_float
-      #- tests-seq
+    - tests-seq
       #- tests-sht1x
       #- tests-sixlowpan
       #- tests-sixlowpan_ctx
