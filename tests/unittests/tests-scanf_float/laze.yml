@@ -1,0 +1,13 @@
+app:
+    depends:
+        - tests-scanf_float
+
+module:
+    - name: tests-scanf_float
+      sources: tests-scanf_float.c
+      depends:
+          - scanf_float
+          - unittests-base
+      global_vars:
+          testsuites:
+              - scanf_float

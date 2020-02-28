@@ -50,6 +50,7 @@ app:
         - tests-priority_pktqueue
         - tests-rtc
         - tests-saul_reg
+        - tests-scanf_float
 
     blacklist:
         # insufficient memory
@@ -139,7 +140,7 @@ subdirs:
     - tests-priority_pktqueue
     - tests-rtc
     - tests-saul_reg
-      #- tests-scanf_float
+    - tests-scanf_float
       #- tests-seq
       #- tests-sht1x
       #- tests-sixlowpan
