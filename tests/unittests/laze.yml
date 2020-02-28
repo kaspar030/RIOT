@@ -58,6 +58,7 @@ app:
         - tests-timex
         - tests-uuid
         - tests-vfs
+        - tests-zptr
 
     blacklist:
         # insufficient memory
@@ -158,3 +159,4 @@ subdirs:
     - tests-tsrb
     - tests-uuid
     - tests-vfs
+    - tests-zptr
