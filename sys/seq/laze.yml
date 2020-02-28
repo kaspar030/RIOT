@@ -1,0 +1,4 @@
+module:
+    - name: seq
+      sources:
+        - seq.c
