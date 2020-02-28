@@ -53,9 +53,12 @@ app:
         - tests-scanf_float
         - tests-seq
         - tests-sht1x
+        - tests-sixlowpan
+        - tests-sixlowpan_ctx
         - tests-sixlowpan_sfr
         - tests-sock_util
         - tests-timex
+        - tests-tsrb
         - tests-uuid
         - tests-vfs
         - tests-zptr
@@ -63,6 +66,8 @@ app:
     blacklist:
         # insufficient memory
         - atmega_common
+        - samd21-xpro
+        - samr21-xpro
 
 module:
     - name: unittests-base
