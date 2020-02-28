@@ -1,0 +1,38 @@
+module:
+    - name: libfixmath
+      download:
+        git:
+          commit: 7f9c966b5c473770dc93940e3e6e5323f3c1ad69
+          url: https://github.com/PetteriAimonen/libfixmath
+        patches:
+            - patches/0001-Fix-warnings.patch
+            - patches/0002-Adapt-unittests-for-RIOT.patch
+              #- patches/0003-Replace-__FILE__-by-RIOT_FILE_NOPATH.patch
+      license: MIT
+      sources:
+        - libfixmath/fix16.c
+        - libfixmath/fix16_exp.c
+        - libfixmath/fix16_sqrt.c
+        - libfixmath/fix16_str.c
+        - libfixmath/fix16_trig.c
+        - libfixmath/fract32.c
+        - libfixmath/uint32.c
+
+        - libfixmath-unittests:
+            - unittests/fix16_exp_unittests.c
+            - unittests/fix16_macros_unittests.c
+            - unittests/fix16_str_unittests.c
+            - unittests/fix16_unittests.c
+
+      vars:
+        CFLAGS:
+            - -DFIXMATH_NO_CACHE
+
+      export_vars:
+        includes:
+            - ${srcdir}/libfixmath
+            - ${srcdir}/unittests
+
+    - name: libfixmath-unittests
+      depends:
+        - libfixmath
