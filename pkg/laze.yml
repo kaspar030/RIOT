@@ -5,6 +5,7 @@ subdirs:
     - heatshrink
     - jsmn
     - libb2
+    - libfixmath
     - libhydrogen
     - littlefs
     - relic
