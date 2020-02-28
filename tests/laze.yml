@@ -189,6 +189,8 @@ subdirs:
   - pkg_jsmn
   - pkg_libb2
   #- pkg_libcose
+  - pkg_libfixmath
+  - pkg_libfixmath_unittests
   - pkg_libhydrogen
   - pkg_littlefs
   #- pkg_microcoap
