@@ -61,5 +61,6 @@ subdirs:
     - tsrb
     - ubjson
     - universal_address
+    - uuid
     - vfs
     - xtimer
