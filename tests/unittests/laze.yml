@@ -54,6 +54,7 @@ app:
         - tests-seq
         - tests-sht1x
         - tests-sixlowpan_sfr
+        - tests-sock_util
 
     blacklist:
         # insufficient memory
@@ -149,7 +150,7 @@ subdirs:
     - tests-sixlowpan
     - tests-sixlowpan_ctx
     - tests-sixlowpan_sfr
-      #- tests-sock_util
+    - tests-sock_util
       #- tests-timex
       #- tests-tsrb
       #- tests-uuid
