@@ -1,0 +1,14 @@
+app:
+    depends:
+        - tests-sixlowpan_ctx
+
+module:
+    - name: tests-sixlowpan_ctx
+      sources: tests-sixlowpan_ctx.c
+      depends:
+          - gnrc_sixlowpan_ctx
+          - test_suites_define
+          - unittests-base
+      global_vars:
+          testsuites:
+              - sixlowpan_ctx
