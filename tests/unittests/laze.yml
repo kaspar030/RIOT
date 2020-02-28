@@ -153,6 +153,6 @@ subdirs:
     - tests-sixlowpan_sfr
     - tests-sock_util
     - tests-timex
-      #- tests-tsrb
+    - tests-tsrb
       #- tests-uuid
       #- tests-vfs
