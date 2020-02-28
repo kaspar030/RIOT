@@ -53,6 +53,7 @@ app:
         - tests-scanf_float
         - tests-seq
         - tests-sht1x
+        - tests-sixlowpan_sfr
 
     blacklist:
         # insufficient memory
@@ -147,7 +148,7 @@ subdirs:
     - tests-sht1x
     - tests-sixlowpan
     - tests-sixlowpan_ctx
-      #- tests-sixlowpan_sfr
+    - tests-sixlowpan_sfr
       #- tests-sock_util
       #- tests-timex
       #- tests-tsrb
