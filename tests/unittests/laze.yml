@@ -57,6 +57,7 @@ app:
         - tests-sock_util
         - tests-timex
         - tests-uuid
+        - tests-vfs
 
     blacklist:
         # insufficient memory
@@ -156,4 +157,4 @@ subdirs:
     - tests-timex
     - tests-tsrb
     - tests-uuid
-      #- tests-vfs
+    - tests-vfs
