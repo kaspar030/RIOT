@@ -38,7 +38,7 @@ module:
         - tinymt32.c
       depends:
         - random
-        - sys/random/tinymt32
+        - tinymt32
 
     - name: random_prng_xorshift
       sources:
