@@ -1,0 +1,13 @@
+app:
+    depends:
+        - tests-zptr
+
+module:
+    - name: tests-zptr
+      sources: tests-zptr.c
+      depends:
+          - zptr
+          - unittests-base
+      global_vars:
+          testsuites:
+              - zptr
