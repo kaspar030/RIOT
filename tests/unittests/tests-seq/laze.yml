@@ -1,0 +1,13 @@
+app:
+    depends:
+        - tests-seq
+
+module:
+    - name: tests-seq
+      sources: tests-seq.c
+      depends:
+          - seq
+          - unittests-base
+      global_vars:
+          testsuites:
+              - seq
