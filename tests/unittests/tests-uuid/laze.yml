@@ -1,0 +1,13 @@
+app:
+    depends:
+        - tests-uuid
+
+module:
+    - name: tests-uuid
+      sources: tests-uuid.c
+      depends:
+          - uuid
+          - unittests-base
+      global_vars:
+          testsuites:
+              - uuid

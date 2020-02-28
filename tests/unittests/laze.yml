@@ -56,6 +56,7 @@ app:
         - tests-sixlowpan_sfr
         - tests-sock_util
         - tests-timex
+        - tests-uuid
 
     blacklist:
         # insufficient memory
@@ -154,5 +155,5 @@ subdirs:
     - tests-sock_util
     - tests-timex
     - tests-tsrb
-      #- tests-uuid
+    - tests-uuid
       #- tests-vfs
