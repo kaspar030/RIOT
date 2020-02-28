@@ -1,0 +1,8 @@
+module:
+    - name: uuid
+      sources:
+          - uuid.c
+      depends:
+          - fmt
+          - hashes
+          - random
