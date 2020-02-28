@@ -1,0 +1,22 @@
+app:
+    depends:
+        - tests-vfs
+
+module:
+    - name: tests-vfs
+      sources:
+        - tests-vfs.c
+        - tests-vfs-bind.c
+        - tests-vfs-dir-ops.c
+        - tests-vfs-file-ops.c
+        - tests-vfs-file-system-ops.c
+        - tests-vfs-mount-constfs.c
+        - tests-vfs-normalize_path.c
+        - tests-vfs-open-close.c
+      depends:
+          - constfs
+          - vfs
+          - unittests-base
+      global_vars:
+          testsuites:
+              - vfs
