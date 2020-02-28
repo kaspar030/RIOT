@@ -1,3 +1,4 @@
 module:
-    sources:
+    - name: tinymt32
+      sources:
         - tinymt32.c
