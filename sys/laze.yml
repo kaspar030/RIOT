@@ -50,6 +50,7 @@ subdirs:
     - saul_reg
     - schedstatistics
     - sema
+    - seq
     - shell
     - ssp
     - stdio_rtt
