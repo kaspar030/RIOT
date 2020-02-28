@@ -4,6 +4,7 @@ subdirs:
 # C tests
 defaults:
     app:
+        context: riot
         sources:
           - main.c
         depends:
@@ -156,7 +157,6 @@ subdirs:
   - nanocoap_cli
   - netdev_test
   - netstats_l2
-  - nhdp
   - od
   - periph_adc
   - periph_cpuid
