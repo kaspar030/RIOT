@@ -1,0 +1,18 @@
+app:
+    depends:
+        - tests-sock_util
+
+module:
+    - name: tests-sock_util
+      sources: tests-sock_util.c
+      depends:
+          - gnrc_ipv6
+          - gnrc_sock
+          - ipv4_addr
+          - ipv6_addr
+          - posix_headers
+          - sock_util
+          - unittests-base
+      global_vars:
+          testsuites:
+              - sock_util
