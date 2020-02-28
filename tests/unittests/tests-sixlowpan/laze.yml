@@ -1,0 +1,13 @@
+app:
+    depends:
+        - tests-sixlowpan
+
+module:
+    - name: tests-sixlowpan
+      sources: tests-sixlowpan.c
+      depends:
+          - sixlowpan
+          - unittests-base
+      global_vars:
+          testsuites:
+              - sixlowpan
