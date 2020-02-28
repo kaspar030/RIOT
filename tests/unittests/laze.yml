@@ -146,7 +146,7 @@ subdirs:
     - tests-seq
     - tests-sht1x
     - tests-sixlowpan
-      #- tests-sixlowpan_ctx
+    - tests-sixlowpan_ctx
       #- tests-sixlowpan_sfr
       #- tests-sock_util
       #- tests-timex
