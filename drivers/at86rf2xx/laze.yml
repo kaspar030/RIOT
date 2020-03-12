@@ -14,13 +14,16 @@ module:
           - xtimer
           - gnrc: auto_init_at86rf2xx
       uses:
-          - netstats_l2
-          - gnrc
-          - gnrc_sixlowpan
-          - sixlowpan
           - at86rf212b
           - at86rf231
           - at86rf233
+          - at86rfa1
+          - at86rfr2
+          - gnrc
+          - gnrc_sixlowpan
+          - netstats_l2
+          - openthread
+          - sixlowpan
 
       export_vars:
           CFLAGS:

@@ -3,7 +3,7 @@ defaults:
         disable_modules:
             - auto_init
 app:
-    name: unittests
+    name: tests/unittests
     depends:
         - tests-analog_util
         - tests-base64

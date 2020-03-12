@@ -22,7 +22,7 @@ rule:
     - name: ASM
       in: '.S'
       out: '.o'
-      cmd: '${CC} ${CFLAGS} -c ${in} -o ${out}'
+      cmd: '${CC} ${CFLAGS} ${CFLAGS_ARCH} -c ${in} -o ${out}'
     - name: LINK
       in: '.o'
       options:

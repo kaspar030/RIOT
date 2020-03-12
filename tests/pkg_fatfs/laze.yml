@@ -6,12 +6,21 @@ app:
         - ?mtd_sdcard
         - ?mtd_native
         - ?periph_rtc
-    global_vars:
-        CFLAGS:
-            - -DMTD_NATIVE_FILENAME=\"./bin/riot_fatfs_disk.img\"
-            - -DMTD_PAGE_SIZE="512"
-            - -DMTD_SECTOR_SIZE="512"
-            - -DFATFS_IMAGE_FILE_SIZE_MIB="128"
-            - -DMTD_SECTOR_NUM="(((FATFS_IMAGE_FILE_SIZE_MIB)*1024*1024)/MTD_SECTOR_SIZE)"
+        - cpu/native:
+            - tests/pkg_fatfs/settings
+
     blacklist:
         - atmega_common
+
+module:
+    - name: tests/pkg_fatfs/settings
+      context: cpu/native
+      depends:
+          - fatfs_nortc
+      global_vars:
+          CFLAGS:
+              - -DMTD_NATIVE_FILENAME=\"./bin/riot_fatfs_disk.img\"
+              - -DMTD_PAGE_SIZE="512"
+              - -DMTD_SECTOR_SIZE="512"
+              - -DFATFS_IMAGE_FILE_SIZE_MIB="128"
+              - -DMTD_SECTOR_NUM="(((FATFS_IMAGE_FILE_SIZE_MIB)*1024*1024)/MTD_SECTOR_SIZE)"

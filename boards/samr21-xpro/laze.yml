@@ -1,6 +1,6 @@
 builder:
   name: samr21-xpro
-  parent: samd21g18a
+  parent: samr21g18a
   vars:
     CFLAGS:
       - -I${relpath}/include

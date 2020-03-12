@@ -51,11 +51,18 @@ module:
             - ethernet/gnrc_netif_ethernet.c
 
     - name: gnrc_netif_ieee802154
+      sources:
+            - ieee802154/gnrc_netif_ieee802154.c
       depends:
           - gnrc_netif
           - ieee802154
-      sources:
-            - ieee802154/gnrc_netif_ieee802154.c
+      uses:
+          - gnrc_ipv6
+          - gnrc_mac
+          - gnrc_netif_dedup
+          - l2filter
+          - netstats_l2
+          - od
 
 subdirs:
     - hdr

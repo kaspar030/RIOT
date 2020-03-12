@@ -40,7 +40,7 @@ context:
     - name: samr21g18a
       parent: samd21
       vars:
-          CFLAGS:
+          CFLAGS_DEFINES:
               - -DCPU_SAMR21
               - -DCPU_SAMD21A
               - -D__SAMD21G18A__
