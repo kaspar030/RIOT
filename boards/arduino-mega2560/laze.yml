@@ -6,16 +6,15 @@ builder:
             - -I${relpath}/include
         PORT:
             - /dev/ttyACM0
-
-    tools:
-      flash:
-        cmd:
-          - ${OBJCOPY} -O ihex ${out} ${out}.hex
-          - avrdude -P ${PORT} -c stk500v2 -p m2560 -b 115200 \
-            -F -D -U flash:w:${out}.hex
-      term:
-        cmd:
-          - picocom --baud 9600 --quiet --imap lfcrlf ${PORT}
+    tasks:
+        flash:
+          cmd:
+            - ${OBJCOPY} -O ihex ${out} ${out}.hex
+            - avrdude -P ${PORT} -c stk500v2 -p m2560 -b 115200 \
+              -F -D -U flash:w:${out}.hex
+        term:
+          cmd:
+            - picocom --baud 9600 --quiet --imap lfcrlf ${PORT}
 
 module:
     - name: board

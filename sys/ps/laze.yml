@@ -3,4 +3,4 @@ module:
     sources: ps.c
     uses:
         - schedstatistics
-        - tlsf
+        - tlsf_malloc

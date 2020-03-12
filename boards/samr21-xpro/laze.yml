@@ -1,13 +1,13 @@
 builder:
   name: samr21-xpro
-  parent: samd21g18a
+  parent: samr21g18a
   vars:
     CFLAGS:
       - -I${relpath}/include
     PORT:
       - /dev/ttyACM0
 
-  tools:
+  tasks:
     flash:
       cmd:
         - ${OBJCOPY} -O binary ${out} ${out}.bin

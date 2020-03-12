@@ -267,7 +267,7 @@ defaults:
             - board
             - riot
             - ?develhelp
-        tools:
+        tasks:
             test:
                 cmd:
                     - '${relpath}/tests/*'

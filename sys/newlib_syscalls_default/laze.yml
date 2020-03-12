@@ -9,3 +9,5 @@ module:
     uses:
         - board
         - lto
+        - vfs
+        - xtimer

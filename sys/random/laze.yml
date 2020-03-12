@@ -5,6 +5,10 @@ module:
       depends:
           - ?auto_init_random
           - random_prng_default
+      uses:
+          - puf_sram
+          - periph_cpuid
+          - periph_hwrng
 
     - name: auto_init_random
       depends:

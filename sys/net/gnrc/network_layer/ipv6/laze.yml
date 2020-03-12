@@ -14,6 +14,7 @@ module:
           - gnrc_icmpv6_error
           - gnrc_ipv6_blacklist
           - gnrc_ipv6_ext
+          - gnrc_ipv6_ext_frag
           - gnrc_ipv6_node
           - gnrc_ipv6_router
           - gnrc_ipv6_whitelist

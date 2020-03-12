@@ -1,6 +1,12 @@
 module:
-    name: od
-    depends:
-        - fmt
-    sources:
-        - od.c
+    - name: od
+      sources:
+          - od.c
+      depends:
+          - fmt
+      uses:
+          - od_string
+
+    - name: od_string
+      depends:
+          - od

@@ -4,6 +4,7 @@ module:
         - fatfs
         - mtd
     uses:
+        - fatfs_nortc
         - mtd_native
         - mtd_sdcard
     sources:

@@ -8,7 +8,6 @@ template:
         - rtt
         - spi
         - timer
-        - uart
 
 module:
     name: "periph_%NAME%"
@@ -26,3 +25,18 @@ module:
     - name: periph_gpio_irq
       context: sam0
       depends: periph_gpio
+
+    - name: periph_hwrng
+      context: sam0
+      depends: feature/periph_hwrng
+
+    - name: periph_uart
+      context: sam0
+      sources:
+          - uart.c
+      uses:
+          - periph_uart_modecfg
+          - periph_uart_nonblocking
+          - sam0_periph_uart_hw_fc
+
+    - name: sam0_periph_uart_hw_fc

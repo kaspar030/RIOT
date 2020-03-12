@@ -38,7 +38,8 @@ ifeq (,$(filter -std=%, $(CFLAGS)))
 endif
 
 ifeq ($(OS_ARCH),x86_64)
-  CFLAGS += -m32
+  CFLAGS += -m32 -fpic
+  LINKFLAGS += -m32 -fpic
 endif
 ifneq (,$(filter -DDEVELHELP,$(CFLAGS)))
   CFLAGS += -fstack-protector-all
@@ -112,7 +113,7 @@ endif
 
 TERMFLAGS += $(PORT)
 
-ASFLAGS =
+ASFLAGS = -fpic
 ifeq ($(shell basename $(DEBUGGER)),lldb)
   DEBUGGER_FLAGS = -- $(ELFFILE) $(TERMFLAGS)
 else

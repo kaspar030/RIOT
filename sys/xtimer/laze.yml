@@ -7,6 +7,9 @@ module:
           - ?auto_init_xtimer
           - div
           - periph_timer
+      uses:
+          - core_msg
+          - core_thread_flags
 
     - name: auto_init_xtimer
       depends:

@@ -54,6 +54,7 @@ module:
     - name: gnrc_ipv6_router
       depends:
           - gnrc_ipv6
+          - gnrc_ipv6_nib_router
 
     - name: gnrc_ipv6_hdr
       depends:
