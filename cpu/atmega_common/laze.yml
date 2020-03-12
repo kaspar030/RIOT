@@ -8,12 +8,16 @@ context:
         - -Wl,--defsym=__DATA_REGION_LENGTH__=${RAM_LEN}
         - -e reset_handler
 
+defaults:
+  module:
+    context:
+      atmega_common
+
 module:
   - name: atmega_common
     depends:
       - avr_libc_extra
       - core
-    context: atmega_common
     sources:
       - cpu.c
       - irq_arch.c

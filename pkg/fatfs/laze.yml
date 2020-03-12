@@ -1,9 +1,5 @@
 module:
   - name: fatfs
-    depends:
-      - "!periph_rtc":
-          - fatfs_nortc
-
     license: BSD-1-Clause
     download:
       git:
@@ -15,6 +11,10 @@ module:
           - mkdir -p include/fatfs
           - cp *.h include/fatfs
     sources: [ ff.c, ffsystem.c, ffunicode.c ]
+    depends:
+      - fatfs_diskio_mtd
+      - "!periph_rtc":
+          - fatfs_nortc
     export_vars:
       includes:
         - ${srcdir}/include

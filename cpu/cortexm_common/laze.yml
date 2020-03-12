@@ -39,17 +39,24 @@ module:
        - mpu.c
        - panic.c
        - thread_arch.c
-       - vectors_cortexm.c
-
-      vars:
-          CFLAGS:
-              - -DMODULE_CORTEXM_COMMON
-              - -DMODULE_NEWLIB
 
       depends:
           - core
-          - newlib
+          - cortexm_common
           - cortexm_common_periph
+          - cortexm_vectors
+          - ?newlib
+      uses:
+          - cortexm_common
+          - cortexm_fpu
+
+    - name: cortexm_common
+
+    - name: cortexm_vectors
+      sources:
+          - vectors_cortexm.c
+      uses:
+          - newlib
 
     - name: feature/arch_32bit
 

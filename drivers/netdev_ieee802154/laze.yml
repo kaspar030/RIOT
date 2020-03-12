@@ -8,3 +8,4 @@ module:
         - gnrc
         - l2filter
         - netstats_l2
+        - gnrc_sixlowpan

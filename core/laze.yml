@@ -27,6 +27,7 @@ module:
           - core_msg
           - core_mbox
           - core_thread_flags
+          - mpu_stack_guard
           - sched_cb
 
     - name: core_init

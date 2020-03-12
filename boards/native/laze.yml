@@ -3,14 +3,18 @@ builder:
     parent: cpu/native
     vars:
         CFLAGS:
-            - -m32
-            - -DRIOT_MCU=\"native\"
-            - -DBOARD_NATIVE
-            - -I${relpath}/include
             - remove:
               - -Os
-        LINKFLAGS: [ -m32 ]
-        libs: [ -ldl, -lm ]
+        CFLAGS_ARCH:
+            - -m32
+        CFLAGS_DEFINES:
+            - -DRIOT_MCU=\"native\"
+            - -DBOARD_NATIVE
+        includes:
+          - ${relpath}/include
+        libs:
+          - -ldl
+          - -lm
 
 defaults:
   module:

@@ -4,6 +4,7 @@ app:
         - udp.c
 
     depends:
+        - periph_gpio
         # this pulls in GNRC's default configuration
         - gnrc_default
         - gnrc_ipv6_router_default
@@ -24,7 +25,9 @@ app:
         - netstats_ipv6
         - netstats_rpl
 
-        #
+        # Comment this out to disable code in RIOT that does safety checking
+        # which is not needed in a production environment but helps in the
+        # development process:
         - develhelp
 
     blacklist:

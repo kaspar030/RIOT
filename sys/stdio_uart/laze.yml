@@ -6,7 +6,10 @@ module:
         - stdin:
             - stdio_uart_rx
       uses:
+        - stdio_ethos
         - stdio_uart_rx
+        - vfs
+
       vars:
           CFLAGS_GCC:
               - -Wno-cast-function-type
@@ -17,4 +20,3 @@ module:
           - stdio_uart
 
     - name: stdin
-

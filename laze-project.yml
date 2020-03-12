@@ -22,7 +22,7 @@ rule:
     - name: ASM
       in: '.S'
       out: '.o'
-      cmd: '${CC} ${CFLAGS} -c ${in} -o ${out}'
+      cmd: '${CC} ${CFLAGS} ${CFLAGS_ARCH} -c ${in} -o ${out}'
     - name: LINK
       in: '.o'
       options:
@@ -44,8 +44,8 @@ rule:
 
 context:
     - name: default
-      bindir: "build/bin/${builder}"
-      vars:
+      env:
+          bindir: "${build-dir}/bin/${builder}/${app}"
           PREFIX: ""
           CC:
               - ccache
@@ -64,10 +64,58 @@ context:
           CFLAGS:
             - -Os
             - -g
-      tools:
+            - -gz
+      tasks:
           info:
               cmd:
-                - "echo binary: $$(realpath --relative-to ${relpath} ${out})"
+                - "echo binary: ${out}"
+                - 'echo CFLAGS=\"${CFLAGS}\"'
+          size:
+              cmd:
+                - "${SIZE} ${out}"
+
+      rule:
+          - name: CC
+            in: 'c'
+            out: 'o'
+            gcc_deps: "$out.d"
+            cmd: '${CC_WRAP} ${CC} -MD -MF $out.d
+                      ${CFLAGS_STD} ${CFLAGS_ARCH} ${CFLAGS_CODEGEN}
+                      ${CFLAGS_DEFINES} ${CFLAGS_WARN} ${CFLAGS_GCC}
+                      ${CFLAGS} ${includes}
+                      -c ${in} -o ${out}'
+          - name: CXX
+            in: 'cpp'
+            out: 'o'
+            gcc_deps: "$out.d"
+            cmd: '${CC_WRAP} ${CXX} -MMD -MF $out.d ${CXXFLAGS_STD} ${CXXFLAGS}
+                      ${CFLAGS_ARCH} ${CFLAGS_CODEGEN}
+                      ${CFLAGS_DEFINES} ${CFLAGS_WARN} ${CFLAGS_GCC}
+                      ${CFLAGS} ${includes}
+                      -c ${in} -o ${out}'
+          - name: ASM
+            in: 'S'
+            out: 'o'
+            cmd: '${CC_WRAP} ${CC} ${CFLAGS} ${CFLAGS_ARCH} -c ${in} -o ${out}'
+          - name: LINK
+            in: 'o'
+            options:
+                combine: true
+            cmd: '${LINK} ${LINKFLAGS} ${CFLAGS_STD} ${CFLAGS_ARCH}
+                          ${CFLAGS_CODEGEN} ${CFLAGS}
+                          ${in} ${libs} -o ${out}'
+
+          - name: SYMLINK
+            cmd: 'ln -f ${in} ${out}'
+
+            #- name: GIT_DOWNLOAD
+            #cmd: 'D=$$(dirname ${out}); rm -rf $$D && git clone ${URL} $$D -n && git -C $$D reset --hard ${COMMIT} && touch ${out}'
+          - name: GIT_DOWNLOAD
+            cmd: 'D=$$(dirname ${out}); rm -rf $$D && git-cache clone ${URL} ${COMMIT} $$D && touch ${out}'
+
+          - name: PATCH
+            cmd: 'D=$$(dirname ${out}); git -C $$D --git-dir=.git --work-tree=. reset --hard ${COMMIT} && git -C $$D am --ignore-whitespace ${in} || (git -C $$D am --abort; false; ) && touch ${out}'
+
 
     - name: riot
       parent: default
@@ -140,9 +188,12 @@ module:
         - feature/cpp
 
     - name: lto
-      global_vars:
+      env:
+        global:
           CFLAGS:
-              - -flto -ffat-lto-objects
+            - -flto -ffat-lto-objects
+          LINKFLAGS:
+            - -flto -Os
 
     - name: develhelp
       context: riot

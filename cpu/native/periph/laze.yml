@@ -3,10 +3,10 @@ template:
         - cpuid
         - gpio
         - hwrng
-        - pm
         - pwm
         - qdec
         - rtc
+        - spidev_linux
         - timer
         - uart
 
@@ -16,3 +16,13 @@ module:
 
     sources:
         - "%NAME%.c"
+
+---
+module:
+    - name: periph_pm
+      context: cpu/native
+      sources:
+          - pm.c
+      uses:
+          - periph_spidev_linux
+

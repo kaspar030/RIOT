@@ -1,7 +1,6 @@
 module:
     - name: periph_common
       sources:
-          - init.c
           - periph_cpuid: cpuid.c
           - periph_eeprom: eeprom.c
           - periph_flashpage: flashpage.c
@@ -9,11 +8,29 @@ module:
           - periph_pm: pm.c
           - periph_spi: spi.c
           - periph_timer: timer.c
+
       depends:
-          - periph_rtc_common
+          - periph_common_init
+          - periph_rtc:
+              - periph_rtc_common
       uses:
           - board
 
+    - name: periph_common_init
+      sources:
+          - init.c
+      depends:
+          - periph_common
+      uses:
+          - periph_hwrng
+          - periph_i2c
+          - periph_rtc
+          - periph_rtt
+          - periph_spi
+          - periph_usbdev
+          - periph_wdt
+
+    # periph_rtc_common is an extra module as it needs to be individually
+    # selectable by tests/unittests/tests-rtc
     - name: periph_rtc_common
       sources: rtc.c
-
