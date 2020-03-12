@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#include "mutex.h"
 #include "clist.h"
 #include "event.h"
 #include "net/nano/ctx.h"
@@ -28,6 +29,7 @@ typedef enum {
 
 enum {
     TCP_SND = 1,
+    TCP_SND_REQ = 2,
 };
 
 typedef struct __attribute__((packed)) {
@@ -63,9 +65,14 @@ typedef struct {
     uint32_t iss;
     uint32_t snd_nxt;
     uint32_t snd_una;
+    uint32_t snd_wnd;
 
     tsrb_t rcv_buf;
     event_t event;
+
+    const iolist_t *snd_iolist;
+    uint32_t snd_pos;
+    mutex_t snd_mutex;
 } tcp_tcb_t;
 
 /* typedef struct nano_tcp_bind { */

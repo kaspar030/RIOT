@@ -1,11 +1,13 @@
 #include "byteorder.h"
 #include "clist.h"
 #include "iolist.h"
+#include "net/nano.h"
 #include "net/nano/icmp.h"
 #include "net/nano/tcp.h"
 #include "net/nano/util.h"
 #include "random.h"
 #include "tsrb.h"
+#include "kernel_defines.h"
 
 #define ENABLE_DEBUG ENABLE_NANONET_DEBUG
 #include "debug.h"
@@ -26,7 +28,8 @@ static int tcp_send_ack(tcp_tcb_t *tcb);
 static int tcp_send_fin(tcp_tcb_t *tcb);
 static int tcp_send_finack(tcp_tcb_t *tcb);
 static int tcp_send_syn(tcp_tcb_t *tcb);
-static int tcp_event_handler(event_t *event);
+static void tcp_event_handler(event_t *event);
+static size_t tcp_send_max(tcp_tcb_t *tcb, size_t val);
 
 static uint16_t tcp_window_available(tcp_tcb_t *tcb);
 
@@ -35,8 +38,8 @@ static clist_node_t _tcp_list;
 int tcp_init(tcp_tcb_t *tcb, uint8_t *buf, size_t buf_len)
 {
     memset(tcb, 0, sizeof(*tcb));
-    tsrb_init(&tcb->rcv_buf, (char *)buf, buf_len);
-    tcb->event.handler = tcb_event_handler;
+    tsrb_init(&tcb->rcv_buf, buf, buf_len);
+    tcb->event.handler = tcp_event_handler;
     return 0;
 }
 
@@ -56,19 +59,19 @@ int tcp_connect(tcp_tcb_t *tcb, uint32_t dst_ip, uint16_t dst_port, uint16_t src
 
 int tcp_write(tcp_tcb_t *tcb, const iolist_t *iolist)
 {
-    if (tcb->send_iolist) {
+    if (tcb->snd_iolist) {
         return -EBUSY;
     }
 
     tcb->snd_iolist = iolist;
     tcb->snd_pos = 0;
-    tcb->flags |= TCP_SEND_REQ;
+    tcb->flags |= TCP_SND_REQ;
 
     event_post(&nanonet_events, &tcb->event);
 
     /* double-lock snd_mutex */
-    mutex_lock(tcb->snd_mutex);
-    mutex_lock(tcb->snd_mutex);
+    mutex_lock(&tcb->snd_mutex);
+    mutex_lock(&tcb->snd_mutex);
 
     return 0;
 }
@@ -82,14 +85,24 @@ int tcp_close(tcp_tcb_t *tcb)
     return tcp_send_fin(tcb);
 }
 
+static size_t tcp_send_max(tcp_tcb_t *tcb, size_t val)
+{
+    size_t wnd_avail = tcb->snd_una + tcb->snd_wnd - tcb->snd_nxt;
+
+    return val < wnd_avail ? val : wnd_avail;
+}
+
 static void tcp_event_handler(event_t *event)
 {
-    tcp_tcb_t *tcb = offsetof(tcb_tcp_t, event);
-    if (tcb->flags & TCP_SEND_REQ) {
+    tcp_tcb_t *tcb = container_of(event, tcp_tcb_t, event);
+    if (tcb->flags & TCP_SND_REQ) {
         DEBUG("tcp_event_handler() got send request\n");
-        tcb->flags &= ~TCP_SEND_REQ;
-        size_t snd_size = iolist_size(&tcb->snd_iolist);
-        size_t to_send = tcp_snd_max(tcb, snd_size);
+        tcb->flags &= ~TCP_SND_REQ;
+        size_t snd_size = iolist_size(tcb->snd_iolist);
+        size_t to_send = tcp_send_max(tcb, snd_size);
+        if (to_send) {
+            DEBUG("tcp: sending %zu bytes\n", to_send);
+        }
     }
 }
 
@@ -195,7 +208,7 @@ static int tcp_send_ack(tcp_tcb_t *tcb)
 
 static int tcp_send_fin(tcp_tcb_t *tcb)
 {
-    DEBUG("tcp_send_ack() sending ACK\n");
+    DEBUG("tcp_send_fin() sending FIN\n");
     tcp_hdr_t hdr;
     tcp_build_hdr(tcb, &hdr, TCP_FLAG_FIN);
 
@@ -250,7 +263,7 @@ static int tcp_handle_established(nano_ctx_t *ctx, tcp_tcb_t *tcb, tcp_hdr_t *hd
 {
     uint32_t seq_nr = htonl(hdr->seq_nr) - tcb->irs;
     if (seq_nr != tcb->rcv_nxt) {
-        DEBUG("tcp_handle_established(): unexpected seqnr: %"PRIu32"(%"PRIu32"- %"PRIu32") (exp: %"PRIu32")\n", seq_nr, 
+        DEBUG("tcp_handle_established(): unexpected seqnr: %"PRIu32"(%"PRIu32"- %"PRIu32") (exp: %"PRIu32")\n", seq_nr,
                 htonl(hdr->seq_nr), tcb->irs, tcb->rcv_nxt);
         return tcp_reset(tcb);
     }
@@ -263,13 +276,21 @@ static int tcp_handle_established(nano_ctx_t *ctx, tcp_tcb_t *tcb, tcp_hdr_t *hd
         }
         else {
             size_t hdr_len = (hdr->data_offset >> 4) * 4;
+            size_t frame_len = nano_ctx_bufleft(ctx, hdr);
+
+            if (frame_len < hdr_len) {
+                DEBUG("tcp: invalid data_offset\n");
+                return tcp_reset(tcb);
+            }
+
             uint8_t *payload = (uint8_t *)hdr + hdr_len;
-            size_t payload_len = nano_ctx_bufleft(ctx, hdr) - hdr_len;
-            //uint8_t *payload = payload_end - payload_len;
-            DEBUG("tcp_handle_established(): got bytes %"PRIu32"-%"PRIu32" (%u)\n", seq_nr, seq_nr + payload_len, (unsigned)payload_len);
-            tsrb_add(&tcb->rcv_buf, (char *)payload, payload_len);
-            tcb->rcv_nxt += payload_len;
-            return tcp_send_ack(tcb);
+            size_t payload_len = frame_len - hdr_len;
+            if (payload_len) {
+                DEBUG("tcp_handle_established(): got bytes %"PRIu32"-%"PRIu32" (%u)\n", seq_nr, seq_nr + payload_len, (unsigned)payload_len);
+                tsrb_add(&tcb->rcv_buf, payload, payload_len);
+                tcb->rcv_nxt += payload_len;
+                return tcp_send_ack(tcb);
+            }
         }
     }
 
@@ -343,6 +364,9 @@ static const tcp_state_handler_t tcp_state_handlers[UNKNOWN] = {
 static int tcp_handler_dispatch(nano_ctx_t *ctx, tcp_tcb_t *tcb, tcp_hdr_t *hdr)
 {
     /* TODO: validate checksum */
+
+    /* update remote window size */
+    tcb->snd_wnd = ntohs(hdr->window_size);
 
     tcp_state_handler_t handler = tcp_state_handlers[tcb->state];
     if (handler) {
