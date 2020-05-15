@@ -123,6 +123,15 @@ char *thread_stack_init(thread_task_func_t task_func, void *arg, void *stack_sta
         err(EXIT_FAILURE, "thread_stack_init: getcontext");
     }
 
+#ifdef MODULE_CORE_THREAD_REDZONE
+    uint32_t *redzone = (uint32_t *)stk;
+    for (unsigned i = 0; i < (CONFIG_CORE_THREAD_REDZONE >> 2); i++) {
+        redzone[i] = 0;
+    }
+    stacksize -= CONFIG_CORE_THREAD_REDZONE;
+    stk += CONFIG_CORE_THREAD_REDZONE;
+#endif
+
     p->uc_stack.ss_sp = stk;
     p->uc_stack.ss_size = stacksize;
     p->uc_stack.ss_flags = 0;

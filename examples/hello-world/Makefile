@@ -15,4 +15,9 @@ DEVELHELP ?= 1
 # Change this to 0 show compiler invocation lines by default:
 QUIET ?= 1
 
+CFLAGS += -DCONFIG_CORE_THREAD_REDZONE=32
+USEMODULE += core_thread_redzone
+
+USEMODULE += xtimer
+
 include $(RIOTBASE)/Makefile.include

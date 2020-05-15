@@ -169,7 +169,8 @@ struct _thread {
                                          to this thread's message queue */
 #endif
 #if defined(DEVELHELP) || defined(SCHED_TEST_STACK) \
-    || defined(MODULE_MPU_STACK_GUARD) || defined(DOXYGEN)
+    || defined(MODULE_MPU_STACK_GUARD) || defined(DOXYGEN) || \
+    defined(MODULE_CORE_THREAD_REDZONE)
     char *stack_start;              /**< thread's stack start address   */
 #endif
 #if defined(DEVELHELP) || defined(DOXYGEN)

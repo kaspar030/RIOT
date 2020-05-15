@@ -128,6 +128,22 @@ char *thread_stack_init(thread_task_func_t task_func,
                              void *stack_start,
                              int stack_size)
 {
+
+#ifdef MODULE_CORE_THREAD_REDZONE
+    /* ensure redzone starts at 4 byte boundary */
+    while ((uintptr_t)stack_start & 0x3) {
+        stack_start++;
+        stack_size--;
+    }
+
+    uint32_t *redzone = (uint32_t *)stack_start;
+    for (unsigned i = 0; i < (CONFIG_CORE_THREAD_REDZONE >> 2); i++) {
+        redzone[i] = 0;
+    }
+    stack_size -= CONFIG_CORE_THREAD_REDZONE;
+    stack_start += CONFIG_CORE_THREAD_REDZONE;
+#endif
+
     uint32_t *stk;
     stk = (uint32_t *)((uintptr_t)stack_start + stack_size);
 

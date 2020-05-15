@@ -32,6 +32,10 @@
 #include "mpu.h"
 #endif
 
+#ifdef MODULE_CORE_THREAD_REDZONE
+#include "panic.h"
+#endif
+
 #define ENABLE_DEBUG (0)
 #include "debug.h"
 
@@ -114,6 +118,16 @@ int __attribute__((used)) sched_run(void)
                 active_thread->pid);
         }
 #endif
+#ifdef MODULE_CORE_THREAD_REDZONE
+        uint32_t *redzone = (uint32_t *)sched_active_thread->stack_start;
+        for (unsigned i = 0; i < (CONFIG_CORE_THREAD_REDZONE >> 2); i++) {
+            if (redzone[i]) {
+                core_panic(PANIC_REDZONE,
+                           "stack overflow in thread %" PRIkernel_pid "!\n");
+            }
+        }
+#endif
+
     }
 
 #ifdef MODULE_SCHED_CB
