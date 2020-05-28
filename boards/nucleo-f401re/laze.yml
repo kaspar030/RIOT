@@ -1,7 +1,7 @@
 builder:
-    name: nucleo-f401re
+  - name: nucleo-f401re
     parent: stm32f401re
-    vars:
+    env:
         CFLAGS:
             - -I${relpath}/include
 

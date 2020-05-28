@@ -11,4 +11,4 @@ module:
             - -I${relpath}/include
 
   - name: lis2dh12_spi
-    depends: lis2dh12
+    depends: [ lis2dh12 ]

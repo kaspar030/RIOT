@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - fatfs_diskio_mtd
         - shell
         - fatfs
@@ -17,7 +17,8 @@ module:
       context: cpu/native
       depends:
           - fatfs_nortc
-      global_vars:
+      env:
+        global:
           CFLAGS:
               - -DMTD_NATIVE_FILENAME=\"./bin/riot_fatfs_disk.img\"
               - -DMTD_PAGE_SIZE="512"

@@ -1,5 +1,5 @@
 module:
-    name: feetech
+  - name: feetech
     depends:
         - div
         - periph_gpio

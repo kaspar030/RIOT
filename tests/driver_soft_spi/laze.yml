@@ -1,7 +1,8 @@
 app:
-    depends:
+  - depends:
         - soft_spi
-    global_vars:
+    env:
+      global:
         CFLAGS:
             - -DTEST_SOFT_SPI_DEV="SOFT_SPI_DEV(0)"
             - -DTEST_CS_PIN="GPIO_PIN(0,2)"

@@ -1,5 +1,5 @@
 module:
-    name: gnrc_netreg
+  - name: gnrc_netreg
     uses:
         - gnrc_netapi_mbox
         - gnrc_netapi_callbacks

@@ -1,7 +1,9 @@
 app:
-    depends:
-        - mq3
-        - xtimer
-    global_vars:
-        CFLAGS:
+    - depends:
+      - mq3
+      - xtimer
+
+      env:
+        global:
+          CFLAGS:
             - -DMQ3_ADC_LINE="ADC_LINE(0)"

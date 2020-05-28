@@ -1,13 +1,14 @@
 app:
-    depends:
+    - depends:
         - tests-sht1x
 
 module:
     - name: tests-sht1x
-      sources: tests-sht1x.c
+      sources: [tests-sht1x.c]
       depends:
           - sht1x
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - sht1x

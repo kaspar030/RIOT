@@ -8,7 +8,8 @@ module:
         - sock_dtls
 
     - name: sock_udp
-      depends: sock
+      depends:
+        - sock
       uses:
         - gnrc_sock_udp
 
@@ -26,7 +27,8 @@ module:
           - sock
       uses:
           - sock_async_event
-      export_vars:
+      env:
+        export:
           CFLAGS:
             - -DSOCK_HAS_ASYNC
             - -DSOCK_HAS_ASYNC_CTX

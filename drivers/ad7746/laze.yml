@@ -1,10 +1,12 @@
 module:
-    name: ad7746
-    sources:
-        - ad7746.c
-        - saul: ad7746_saul.c
-    depends:
-        - periph_i2c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    - name: ad7746
+      sources:
+          - ad7746.c
+          - saul:
+              - ad7746_saul.c
+      depends:
+          - periph_i2c
+      env:
+        export:
+          CFLAGS:
+              - -I${relpath}/include

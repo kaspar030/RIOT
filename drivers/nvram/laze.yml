@@ -1,5 +1,5 @@
 module:
-    name: nvram
+  - name: nvram
     uses:
         - vfs
     sources:

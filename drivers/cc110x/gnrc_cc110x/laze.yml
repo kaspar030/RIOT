@@ -1,5 +1,5 @@
 module:
-    name: gnrc_cc110x
+  - name: gnrc_cc110x
     depends:
         - gnrc
         - gnrc_netapi

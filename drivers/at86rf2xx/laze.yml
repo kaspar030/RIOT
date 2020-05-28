@@ -30,10 +30,10 @@ module:
               - -I${relpath}/include
 
     - name: at86rf233
-      depends: at86rf2xx
+      depends: [ at86rf2xx ]
 
     - name: at86rf212b
-      depends: at86rf2xx
+      depends: [ at86rf2xx ]
 
     - name: auto_init_at86rf2xx
       depends:

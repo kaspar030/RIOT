@@ -1,5 +1,5 @@
 module:
-    name: mtd_spi_nor
+  - name: mtd_spi_nor
     depends:
         - mtd
     uses:

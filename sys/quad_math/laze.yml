@@ -1,5 +1,5 @@
 module:
-    sources:
+    - sources:
         - adddi3.c
         - anddi3.c
         - ashldi3.c

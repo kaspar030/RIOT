@@ -1,6 +1,6 @@
 module:
-    name: benchmark
-    depends:
-        - xtimer
-    sources:
-        - benchmark.c
+    - name: benchmark
+      depends:
+          - xtimer
+      sources:
+          - benchmark.c

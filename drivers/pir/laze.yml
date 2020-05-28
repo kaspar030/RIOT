@@ -1,5 +1,5 @@
 module:
-    name: pir
+  - name: pir
     sources:
         - pir.c
         - saul: pir_saul.c

@@ -1,3 +1,4 @@
 module:
     - name: tsrb
-      sources: tsrb.c
+      sources:
+        - tsrb.c

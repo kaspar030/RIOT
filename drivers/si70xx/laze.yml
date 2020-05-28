@@ -23,5 +23,5 @@ template:
         - si7021
 module:
     - name: "%VARIANT%"
-      depends: si70xx_base
+      depends: [ si70xx_base ]
 

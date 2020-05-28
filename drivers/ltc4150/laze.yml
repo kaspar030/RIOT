@@ -1,5 +1,5 @@
 module:
-    name: ltc4150
+  - name: ltc4150
     depends:
         - periph_gpio
         - periph_gpio_irq

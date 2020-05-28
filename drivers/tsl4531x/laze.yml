@@ -1,5 +1,5 @@
 module:
-    name: tsl4531x
+  - name: tsl4531x
     depends:
         - periph_i2c
         - xtimer

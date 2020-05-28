@@ -1,5 +1,5 @@
 module:
-    name: grove_ledbar
+  - name: grove_ledbar
     depends:
         - my9221
     sources:

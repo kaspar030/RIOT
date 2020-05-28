@@ -1,5 +1,5 @@
 module:
-    name: sht2x
+  - name: sht2x
     depends:
         - periph_i2c
         - xtimer

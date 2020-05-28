@@ -6,7 +6,7 @@ template:
         - usbdev
 
 module:
-    name: "periph_%NAME%"
+  - name: "periph_%NAME%"
     context: nrf52
 
     sources:

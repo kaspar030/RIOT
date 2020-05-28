@@ -1,5 +1,6 @@
 module:
   - name: credman
-    sources: credman.c
+    sources:
+      - credman.c
     uses:
       - test_suites_define

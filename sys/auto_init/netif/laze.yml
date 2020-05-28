@@ -1,5 +1,5 @@
 module:
-    name: auto_init_gnrc_netif
+  - name: auto_init_gnrc_netif
     depends:
         - auto_init
         - gnrc_netif
@@ -8,16 +8,29 @@ module:
         - gnrc_gomach
         - gnrc_lwmac
     sources:
-        - at86rf2xx:  auto_init_at86rf2xx.c
-        - cc110x:     auto_init_cc110x.c
-        - cc2420:     auto_init_cc2420.c
-        - cc2538_rf:  auto_init_cc2538_rf.c
-        - enc28j60:   auto_init_enc28j60.c
-        - encx24j600: auto_init_encx24j600.c
-        - ethos:      auto_init_ethos.c
-        - kw2xrf:     auto_init_kw2xrf.c
-        - mrf24j40:   auto_init_mrf24j40.c
-        - netdev_tap: auto_init_netdev_tap.c
-        - slipdev:    auto_init_slipdev.c
-        - w5100:      auto_init_w5100.c
-        - xbee:       auto_init_xbee.c
+        - at86rf2xx:
+          - auto_init_at86rf2xx.c
+        - cc110x:
+          - auto_init_cc110x.c
+        - cc2420:
+          - auto_init_cc2420.c
+        - cc2538_rf:
+          - auto_init_cc2538_rf.c
+        - enc28j60:
+          - auto_init_enc28j60.c
+        - encx24j600:
+          - auto_init_encx24j600.c
+        - ethos:
+          - auto_init_ethos.c
+        - kw2xrf:
+          - auto_init_kw2xrf.c
+        - mrf24j40:
+          - auto_init_mrf24j40.c
+        - netdev_tap:
+          - auto_init_netdev_tap.c
+        - slipdev:
+          - auto_init_slipdev.c
+        - w5100:
+          - auto_init_w5100.c
+        - xbee:
+          - auto_init_xbee.c

@@ -1,5 +1,5 @@
 module:
-    name: ina2xx
+  - name: ina2xx
     depends:
         - periph_i2c
     sources:

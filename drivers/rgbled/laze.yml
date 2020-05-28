@@ -1,5 +1,5 @@
 module:
-    name: rgbled
+  - name: rgbled
     depends:
         - color
     sources:

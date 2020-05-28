@@ -1,5 +1,5 @@
 module:
-    name: mq3
+  - name: mq3
     sources:
         - mq3.c
     depends:

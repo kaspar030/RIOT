@@ -1,6 +1,7 @@
 module:
-    sources:
+    - sources:
       - cbor.c
-    export_vars:
-        CFLAGS:
+      env:
+        export:
+          CFLAGS:
             - -DCBOR_NO_FLOAT -DCBOR_NO_PRINT -DCBOR_NO_SEMANTIC_TAGGING

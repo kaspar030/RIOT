@@ -1,6 +1,4 @@
 app:
-    depends:
+    - depends:
         - riot_info
-    global_vars:
-        CFLAGS:
-            - -DDEVELHELP
+        - develhelp

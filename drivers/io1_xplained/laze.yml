@@ -1,5 +1,5 @@
 module:
-    name: io1_xplained
+  - name: io1_xplained
     depends:
         - at30tse75x
         - div

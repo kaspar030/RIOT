@@ -1,5 +1,5 @@
 module:
-    name: ata8520e
+  - name: ata8520e
     depends:
         - fmt
         - periph_gpio

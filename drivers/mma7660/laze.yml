@@ -1,5 +1,5 @@
 module:
-    name: mma7660
+  - name: mma7660
     depends:
         - periph_i2c
     sources:

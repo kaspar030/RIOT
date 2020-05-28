@@ -1,5 +1,5 @@
 module:
-    name: lpd8808
+  - name: lpd8808
     depends:
         - color
         - periph_gpio

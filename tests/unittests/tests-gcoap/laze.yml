@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - tests-gcoap
     blacklist:
         # insufficient memory
@@ -7,12 +7,13 @@ app:
 
 module:
     - name: tests-gcoap
-      sources: tests-gcoap.c
+      sources: [tests-gcoap.c]
       depends:
           - gcoap
           - gnrc_ipv6
           - random
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - gcoap

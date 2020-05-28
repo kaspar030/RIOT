@@ -1,6 +1,6 @@
 module:
+  - name: cortexm_common_periph
     context: cortexm
-    name: cortexm_common_periph
     sources:
         - pm.c
     uses:

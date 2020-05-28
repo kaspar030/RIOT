@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - tests-gnrc_udp
     blacklist:
         # insufficient memory
@@ -7,11 +7,12 @@ app:
 
 module:
     - name: tests-gnrc_udp
-      sources: tests-gnrc_udp.c
+      sources: [tests-gnrc_udp.c]
       depends:
           - gnrc_udp
           - gnrc_ipv6
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - gnrc_udp

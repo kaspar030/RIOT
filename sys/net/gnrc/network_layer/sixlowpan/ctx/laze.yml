@@ -1,5 +1,5 @@
 module:
-    name: gnrc_sixlowpan_ctx
+  - name: gnrc_sixlowpan_ctx
     depends:
         - ipv6_addr
         - xtimer

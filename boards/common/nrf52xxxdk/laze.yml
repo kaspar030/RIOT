@@ -3,10 +3,12 @@ module:
       depends:
           - core
           - boards_common_nrf52
-          - saul_default: saul_gpio
+          - saul_default:
+              - saul_gpio
       sources:
           - board.c
 
-      global_vars:
+      env:
+        global:
           includes:
               - ${relpath}/include

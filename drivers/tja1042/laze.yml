@@ -1,5 +1,5 @@
 module:
-    name: tja1042
+  - name: tja1042
     depends:
         - can_trx
         - periph_gpio

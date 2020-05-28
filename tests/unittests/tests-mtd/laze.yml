@@ -1,16 +1,17 @@
 app:
-    depends:
+  - depends:
         - tests-mtd
 
 module:
     - name: tests-mtd
-      sources: tests-mtd.c
+      sources: [tests-mtd.c]
       depends:
           - mtd
           - unittests-base
           - cpu/native:
               - mtd_native
           - ?vfs
-      global_vars:
+      env:
+        global:
           testsuites:
               - mtd

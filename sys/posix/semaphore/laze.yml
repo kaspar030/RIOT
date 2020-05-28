@@ -1,5 +1,5 @@
 module:
-    name: posix_semaphore
+  - name: posix_semaphore
     depends:
         - sema
         - posix_headers

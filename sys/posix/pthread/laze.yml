@@ -1,5 +1,5 @@
 module:
-    name: pthread
+  - name: pthread
     depends:
         - posix_headers
         - xtimer

@@ -1,23 +1,24 @@
 app:
-    sources:
-        - main.c
+    - sources:
+          - main.c
 
-    depends:
-        - asymcute
-        - sock_util
+      depends:
+          - asymcute
+          - sock_util
 
-        # this pulls in GNRC's default configuration
-        - gnrc_default
+          # this pulls in GNRC's default configuration
+          - gnrc_default
 
-        # Add also the shell, some shell commands
-        - shell
-        - shell_commands
-        - ps
+          # Add also the shell, some shell commands
+          - shell
+          - shell_commands
+          - ps
 
-    global_vars:
-        CFLAGS:
-            - -DDEVELHELP
+      env:
+        global:
+          CFLAGS:
+              - -DDEVELHELP
 
-    blacklist:
-        # insufficient memory
-        - atmega_common
+      blacklist:
+          # insufficient memory
+          - atmega_common

@@ -1,5 +1,6 @@
 app:
-    depends: tests-checksum
+  - depends:
+        - tests-checksum
 
 module:
     - name: tests-checksum
@@ -13,6 +14,7 @@ module:
       depends:
           - checksum
           - unittests-base
-      global_vars:
-        testsuites:
-          - checksum
+      env:
+        global:
+          testsuites:
+            - checksum

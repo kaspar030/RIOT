@@ -1,5 +1,5 @@
 module:
-    name: hih6130
+  - name: hih6130
     depends:
         - div
         - xtimer

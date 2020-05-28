@@ -20,7 +20,7 @@ module:
         - ninja -C ${bindir}
       out: lib/librelic_s.a
       build_before_dependees: true
-    vars:
+    env:
       TOOLCHAIN_FILE: ${bindir}/xcompile-toolchain.cmake
       CFLAGS:
         - -Wno-unused-function

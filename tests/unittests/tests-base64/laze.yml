@@ -1,13 +1,15 @@
 app:
-    depends:
+    - depends:
         - tests-base64
 
 module:
     - name: tests-base64
-      sources: tests-base64.c
+      sources:
+          - tests-base64.c
       depends:
           - sys/base64
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - base64

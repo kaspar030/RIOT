@@ -1,5 +1,5 @@
 module:
-    sources:
+  - sources:
         - iib_table.c
         - lib_table.c
         - nhdp.c

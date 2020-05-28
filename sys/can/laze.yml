@@ -27,7 +27,8 @@ module:
 
     - name: can_arch_deps
       context: native
-      depends: libsocketcan
+      depends:
+          - libsocketcan
 
 subdirs:
     - conn

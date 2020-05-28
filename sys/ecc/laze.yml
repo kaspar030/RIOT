@@ -1,9 +1,12 @@
 module:
     - name: ecc_golay2412
-      sources: golay2412.c
+      sources:
+          - golay2412.c
 
     - name: ecc_hamming256
-      sources: hamming256.c
+      sources:
+          - hamming256.c
 
     - name: ecc_repetition
-      sources: repetition.c
+      sources:
+          - repetition.c

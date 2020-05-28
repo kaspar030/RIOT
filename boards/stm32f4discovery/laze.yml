@@ -1,14 +1,15 @@
 builder:
-    name: stm32f4discovery
+  - name: stm32f4discovery
     parent: stm32f407vg
-    vars:
+    env:
         CFLAGS:
             - -I${relpath}/include
 
 module:
     - name: board
       context: stm32f4discovery
-      sources: board.c
+      sources:
+          - board.c
       depends:
           - cpu/stm32f4
           - stm32
@@ -18,4 +19,5 @@ module:
 
     - name: feature/motor_driver
       context: stm32f4discovery
-      depends: disabled
+      depends:
+          - disabled

@@ -1,4 +1,4 @@
 module:
-    sources: 
+    - sources:
         - pipe.c
         - pipe_dynamic.c

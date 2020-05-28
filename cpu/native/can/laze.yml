@@ -1,4 +1,5 @@
 module:
-    name: can_linux
+  - name: can_linux
+    context: cpu/native
     sources:
         - candev_linux.c

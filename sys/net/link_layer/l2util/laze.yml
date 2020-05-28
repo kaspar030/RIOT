@@ -1,6 +1,6 @@
 module:
     - name: l2util
-      sources: l2util.c
+      sources: [l2util.c]
       uses:
           - cc110x
           - esp_now

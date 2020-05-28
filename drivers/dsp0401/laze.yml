@@ -1,5 +1,5 @@
 module:
-    name: dsp0401
+  - name: dsp0401
     depends:
         - periph_gpio
         - periph_pwm

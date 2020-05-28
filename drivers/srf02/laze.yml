@@ -1,5 +1,5 @@
 module:
-    name: srf02
+  - name: srf02
     depends:
         - xtimer
     depends:

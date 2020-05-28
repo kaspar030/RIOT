@@ -1,5 +1,5 @@
 module:
-    sources:
+  - sources:
         - emcute.c
         - emcute_str.c
     depends:

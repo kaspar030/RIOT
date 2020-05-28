@@ -1,13 +1,14 @@
 app:
-    depends:
+    - depends:
         - tests-tsrb
 
 module:
     - name: tests-tsrb
-      sources: tests-tsrb.c
+      sources: [tests-tsrb.c]
       depends:
           - tsrb
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - tsrb

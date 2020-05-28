@@ -24,7 +24,7 @@ module:
             - unittests/fix16_str_unittests.c
             - unittests/fix16_unittests.c
 
-      vars:
+      env:
         CFLAGS:
             - -DFIXMATH_NO_CACHE
 

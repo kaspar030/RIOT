@@ -12,7 +12,7 @@ template:
       - uart
 
 module:
-    name: "periph_%NAME%"
+  - name: "periph_%NAME%"
     context: atmega_common
     depends:
       - periph_common

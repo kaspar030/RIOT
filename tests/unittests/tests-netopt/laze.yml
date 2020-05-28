@@ -1,13 +1,14 @@
 app:
-    depends:
+    - depends:
         - tests-netopt
 
 module:
     - name: tests-netopt
-      sources: tests-netopt.c
+      sources: [tests-netopt.c]
       depends:
           - netopt
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - netopt

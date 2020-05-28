@@ -1,5 +1,5 @@
 module:
-    name: tcs37727
+  - name: tcs37727
     sources:
         - tcs37727.c
         - saul: tcs37727_saul.c

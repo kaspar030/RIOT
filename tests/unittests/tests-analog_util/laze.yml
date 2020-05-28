@@ -1,13 +1,15 @@
 app:
-    depends:
+    - depends:
         - tests-analog_util
 
 module:
     - name: tests-analog_util
-      sources: tests-analog_util.c
+      sources:
+          - tests-analog_util.c
       depends:
           - analog_util
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - analog_util

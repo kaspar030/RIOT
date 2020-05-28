@@ -21,8 +21,8 @@ module:
               - -I${relpath}/include
 
     - name: sx1272
-      depends: sx127x
+      depends: [ sx127x ]
 
     - name: sx1276
-      depends: sx127x
+      depends: [ sx127x ]
 

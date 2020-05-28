@@ -1,5 +1,5 @@
 module:
-    name: bmx055
+  - name: bmx055
     depends:
         - periph_i2c
     sources:

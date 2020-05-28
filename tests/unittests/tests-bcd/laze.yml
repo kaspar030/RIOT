@@ -1,11 +1,13 @@
 app:
-    depends: tests-bcd
+    - depends:
+        - tests-bcd
 
 module:
     - name: tests-bcd
-      sources: tests-bcd.c
+      sources: [tests-bcd.c]
       depends:
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - bcd

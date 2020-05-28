@@ -1,5 +1,5 @@
 module:
-    name: servo
+  - name: servo
     sources:
         - servo.c
     depends:

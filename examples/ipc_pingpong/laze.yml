@@ -1,4 +1,5 @@
-app:
-    global_vars:
-        CFLAGS:
+pp:
+    - env:
+        global:
+          CFLAGS:
             - -DDEVELHELP

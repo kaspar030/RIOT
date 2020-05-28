@@ -1,5 +1,5 @@
 module:
-    name: ds1307
+  - name: ds1307
     depends:
         - periph_i2c
     sources:

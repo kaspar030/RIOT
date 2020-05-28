@@ -1,13 +1,14 @@
 app:
-    depends:
+  - depends:
         - tests-clif
 
 module:
     - name: tests-clif
-      sources: tests-clif.c
+      sources: [tests-clif.c]
       depends:
           - clif
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - clif

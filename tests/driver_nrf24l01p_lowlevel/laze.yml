@@ -5,7 +5,8 @@ app:
         - shell
         - shell_commands
         - xtimer
-    global_vars:
+    env:
+      global:
         CFLAGS:
             - -DSPI_PORT="SPI_DEV(0)"
             - -DCE_PIN="GPIO_PIN(0,0)"
