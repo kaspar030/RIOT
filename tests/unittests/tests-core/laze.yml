@@ -1,5 +1,6 @@
 app:
-    depends: tests-core
+  - depends:
+        - tests-core
 
 module:
     - name: tests-core
@@ -16,6 +17,7 @@ module:
         - tests-core.c
       depends:
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - core

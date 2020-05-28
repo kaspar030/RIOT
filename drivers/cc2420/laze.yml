@@ -1,5 +1,5 @@
 module:
-    name: cc2420
+  - name: cc2420
     depends:
         - div
         - ieee802154

@@ -1,5 +1,5 @@
 module:
-    name: checksum
+  - name: checksum
     sources:
         - crc8.c
         - crc16_ccitt.c

@@ -88,11 +88,14 @@ module:
 
     - name: netstats
     - name: netstats_l2
-      depends: netstats
+      depends:
+        - netstats
     - name: netstats_ipv6
-      depends: netstats
+      depends:
+        - netstats
     - name: netstats_rpl
-      depends: netstats
+      depends:
+          - netstats
 
     - name: gnrc_txtsnd
     - name: gnrc_neterr

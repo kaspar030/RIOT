@@ -1,13 +1,14 @@
 app:
-    depends:
+  - depends:
         - tests-saul_reg
 
 module:
     - name: tests-saul_reg
-      sources: tests-saul_reg.c
+      sources: [tests-saul_reg.c]
       depends:
           - saul_reg
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - saul_reg

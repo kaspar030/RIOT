@@ -1,5 +1,6 @@
 module:
     - name: stdio_native
+      context: cpu/native
       sources:
           - stdio_native.c
       uses:

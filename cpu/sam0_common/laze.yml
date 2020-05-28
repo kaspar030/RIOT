@@ -1,7 +1,7 @@
 context:
-    name: sam0
+  - name: sam0
     parent: cortexm
-    vars:
+    env:
         includes:
             - ${relpath}/include
         LINKFLAGS:

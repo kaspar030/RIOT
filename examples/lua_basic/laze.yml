@@ -3,6 +3,6 @@ app:
         - lua
     sources:
         - main.lua
-    vars:
+    env:
         includes:
             - ${bindir}/blobs

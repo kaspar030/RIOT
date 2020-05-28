@@ -1,15 +1,17 @@
 app:
-    depends:
+  - depends:
         - tests-ecc
 
 module:
     - name: tests-ecc
-      sources: tests-ecc.c
+      sources:
+          - tests-ecc.c
       depends:
           - ecc_golay2412
           - ecc_hamming256
           - ecc_repetition
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - ecc

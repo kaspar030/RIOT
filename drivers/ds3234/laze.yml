@@ -1,5 +1,5 @@
 module:
-    name: ds3234
+  - name: ds3234
     depends:
         - periph_spi
     sources:

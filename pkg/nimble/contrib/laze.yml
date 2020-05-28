@@ -12,7 +12,7 @@ module:
           - shell_commands
       sources:
           - nimble_riot.c
-      vars:
+      env:
         CFLAGS:
             - -Wno-cast-function-type
       export_vars:

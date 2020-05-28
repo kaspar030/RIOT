@@ -1,5 +1,5 @@
 module:
-    name: lis3dh
+  - name: lis3dh
     depends:
         - periph_gpio
         - periph_gpio_irq

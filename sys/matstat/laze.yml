@@ -1,4 +1,4 @@
 module:
-    name: matstat
+  - name: matstat
     sources:
         - matstat.c

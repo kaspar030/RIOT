@@ -1,5 +1,5 @@
 module:
-    name: posix_sleep
+  - name: posix_sleep
     sources:
         - posix_sleep.c
     depends:

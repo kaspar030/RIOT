@@ -1,5 +1,5 @@
 module:
-    name: gnrc_ipv6_ext
+  - name: gnrc_ipv6_ext
     uses:
         - gnrc_rpl_srh
     sources:

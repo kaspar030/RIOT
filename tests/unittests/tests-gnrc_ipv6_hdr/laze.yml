@@ -1,14 +1,15 @@
 app:
-    depends:
+  - depends:
         - tests-gnrc_ipv6_hdr
 
 module:
     - name: tests-gnrc_ipv6_hdr
-      sources: tests-gnrc_ipv6_hdr.c
+      sources: [tests-gnrc_ipv6_hdr.c]
       depends:
           - gnrc_ipv6_hdr
           - unittests-base
           - test_suites_define
-      global_vars:
+      env:
+        global:
           testsuites:
               - gnrc_ipv6_hdr

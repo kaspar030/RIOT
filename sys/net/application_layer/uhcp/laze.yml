@@ -15,6 +15,6 @@ module:
         - uhcp_base
         - sock_udp
         - xtimer
-      vars:
+      env:
           CFLAGS:
               - -DUHCP_CLIENT

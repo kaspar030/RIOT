@@ -1,6 +1,7 @@
 module:
-    name: ps
-    sources: ps.c
+  - name: ps
+    sources:
+      - ps.c
     uses:
         - schedstatistics
         - tlsf_malloc

@@ -1,7 +1,8 @@
 app:
-    depends:
+  - depends:
         - xtimer
-    global_vars:
+    env:
+      global:
         CFLAGS:
             - -DTEST_OUTPUT="1"
             - -DTEST_SPI="0"

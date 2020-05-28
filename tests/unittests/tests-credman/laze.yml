@@ -1,14 +1,16 @@
 app:
-    depends:
+  - depends:
         - tests-credman
 
 module:
     - name: tests-credman
-      sources: tests-credman.c
+      sources:
+          - tests-credman.c
       depends:
           - credman
           - test_suites_define
           - unittests-base
-      global_vars:
-        testsuites:
+      env:
+        global:
+          testsuites:
             - credman

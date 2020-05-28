@@ -6,8 +6,9 @@ module:
     depends:
       - board
       - stdio_uart
-    global_vars:
-      CFLAGS:
-        - -isystem${relpath}/include
-        - -isystem${relpath}/include/vendor
-        - -I${root}/sys/libc/include
+    env:
+      global:
+        CFLAGS:
+          - -isystem${relpath}/include
+          - -isystem${relpath}/include/vendor
+          - -I${root}/sys/libc/include

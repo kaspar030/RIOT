@@ -1,5 +1,5 @@
 module:
-    name: kw2xrf
+  - name: kw2xrf
     sources:
         - kw2xrf.c
         - kw2xrf_getset.c

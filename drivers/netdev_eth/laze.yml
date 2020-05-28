@@ -1,5 +1,5 @@
 module:
-    name: netdev_eth
+  - name: netdev_eth
     uses:
         - l2filter
         - netstats_l2

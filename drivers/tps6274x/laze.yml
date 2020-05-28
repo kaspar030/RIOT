@@ -1,5 +1,5 @@
 module:
-    name: tps6274x
+  - name: tps6274x
     depends:
         - periph_gpio
     sources:

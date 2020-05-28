@@ -1,9 +1,10 @@
 app:
-    depends:
+  - depends:
         - fatfs_vfs
         - ?mtd_native
         - ?mtd_sdcard
-    global_vars:
+    env:
+      global:
         CFLAGS:
             - -DVFS_FILE_BUFFER_SIZE="72"
             - -DVFS_DIR_BUFFER_SIZE="44"

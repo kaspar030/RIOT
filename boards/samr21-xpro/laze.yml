@@ -1,20 +1,20 @@
 builder:
-  name: samr21-xpro
-  parent: samr21g18a
-  vars:
-    CFLAGS:
-      - -I${relpath}/include
-    PORT:
-      - /dev/ttyACM0
+  - name: samr21-xpro
+    parent: samr21g18a
+    env:
+      CFLAGS:
+        - -I${relpath}/include
+      PORT:
+        - /dev/ttyACM0
 
-  tasks:
-    flash:
-      cmd:
-        - ${OBJCOPY} -O binary ${out} ${out}.bin
-        - edbg ${EDBG_TARGET_TYPE} --verbose --verify --program --file ${out}.bin
-    term:
-      cmd:
-        - picocom --baud 115200 --quiet --imap lfcrlf ${PORT}
+    tools:
+      flash:
+        cmd:
+          - ${OBJCOPY} -O binary ${out} ${out}.bin
+          - edbg ${EDBG_TARGET_TYPE} --verbose --verify --program --file ${out}.bin
+      term:
+        cmd:
+          - picocom --baud 115200 --quiet --imap lfcrlf ${PORT}
 
 ---
 defaults:
@@ -23,7 +23,8 @@ defaults:
 
 module:
   - name: board
-    sources: board.c
+    sources:
+      - board.c
     depends:
       - cpu/samd21
       - periph_gpio
@@ -33,6 +34,7 @@ module:
       - saul_gpio
 
   - name: netdev_default
-    depends: at86rf233
+    depends:
+      - at86rf233
 
   - name: feature/riotboot

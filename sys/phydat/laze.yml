@@ -1,5 +1,5 @@
 module:
-    name: phydat
+  - name: phydat
     depends:
         - fmt
     sources:

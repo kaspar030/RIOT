@@ -1,5 +1,5 @@
 module:
-    name: sock_dns
+  - name: dns
     sources:
         - dns.c
     depends:

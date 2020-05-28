@@ -1,26 +1,59 @@
 context:
-    name: samd21
-    parent: sam0
-    vars:
-        CFLAGS_ARCH:
-            - -mcpu=cortex-m0plus
-            - -march=armv6s-m
-            - -mfloat-abi=soft
-        CFLAGS_DEFINES:
-            - -DRIOT_MCU=\"samd21\"
-            - -DCPU_SAMD21
-            - -DCPU_FAM_SAMD21
-            - -DCPU_ARCH_CORTEX_M0PLUS
-        includes:
-            - ${relpath}/include
-        LINKFLAGS:
-            - -Wl,--defsym=_rom_start_addr=0x00000000
-            - -Wl,--defsym=_ram_start_addr=0x20000000
-        EDBG_TARGET_TYPE:
-            - -t atmel_cm0p
+    - name: samd21
+      parent: sam0
+      env:
+          CFLAGS_ARCH:
+              - -mcpu=cortex-m0plus
+              - -march=armv6s-m
+              - -mfloat-abi=soft
+          CFLAGS_DEFINES:
+              - -DRIOT_MCU=\"samd21\"
+              - -DCPU_SAMD21
+              - -DCPU_FAM_SAMD21
+              - -DCPU_ARCH_CORTEX_M0PLUS
+          includes:
+              - ${relpath}/include
+          LINKFLAGS:
+              - -Wl,--defsym=_rom_start_addr=0x00000000
+              - -Wl,--defsym=_ram_start_addr=0x20000000
+          EDBG_TARGET_TYPE:
+              - -t atmel_cm0p
+
+    - name: samr21g18a
+      parent: samd21
+      env:
+          CFLAGS_DEFINES:
+              - -DCPU_SAMR21
+              - -DCPU_SAMD21A
+              - -D__SAMD21G18A__
+              - -DCPU_MODEL_SAMD21G18A
+          ROM_LEN: "0x40000"
+          RAM_LEN: "0x8000"
+
+    - name: samd21g18a
+      parent: samd21
+      env:
+          CFLAGS:
+              - -DCPU_SAMD21A
+              - -D__SAMD21G18A__
+              - -DCPU_MODEL_SAMD21G18A
+          ROM_LEN: "0x40000"
+          RAM_LEN: "0x8000"
+
+    - name: samd21j18a
+      parent: samd21
+      env:
+          CFLAGS:
+              - -DCPU_SAMD21A
+              - -D__SAMD21J18A__
+              - -DCPU_MODEL_SAMD21J18A
+          ROM_LEN: "0x40000"
+          RAM_LEN: "0x8000"
 
 module:
-    name: cpu/samd21
+  - name: feature/riotboot
+    context: samr21g18a
+  - name: cpu/samd21
     context: samd21
 
     sources:
@@ -34,36 +67,3 @@ module:
 
 subdirs:
     - periph
-
----
-context:
-    - name: samr21g18a
-      parent: samd21
-      vars:
-          CFLAGS_DEFINES:
-              - -DCPU_SAMR21
-              - -DCPU_SAMD21A
-              - -D__SAMD21G18A__
-              - -DCPU_MODEL_SAMD21G18A
-          ROM_LEN: "0x40000"
-          RAM_LEN: "0x8000"
-
-    - name: samd21g18a
-      parent: samd21
-      vars:
-          CFLAGS:
-              - -DCPU_SAMD21A
-              - -D__SAMD21G18A__
-              - -DCPU_MODEL_SAMD21G18A
-          ROM_LEN: "0x40000"
-          RAM_LEN: "0x8000"
-
-    - name: samd21j18a
-      parent: samd21
-      vars:
-          CFLAGS:
-              - -DCPU_SAMD21A
-              - -D__SAMD21J18A__
-              - -DCPU_MODEL_SAMD21J18A
-          ROM_LEN: "0x40000"
-          RAM_LEN: "0x8000"

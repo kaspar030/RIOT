@@ -1,5 +1,5 @@
 module:
-    name: sema
+  - name: sema
     depends:
         - xtimer
     sources:

@@ -1,4 +1,4 @@
 module:
-    name: color
+  - name: color
     sources:
         - color.c

@@ -8,7 +8,7 @@ module:
     sources:
       - heatshrink_decoder.c
       - heatshrink_encoder.c
-    vars:
+    env:
       CFLAGS:
         - -Wno-implicit-fallthrough
     export_vars:

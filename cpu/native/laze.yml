@@ -1,5 +1,5 @@
 context:
-    name: cpu/native
+  - name: cpu/native
     parent: riot
     tasks:
         run:
@@ -18,12 +18,14 @@ defaults:
 
 module:
     - name: cpu/native
-      sources: [ async_read.c,  irq_cpu.c,  native_cpu.c,  panic.c,  startup.c,  syscalls.c, tramp.S ]
-      global_vars:
-          CFLAGS:
+      sources: [ async_read.c, irq_cpu.c, native_cpu.c, panic.c, startup.c, syscalls.c, tramp.S ]
+      env:
+        global:
+          CFLAGS_DEFINES:
               - -DNATIVE_INCLUDES
               - -DCPU_NATIVE
-              - -I${relpath}/include
+          includes:
+              - ${relpath}/include
       depends:
           - core
           - periph_uart
@@ -31,7 +33,6 @@ module:
       uses:
           - can_linux
           - mtd_native
-          - netdev_tap
           - netdev_tap
           - periph_spidev_linux
           - socket_zep

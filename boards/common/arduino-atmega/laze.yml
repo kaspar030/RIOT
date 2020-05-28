@@ -1,10 +1,12 @@
 module:
     - name: boards_common_arduino-atmega
-      sources: led_init.c
+      sources:
+        - led_init.c
       depends:
         - boards_common_atmega
         - periph_gpio
-      export_vars:
+      env:
+        export:
           includes:
               - ${relpath}/include
 
@@ -21,4 +23,4 @@ template:
 
 module:
     - name: "%NAME%"
-      depends: boards_common_arduino-atmega
+      depends: [ boards_common_arduino-atmega ]

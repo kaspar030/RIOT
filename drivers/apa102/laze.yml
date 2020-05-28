@@ -1,5 +1,5 @@
 module:
-    name: apa102
+  - name: apa102
     depends:
         - periph_gpio
     sources:

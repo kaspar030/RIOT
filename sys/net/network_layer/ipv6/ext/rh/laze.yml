@@ -1,4 +1,4 @@
 module:
-    name: ipv6_ext_rh
+  - name: ipv6_ext_rh
     sources:
         - ipv6_ext_rh.c

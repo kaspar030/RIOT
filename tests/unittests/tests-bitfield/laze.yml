@@ -1,5 +1,6 @@
 app:
-    depends: tests-bitfield
+    - depends:
+        - tests-bitfield
 module:
     - name: tests-bitfield
       sources:
@@ -7,6 +8,7 @@ module:
       depends:
           - sys/bitfield
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - bitfield

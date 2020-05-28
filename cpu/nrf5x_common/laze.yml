@@ -2,7 +2,7 @@ context:
     - name: nrf5x
       parent: cortexm
 
-      vars:
+      env:
           includes:
               - ${relpath}/include
           LINKFLAGS:
@@ -15,7 +15,8 @@ module:
           - cortexm
           - periph_common
 
-      sources: clock.c
+      sources:
+          - clock.c
 
     - name: feature/riotboot
       context: nrf5x

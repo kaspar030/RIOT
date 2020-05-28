@@ -1,2 +1,2 @@
 module:
-    name: ipv6_ext
+  - name: ipv6_ext

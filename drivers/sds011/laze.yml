@@ -1,5 +1,5 @@
 module:
-    name: sds011
+  - name: sds011
     depends:
         - periph_gpio
         - periph_uart

@@ -1,5 +1,5 @@
 module:
-    name: mrf24j40
+  - name: mrf24j40
     depends:
         - div
         - ieee802154

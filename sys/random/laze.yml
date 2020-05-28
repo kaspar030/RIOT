@@ -17,7 +17,8 @@ module:
     # THIS SETS THE DEFAULT PRNG
     - name: random_prng_default
       context: default
-      depends: random_prng_tinymt32
+      depends:
+          - random_prng_tinymt32
 
     - name: random_prng_mersenne
       sources:
@@ -47,7 +48,8 @@ module:
     - name: random_prng_xorshift
       sources:
         - xorshift.c
-      depends: random
+      depends:
+        - random
 
     - name: sys/random
       depends:

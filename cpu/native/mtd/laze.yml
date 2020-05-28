@@ -1,5 +1,7 @@
 module:
     - name: mtd_native
+      context: cpu/native
       depends:
           - mtd
-      sources: mtd_native.c
+      sources:
+          - mtd_native.c

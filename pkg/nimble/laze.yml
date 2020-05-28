@@ -160,7 +160,7 @@ module:
       nimble:
         - ${srcdir}
 
-    vars:
+    env:
       CFLAGS:
         - -Wno-unused-but-set-variable
 
@@ -174,10 +174,10 @@ module:
           #- -Wno-maybe-uninitialized
 
   - name: nimble_host
-    depends: nimble
+    depends: [ nimble ]
 
   - name: nimble_controller
-    depends: nimble
+    depends: [ nimble ]
     export_vars:
       CFLAGS_DEFINES:
         - -DNIMBLE_CFG_CONTROLLER=1
@@ -186,40 +186,40 @@ module:
         - ${nimble}/nimble/controller/include
 
   - name: nimble_porting_nimble
-    depends: nimble
+    depends: [ nimble ]
 
   - name: nimble_npl_riot
-    depends: nimble
+    depends: [ nimble ]
 
   - name: nimble_svc_gap
-    depends: nimble
+    depends: [ nimble ]
 
   - name: nimble_svc_gatt
-    depends: nimble
+    depends: [ nimble ]
 
   - name: nimble_svc_ipss
-    depends: nimble
+    depends: [ nimble ]
 
   - name: nimble_transport_ram
-    depends: nimble
+    depends: [ nimble ]
     export_vars:
       includes:
         - ${nimble}/nimble/transport/ram/include
 
   - name: nimble_host_store_ram
-    depends: nimble
+    depends: [ nimble ]
     export_vars:
       includes:
         - ${nimble}/nimble/host/store/ram/include
 
   - name: nimble_driver_nrf51
-    depends: nimble
+    depends: [ nimble ]
     export_vars:
       includes:
         - ${nimble}/nimble/drivers/nrf51/include
 
   - name: nimble_driver_nrf52
-    depends: nimble
+    depends: [ nimble ]
     export_vars:
       includes:
         - ${nimble}/nimble/drivers/nrf52/include

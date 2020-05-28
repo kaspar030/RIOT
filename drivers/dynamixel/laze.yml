@@ -1,5 +1,5 @@
 module:
-    name: dynamixel
+  - name: dynamixel
     depends:
         - div
         - periph_gpio

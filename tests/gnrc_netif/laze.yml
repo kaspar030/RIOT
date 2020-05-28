@@ -1,5 +1,5 @@
 app:
-    sources:
+  - sources:
       - common.c
     depends:
         - embunit
@@ -13,7 +13,8 @@ app:
         - ieee802154
         - netdev_test
         - od
-    global_vars:
+    env:
+      global:
         CFLAGS:
             - -DGNRC_IPV6_NIB_CONF_ARSM="0"
             - -DGNRC_IPV6_NIB_CONF_SLAAC="0"

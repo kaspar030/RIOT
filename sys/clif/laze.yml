@@ -1,7 +1,9 @@
 module:
     - name: clif
-      sources: clif.c
-      export_vars:
+      sources:
+          - clif.c
+      env:
+        export:
           includes:
               - ${relpath}/include
 

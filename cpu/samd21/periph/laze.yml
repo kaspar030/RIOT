@@ -4,8 +4,8 @@ template:
         - pwm
 
 module:
+  - name: "periph_%NAME%"
     context: samd21
-    name: "periph_%NAME%"
 
     sources:
         - "%NAME%.c"

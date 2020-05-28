@@ -1,5 +1,5 @@
 module:
-    name: evtimer
+  - name: evtimer
     depends:
         - xtimer
     sources:

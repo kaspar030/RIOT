@@ -1,5 +1,5 @@
 app:
-    depends:
+    - depends:
         # Include NimBLE
         - nimble
         - nimble_svc_gap

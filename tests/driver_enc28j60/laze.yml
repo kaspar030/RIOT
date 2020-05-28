@@ -9,7 +9,8 @@ app:
         - ps
         - shell
         - shell_commands
-    global_vars:
+    env:
+      global:
         CFLAGS:
             - -DENC28J60_PARAM_SPI="SPI_DEV(0)"
             - -DENC28J60_PARAM_CS="GPIO_PIN(0,0)"

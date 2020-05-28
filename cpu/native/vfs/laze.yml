@@ -1,4 +1,5 @@
 module:
     - name: native_vfs
+      context: cpu/native
       sources:
           - native_vfs.c

@@ -1,17 +1,18 @@
 app:
-    depends:
+  - depends:
         - tests-gnrc_mac_internal
     blacklist:
         - atmega_common
 
 module:
     - name: tests-gnrc_mac_internal
-      sources: tests-gnrc_mac_internal.c
+      sources: [tests-gnrc_mac_internal.c]
       depends:
           - gnrc_priority_pktqueue
           - gnrc_mac
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - gnrc_mac_internal
           CFLAGS:

@@ -1,10 +1,11 @@
 app:
-  depends:
-    - littlefs
-    - embunit
-  global_vars:
-    CFLAGS:
-      # Set vfs file and dir buffer sizes
-      - -DVFS_FILE_BUFFER_SIZE=56 -DVFS_DIR_BUFFER_SIZE=44
-      # Reduce LFS_NAME_MAX to 31 (as VFS_NAME_MAX default)
-      - -DLFS_NAME_MAX=31
+  - depends:
+      - littlefs
+      - embunit
+    env:
+      global:
+        CFLAGS:
+          # Set vfs file and dir buffer sizes
+          - -DVFS_FILE_BUFFER_SIZE=56 -DVFS_DIR_BUFFER_SIZE=44
+          # Reduce LFS_NAME_MAX to 31 (as VFS_NAME_MAX default)
+          - -DLFS_NAME_MAX=31

@@ -8,7 +8,7 @@ module:
             - patches/0002-Include-RIOT-Hardware-RNG-interface.patch
             - patches/0003-Silence-warning-of-unused-variable.patch
       license: BSD-2-Clause
-      sources: uECC.c
+      sources: [uECC.c]
       uses:
           - periph_hwrng
       export_vars:

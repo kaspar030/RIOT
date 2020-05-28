@@ -1,5 +1,5 @@
 module:
-    name: gnrc_ipv6_hdr
+  - name: gnrc_ipv6_hdr
     depends:
         - ipv6_hdr
     uses:

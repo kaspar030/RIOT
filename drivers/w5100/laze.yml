@@ -1,5 +1,5 @@
 module:
-    name: w5100
+  - name: w5100
     depends:
         - luid
         - netdev_eth

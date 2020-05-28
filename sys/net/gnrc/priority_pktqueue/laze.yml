@@ -1,4 +1,4 @@
 module:
-    name: gnrc_priority_pktqueue
+  - name: gnrc_priority_pktqueue
     sources:
         - priority_pktqueue.c

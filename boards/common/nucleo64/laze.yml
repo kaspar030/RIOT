@@ -1,6 +1,8 @@
 module:
     - name: nucleo64
-      depends: nucleo
-      export_vars:
-        CFLAGS:
+      depends:
+          - nucleo
+      env:
+        export:
+          CFLAGS:
             - -I${relpath}/include

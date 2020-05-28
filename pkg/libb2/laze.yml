@@ -10,7 +10,7 @@ module:
       license: CC0-1.0
       depends:
           - board
-      vars:
+      env:
         CFLAGS:
           - -Wno-unused-function
       export_vars:

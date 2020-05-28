@@ -1,5 +1,5 @@
 module:
-    name: lc709203f
+  - name: lc709203f
     depends:
         - periph_gpio
         - periph_gpio_irq

@@ -1,5 +1,5 @@
 app:
-    sources:
+  - sources:
     depends:
         - gnrc
         - gnrc_neterr
@@ -8,7 +8,8 @@ app:
         - netdev_test
         - od
         - periph_timer
-    global_vars:
+    env:
+      global:
         CFLAGS:
             - -DGNRC_PKTBUF_SIZE="200"
     blocklist:

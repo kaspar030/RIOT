@@ -1,5 +1,5 @@
 module:
-    name: ads101x
+  - name: ads101x
     depends:
         - periph_gpio
         - periph_gpio_irq

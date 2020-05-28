@@ -1,12 +1,13 @@
 builder:
-    name: arduino-mega2560
-    parent: atmega2560
-    vars:
-        CFLAGS:
-            - -I${relpath}/include
-        PORT:
-            - /dev/ttyACM0
-    tasks:
+    - name: arduino-mega2560
+      parent: atmega2560
+      env:
+          CFLAGS:
+              - -I${relpath}/include
+          PORT:
+              - /dev/ttyACM0
+
+      tools:
         flash:
           cmd:
             - ${OBJCOPY} -O ihex ${out} ${out}.hex

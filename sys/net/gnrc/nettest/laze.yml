@@ -1,4 +1,4 @@
 module:
-    name: gnrc_nettest
+  - name: gnrc_nettest
     sources:
         - gnrc_nettest.c

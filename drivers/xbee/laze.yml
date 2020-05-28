@@ -1,5 +1,5 @@
 module:
-    name: xbee
+  - name: xbee
     depends:
         - ieee802154
         - periph_gpio

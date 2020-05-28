@@ -11,7 +11,7 @@ template:
         - wdt
 
 module:
-    name: "periph_%NAME%"
+  - name: "periph_%NAME%"
     context: nrf5x
 
     sources:

@@ -1,5 +1,5 @@
 module:
-    name: lsm6dsl
+  - name: lsm6dsl
     depends:
         - periph_i2c
         - xtimer

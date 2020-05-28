@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - tests-hashes
     blacklist:
         # insufficient memory
@@ -20,7 +20,8 @@ module:
           - crypto
           - hashes
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - hashes
           CFLAGS:

@@ -1,5 +1,5 @@
 module:
-    name: soft_spi
+  - name: soft_spi
     depends:
         - periph_gpio
         - xtimer

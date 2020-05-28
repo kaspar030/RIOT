@@ -5,7 +5,8 @@ app:
         - shell
         - shell_commands
         - xtimer
-    global_vars:
+    env:
+      global:
         CFLAGS:
             - -DLOG_LEVEL="LOG_DEBUG"
             - -DDEBUG_ASSERT_VERBOSE

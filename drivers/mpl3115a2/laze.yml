@@ -1,5 +1,5 @@
 module:
-    name: mpl3115a2
+  - name: mpl3115a2
     sources:
         - mpl3115a2.c
     depends:

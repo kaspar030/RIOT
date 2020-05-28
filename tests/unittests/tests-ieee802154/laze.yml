@@ -1,13 +1,14 @@
 app:
-    depends:
+  - depends:
         - tests-ieee802154
 
 module:
     - name: tests-ieee802154
-      sources: tests-ieee802154.c
+      sources: [tests-ieee802154.c]
       depends:
           - ieee802154
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - ieee802154

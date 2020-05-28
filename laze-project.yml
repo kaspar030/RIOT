@@ -1,58 +1,12 @@
-rule:
-    - name: CC
-      in: '.c'
-      out: '.o'
-      depfile: "$out.d"
-      deps: gcc
-      cmd: '${CC} -MD -MF $out.d
-                ${CFLAGS_STD} ${CFLAGS_ARCH} ${CFLAGS_CODEGEN}
-                ${CFLAGS_DEFINES} ${CFLAGS_WARN} ${CFLAGS_GCC}
-                ${CFLAGS} ${includes}
-                -c ${in} -o ${out}'
-    - name: CXX
-      in: '.cpp'
-      out: '.o'
-      depfile: "$out.d"
-      deps: gcc
-      cmd: '${CXX} -MMD -MF $out.d ${CXXFLAGS_STD} ${CXXFLAGS}
-                ${CFLAGS_ARCH} ${CFLAGS_CODEGEN}
-                ${CFLAGS_DEFINES} ${CFLAGS_WARN} ${CFLAGS_GCC}
-                ${CFLAGS} ${includes}
-                -c ${in} -o ${out}'
-    - name: ASM
-      in: '.S'
-      out: '.o'
-      cmd: '${CC} ${CFLAGS} ${CFLAGS_ARCH} -c ${in} -o ${out}'
-    - name: LINK
-      in: '.o'
-      options:
-          combine: true
-      cmd: '${LINK} ${LINKFLAGS} ${CFLAGS_STD} ${CFLAGS_ARCH}
-                    ${CFLAGS_CODEGEN} ${CFLAGS}
-                    ${in} ${libs} -Wl,-Map=${out}.map -o ${out}'
-
-    - name: SYMLINK
-      cmd: 'ln -f ${in} ${out}'
-
-      #- name: GIT_DOWNLOAD
-      #cmd: 'D=$$(dirname ${out}); rm -rf $$D && git clone ${URL} $$D -n && git -C $$D reset --hard ${COMMIT} && touch ${out}'
-    - name: GIT_DOWNLOAD
-      cmd: 'D=$$(dirname ${out}); rm -rf $$D && git-cache clone ${URL} ${COMMIT} $$D && touch ${out}'
-
-    - name: PATCH
-      cmd: 'D=$$(dirname ${out}); git -C $$D --git-dir=.git --work-tree=. reset --hard ${COMMIT} && git -C $$D am --ignore-whitespace ${in} || (git -C $$D am --abort; false; ) && touch ${out}'
-
 context:
     - name: default
       env:
           bindir: "${build-dir}/bin/${builder}/${app}"
           PREFIX: ""
-          CC:
+          CC_WRAP:
               - ccache
-              - ${PREFIX}gcc
-          CXX:
-              - ccache
-              - ${PREFIX}g++
+          CC: ${PREFIX}gcc
+          CXX: ${PREFIX}g++
           LINK:
               - ccache
               - ${PREFIX}gcc
@@ -117,10 +71,56 @@ context:
             cmd: 'D=$$(dirname ${out}); git -C $$D --git-dir=.git --work-tree=. reset --hard ${COMMIT} && git -C $$D am --ignore-whitespace ${in} || (git -C $$D am --abort; false; ) && touch ${out}'
 
 
+      rule:
+          - name: CC
+            in: 'c'
+            out: 'o'
+            depfile: "$out.d"
+            deps: gcc
+            cmd: '${CC_WRAP} ${CC} -MD -MF $out.d
+                      ${CFLAGS_STD} ${CFLAGS_ARCH} ${CFLAGS_CODEGEN}
+                      ${CFLAGS_DEFINES} ${CFLAGS_WARN} ${CFLAGS_GCC}
+                      ${CFLAGS} ${includes}
+                      -c ${in} -o ${out}'
+          - name: CXX
+            in: 'cpp'
+            out: 'o'
+            depfile: "$out.d"
+            deps: gcc
+            cmd: '${CC_WRAP} ${CXX} -MMD -MF $out.d ${CXXFLAGS_STD} ${CXXFLAGS}
+                      ${CFLAGS_ARCH} ${CFLAGS_CODEGEN}
+                      ${CFLAGS_DEFINES} ${CFLAGS_WARN} ${CFLAGS_GCC}
+                      ${CFLAGS} ${includes}
+                      -c ${in} -o ${out}'
+          - name: ASM
+            in: 'S'
+            out: 'o'
+            cmd: '${CC_WRAP} ${CC} ${CFLAGS} ${CFLAGS_ARCH} -c ${in} -o ${out}'
+          - name: LINK
+            in: 'o'
+            options:
+                combine: true
+            cmd: '${LINK} ${LINKFLAGS} ${CFLAGS_STD} ${CFLAGS_ARCH}
+                          ${CFLAGS_CODEGEN} ${CFLAGS}
+                          ${in} ${libs} -o ${out}'
+
+          - name: SYMLINK
+            cmd: 'ln -f ${in} ${out}'
+
+            #- name: GIT_DOWNLOAD
+            #cmd: 'D=$$(dirname ${out}); rm -rf $$D && git clone ${URL} $$D -n && git -C $$D reset --hard ${COMMIT} && touch ${out}'
+          - name: GIT_DOWNLOAD
+            cmd: 'D=$$(dirname ${out}); rm -rf $$D && git-cache clone ${URL} ${COMMIT} $$D && touch ${out}'
+
+          - name: PATCH
+            cmd: 'D=$$(dirname ${out}); git -C $$D --git-dir=.git --work-tree=. reset --hard ${COMMIT} && git -C $$D am --ignore-whitespace ${in} || (git -C $$D am --abort; false; ) && touch ${out}'
+
+
     - name: riot
       parent: default
-      vars:
+      env:
           CFLAGS_DEFINES:
+            - ${notify}
             - '-DRIOT_VERSION=\"laze\"'
             - -DNDEBUG
           CFLAGS_CODEGEN:
@@ -143,7 +143,9 @@ context:
             - -std=c++11
           LINKFLAGS:
             - -Wl,--gc-sections
+            - -Wl,-Map=${out}.map
           includes:
+            - ${relpath}/core/include
             - ${relpath}/drivers/include
             - ${relpath}/sys/include
       var_options:
@@ -152,6 +154,8 @@ context:
               joiner: ','
           includes:
             prefix: -I
+          notify:
+              prefix: -DMODULE_
       tools:
           size:
               cmd:
@@ -175,8 +179,9 @@ module:
 
     - name: riot_info
       context: riot
-      export_vars:
-        CFLAGS:
+      env:
+        export:
+          CFLAGS:
           - -DRIOT_BOARD=\"${builder}\"
           - -DRIOT_APPLICATION=\"${app}\"
 
@@ -197,11 +202,12 @@ module:
 
     - name: develhelp
       context: riot
-      global_vars:
+      env:
+        global:
           CFLAGS_DEFINES:
               - -DDEVELHELP
-              - remove:
-                  - -DNDEBUG
+              - -UNDEBUG
 
 subdirs:
-    [ dist, core, boards, cpu, drivers, sys, examples, tests, pkg, bootloaders ]
+    #[ dist, core, boards, cpu, drivers, sys, examples, tests, pkg, bootloaders ]
+    [ core, boards, cpu, drivers, sys, examples ]

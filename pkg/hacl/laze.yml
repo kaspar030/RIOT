@@ -26,7 +26,7 @@ module:
       - Hacl_Salsa20.c
       - Hacl_SHA2_512.c
 
-    vars:
+    env:
       CFLAGS:
         - -DKRML_NOUINT128 -Wno-unused-parameter
     export_vars:

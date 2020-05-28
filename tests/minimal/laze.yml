@@ -1,9 +1,10 @@
 app:
-    depends:
+  - depends:
         - lto
         - -test_utils_interactive_sync
     disable_modules:
         - develhelp
-    global_vars:
+    env:
+      global:
         CFLAGS:
             - -DLOG_LEVEL=LOG_NONE

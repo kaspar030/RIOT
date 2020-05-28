@@ -1,5 +1,5 @@
 module:
-    name: hts221
+  - name: hts221
     depends:
         - periph_i2c
     sources:

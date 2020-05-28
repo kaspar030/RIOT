@@ -1,13 +1,14 @@
 app:
-    depends:
+    - depends:
         - tests-phydat
 
 module:
     - name: tests-phydat
-      sources: tests-phydat.c
+      sources: [tests-phydat.c]
       depends:
           - phydat
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - phydat

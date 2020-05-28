@@ -1,15 +1,16 @@
 app:
-    depends:
+  - depends:
         - tests-ipv6_addr
 
 module:
     - name: tests-ipv6_addr
-      sources: tests-ipv6_addr.c
+      sources: [tests-ipv6_addr.c]
       depends:
           - ipv6_addr
           - unittests-base
       uses:
           - ipv4_addr
-      global_vars:
+      env:
+        global:
           testsuites:
               - ipv6_addr

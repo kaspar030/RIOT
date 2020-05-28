@@ -13,13 +13,14 @@ module:
     sources:
         - adcxx1c.c
         - saul: adcxx1c_saul.c
-    export_vars:
+    env:
+      export:
         CFLAGS:
             - -I${relpath}/include
 
   - name: adc081c
-    depends: adcxx1c
+    depends: [ adcxx1c ]
   - name: adc101c
-    depends: adcxx1c
+    depends: [ adcxx1c ]
   - name: adc121c
-    depends: adcxx1c
+    depends: [ adcxx1c ]

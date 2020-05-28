@@ -1,5 +1,5 @@
 module:
-    name: auto_init_saul
+  - name: auto_init_saul
     depends:
         - ?auto_init
         - ?adcxx1c_params

@@ -1,5 +1,5 @@
 module:
-    name: vfs
+  - name: vfs
     depends:
         - posix_headers
         - ?native_vfs

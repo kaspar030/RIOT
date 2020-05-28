@@ -1,9 +1,10 @@
 app:
-    depends:
+  - depends:
         - embunit
         - fmt
         - memarray
         - pkg/cn-cbor
-    global_vars:
+    env:
+      global:
         CFLAGS:
             - -DCBOR_NO_LL

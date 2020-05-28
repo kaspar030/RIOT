@@ -1,10 +1,11 @@
 builder:
-    name: native
+  - name: native
     parent: cpu/native
-    vars:
-        CFLAGS:
-            - remove:
-              - -Os
+    env:
+      #FIX
+      #CFLAGS:
+      #      - remove:
+      #        - -Os
         CFLAGS_ARCH:
             - -m32
         CFLAGS_DEFINES:
@@ -32,12 +33,14 @@ module:
     uses:
         - mtd
         - motor_driver
+        - periph_qdec
 
   - name: feature/motor_driver
   - name: feature/cpp
-    global_vars:
+    env:
+     global:
       LINK:
-        - remove: gcc
-        - g++
+        g++
 
-subdirs: drivers
+subdirs:
+  - drivers

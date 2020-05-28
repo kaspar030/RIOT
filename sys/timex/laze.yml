@@ -1,5 +1,5 @@
 module:
-    name: timex
+  - name: timex
     sources:
         - timex.c
         - timex_to_str.c

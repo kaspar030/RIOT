@@ -12,7 +12,7 @@ module:
             - -I${relpath}/include
 
   - name: tmp006
-    depends: tmp00x
+    depends: [ tmp00x ]
   - name: tmp007
-    depends: tmp00x
+    depends: [ tmp00x ]
 

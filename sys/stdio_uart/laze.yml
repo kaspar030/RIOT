@@ -1,6 +1,7 @@
 module:
     - name: stdio_uart
-      sources: stdio_uart.c
+      sources:
+        - stdio_uart.c
       depends:
         - periph_uart
         - stdin:
@@ -10,7 +11,8 @@ module:
         - stdio_uart_rx
         - vfs
 
-      vars:
+      env:
+        local:
           CFLAGS_GCC:
               - -Wno-cast-function-type
 
