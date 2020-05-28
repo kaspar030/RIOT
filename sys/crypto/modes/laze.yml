@@ -1,5 +1,5 @@
 module:
-    name: cipher_modes
+  - name: cipher_modes
     sources:
       - cbc.c
       - ccm.c

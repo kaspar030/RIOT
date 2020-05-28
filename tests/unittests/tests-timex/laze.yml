@@ -1,13 +1,14 @@
 app:
-    depends:
+    - depends:
         - tests-timex
 
 module:
     - name: tests-timex
-      sources: tests-timex.c
+      sources: [tests-timex.c]
       depends:
           - timex
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - timex

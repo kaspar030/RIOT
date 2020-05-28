@@ -1,5 +1,5 @@
 module:
-    name: bh1750fvi
+  - name: bh1750fvi
     depends:
         - div
         - periph_i2c

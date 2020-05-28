@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - tests-bloom
     blacklist:
         # insufficient memory
@@ -11,6 +11,7 @@ module:
       depends:
           - bloom
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - bloom

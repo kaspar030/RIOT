@@ -1,5 +1,5 @@
 module:
-    name: posix_sockets
+  - name: posix_sockets
     depends:
         - posix_headers
     sources:

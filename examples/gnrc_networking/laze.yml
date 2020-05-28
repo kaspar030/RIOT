@@ -1,35 +1,34 @@
 app:
-    sources:
-        - main.c
-        - udp.c
+    - sources:
+          - udp.c
 
-    depends:
-        - periph_gpio
-        # this pulls in GNRC's default configuration
-        - gnrc_default
-        - gnrc_ipv6_router_default
+      depends:
+          - periph_gpio
+          # this pulls in GNRC's default configuration
+          - gnrc_default
+          - gnrc_ipv6_router_default
 
-        # This application dumps received packets to STDIO using the
-        # pktdump module
-        - gnrc_pktdump
+          # This application dumps received packets to STDIO using the
+          # pktdump module
+          - gnrc_pktdump
 
-        # Add a routing protocol
-        - gnrc_rpl
-        - auto_init_gnrc_rpl
+          # Add a routing protocol
+          - gnrc_rpl
+          - auto_init_gnrc_rpl
 
-        # Add also the shell, some shell commands
-        - shell
-        - shell_commands
-        - ps
-        - netstats_l2
-        - netstats_ipv6
-        - netstats_rpl
+          # Add also the shell, some shell commands
+          - shell
+          - shell_commands
+          - ps
+          - netstats_l2
+          - netstats_ipv6
+          - netstats_rpl
 
-        # Comment this out to disable code in RIOT that does safety checking
-        # which is not needed in a production environment but helps in the
-        # development process:
-        - develhelp
+          # Comment this out to disable code in RIOT that does safety checking
+          # which is not needed in a production environment but helps in the
+          # development process:
+          - develhelp
 
-    blacklist:
-        # insufficient memory
-        - atmega_common
+      blacklist:
+          # insufficient memory
+          - atmega_common

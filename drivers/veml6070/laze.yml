@@ -1,5 +1,5 @@
 module:
-    name: veml6070
+  - name: veml6070
     depends:
         - periph_i2c
     sources:

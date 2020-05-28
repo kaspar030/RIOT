@@ -1,5 +1,5 @@
 module:
-    name: encx24j600
+  - name: encx24j600
     depends:
         - div
         - netdev_eth

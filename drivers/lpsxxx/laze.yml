@@ -13,8 +13,8 @@ module:
           CFLAGS:
               - -I${relpath}/include
     - name: lps331ap
-      depends: lpsxxx
+      depends: [ lpsxxx ]
     - name: lps22hb
-      depends: lpsxxx
+      depends: [ lpsxxx ]
     - name: lps25hb
-      depends: lpsxxx
+      depends: [ lpsxxx ]

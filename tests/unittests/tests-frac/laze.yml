@@ -1,13 +1,15 @@
 app:
-    depends:
+  - depends:
         - tests-frac
 
 module:
     - name: tests-frac
-      sources: tests-frac.c
+      sources:
+          - tests-frac.c
       depends:
           - frac
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - frac

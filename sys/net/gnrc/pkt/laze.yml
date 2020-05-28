@@ -1,4 +1,4 @@
 module:
-    name: gnrc_pkt
+  - name: gnrc_pkt
     sources:
         - gnrc_pkt.c

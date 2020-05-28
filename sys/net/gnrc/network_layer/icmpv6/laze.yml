@@ -1,5 +1,5 @@
 module:
-    name: gnrc_icmpv6
+  - name: gnrc_icmpv6
     depends:
         - inet_csum
         - icmpv6

@@ -1,10 +1,10 @@
 app:
-    depends:
+    - depends:
         - tests-sock_util
 
 module:
     - name: tests-sock_util
-      sources: tests-sock_util.c
+      sources: [tests-sock_util.c]
       depends:
           - gnrc_ipv6
           - gnrc_sock
@@ -13,6 +13,7 @@ module:
           - posix_headers
           - sock_util
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - sock_util

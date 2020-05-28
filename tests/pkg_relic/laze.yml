@@ -1,8 +1,9 @@
 app:
-    depends:
+  - depends:
         - embunit
         - relic
-    global_vars:
+    env:
+      global:
         #CFLAGS:
             #- -DTHREAD_STACKSIZE_MAIN="5*THREAD_STACKSIZE_DEFAULT"
         RELIC_CONFIG_FLAGS:

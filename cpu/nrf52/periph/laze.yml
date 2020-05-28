@@ -1,13 +1,17 @@
-template:
-    "%NAME%":
-        - adc
-        - i2c
-        - pwm
-        - usbdev
-
-module:
-    name: "periph_%NAME%"
+defaults:
+  module:
     context: nrf52
 
+module:
+  - name: periph_adc
     sources:
-        - "%NAME%.c"
+      - adc.c
+  - name: periph_i2c
+    sources:
+      - i2c.c
+  - name: periph_pwm
+    sources:
+      - pwm.c
+  - name: periph_usbdev
+    sources:
+      - usbdev.c

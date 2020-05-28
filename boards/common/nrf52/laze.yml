@@ -2,8 +2,10 @@ module:
     - name: boards_common_nrf52
       context: nrf52
       depends:
-          - saul_default: saul_nrf_temperature
-      global_vars:
+          - saul_default:
+              - saul_nrf_temperature
+      env:
+        global:
           includes:
               - ${relpath}/include
 

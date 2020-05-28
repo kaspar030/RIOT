@@ -1,5 +1,5 @@
 module:
-    name: cc110x
+  - name: cc110x
     depends:
         - div
         - ieee802154

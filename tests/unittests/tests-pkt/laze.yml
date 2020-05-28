@@ -1,14 +1,15 @@
 app:
-    depends:
+    - depends:
         - tests-pkt
 
 module:
     - name: tests-pkt
-      sources: tests-pkt.c
+      sources: [tests-pkt.c]
       depends:
           - gnrc_ipv6
           - test_suites_define
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - pkt

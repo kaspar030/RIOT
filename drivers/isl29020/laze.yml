@@ -1,5 +1,5 @@
 module:
-    name: isl29020
+  - name: isl29020
     sources:
         - isl29020.c
         - isl29020_saul.c

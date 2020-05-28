@@ -1,9 +1,11 @@
 module:
   - name: nucleo
     context: stm32
-    sources: board.c
-    export_vars:
-      CFLAGS:
+    sources:
+      - board.c
+    env:
+      export:
+        CFLAGS:
           - -I${relpath}/include
     depends:
         - stm32
@@ -11,4 +13,4 @@ module:
         - nucleo64
 
 #  - name: feature_arduino
-#    depends: nucleo
+#    depends: [ nucleo ]

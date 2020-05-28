@@ -14,9 +14,6 @@ module:
         - rmutex.c
         - sched.c
         - thread.c
-      global_vars:
-        CFLAGS:
-            - '-I${relpath}/include'
       depends:
           - board
           - ?core_init
@@ -31,27 +28,36 @@ module:
           - sched_cb
 
     - name: core_init
-      sources: init.c
+      sources:
+          - init.c
       depends:
           - ?auto_init
-      uses: core
+      uses:
+          - core
 
     - name: core_msg
-      sources: msg.c
-      uses: core
+      sources:
+          - msg.c
+      uses:
+          - core
 
     - name: core_mbox
-      sources: mbox.c
-      uses: core
+      sources:
+          - mbox.c
+      uses:
+          - core
 
     - name: core_panic
-      sources: panic.c
+      sources:
+        - panic.c
       uses:
           - core
           - ps
 
     - name: core_thread_flags
-      sources: thread_flags.c
-      uses: core
+      sources:
+          - thread_flags.c
+      uses:
+          - core
 
     - name: sched_cb

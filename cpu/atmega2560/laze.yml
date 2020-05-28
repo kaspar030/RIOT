@@ -1,7 +1,7 @@
 context:
   - name: atmega2560
     parent: atmega_common
-    vars:
+    env:
       CFLAGS:
         - -mmcu=atmega2560
         - -DRIOT_MCU=\"atmega2560\"
@@ -13,7 +13,8 @@ context:
 module:
   - name: atmega2560
     context: atmega2560
-    depends: atmega_common
+    depends:
+      - atmega_common
     export_vars:
       CFLAGS:
         - -I${relpath}/include

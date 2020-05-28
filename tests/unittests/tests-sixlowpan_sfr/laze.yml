@@ -1,13 +1,14 @@
 app:
-    depends:
+    - depends:
         - tests-sixlowpan_sfr
 
 module:
     - name: tests-sixlowpan_sfr
-      sources: tests-sixlowpan_sfr.c
+      sources: [tests-sixlowpan_sfr.c]
       depends:
           #- gnrc_sixlowpan_sfr
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - sixlowpan_sfr

@@ -1,28 +1,38 @@
-template:
-    "%NAME%":
-        - cpuid
-        - gpio
-        - hwrng
-        - pwm
-        - qdec
-        - rtc
-        - spidev_linux
-        - timer
-        - uart
-
-module:
+defaults:
+  module:
     context: cpu/native
-    name: "periph_%NAME%"
+    depends:
+      - core
 
-    sources:
-        - "%NAME%.c"
-
----
 module:
-    - name: periph_pm
-      context: cpu/native
-      sources:
-          - pm.c
-      uses:
-          - periph_spidev_linux
-
+  - name: periph_cpuid
+    sources:
+      - cpuid.c
+  - name: periph_gpio
+    sources:
+      - gpio.c
+  - name: periph_hwrng
+    sources:
+      - hwrng.c
+  - name: periph_pm
+    sources: [pm.c]
+    uses:
+      - periph_spidev_linux
+  - name: periph_pwm
+    sources:
+      - pwm.c
+  - name: periph_qdec
+    sources:
+      - qdec.c
+  - name: periph_rtc
+    sources:
+      - rtc.c
+  - name: periph_spidev_linux
+    sources:
+      - spidev_linux
+  - name: periph_timer
+    sources:
+      - timer.c
+  - name: periph_uart
+    sources:
+      - uart.c

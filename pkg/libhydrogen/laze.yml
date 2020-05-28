@@ -9,8 +9,8 @@ module:
         - patches/0001-Add-support-for-RIOT-OS.patch
     depends:
       - random
-    sources: hydrogen.c
-    vars:
+    sources: [hydrogen.c]
+    env:
       CFLAGS:
         - -Wno-type-limits
     export_vars:

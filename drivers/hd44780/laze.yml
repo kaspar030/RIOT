@@ -1,5 +1,5 @@
 module:
-    name: hd44780
+  - name: hd44780
     depends:
         - div
         - periph_gpio

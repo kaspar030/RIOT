@@ -1,5 +1,6 @@
 app:
-    depends: tests-gnrc_ipv6_nib
+  - depends:
+      - tests-gnrc_ipv6_nib
 
     blacklist:
         # insufficient memory
@@ -22,7 +23,8 @@ module:
 
           - test_suites_define
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - gnrc_ipv6_nib
           CFLAGS:

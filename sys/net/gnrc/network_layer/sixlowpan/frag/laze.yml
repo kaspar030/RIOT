@@ -1,5 +1,5 @@
 module:
-    name: gnrc_sixlowpan_frag
+  - name: gnrc_sixlowpan_frag
     depends:
       - gnrc_sixlowpan
       - gnrc_sixlowpan_frag_fb

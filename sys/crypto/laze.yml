@@ -1,12 +1,12 @@
 module:
-    name: crypto
+  - name: crypto
     sources:
       - aes.c
       - chacha.c
       - chacha_prng.c
       - ciphers.c
       - helper.c
-    vars:
+    env:
         CFLAGS:
             - -DRIOT_CHACHA_PRNG_DEFAULT=0x12345678
 

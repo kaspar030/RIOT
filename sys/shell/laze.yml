@@ -1,5 +1,5 @@
 module:
-    name: shell
+  - name: shell
     sources:
         - shell.c
     depends:

@@ -1,5 +1,5 @@
 module:
-    name: ethos
+  - name: ethos
     depends:
         - netdev_eth
         - prng_tinymt32

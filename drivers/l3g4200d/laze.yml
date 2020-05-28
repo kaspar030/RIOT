@@ -1,5 +1,5 @@
 module:
-    name: l3g4200d
+  - name: l3g4200d
     sources:
         - l3g4200d.c
         - saul: l3g4200d_saul.c

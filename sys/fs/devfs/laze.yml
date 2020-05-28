@@ -1,4 +1,4 @@
 module:
-    sources:
+    - sources:
         - auto_init_devfs.c
         - devfs.c

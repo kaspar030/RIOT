@@ -1,5 +1,5 @@
 module:
-    name: mag3110
+  - name: mag3110
     sources:
         - mag3110.c
         - saul: mag3110_saul.c

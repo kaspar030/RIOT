@@ -1,5 +1,5 @@
 module:
-    name: fxos8700
+  - name: fxos8700
     depends:
         - periph_i2c
         - xtimer

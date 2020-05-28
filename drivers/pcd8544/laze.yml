@@ -1,5 +1,5 @@
 module:
-    name: pcd8544
+  - name: pcd8544
     depends:
         - periph_gpio
         - periph_spi

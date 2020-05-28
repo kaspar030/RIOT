@@ -1,42 +1,37 @@
-template:
-    "%NAME%":
-        - adc
-        - cpuid
-        - flashpage
-        - i2c
-        - rtc
-        - rtt
-        - spi
-        - timer
-
-module:
-    name: "periph_%NAME%"
+defaults:
+  module:
     context: sam0
 
-    sources:
-        - "%NAME%.c"
----
 module:
-    - name: periph_gpio
-      context: sam0
-      sources: gpio.c
-      uses: periph_gpio_irq
+  - name: periph_adc
+    sources: [adc.c]
+  - name: cpuid
+    sources: [cpuid.c]
+  - name: flashpage
+    sources: [flashpage.c]
+  - name: i2c
+    sources: [i2c.c]
+  - name: rtc
+    sources: [rtc.c]
+  - name: rtt
+    sources: [rtt.c]
+  - name: spi
+    sources: [spi.c]
+    name: timer
+    sources: [timer.c]
+  - name: periph_gpio
+    sources: [gpio.c]
+    uses: periph_gpio_irq
+  - name: periph_gpio_irq
+    depends: [ periph_gpio ]
+  - name: periph_hwrng
+    depends: [ feature/periph_hwrng ]
+  - name: periph_uart
+    sources:
+      - uart.c
+    uses:
+      - periph_uart_modecfg
+      - periph_uart_nonblocking
+      - sam0_periph_uart_hw_fc
 
-    - name: periph_gpio_irq
-      context: sam0
-      depends: periph_gpio
-
-    - name: periph_hwrng
-      context: sam0
-      depends: feature/periph_hwrng
-
-    - name: periph_uart
-      context: sam0
-      sources:
-          - uart.c
-      uses:
-          - periph_uart_modecfg
-          - periph_uart_nonblocking
-          - sam0_periph_uart_hw_fc
-
-    - name: sam0_periph_uart_hw_fc
+  - name: sam0_periph_uart_hw_fc

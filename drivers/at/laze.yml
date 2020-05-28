@@ -10,4 +10,4 @@ module:
           - at.c
 
     - name: at_urc
-      depends: at
+      depends: [ at ]

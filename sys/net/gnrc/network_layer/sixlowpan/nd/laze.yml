@@ -1,5 +1,5 @@
 module:
-    name: gnrc_sixlowpan_nd
+  - name: gnrc_sixlowpan_nd
     uses:
         - fib
         - gnrc_sixlowpan_ctx

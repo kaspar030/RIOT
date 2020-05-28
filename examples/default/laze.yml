@@ -1,5 +1,5 @@
 app:
-    depends:
+    - depends:
         - shell
         - shell_commands
 

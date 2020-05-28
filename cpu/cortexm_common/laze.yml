@@ -1,7 +1,7 @@
 context:
-    name: cortexm
+  - name: cortexm
     parent: riot
-    vars:
+    env:
         PREFIX: arm-none-eabi-
         CFLAGS_STD:
             - -std=c99
@@ -63,21 +63,24 @@ module:
     - name: mpu_stack_guard
 
     - name: printf_float
-      global_vars:
+      env:
+        global:
           LINKFLAGS:
               - -u _printf_float
 
     - name: scanf_float
-      global_vars:
+      env:
+        global:
           LINKFLAGS:
               - -u _scanf_float
 
     - name: feature/cpp
-      global_vars:
-        LINK:
-          - remove:
-            - arm-none-eabi-gcc
-          - arm-none-eabi-g++
+      env:
+        global:
+          LINK:
+            #FIX- remove:
+            #  - arm-none-eabi-gcc
+            - arm-none-eabi-g++
 
     - name: feature/stack_protector
 

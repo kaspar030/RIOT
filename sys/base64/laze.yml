@@ -1,2 +1,3 @@
 module:
-    sources: base64.c
+    - sources:
+        - base64.c

@@ -1,5 +1,5 @@
 module:
-    name: gnrc_sixlowpan_netif
+  - name: gnrc_sixlowpan_netif
     uses:
         - gnrc_sixlowpan_iphc
     sources:

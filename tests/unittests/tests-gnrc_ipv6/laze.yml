@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - tests-gnrc_ipv6
     blacklist:
         # insufficient memory
@@ -7,10 +7,11 @@ app:
 
 module:
     - name: tests-gnrc_ipv6
-      sources: tests-gnrc_ipv6.c
+      sources: [tests-gnrc_ipv6.c]
       depends:
           - gnrc_ipv6
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - gnrc_ipv6

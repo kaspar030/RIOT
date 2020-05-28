@@ -1,5 +1,5 @@
 module:
-    name: bloom
+  - name: bloom
     sources:
       - bloom.c
     depends:

@@ -1,5 +1,5 @@
 module:
-    name: shell_commands
+  - name: shell_commands
     options:
         use_optional_source_deps: True
     sources:
@@ -77,5 +77,6 @@ module:
         - ps
         - random
         - saul_reg
+        - sht1x
         - sntp
         - vfs

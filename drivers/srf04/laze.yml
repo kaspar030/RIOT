@@ -1,5 +1,5 @@
 module:
-    name: srf04
+  - name: srf04
     depends:
         - periph_gpio
         - periph_gpio_irq

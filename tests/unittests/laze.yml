@@ -3,7 +3,7 @@ defaults:
         disable_modules:
             - auto_init
 app:
-    name: tests/unittests
+  - name: tests/unittests
     depends:
         - tests-analog_util
         - tests-base64
@@ -79,7 +79,7 @@ module:
           - test_utils_interactive_sync
       uses:
           - xtimer
-      vars:
+      env:
           CFLAGS:
             # individual unittests might use "test_suites_define" to set
             # "-DTEST_SUITES", but the unittest main.c needs to get the full

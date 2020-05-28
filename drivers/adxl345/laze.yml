@@ -1,5 +1,5 @@
 module:
-    name: adxl345
+  - name: adxl345
     depends:
         - periph_i2c
     sources:

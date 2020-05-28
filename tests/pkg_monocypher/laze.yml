@@ -1,8 +1,9 @@
 app:
-    depends:
+  - depends:
         - embunit
         - random
-    global_vars:
+    env:
+      global:
         CFLAGS:
             - -DTHREAD_STACKSIZE_MAIN="(3072"
             - +

@@ -1,7 +1,7 @@
 context:
     - name: nrf52
       parent: nrf5x
-      vars:
+      env:
           LINKFLAGS:
             - -L${relpath}/ldscripts
             - -Wl,--defsym=_rom_start_addr=0x00000000
@@ -19,7 +19,7 @@ context:
 
     - name: nrf52832
       parent: nrf52
-      vars:
+      env:
         CFLAGS_DEFINES:
             - -DRIOT_MCU=\"nrf52832\"
             - -DCPU_NRF52832

@@ -1,7 +1,7 @@
 context:
   - name: atmega_common
     parent: riot
-    vars:
+    env:
       PREFIX: avr-
       LINKFLAGS:
         - -Wl,--defsym=__TEXT_REGION_LENGTH__=${ROM_LEN}-${RAM_LEN}

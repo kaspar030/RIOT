@@ -15,7 +15,8 @@ app:
     sources:
         - print_results.c
         - spin_random.c
-    global_vars:
+    env:
+      global:
         CFLAGS:
             - -DTIM_TEST_DEV="TIMER_DEV(0)"
             - -DTIM_REF_DEV="TIMER_DEV(0)"

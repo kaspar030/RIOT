@@ -1,5 +1,5 @@
 module:
-    name: posix_headers
+  - name: posix_headers
     export_vars:
         CFLAGS:
             - -I${relpath}/include

@@ -1,5 +1,5 @@
 module:
-    name: ds75lx
+  - name: ds75lx
     depends:
         - periph_i2c
     sources:

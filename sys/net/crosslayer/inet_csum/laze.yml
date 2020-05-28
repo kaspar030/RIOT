@@ -1,5 +1,5 @@
 module:
-    name: inet_csum
+  - name: inet_csum
     sources:
         - inet_csum.c
     uses:

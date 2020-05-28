@@ -1,5 +1,5 @@
 module:
-    name: hdc1000
+  - name: hdc1000
     depends:
         - div
         - periph_timer

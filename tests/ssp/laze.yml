@@ -2,7 +2,7 @@ app:
     sources:
     depends:
       - ssp
-    vars:
+    env:
         CFLAGS:
             - -Wno-array-bounds
             - -Wstringop-overflow=0

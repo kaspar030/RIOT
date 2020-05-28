@@ -1,6 +1,7 @@
 module:
   - name: isrpipe
-    sources: isrpipe.c
+    sources:
+      - isrpipe.c
     depends:
         - tsrb
 

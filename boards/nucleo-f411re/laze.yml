@@ -1,7 +1,7 @@
 builder:
-    name: nucleo-f411re
+  - name: nucleo-f411re
     parent: stm32f411re
-    vars:
+    env:
         CFLAGS:
             - -I${relpath}/include
     disable_modules:

@@ -1,5 +1,5 @@
 module:
-    name: bmp180
+  - name: bmp180
     depends:
         - periph_i2c
         - xtimer

@@ -1,5 +1,5 @@
 app:
-    depends:
+    - depends:
         - tests-vfs
 
 module:
@@ -17,6 +17,7 @@ module:
           - constfs
           - vfs
           - unittests-base
-      global_vars:
+      env:
+        global:
           testsuites:
               - vfs

@@ -1,15 +1,17 @@
 app:
-    depends:
+  - depends:
         - tests-fib
 
 module:
     - name: tests-fib
-      sources: tests-fib.c
+      sources:
+          - tests-fib.c
       depends:
           - fib
           - unittests-base
           - xtimer
-      global_vars:
+      env:
+        global:
           testsuites:
               - fib
           CFLAGS:

@@ -1,6 +1,6 @@
 module:
   - name: lua-contrib
-    depends: lua
+    depends: [ lua ]
     sources:
       - binsearch.c
       - lua_loadlib.c

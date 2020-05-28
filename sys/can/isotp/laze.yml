@@ -1,5 +1,5 @@
 module:
-    name: can_isotp
+  - name: can_isotp
     sources:
         - isotp.c
     depends:

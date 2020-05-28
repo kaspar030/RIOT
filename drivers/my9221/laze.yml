@@ -1,5 +1,5 @@
 module:
-    name: my9221
+  - name: my9221
     depends:
         - periph_gpio
         - xtimer

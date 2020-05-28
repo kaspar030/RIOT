@@ -1,5 +1,5 @@
 module:
-    name: slipdev
+  - name: slipdev
     depends:
         - periph_uart
         - tsrb

@@ -1,12 +1,12 @@
 module:
-    name: motor_driver
+  - name: motor_driver
     depends:
         - periph_gpio
         - periph_pwm
         - feature/motor_driver
     sources:
         - motor_driver.c
-    vars:
+    env:
         CFLAGS:
         # native defines motor driver parameters in board.h,
         # but guarded by MODULE_MOTOR_DRIVER.

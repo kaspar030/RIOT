@@ -1,7 +1,9 @@
 module:
-    name: newlib
-    sources: syscalls.c
-    global_vars:
+  - name: newlib
+    sources:
+      - syscalls.c
+    env:
+      global:
         CFLAGS:
             - -specs=nano.specs
     depends:

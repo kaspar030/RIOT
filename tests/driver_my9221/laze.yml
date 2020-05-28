@@ -1,7 +1,8 @@
 app:
-    depends:
+  - depends:
         - my9221
-    global_vars:
+    env:
+      global:
         CFLAGS:
             - -DTEST_MY9221_CLK="GPIO_PIN(0,1)"
             - -DTEST_MY9221_DAT="GPIO_PIN(0,2)"

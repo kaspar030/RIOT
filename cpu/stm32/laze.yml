@@ -1,14 +1,14 @@
 context:
-    name: stm32
+  - name: stm32
     parent: cortexm
-    vars:
+    env:
         CFLAGS:
             - -I${relpath}/include
         LINKFLAGS:
             - -L${relpath}/ldscripts
 
 module:
-    name: stm32_common
+  - name: stm32_common
     context: stm32
     sources:
         - cpu_common.c

@@ -1,5 +1,5 @@
 module:
-    name: isl29125
+  - name: isl29125
     depends:
         - periph_gpio_irq
     sources:

@@ -8,5 +8,5 @@ subdirs:
     - nrf52
     - sam0_common
     - samd21
-    - stm32_common
+    - stm32
     - stm32f4
