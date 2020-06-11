@@ -1,5 +1,8 @@
 MATCH_MAKE_VERSION = 4.%
 
+export CFLAGS_DBG=""
+export OPTIONAL_CFLAGS_BLACKLIST="-gz"
+
 MAKEFLAGS += --no-builtin-rules
 
 ifeq (,$(filter $(MATCH_MAKE_VERSION),$(MAKE_VERSION)))
@@ -575,6 +578,8 @@ endif # RIOTNOLINK
 $(ELFFILE): $(BASELIBS)
 	ls -la $(BASELIBS)
 	md5sum $(BASELIBS)
+	which $(LINK)
+	$(LINK) --version
 	$(_LINK) -o $@
 
 $(BINDIR)/$(APPLICATION_MODULE).a: pkg-build $(BUILDDEPS)
