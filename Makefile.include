@@ -573,6 +573,8 @@ link: ..compiler-check ..build-message $(BASELIBS)
 endif # RIOTNOLINK
 
 $(ELFFILE): $(BASELIBS)
+	ls -la $(BASELIBS)
+	md5sum $(BASELIBS)
 	$(Q)$(_LINK) -o $@
 
 $(BINDIR)/$(APPLICATION_MODULE).a: pkg-build $(BUILDDEPS)
