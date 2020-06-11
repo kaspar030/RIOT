@@ -590,7 +590,7 @@ $(_SUBMAKE_LIBS): $(BINDIR)/$(APPLICATION_MODULE).a pkg-build
 
 # 'print-size' triggers a rebuild. Use 'info-buildsize' if you do not need to rebuild.
 print-size: $(ELFFILE)
-	$(Q)$(SIZE) $(SIZEFLAGS) $<
+	$(Q)$(SIZE) $(SIZEFLAGS) $< || true
 
 %.hex: %.elf
 	$(Q)$(OBJCOPY) $(OFLAGS) -Oihex $< $@
