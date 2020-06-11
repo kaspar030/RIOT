@@ -786,7 +786,7 @@ test/available:
 # RIOTNOLINK="".
 ifeq (,$(RIOTNOLINK))
 test-input-hash: $(TESTS) $(ELFFILE) $(TEST_EXTRA_FILES)
-	sha1sum $^ > $(BINDIR)/test-input-hash.sha1
+	sha1sum $^ > $(BINDIR)/test-input-hash.sha1 || true
 else
 test-input-hash:
 	true
