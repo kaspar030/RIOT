@@ -1,8 +1,5 @@
 MATCH_MAKE_VERSION = 4.%
 
-export CFLAGS_DBG=""
-export OPTIONAL_CFLAGS_BLACKLIST="-gz"
-
 MAKEFLAGS += --no-builtin-rules
 
 ifeq (,$(filter $(MATCH_MAKE_VERSION),$(MAKE_VERSION)))
