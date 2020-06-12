@@ -17,4 +17,6 @@ QUIET ?= 1
 
 USEMODULE += ztimer_usec ztimer_msec ztimer_periph_rtt
 
+DEFAULT_MODULE += test_utils_interactive_sync
+
 include $(RIOTBASE)/Makefile.include
