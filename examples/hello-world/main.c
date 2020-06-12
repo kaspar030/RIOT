@@ -21,12 +21,19 @@
 
 #include <stdio.h>
 
+#include "ztimer.h"
+
 int main(void)
 {
     puts("Hello World!");
 
-    printf("You are running RIOT on a(n) %s board.\n", RIOT_BOARD);
-    printf("This board features a(n) %s MCU.\n", RIOT_MCU);
+    for (unsigned i = 0; i < 10; i++) {
+        uint32_t before = ztimer_now(ZTIMER_USEC);
+        ztimer_now(ZTIMER_MSEC);
+        printf("%"PRIu32"\n", ztimer_now(ZTIMER_USEC) - before);
+    }
+
+    puts("Test successful.");
 
     return 0;
 }

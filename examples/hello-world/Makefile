@@ -15,4 +15,6 @@ DEVELHELP ?= 1
 # Change this to 0 show compiler invocation lines by default:
 QUIET ?= 1
 
+USEMODULE += ztimer_usec ztimer_msec ztimer_periph_rtt
+
 include $(RIOTBASE)/Makefile.include
