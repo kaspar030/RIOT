@@ -103,6 +103,8 @@ void rtt_init(void)
     RTC->MODE0.CTRLA.reg = RTC_MODE0_CTRLA_MODE(0) | RTC_MODE0_CTRLA_ENABLE | RTC_MODE0_CTRLA_COUNTSYNC;
 #else
     RTC->MODE0.CTRL.reg = RTC_MODE0_CTRL_MODE(0) | RTC_MODE0_CTRL_ENABLE;
+    /* set up continuous read synchronization for COUNT */
+    RTC->MODE0.READREQ.reg = RTC_READREQ_RREQ | RTC_READREQ_RCONT;
 #endif
     _wait_syncbusy();
 
