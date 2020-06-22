@@ -2,7 +2,7 @@ app:
   - depends:
         - lto
         - -test_utils_interactive_sync
-    disable_modules:
+    disable:
         - develhelp
     env:
       global:
