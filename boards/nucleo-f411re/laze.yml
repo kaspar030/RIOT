@@ -4,7 +4,7 @@ builder:
     env:
         CFLAGS:
             - -I${relpath}/include
-    disable_modules:
+    disable:
         - periph_adc
 
 module:

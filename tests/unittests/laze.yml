@@ -1,6 +1,6 @@
 defaults:
     app:
-        disable_modules:
+        disable:
             - auto_init
 app:
   - name: tests/unittests

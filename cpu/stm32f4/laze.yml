@@ -14,7 +14,7 @@ context:
               - -Tstm32_common.ld
               - -Wl,--defsym=_rom_start_addr=0x08000000
               - -Wl,--defsym=_ram_start_addr=0x20000000
-      disable_modules:
+      disable:
           - periph_flashpage
           - periph_hwrng
           - periph_rtc

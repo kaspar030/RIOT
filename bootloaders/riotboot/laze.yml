@@ -7,7 +7,7 @@ app:
       depends:
           - board
           - riotboot_slot
-      disable_modules:
+      disable:
           - auto_init
           - core_init
           - core_msg
