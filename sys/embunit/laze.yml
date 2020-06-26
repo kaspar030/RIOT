@@ -15,7 +15,8 @@ module:
       - TextOutputter.c
       - TextUIRunner.c
       - XMLOutputter.c
-    export_vars:
+    env:
+      export:
         includes:
           - ${root}/sys/include/embUnit
 

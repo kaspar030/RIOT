@@ -1,6 +1,7 @@
 app:
-    depends:
+  - depends:
         - periph_timer
     env:
+      local:
         CFLAGS:
             - -DTIMER_SPEED=1000000

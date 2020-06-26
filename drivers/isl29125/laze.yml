@@ -4,6 +4,7 @@ module:
         - periph_gpio_irq
     sources:
         - isl29125.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    env:
+      export:
+        includes:
+            - ${relpath}/include

@@ -1,9 +1,10 @@
 app:
-    depends:
+  - depends:
         - shell
         - srf02
         - xtimer
-    export_vars:
+    env:
+      local:
         CFLAGS:
             - -DTEST_SRF02_I2C="I2C_DEV(0)"
             - -DTEST_MODE="SRF02_MODE_REAL_CM"

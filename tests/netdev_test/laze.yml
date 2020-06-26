@@ -1,6 +1,5 @@
 app:
-  - sources:
-    depends:
+  - depends:
         - gnrc
         - gnrc_neterr
         - gnrc_netif

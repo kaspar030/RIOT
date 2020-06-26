@@ -6,6 +6,7 @@ module:
         - xtimer
     sources:
         - hd44780.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    env:
+      export:
+        includes:
+            - ${relpath}/include

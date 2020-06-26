@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - rn2483
         - shell
         - shell_commands

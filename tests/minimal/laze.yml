@@ -8,3 +8,4 @@ app:
       global:
         CFLAGS:
             - -DLOG_LEVEL=LOG_NONE
+            - -DNDEBUG

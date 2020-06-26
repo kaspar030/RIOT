@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - fmt
         - hdc1000
         - periph_i2c

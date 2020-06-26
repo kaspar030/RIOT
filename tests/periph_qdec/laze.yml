@@ -1,4 +1,4 @@
 app:
-    depends:
+  - depends:
       - periph_qdec
       - xtimer

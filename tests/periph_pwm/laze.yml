@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - periph_pwm
         - shell
         - xtimer

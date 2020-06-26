@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - auto_init_gnrc_netif
         - enc28j60
         - gnrc_icmpv6_echo

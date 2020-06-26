@@ -17,6 +17,7 @@ module:
         - cc110x-rxtx.c
         - cc110x-spi.c
         - cc110x.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    env:
+      export:
+        includes:
+            - ${relpath}/include

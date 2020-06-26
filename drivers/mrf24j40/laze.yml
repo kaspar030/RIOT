@@ -19,6 +19,7 @@ module:
         - mrf24j40_getset.c
         - mrf24j40_internal.c
         - mrf24j40_netdev.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    env:
+      export:
+        includes:
+            - ${relpath}/include

@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - periph_i2c
         - tcs37727
         - xtimer

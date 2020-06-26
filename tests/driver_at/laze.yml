@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - at
         - at_urc
         - shell

@@ -8,10 +8,12 @@ module:
           - ccs811_full
       sources:
           - ccs811.c
-          - saul: ccs811_saul.c
-      export_vars:
-          CFLAGS:
-              - -I${relpath}/include
+          - saul:
+              - ccs811_saul.c
+      env:
+        export:
+          includes:
+              - ${relpath}/include
 
     - name: ccs811_full
       depends:

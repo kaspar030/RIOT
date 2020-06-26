@@ -12,9 +12,10 @@ module:
           - rn2xx3.c
           - rn2xx3_getset.c
           - rn2xx3_internal.c
-      export_vars:
-          CFLAGS:
-              - -I${relpath}/include
+      env:
+        export:
+          includes:
+              - ${relpath}/include
 
     - name: rn2903
       depends:

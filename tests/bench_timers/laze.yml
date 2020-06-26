@@ -1,22 +1,22 @@
 app:
-    depends:
+    - depends:
         - fmt
         - matstat
         - periph_timer
         - random
         - xtimer
-    uses:
+      uses:
         - periph_rtt
         - prng_mersenne
         - prng_minstd
         - prng_musl_lcg
         - prng_tinymt32
         - prng_xorshift
-    sources:
+      sources:
         - print_results.c
         - spin_random.c
-    env:
-      global:
-        CFLAGS:
+      env:
+        global:
+          CFLAGS:
             - -DTIM_TEST_DEV="TIMER_DEV(0)"
             - -DTIM_REF_DEV="TIMER_DEV(0)"

@@ -4,6 +4,7 @@ module:
         - periph_spi
     sources:
         - ds3234.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    env:
+      export:
+        includes:
+            - ${relpath}/include

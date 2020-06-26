@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - io1_xplained
         - printf_float
         - xtimer

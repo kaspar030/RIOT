@@ -2,9 +2,11 @@ module:
   - name: mag3110
     sources:
         - mag3110.c
-        - saul: mag3110_saul.c
+        - saul:
+          - mag3110_saul.c
     depends:
         - periph_i2c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    env:
+      export:
+        includes:
+            - ${relpath}/include

@@ -1,8 +1,9 @@
 app:
-    depends:
+  - depends:
         - tsl2561
         - xtimer
-    export_vars:
+    env:
+      local:
         CFLAGS:
             - -DTEST_I2C="I2C_DEV(0)"
             - -DTEST_ADDR="TSL2561_ADDR_FLOAT"

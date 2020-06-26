@@ -3,25 +3,24 @@ module:
       depends:
         - periph_i2c
         - xtimer
-      uses: 
+      uses:
         - si7006
         - si7013
         - si7020
         - si7021
       sources:
           - si70xx.c
-          - saul: si70xx_saul.c
-      export_vars:
-          CFLAGS:
-              - -I${relpath}/include
----
-template:
-    "%VARIANT%":
-        - si7006
-        - si7013
-        - si7020
-        - si7021
-module:
-    - name: "%VARIANT%"
+          - saul:
+              - si70xx_saul.c
+      env:
+        export:
+          includes:
+            - ${relpath}/include
+    - name: si7006
       depends: [ si70xx_base ]
-
+    - name: si7013
+      depends: [ si70xx_base ]
+    - name: si7020
+      depends: [ si70xx_base ]
+    - name: si7021
+      depends: [ si70xx_base ]

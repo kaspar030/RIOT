@@ -9,9 +9,10 @@ module:
         - mpu9250
     sources:
         - mpu9x50.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    env:
+      export:
+        includes:
+            - ${relpath}/include
 
   - name: mpu9150
     depends:

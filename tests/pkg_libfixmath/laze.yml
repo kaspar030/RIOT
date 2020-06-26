@@ -1,4 +1,3 @@
 app:
-  depends:
-    - test_utils_interactive_sync
+- depends:
     - libfixmath

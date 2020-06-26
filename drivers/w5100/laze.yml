@@ -6,6 +6,7 @@ module:
         - periph_gpio_irq
     sources:
         - w5100.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    env:
+      export:
+        includes:
+            - ${relpath}/include

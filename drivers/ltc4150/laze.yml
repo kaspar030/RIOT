@@ -7,7 +7,9 @@ module:
     sources:
         - ltc4150.c
         - ltc4150_last_minute.c
-        - saul: ltc4150_saul.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+        - saul:
+          - ltc4150_saul.c
+    env:
+      export:
+        includes:
+            - ${relpath}/include

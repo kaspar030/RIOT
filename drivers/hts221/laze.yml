@@ -4,7 +4,9 @@ module:
         - periph_i2c
     sources:
         - hts221.c
-        - saul: hts221_saul.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+        - saul:
+          - hts221_saul.c
+    env:
+      export:
+        includes:
+            - ${relpath}/include

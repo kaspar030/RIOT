@@ -1,4 +1,4 @@
 app:
-    depends:
+  - depends:
         - tps6274x
         - xtimer

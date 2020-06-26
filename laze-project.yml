@@ -210,4 +210,4 @@ module:
 
 subdirs:
     #[ dist, core, boards, cpu, drivers, sys, examples, tests, pkg, bootloaders ]
-    [ core, boards, cpu, drivers, sys, examples ]
+    [ core, boards, cpu, drivers, sys, examples, tests ]

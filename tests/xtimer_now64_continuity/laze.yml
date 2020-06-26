@@ -1,4 +1,4 @@
 app:
-    depends:
+  - depends:
         - fmt
         - xtimer

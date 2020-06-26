@@ -8,6 +8,7 @@ module:
         - xtimer
     sources:
         - ata8520e.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    env:
+      export:
+        includes:
+            - ${relpath}/include

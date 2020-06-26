@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         # use IEEE 802.15.4 as link-layer protocol
         - netdev_ieee802154
         - netdev_test

@@ -1,6 +1,5 @@
 app:
-    sources:
-    depends:
+  - depends:
       - periph_eeprom
       - shell
       - shell_commands

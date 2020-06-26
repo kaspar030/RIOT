@@ -5,7 +5,9 @@ module:
         - xtimer
     sources:
         - lsm6dsl.c
-        - saul: lsm6dsl_saul.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+        - saul:
+          - lsm6dsl_saul.c
+    env:
+      export:
+        includes:
+            - ${relpath}/include

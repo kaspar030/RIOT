@@ -11,11 +11,11 @@ app:
         - netdev_tap
     env:
       global:
-      CFLAGS:
-        - -DSHELL_NO_ECHO
-        # shorten default TCP timeouts to decrease test runtime
-        - -DGNRC_TCP_MSL=1000000
-        - -DGNRC_TCP_CONNECTION_TIMEOUT_DURATION=3000000
+        CFLAGS:
+          - -DSHELL_NO_ECHO
+          # shorten default TCP timeouts to decrease test runtime
+          - -DGNRC_TCP_MSL=1000000
+          - -DGNRC_TCP_CONNECTION_TIMEOUT_DURATION=3000000
 
     blacklist:
       - atmega_common

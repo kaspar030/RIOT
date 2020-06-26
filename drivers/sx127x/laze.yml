@@ -16,9 +16,10 @@ module:
           - sx127x_getset.c
           - sx127x_internal.c
           - sx127x_netdev.c
-      export_vars:
-          CFLAGS:
-              - -I${relpath}/include
+      env:
+        export:
+          includes:
+              - ${relpath}/include
 
     - name: sx1272
       depends: [ sx127x ]

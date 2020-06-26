@@ -1,4 +1,4 @@
 app:
-    depends:
+  - depends:
         - ad7746
         - xtimer

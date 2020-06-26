@@ -5,6 +5,7 @@ module:
         - periph_gpio
     sources:
         - lpd8808.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    env:
+      export:
+        includes:
+            - ${relpath}/include

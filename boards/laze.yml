@@ -1,8 +1,8 @@
 subdirs:
-    #    - common
+    - common
     #    - arduino-mega2560
     - native
-    #    - nrf52dk
+    - nrf52dk
     #    - nucleo-f401re
     #    - nucleo-f411re
     #    - samd21-xpro

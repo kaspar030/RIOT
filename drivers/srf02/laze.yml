@@ -1,8 +1,7 @@
 module:
   - name: srf02
     depends:
-        - xtimer
-    depends:
         - periph_i2c
+        - xtimer
     sources:
         - srf02.c

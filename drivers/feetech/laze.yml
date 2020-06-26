@@ -11,6 +11,7 @@ module:
         - feetech.c
         - reader.c
         - writer.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    env:
+      export:
+        includes:
+            - ${relpath}/include

@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - xtimer
         # select one:
         - bme280_i2c
