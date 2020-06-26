@@ -2,10 +2,9 @@ builder:
   - name: nrf52dk
     parent: nrf52832
     env:
-      CFLAGS:
-        - -I${relpath}/include
-      PORT:
-        - /dev/ttyACM0
+      includes  :
+        - ${relpath}/include
+      PORT: /dev/ttyACM0
 
     tools:
       flash:
@@ -35,7 +34,8 @@ module:
       - nrf52832
       - periph_gpio
 
-    export_vars:
-      includes:
-        - ${relpath}/include
+    env:
+      export:
+        includes:
+          - ${relpath}/include
 

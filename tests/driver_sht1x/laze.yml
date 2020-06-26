@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - ps
         - saul_default
         - shell

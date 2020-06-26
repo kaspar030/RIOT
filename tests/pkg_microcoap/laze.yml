@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - auto_init_gnrc_netif
         - gnrc_icmpv6_echo
         - gnrc_ipv6_default

@@ -11,7 +11,8 @@ module:
          - xtimer
      sources:
          - gnrc_sock.c
-     export_vars:
+     env:
+        export:
          CFLAGS:
              - -DSOCK_HAS_IPV6
          includes:

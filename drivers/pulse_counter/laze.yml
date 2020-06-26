@@ -6,7 +6,9 @@ module:
         - xtimer
     sources:
         - pulse_counter.c
-        - saul: pulse_counter_saul.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+        - saul:
+          - pulse_counter_saul.c
+    env:
+      export:
+        includes:
+            - ${relpath}/include

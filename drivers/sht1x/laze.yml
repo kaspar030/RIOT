@@ -9,10 +9,12 @@ module:
         - sht15
     sources:
         - sht1x.c
-        - saul: sht1x_saul.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+        - saul:
+          - sht1x_saul.c
+    env:
+      export:
+        includes:
+            - ${relpath}/include
 
   - name: sht10
     depends:

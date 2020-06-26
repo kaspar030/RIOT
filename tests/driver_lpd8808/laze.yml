@@ -1,4 +1,4 @@
 app:
-    depends:
+  - depends:
         - lpd8808
         - xtimer

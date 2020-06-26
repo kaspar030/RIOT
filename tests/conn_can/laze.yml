@@ -1,20 +1,20 @@
 app:
-    depends:
-        - can_isotp
-        - can_trx
-        - conn_can
-        - conn_can_isotp_multi
-        - ps
-        - shell
-        - shell_commands
-    uses:
-        - can_isotp
-        - conn_can_isotp_multi
-    env:
-      global:
-        CFLAGS:
-            - -DLOG_LEVEL="LOG_ALL"
+    - depends:
+          - can_isotp
+          - can_trx
+          - conn_can
+          - conn_can_isotp_multi
+          - ps
+          - shell
+          - shell_commands
+      uses:
+          - can_isotp
+          - conn_can_isotp_multi
+      env:
+        global:
+          CFLAGS:
+              - -DLOG_LEVEL="LOG_ALL"
 
-    blacklist:
-        # insufficient memory
-        - atmega_common
+      blacklist:
+          # insufficient memory
+          - atmega_common

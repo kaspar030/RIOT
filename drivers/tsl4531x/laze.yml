@@ -5,7 +5,9 @@ module:
         - xtimer
     sources:
         - tsl4531x.c
-        - saul: tsl4531x_saul.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+        - saul:
+          - tsl4531x_saul.c
+    env:
+      export:
+        includes:
+            - ${relpath}/include

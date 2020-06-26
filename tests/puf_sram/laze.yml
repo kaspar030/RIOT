@@ -1,4 +1,4 @@
 app:
-    depends:
+  - depends:
         - puf_sram
         - -test_utils_interactive_sync

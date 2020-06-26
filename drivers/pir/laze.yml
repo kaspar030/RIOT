@@ -2,10 +2,12 @@ module:
   - name: pir
     sources:
         - pir.c
-        - saul: pir_saul.c
+        - saul:
+          - pir_saul.c
     depends:
         - periph_gpio
         - periph_gpio_irq
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    env:
+      export:
+        includes:
+            - ${relpath}/include

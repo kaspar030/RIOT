@@ -1,7 +1,6 @@
 app:
   - depends:
         - embunit
-        - test_utils_interactive_sync
         - gnrc_sixlowpan_frag
     uses:
         - gnrc_ipv6

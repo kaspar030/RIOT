@@ -10,7 +10,9 @@ module:
         - xbee_encryption
     sources:
         - xbee.c
-        - gnrc: gnrc_xbee.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+        - gnrc:
+          - gnrc_xbee.c
+    env:
+      export:
+        includes:
+            - ${relpath}/include

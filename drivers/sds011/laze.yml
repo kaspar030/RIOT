@@ -5,7 +5,9 @@ module:
         - periph_uart
     sources:
         - sds011.c
-        - saul: sds011_saul.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+        - saul:
+          - sds011_saul.c
+    env:
+      export:
+        includes:
+            - ${relpath}/include

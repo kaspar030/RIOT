@@ -9,14 +9,14 @@ module:
       - adc081c
       - adc101c
       - adc121c
-
     sources:
         - adcxx1c.c
-        - saul: adcxx1c_saul.c
+        - saul:
+          - adcxx1c_saul.c
     env:
       export:
-        CFLAGS:
-            - -I${relpath}/include
+        includes:
+            - ${relpath}/include
 
   - name: adc081c
     depends: [ adcxx1c ]

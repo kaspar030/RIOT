@@ -5,6 +5,7 @@ module:
     sources:
         - veml6070.c
         - veml6070_saul.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    env:
+      export:
+        includes:
+            - ${relpath}/include

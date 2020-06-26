@@ -7,6 +7,7 @@ module:
       - ciphers.c
       - helper.c
     env:
+      local:
         CFLAGS:
             - -DRIOT_CHACHA_PRNG_DEFAULT=0x12345678
 

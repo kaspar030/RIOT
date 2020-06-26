@@ -6,6 +6,7 @@ module:
     sources:
         - bmp180.c
         - bmp180_saul.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    env:
+      export:
+        includes:
+            - ${relpath}/include

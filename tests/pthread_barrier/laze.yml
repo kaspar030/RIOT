@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - pthread
         - random
         - xtimer

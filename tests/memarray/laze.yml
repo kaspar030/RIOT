@@ -1,6 +1,5 @@
 app:
-    sources:
-    depends:
+  - depends:
         - memarray
         - ps
         - shell_commands

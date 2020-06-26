@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - bmx055
         - saul_default
         - xtimer

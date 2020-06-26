@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - ds18
         - printf_float
         - xtimer

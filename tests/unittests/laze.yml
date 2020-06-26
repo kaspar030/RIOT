@@ -38,7 +38,7 @@ app:
         - tests-ipv6_hdr
         - tests-luid
         - tests-matstat
-        - tests-mtd
+          #- tests-mtd
         - tests-nanocoap
         - tests-netopt
         - tests-netreg
@@ -52,7 +52,7 @@ app:
         - tests-saul_reg
         - tests-scanf_float
         - tests-seq
-        - tests-sht1x
+          #- tests-sht1x
         - tests-sixlowpan
         - tests-sixlowpan_ctx
         - tests-sixlowpan_sfr
@@ -80,6 +80,7 @@ module:
       uses:
           - xtimer
       env:
+        local:
           CFLAGS:
             # individual unittests might use "test_suites_define" to set
             # "-DTEST_SUITES", but the unittest main.c needs to get the full
@@ -89,7 +90,8 @@ module:
             - -UTEST_SUITES
             - ${testsuites}
 
-      export_vars:
+
+        export:
           CFLAGS:
               - -I${relpath}/common
 
@@ -102,10 +104,10 @@ module:
     # (This way the individual tests don't get compiled with varying test
     # suite lists, in order to improve cacheability.)
     - name: test_suites_define
-      export_vars:
+      env:
+        export:
           CFLAGS:
-              - prefix:
-                  - -DTEST_SUITES
+            - -DTEST_SUITES
 
 subdirs:
     - tests-analog_util

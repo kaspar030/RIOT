@@ -78,14 +78,13 @@ module:
       env:
         global:
           LINK:
-            #FIX- remove:
-            #  - arm-none-eabi-gcc
             - arm-none-eabi-g++
 
     - name: feature/stack_protector
 
     - name: riotboot_config
-      export_vars:
+      vars:
+        export:
           CFLAGS:
               - -DSLOT0_OFFSET=0x4000
 

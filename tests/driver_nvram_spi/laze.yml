@@ -1,8 +1,9 @@
 app:
-    depends:
+  - depends:
         - nvram_spi
         - xtimer
-    export_vars:
+    env:
+      local:
         CFLAGS:
             - -DTEST_NVRAM_SPI_DEV="SPI_DEV(0)"
             - -DTEST_NVRAM_SPI_CS="GPIO_PIN(0,0)"

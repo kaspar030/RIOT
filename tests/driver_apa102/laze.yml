@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - apa102
         - color
         - xtimer

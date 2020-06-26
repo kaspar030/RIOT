@@ -8,6 +8,7 @@ module:
         - xtimer
     sources:
         - uart_half_duplex.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    env:
+      export:
+        includes:
+            - ${relpath}/include
