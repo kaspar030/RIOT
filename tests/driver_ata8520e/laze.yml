@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - ata8520e
         - shell
         - shell_commands

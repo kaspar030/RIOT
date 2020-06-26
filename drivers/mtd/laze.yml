@@ -1,5 +1,6 @@
 module:
   - name: mtd
     sources:
-        - vfs: mtd-vfs.c
+        - vfs:
+          - mtd-vfs.c
         - mtd.c

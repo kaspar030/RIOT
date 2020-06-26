@@ -1,9 +1,10 @@
 app:
-    depends:
+  - depends:
         - bmp180
         - printf_float
         - xtimer
-    export_vars:
+    env:
+      local:
         CFLAGS:
             - -DTEST_I2C="I2C_DEV(0)"
             - -DTEST_MEASURE_OVERSAMPLING="BMP180_ULTRALOWPOWER"

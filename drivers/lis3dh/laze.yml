@@ -7,6 +7,7 @@ module:
     sources:
         - lis3dh.c
         - lis3dh_saul.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    env:
+      export:
+        includes:
+            - ${relpath}/include

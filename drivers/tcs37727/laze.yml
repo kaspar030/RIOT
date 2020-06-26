@@ -2,9 +2,11 @@ module:
   - name: tcs37727
     sources:
         - tcs37727.c
-        - saul: tcs37727_saul.c
+        - saul:
+          - tcs37727_saul.c
     depends:
         - periph_i2c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    env:
+      export:
+        includes:
+            - ${relpath}/include

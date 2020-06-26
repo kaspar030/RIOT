@@ -1,2 +1,2 @@
 app:
-  context: cortexm
+  - context: cortexm

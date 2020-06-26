@@ -1,4 +1,4 @@
 app:
-    depends:
+  - depends:
         - printf_float
         - xtimer

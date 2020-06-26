@@ -5,6 +5,7 @@ module:
       depends:
           - event
           - sock_async
-      export_vars:
+      env:
+        export:
           includes:
               - ${relpath}

@@ -2,7 +2,7 @@ app:
   - depends:
         - xtimer
     env:
-      global:
+      local:
         CFLAGS:
             - -DTEST_OUTPUT="1"
             - -DTEST_SPI="0"

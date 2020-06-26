@@ -7,10 +7,12 @@ module:
           - ds18_optimized
       sources:
           - ds18.c
-          - saul: ds18_saul.c
-      export_vars:
-          CFLAGS:
-              - -I${relpath}/include
+          - saul:
+              - ds18_saul.c
+      env:
+        export:
+          includes:
+              - ${relpath}/include
 
     - name: ds18_optimized
       depends:

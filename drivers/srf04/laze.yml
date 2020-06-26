@@ -6,6 +6,7 @@ module:
         - xtimer
     sources:
         - srf04.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    env:
+      export:
+        includes:
+            - ${relpath}/include

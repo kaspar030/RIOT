@@ -6,7 +6,9 @@ module:
         - xtimer
     sources:
         - hdc1000.c
-        - saul: hdc1000_saul.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+        - saul:
+          - hdc1000_saul.c
+    env:
+      export:
+        includes:
+            - ${relpath}/include

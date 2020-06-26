@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - nrf24l01p
         - ps
         - shell

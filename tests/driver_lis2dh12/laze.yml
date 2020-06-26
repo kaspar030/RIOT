@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - fmt
         - lis2dh12_spi
         - xtimer

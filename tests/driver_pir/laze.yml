@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - pir
         - xtimer
     env:

@@ -1,5 +1,5 @@
 app:
-    depends:
+  - depends:
         - shell
     uses:
         - periph_rtc

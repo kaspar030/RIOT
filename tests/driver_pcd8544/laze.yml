@@ -1,8 +1,9 @@
 app:
-    depends:
+  - depends:
         - pcd8544
         - shell
-    export_vars:
+    env:
+      local:
         CFLAGS:
             - -DTEST_PCD8544_SPI="SPI_DEV(0)"
             - -DTEST_PCD8544_CS="GPIO_PIN(0,0)"

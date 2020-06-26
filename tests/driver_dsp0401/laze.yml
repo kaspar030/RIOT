@@ -1,6 +1,7 @@
 app:
-    depends:
+  - depends:
         - dsp0401
     env:
+      local:
         CFLAGS:
             - -DLOOPS="3"

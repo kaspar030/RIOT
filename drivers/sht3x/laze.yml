@@ -6,7 +6,9 @@ module:
         - xtimer
     sources:
         - sht3x.c
-        - saul: sht3x_saul.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+        - saul:
+          - sht3x_saul.c
+    env:
+      export:
+        includes:
+            - ${relpath}/include

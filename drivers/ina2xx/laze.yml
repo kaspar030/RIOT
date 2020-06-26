@@ -4,7 +4,9 @@ module:
         - periph_i2c
     sources:
         - ina2xx.c
-        - saul: ina2xx_saul.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+        - saul:
+          - ina2xx_saul.c
+    env:
+      export:
+        includes:
+            - ${relpath}/include

@@ -1,8 +1,8 @@
 app:
-    sources:
-    depends:
+  - depends:
       - ssp
     env:
+      local:
         CFLAGS:
             - -Wno-array-bounds
             - -Wstringop-overflow=0

@@ -7,7 +7,9 @@ module:
         - xtimer
     sources:
         - ads101x.c
-        - saul: ads101x_saul.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+        - saul:
+          - ads101x_saul.c
+    env:
+      export:
+        includes:
+            - ${relpath}/include

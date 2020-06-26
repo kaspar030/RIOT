@@ -4,7 +4,7 @@ app:
           #- pn532_spi
         - xtimer
     env:
-      export:
+      local:
         CFLAGS:
             - -DTEST_PN532_I2C="I2C_DEV(0)"
             - -DTEST_PN532_RESET="GPIO_PIN(0,0)"

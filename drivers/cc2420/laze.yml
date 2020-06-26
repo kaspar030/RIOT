@@ -21,6 +21,7 @@ module:
         - cc2420_getset.c
         - cc2420_internal.c
         - cc2420_netdev.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    env:
+      export:
+        includes:
+            - ${relpath}/include

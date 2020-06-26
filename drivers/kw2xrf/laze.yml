@@ -19,6 +19,7 @@ module:
         - gnrc_sixlowpan
         - netstats_l2
         - sixlowpan
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+    env:
+      export:
+        includes:
+            - ${relpath}/include

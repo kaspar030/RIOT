@@ -5,7 +5,9 @@ module:
         - xtimer
     sources:
         - fxos8700.c
-        - saul: fxos8700_saul.c
-    export_vars:
-        CFLAGS:
-            - -I${relpath}/include
+        - saul:
+          - fxos8700_saul.c
+    env:
+      export:
+        includes:
+            - ${relpath}/include

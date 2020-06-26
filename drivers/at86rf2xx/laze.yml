@@ -12,7 +12,8 @@ module:
           - periph_gpio_irq
           - periph_spi
           - xtimer
-          - gnrc: auto_init_at86rf2xx
+          - gnrc:
+              - auto_init_at86rf2xx
       uses:
           - at86rf212b
           - at86rf231
@@ -25,9 +26,10 @@ module:
           - openthread
           - sixlowpan
 
-      export_vars:
-          CFLAGS:
-              - -I${relpath}/include
+      env:
+        export:
+          includes:
+              - ${relpath}/include
 
     - name: at86rf233
       depends: [ at86rf2xx ]

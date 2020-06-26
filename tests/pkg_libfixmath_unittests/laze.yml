@@ -1,5 +1,5 @@
 app:
-  depends:
+- depends:
     - libfixmath-unittests
   blacklist:
     # unittests fail to compile due to integer width errors

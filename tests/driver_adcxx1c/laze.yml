@@ -1,13 +1,14 @@
 app:
-    depends:
+  - depends:
         - adcxx1c_params
         - adc081c
         - xtimer
 
 module:
     - name: adcxx1c_params
-      export_vars:
-        CFLAGS:
+      env:
+        export:
+          CFLAGS:
             - -DADCXX1C_PARAM_LOW_LIMIT="90"
             - -DADCXX1C_PARAM_HIGH_LIMIT="130"
             - -DADCXX1C_PARAM_HYSTERESIS="10"
