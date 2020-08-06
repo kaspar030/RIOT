@@ -173,7 +173,6 @@ void thread_add_to_list(list_node_t *list, thread_t *thread)
     list->next = new_node;
 }
 
-#ifdef DEVELHELP
 uintptr_t thread_measure_stack_free(char *stack)
 {
     uintptr_t *stackp = (uintptr_t *)stack;
@@ -187,7 +186,6 @@ uintptr_t thread_measure_stack_free(char *stack)
     uintptr_t space_free = (uintptr_t)stackp - (uintptr_t)stack;
     return space_free;
 }
-#endif
 
 kernel_pid_t thread_create(char *stack, int stacksize, uint8_t priority,
                            int flags, thread_task_func_t function, void *arg,
@@ -223,7 +221,8 @@ kernel_pid_t thread_create(char *stack, int stacksize, uint8_t priority,
     /* allocate our thread control block at the top of our stackspace */
     thread_t *thread = (thread_t *)(stack + stacksize);
 
-#if defined(DEVELHELP) || defined(SCHED_TEST_STACK)
+#if defined(DEVELHELP) || defined(SCHED_TEST_STACK) \
+    || defined(MODULE_TEST_UTILS_PRINT_STACK_USAGE)
     if (flags & THREAD_CREATE_STACKTEST) {
         /* assign each int of the stack the value of it's address */
         uintptr_t *stackmax = (uintptr_t *)(stack + stacksize);

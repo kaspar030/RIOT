@@ -483,7 +483,6 @@ void thread_add_to_list(list_node_t *list, thread_t *thread);
  */
 const char *thread_getname(kernel_pid_t pid);
 
-#ifdef DEVELHELP
 /**
  * @brief Measures the stack usage of a stack
  *
@@ -494,7 +493,6 @@ const char *thread_getname(kernel_pid_t pid);
  * @return          the amount of unused space of the thread's stack
  */
 uintptr_t thread_measure_stack_free(char *stack);
-#endif /* DEVELHELP */
 
 /**
  * @brief   Get the number of bytes used on the ISR stack
