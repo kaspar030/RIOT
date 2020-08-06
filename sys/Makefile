@@ -34,6 +34,9 @@ endif
 ifneq (,$(filter test_utils_interactive_sync,$(USEMODULE)))
   DIRS += test_utils/interactive_sync
 endif
+ifneq (,$(filter test_utils_print_stack_usage,$(USEMODULE)))
+  DIRS += test_utils/print_stack_usage
+endif
 ifneq (,$(filter dummy_thread,$(USEMODULE)))
   DIRS += test_utils/dummy_thread
 endif
