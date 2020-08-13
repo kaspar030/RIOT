@@ -45,6 +45,7 @@ extern "C" {
  *
  * This configures NRF_UARTE0 to the RX/TX pins as marked on the board, left of
  * the battery connector.
+ * Enable by setting UART_NUMOF.
  *
  * @{
  */
@@ -64,7 +65,8 @@ static const uart_conf_t uart_config[] = {
 
 #define UART_0_ISR          (isr_uart0)
 
-#define UART_NUMOF          ARRAY_SIZE(uart_config)
+//#define UART_NUMOF          ARRAY_SIZE(uart_config)
+#define UART_NUMOF          0
 /** @} */
 
 #ifdef __cplusplus
