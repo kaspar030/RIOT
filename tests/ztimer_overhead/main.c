@@ -42,7 +42,7 @@ int main(void)
 
     unsigned n = SAMPLES;
     while (n--) {
-        int32_t overhead = ztimer_overhead(ZTIMER_USEC, BASE);
+        int32_t overhead = ztimer_overhead_set(ZTIMER_USEC, BASE);
         total += labs(overhead);
         if (overhead < min) {
             min = overhead;

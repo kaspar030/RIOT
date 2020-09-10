@@ -44,11 +44,13 @@
 #include "ztimer/convert_frac.h"
 #include "ztimer/convert_shift.h"
 #include "ztimer/convert_muldiv64.h"
+#include "ztimer/overhead.h"
 #include "ztimer/periph_timer.h"
 #include "ztimer/periph_rtt.h"
 #include "ztimer/periph_rtc.h"
 #include "ztimer/config.h"
 
+//#define LOG_LEVEL LOG_DEBUG
 #include "log.h"
 
 #define WIDTH_TO_MAXVAL(width)  (UINT32_MAX >> (32 - width))
@@ -267,15 +269,65 @@ void ztimer_init(void)
 #  else
     LOG_DEBUG("ztimer_init(): ZTIMER_USEC without conversion\n");
 #  endif
+
+#if MODULE_ZTIMER_AUTO_ADJUST && !(CONFIG_ZTIMER_USEC_ADJUST_SET \
+    && CONFIG_ZTIMER_USEC_ADJUST_SLEEP)
+#   if CONFIG_ZTIMER_AUTO_ADJUST_SETTLE
+    /* Some MCUs neet time to warm up their clocks, during which
+     * timing is inaccuarte. So we need to wait a bit.  */
+    ztimer_sleep(ZTIMER_USEC, CONFIG_ZTIMER_AUTO_ADJUST_SETTLE);
+#   endif
+#endif
+
 #  ifdef CONFIG_ZTIMER_USEC_ADJUST_SET
-    LOG_DEBUG("ztimer_init(): ZTIMER_USEC setting adjust_set value to %i\n",
-              CONFIG_ZTIMER_USEC_ADJUST_SET );
     ZTIMER_USEC->adjust_set = CONFIG_ZTIMER_USEC_ADJUST_SET;
+#  elif MODULE_ZTIMER_AUTO_ADJUST
+    {
+        int32_t overhead = ztimer_overhead_set(ZTIMER_USEC, 1000);
+        if (overhead > 0) {
+            ZTIMER_USEC->adjust_set = overhead + 1;
+        }
+        for (unsigned i = 0; i < 100; i++) {
+            int32_t overhead = ztimer_overhead_set(ZTIMER_USEC, 1000);
+            if (overhead < 0) {
+                printf("ovset: %li\n", overhead);
+                ZTIMER_USEC->adjust_set += overhead;
+            }
+        }
+    }
 #  endif
+    if (ZTIMER_USEC->adjust_set) {
+        LOG_DEBUG("ztimer_init(): ZTIMER_USEC setting adjust_set value to %i\n",
+              ZTIMER_USEC->adjust_set);
+    }
+
 #  ifdef CONFIG_ZTIMER_USEC_ADJUST_SLEEP
-    LOG_DEBUG("ztimer_init(): ZTIMER_USEC setting adjust_sleep value to %i\n",
-              CONFIG_ZTIMER_USEC_ADJUST_SLEEP );
     ZTIMER_USEC->adjust_sleep = CONFIG_ZTIMER_USEC_ADJUST_SLEEP;
+#  elif MODULE_ZTIMER_AUTO_ADJUST
+    {
+        int32_t overhead = ztimer_overhead_sleep(ZTIMER_USEC, 1000);
+        if (overhead > 0) {
+            ZTIMER_USEC->adjust_sleep = overhead;
+        }
+        for (unsigned i = 0; i < 100; i++) {
+            int32_t overhead = ztimer_overhead_sleep(ZTIMER_USEC, 10000);
+            if (overhead < 0) {
+                printf("ov: %li\n", overhead);
+                ZTIMER_USEC->adjust_sleep += overhead;
+            }
+        }
+    }
+#  endif
+
+    if (ZTIMER_USEC->adjust_sleep) {
+        LOG_DEBUG("ztimer_init(): ZTIMER_USEC setting adjust_sleep value to %i\n",
+              ZTIMER_USEC->adjust_sleep);
+    }
+
+#  ifdef MODULE_PM_LAYERED
+    LOG_DEBUG("ztimer_init(): ZTIMER_USEC setting required_pm_mode to %i\n",
+              CONFIG_ZTIMER_USEC_REQUIRED_PM_MODE);
+    ZTIMER_USEC->required_pm_mode = CONFIG_ZTIMER_USEC_REQUIRED_PM_MODE;
 #  endif
 #endif
 

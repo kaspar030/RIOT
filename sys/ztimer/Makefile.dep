@@ -132,3 +132,12 @@ ifneq (,$(filter ztimer_sec,$(USEMODULE)))
     endif
   endif
 endif
+
+ifneq (,$(filter ztimer_auto_init,$(USEMODULE)))
+  # cannot have DEFAULT_MODULES with deps, so flatten
+  # ztimer_auto_adjust => ztimer_overhead here
+  ifeq (,$(filter ztimer_auto_adjust,$(DISABLE_MODULE)))
+    USEMODULE += ztimer_auto_adjust
+    USEMODULE += ztimer_overhead
+  endif
+endif
