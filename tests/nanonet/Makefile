@@ -25,10 +25,13 @@ DISABLE_MODULE += core_msg
 #CFLAGS += -DENCX24J600_INT=$(ENC_INT)
 #USEMODULE += encx24j600
 
+# use this for USB ethernet
+#USEMODULE += usbus_cdc_ecm
+
 #
 # debug build
 #
-CFLAGS += -DDEVELHELP -DENABLE_NANONET_DEBUG -DNANOCOAP_DEBUG -g
+#CFLAGS += -DDEVELHELP -DENABLE_NANONET_DEBUG -DNANOCOAP_DEBUG -g
 
 #
 # headless, small-memory configuration
