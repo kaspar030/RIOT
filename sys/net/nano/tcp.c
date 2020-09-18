@@ -129,12 +129,21 @@ static void tcp_build_hdr(tcp_tcb_t *tcb, tcp_hdr_t *hdr, uint8_t flags)
     hdr->window_size = tcp_window_available(tcb);
 }
 
-static int tcp_send_hdr(tcp_tcb_t *tcb, tcp_hdr_t *hdr)
+static int tcp_send_frame(tcp_tcb_t *tcb, tcp_hdr_t *hdr)
 {
-    DEBUG("tcp_send_hdr()\n");
+    DEBUG("tcp_send_frame()\n");
     /* TODO: handle possible options */
     /* TODO: set up timeout */
     iolist_t iolist = { .iol_base=hdr, .iol_len=sizeof(*hdr) };
+    iolist_t iolist_payload = { .iol_base="foo\n", .iol_len=4 };
+    if (tcb->state == ESTABLISHED && hdr->flags & TCP_FLAG_ACK) {
+        size_t to_send = tcp_send_max(tcb, iolist_payload.iol_len);
+        if (to_send) {
+            iolist.iol_next = &iolist_payload;
+            tcb->snd_nxt += to_send;
+        }
+    }
+
     return ipv4_send(&iolist, tcb->peer.ipv4, 0x6);
 }
 
@@ -154,7 +163,7 @@ static int tcp_send_syn(tcp_tcb_t *tcb)
 
     hdr.seq_nr = htonl(tcb->iss);
 
-    return tcp_send_hdr(tcb, &hdr);
+    return tcp_send_frame(tcb, &hdr);
 }
 
 static int tcp_reset(tcp_tcb_t *tcb)
@@ -166,7 +175,7 @@ static int tcp_reset(tcp_tcb_t *tcb)
     tcp_hdr_t hdr;
     tcp_build_hdr(tcb, &hdr, TCP_FLAG_RST);
 
-    return tcp_send_hdr(tcb, &hdr);
+    return tcp_send_frame(tcb, &hdr);
 }
 
 static int tcp_reply_connection_refused(nano_ctx_t *ctx, size_t offset)
@@ -203,7 +212,7 @@ static int tcp_send_ack(tcp_tcb_t *tcb)
     hdr.seq_nr = htonl(tcb->iss + tcb->snd_nxt);
     hdr.ack_nr = htonl(tcb->irs + tcb->rcv_nxt);
 
-    return tcp_send_hdr(tcb, &hdr);
+    return tcp_send_frame(tcb, &hdr);
 }
 
 static int tcp_send_fin(tcp_tcb_t *tcb)
@@ -215,7 +224,7 @@ static int tcp_send_fin(tcp_tcb_t *tcb)
     hdr.seq_nr = htonl(tcb->iss + tcb->snd_nxt);
     hdr.ack_nr = htonl(tcb->irs + tcb->rcv_nxt);
 
-    return tcp_send_hdr(tcb, &hdr);
+    return tcp_send_frame(tcb, &hdr);
 }
 
 static int tcp_send_finack(tcp_tcb_t *tcb)
@@ -227,7 +236,7 @@ static int tcp_send_finack(tcp_tcb_t *tcb)
     hdr.seq_nr = htonl(tcb->iss + tcb->snd_nxt);
     hdr.ack_nr = htonl(tcb->irs + tcb->rcv_nxt);
 
-    return tcp_send_hdr(tcb, &hdr);
+    return tcp_send_frame(tcb, &hdr);
 }
 
 static int tcp_handle_synsent(nano_ctx_t *ctx, tcp_tcb_t *tcb, tcp_hdr_t *hdr)
