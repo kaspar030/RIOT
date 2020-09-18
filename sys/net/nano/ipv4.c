@@ -142,7 +142,7 @@ int ipv4_send(const iolist_t *iolist, uint32_t dest_ip, int protocol)
         .total_len = htons(sizeof(hdr) + payload_len)
     };
 
-    hdr.hdr_chksum = ~nano_util_calcsum(0, (uint8_t *)&hdr, sizeof(ipv4_hdr_t));
+    hdr.hdr_chksum = ~nano_util_calcsum(0, (uint8_t *)&hdr, sizeof(hdr));
 
     ipv4_set_l4_checksum(&hdr, iolist, payload_len, protocol);
 
