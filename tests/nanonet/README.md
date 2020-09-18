@@ -1,5 +1,7 @@
 # how to use
 
+    # sudo ip tuntap add dev tap0 mode tap user ${SUDO_USER}
+
     # sudo bin/native/nanonet.elf tap0
     # (in another shell)
     # sudo ip a a 192.168.111.1/24 dev tap0; sudo ip link set up dev tap0;

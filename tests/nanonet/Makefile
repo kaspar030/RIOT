@@ -5,6 +5,7 @@ USEMODULE += nanocoap
 USEMODULE += netdev_default
 
 USEMODULE += nanonet nanonet_udp nanonet_ipv6 nanonet_eth nanonet_ipv4
+USEMODULE += nanonet_tcp xtimer fmt
 
 DISABLE_MODULE += core_msg
 #
