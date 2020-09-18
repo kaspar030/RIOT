@@ -12,3 +12,7 @@ ifneq (,$(filter nanonet_ipv6,$(USEMODULE)))
   USEMODULE += nanonet_ndp
   USEMODULE += nanonet_icmpv6
 endif
+
+ifneq (,$(filter nanonet_tcp,$(USEMODULE)))
+  USEMODULE += random
+endif
