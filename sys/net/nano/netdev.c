@@ -63,6 +63,13 @@ static at86rf2xx_t at86rf2xx;
 static encx24j600_t encx24j600;
 #endif
 
+#ifdef MODULE_USBUS_CDC_ECM
+#define USB_H_USER_IS_RIOT_INTERNAL
+#include "usb/usbus/cdc/ecm.h"
+extern usbus_cdcecm_device_t cdcecm; /* declared in the usb auto init file */
+extern void cdcecm_netdev_setup(usbus_cdcecm_device_t *cdcecm);
+#endif
+
 static const netdev_t *_netdevs[] = {
 #ifdef MODULE_NETDEV_TAP
     (netdev_t*)&netdev_tap,
@@ -75,6 +82,9 @@ static const netdev_t *_netdevs[] = {
 #endif
 #ifdef MODULE_ENCX24J600
     (netdev_t*)&encx24j600,
+#endif
+#ifdef MODULE_USBUS_CDC_ECM
+    &cdcecm.netdev,
 #endif
 };
 
@@ -95,6 +105,8 @@ static void _netdev_isr(netdev_t *netdev, netdev_event_t event)
     unsigned devnum = (unsigned)netdev->context;
     nano_dev_t *dev = &nanonet_devices[devnum];
 
+    static unsigned pktnum;
+
     switch(event) {
         case NETDEV_EVENT_RX_COMPLETE:
             {
@@ -106,7 +118,8 @@ static void _netdev_isr(netdev_t *netdev, netdev_event_t event)
                     if (nbytes > 0) {
                         dev->handle_rx(dev, nanonet_rxbuf, nbytes);
                     }
-                } while (nbytes >= 0);
+                    printf("%u\n", pktnum++);
+                } while (nbytes > 0);
             }
             break;
         case NETDEV_EVENT_TX_COMPLETE:
@@ -253,6 +266,11 @@ void nanonet_init_devices(void)
         .int_pin   = ENCX24J600_INT
     };
     encx24j600_setup(&encx24j600, &encx24j600_params);
+    nanonet_init_netdev_eth(n++);
+#endif
+
+#ifdef MODULE_USBUS_CDC_ECM
+    cdcecm_netdev_setup(&cdcecm);
     nanonet_init_netdev_eth(n++);
 #endif
 }
