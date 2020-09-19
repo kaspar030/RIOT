@@ -1,8 +1,5 @@
 app:
-    - sources:
-          - main.c
-
-      depends:
+    - depends:
           - asymcute
           - sock_util
 
@@ -13,11 +10,8 @@ app:
           - shell
           - shell_commands
           - ps
-
-      env:
-        global:
-          CFLAGS:
-              - -DDEVELHELP
+          #
+          - develhelp
 
       blacklist:
           # insufficient memory
