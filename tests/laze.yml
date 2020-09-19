@@ -4,6 +4,7 @@ subdirs:
 # C tests
 defaults:
     app:
+        context: riot
         sources:
           - main.c
         depends:
