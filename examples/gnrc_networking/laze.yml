@@ -1,6 +1,5 @@
 app:
     - sources:
-          - main.c
           - udp.c
 
       depends:
