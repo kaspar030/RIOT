@@ -33,6 +33,7 @@ module:
     uses:
         - mtd
         - motor_driver
+        - periph_qdec
 
   - name: feature/motor_driver
   - name: feature/cpp
