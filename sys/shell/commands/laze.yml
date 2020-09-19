@@ -77,5 +77,6 @@ module:
         - ps
         - random
         - saul_reg
+        - sht1x
         - sntp
         - vfs
