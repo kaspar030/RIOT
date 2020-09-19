@@ -2,7 +2,7 @@ module:
   - name: sdcard_spi
     depends:
         - auto_init:
-          - auto_init_storage
+          - ?auto_init_storage
         - checksum
         - div
         - periph_gpio
