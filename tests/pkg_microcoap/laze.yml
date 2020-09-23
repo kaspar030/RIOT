@@ -12,6 +12,6 @@ app:
     sources:
         - coap.c
         - microcoap_sock.c
-    blacklist:
+    blocklist:
         # insufficient memory
         - atmega_common

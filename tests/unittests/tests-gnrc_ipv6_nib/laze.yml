@@ -2,7 +2,7 @@ app:
   - depends:
       - tests-gnrc_ipv6_nib
 
-    blacklist:
+    blocklist:
         # insufficient memory
         - atmega_common
 module:

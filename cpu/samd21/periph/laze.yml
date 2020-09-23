@@ -1,11 +1,9 @@
-template:
-    "%NAME%":
-        - pm
-        - pwm
-
 module:
-  - name: "periph_%NAME%"
+  - name: periph_pm
     context: samd21
-
     sources:
-        - "%NAME%.c"
+        - pm.c
+  - name: periph_pwm
+    context: samd21
+    sources:
+        - pwm.c

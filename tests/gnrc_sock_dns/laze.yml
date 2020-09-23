@@ -10,6 +10,6 @@ app:
         - shell_commands
         - sock_dns
 
-    blacklist:
+    blocklist:
         # insufficient memory
         - atmega_common

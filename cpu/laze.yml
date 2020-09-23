@@ -4,12 +4,12 @@ subdirs:
     - atmega2560
     - cortexm_common
     - native
-      #    - atmega_common
-      #    - atmega2560
+    - atmega_common
+    - atmega2560
     - cortexm_common
     - nrf5x_common
     - nrf52
-      #    - sam0_common
-      #    - samd21
-      #    - stm32_common
-      #    - stm32f4
+    - sam0_common
+    - samd21
+    - stm32_common
+    - stm32f4

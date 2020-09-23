@@ -2,6 +2,10 @@ app:
     - depends:
         - tests-pktbuf
 
+      blocklist:
+          # insufficient memory
+          - atmega_common
+
 module:
     - name: tests-pktbuf
       sources: [tests-pktbuf.c]

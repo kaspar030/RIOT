@@ -1,13 +1,13 @@
 app:
   - depends:
         - embunit
+        - netdev_ieee802154
+        - netdev_test
         - gnrc_ipv6
         - gnrc_ipv6_nib_6ln
         - gnrc_netif
         - gnrc_sixlowpan
         - gnrc_sixlowpan_ctx
-        - netdev_ieee802154
-        - netdev_test
     sources:
         - mockup_netif.c
     env:
@@ -17,5 +17,5 @@ app:
             - -DGNRC_PKTBUF_SIZE="512"
             - -DTEST_SUITES
 
-    blacklist:
+    blocklist:
         - atmega_common

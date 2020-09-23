@@ -10,17 +10,19 @@ module:
           includes:
               - ${relpath}/include
 
----
-template:
-    "%NAME%":
-        - feature/periph_gpio
-        - feature/periph_gpio_irq
-        - feature/periph_adc
-        - feature/periph_i2c
-        - feature/periph_spi
-        - feature/periph_timer
-        - feature/periph_uart
-
-module:
-    - name: "%NAME%"
+    - name: feature/periph_gpio
+      depends: [ boards_common_arduino-atmega ]
+    - name: feature/periph_gpio_irq
+      depends: [ boards_common_arduino-atmega ]
+    - name: feature/periph_adc
+      depends: [ boards_common_arduino-atmega ]
+    - name: feature/periph_i2c
+      depends: [ boards_common_arduino-atmega ]
+    - name: feature/periph_spi
+      depends: [ boards_common_arduino-atmega ]
+    - name: feature/periph_spi
+      depends: [ boards_common_arduino-atmega ]
+    - name: feature/periph_timer
+      depends: [ boards_common_arduino-atmega ]
+    - name: feature/periph_uart
       depends: [ boards_common_arduino-atmega ]

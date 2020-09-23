@@ -9,7 +9,7 @@ app:
         - cpu/native:
             - tests/pkg_fatfs/settings
 
-    blacklist:
+    blocklist:
         - atmega_common
 
 module:

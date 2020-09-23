@@ -1,6 +1,6 @@
 app:
   - depends:
         - gnrc_mac
-    blacklist:
+    blocklist:
         # insufficient memory
         - atmega_common

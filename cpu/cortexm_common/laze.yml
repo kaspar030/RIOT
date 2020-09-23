@@ -27,6 +27,9 @@ context:
         libs:
             - -lm
 
+        RIOTBOOT_LEN: "0x2000"
+        SLOT0_OFFSET: ${RIOTBOOT_LEN}
+
 defaults:
     module:
         context: cortexm
@@ -78,15 +81,17 @@ module:
       env:
         global:
           LINK:
-            - arm-none-eabi-g++
+            - arm-none-eabi-c++
 
     - name: feature/stack_protector
 
     - name: riotboot_config
-      vars:
+      depends:
+        - feature/riotboot
+      env:
         export:
           CFLAGS:
-              - -DSLOT0_OFFSET=0x4000
+              - -DSLOT0_OFFSET=${SLOT0_OFFSET}
 
 subdirs:
     - periph

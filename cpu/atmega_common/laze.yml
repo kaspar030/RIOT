@@ -23,9 +23,10 @@ module:
       - irq_arch.c
       - startup.c
       - thread_arch.c
-    export_vars:
-      CFLAGS:
-        - -I${relpath}/include
+    env:
+      export:
+        includes:
+        - ${relpath}/include
 
   - name: feature/periph_cpuid
   - name: feature/periph_eeprom

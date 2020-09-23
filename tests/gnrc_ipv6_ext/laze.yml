@@ -11,6 +11,6 @@ app:
         - ps
         - shell
 
-    blacklist:
+    blocklist:
         # insufficient memory
         - atmega_common

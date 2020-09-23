@@ -20,8 +20,9 @@ laze create --type=module --auto-sources --name=${MODULE_NAME} $(arglist --depen
 
 [ -d "include" ] && {
     {
-        echo "    export_vars:"
-        echo "        CFLAGS:"
-        echo "            - -I\${relpath}/include"
+        echo "    env:"
+        echo "      export:"
+        echo "       includes:"
+        echo "         - \${relpath}/include"
     } >> laze.yml
 }

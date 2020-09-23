@@ -63,7 +63,7 @@ app:
         - tests-vfs
         - tests-zptr
 
-    blacklist:
+    blocklist:
         # insufficient memory
         - atmega_common
         - samd21-xpro
@@ -90,10 +90,9 @@ module:
             - -UTEST_SUITES
             - ${testsuites}
 
-
         export:
-          CFLAGS:
-              - -I${relpath}/common
+          includes:
+              - ${relpath}/common
 
     # some modules (e.g., gnrc_pktbuf) trigger conditional compiles
     # on "#if defined(TEST_SUITES)".

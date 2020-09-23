@@ -7,6 +7,6 @@ app:
         - shell
         - shell_commands
 
-    blacklist:
+    blocklist:
         # insufficient memory
         - atmega_common

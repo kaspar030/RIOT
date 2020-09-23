@@ -10,6 +10,6 @@ app:
         CFLAGS:
             - -DGNRC_PKTBUF_SIZE="200"
             - -DTEST_SUITES
-    blacklist:
+    blocklist:
         # insufficient memory
         - atmega_common
