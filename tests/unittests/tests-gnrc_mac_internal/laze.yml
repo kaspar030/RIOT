@@ -1,7 +1,7 @@
 app:
   - depends:
         - tests-gnrc_mac_internal
-    blacklist:
+    blocklist:
         - atmega_common
 
 module:

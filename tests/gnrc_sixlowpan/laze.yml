@@ -9,6 +9,6 @@ app:
         - gnrc_udp
         # Dumps packets
         - gnrc_pktdump
-    blacklist:
+    blocklist:
         # insufficient memory
         - atmega_common

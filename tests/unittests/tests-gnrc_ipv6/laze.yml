@@ -1,7 +1,7 @@
 app:
   - depends:
         - tests-gnrc_ipv6
-    blacklist:
+    blocklist:
         # insufficient memory
         - atmega_common
 

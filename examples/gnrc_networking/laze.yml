@@ -29,6 +29,6 @@ app:
           # development process:
           - develhelp
 
-      blacklist:
+      blocklist:
           # insufficient memory
           - atmega_common

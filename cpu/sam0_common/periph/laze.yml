@@ -1,27 +1,29 @@
 defaults:
   module:
     context: sam0
+    depends:
+      - periph_common
 
 module:
   - name: periph_adc
     sources: [adc.c]
-  - name: cpuid
+  - name: periph_cpuid
     sources: [cpuid.c]
-  - name: flashpage
+  - name: periph_flashpage
     sources: [flashpage.c]
-  - name: i2c
+  - name: periph_i2c
     sources: [i2c.c]
-  - name: rtc
+  - name: periph_rtc
     sources: [rtc.c]
-  - name: rtt
+  - name: periph_rtt
     sources: [rtt.c]
-  - name: spi
+  - name: periph_spi
     sources: [spi.c]
-    name: timer
+  - name: periph_timer
     sources: [timer.c]
   - name: periph_gpio
     sources: [gpio.c]
-    uses: periph_gpio_irq
+    uses: [periph_gpio_irq]
   - name: periph_gpio_irq
     depends: [ periph_gpio ]
   - name: periph_hwrng

@@ -16,6 +16,8 @@ context:
           CFLAGS_DEFINES:
             - -DCPU_FAM_NRF52
 
+          RIOTBOOT_LEN: "0x4000"
+
     - name: nrf52832
       parent: nrf52
       env:

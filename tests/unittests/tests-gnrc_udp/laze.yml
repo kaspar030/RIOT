@@ -1,7 +1,7 @@
 app:
   - depends:
         - tests-gnrc_udp
-    blacklist:
+    blocklist:
         # insufficient memory
         - atmega_common
 

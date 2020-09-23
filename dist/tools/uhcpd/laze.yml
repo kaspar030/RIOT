@@ -1,5 +1,5 @@
 app:
-    - whitelist: host
+    - allowlist: host
       sources:
         - uhcpd.c
       depends:

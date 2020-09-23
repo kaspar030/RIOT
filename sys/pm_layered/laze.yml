@@ -2,3 +2,5 @@ module:
   - name: pm_layered
     sources:
         - pm.c
+    depends:
+      - periph_pm

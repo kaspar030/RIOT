@@ -1,7 +1,7 @@
 app:
   - depends:
         - tests-gcoap
-    blacklist:
+    blocklist:
         # insufficient memory
         - atmega_common
 

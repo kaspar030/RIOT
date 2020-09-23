@@ -6,10 +6,8 @@ context:
           CC_WRAP:
               - ccache
           CC: ${PREFIX}gcc
-          CXX: ${PREFIX}g++
-          LINK:
-              - ccache
-              - ${PREFIX}gcc
+          CXX: ${PREFIX}c++
+          LINK: ${PREFIX}gcc
           SIZE: ${PREFIX}size
           OBJCOPY: ${PREFIX}objcopy
           CFLAGS_WARN:

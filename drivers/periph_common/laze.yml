@@ -6,6 +6,7 @@ module:
           - periph_flashpage: [ flashpage.c ]
           - periph_i2c: [ i2c.c ]
           - periph_pm: [ pm.c ]
+          - periph_rtc: [ rtc.c ]
           - periph_spi: [ spi.c ]
           - periph_timer: [ timer.c ]
 

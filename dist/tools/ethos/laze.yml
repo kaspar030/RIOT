@@ -1,4 +1,4 @@
 app:
-    - whitelist: host
+    - allowlist: host
       sources:
         - ethos.c

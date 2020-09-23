@@ -1,7 +1,7 @@
 app:
   - depends:
         - tests-bloom
-    blacklist:
+    blocklist:
         # insufficient memory
         - atmega_common
 module:

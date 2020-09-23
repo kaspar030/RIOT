@@ -11,6 +11,6 @@ app:
         - nanocli_server.c
         - request_handlers.c
 
-    blacklist:
+    blocklist:
         # insufficient memory
         - atmega_common

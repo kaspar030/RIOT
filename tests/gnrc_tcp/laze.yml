@@ -17,5 +17,5 @@ app:
           - -DGNRC_TCP_MSL=1000000
           - -DGNRC_TCP_CONNECTION_TIMEOUT_DURATION=3000000
 
-    blacklist:
+    blocklist:
       - atmega_common

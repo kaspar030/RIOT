@@ -1,6 +1,6 @@
 app:
 - depends:
     - libfixmath-unittests
-  blacklist:
+  blocklist:
     # unittests fail to compile due to integer width errors
     - atmega_common
