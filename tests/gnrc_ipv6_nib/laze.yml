@@ -1,11 +1,11 @@
 app:
   - depends:
+        - netdev_eth
+        - netdev_test
         - embunit
         - gnrc_ipv6
         - gnrc_ipv6_nib
         - gnrc_netif
-        - netdev_eth
-        - netdev_test
     sources:
         - mockup_netif.c
     env:
@@ -15,6 +15,6 @@ app:
             - -DGNRC_PKTBUF_SIZE="512"
             - -DTEST_SUITES
 
-    blacklist:
+    blocklist:
         # insufficient memory
         - atmega_common

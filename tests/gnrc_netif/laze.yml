@@ -3,13 +3,13 @@ app:
       - common.c
     depends:
         - embunit
+        - netdev_eth
+        - netdev_ieee802154
         - gnrc_ipv6
         - gnrc_netif
         - gnrc_pktdump
         - gnrc_sixlowpan
         - gnrc_sixlowpan_iphc
-        - netdev_eth
-        - netdev_ieee802154
         - ieee802154
         - netdev_test
         - od
@@ -27,6 +27,6 @@ app:
             - -DDEBUG_ASSERT_VERBOSE
             - -g
 
-    blacklist:
+    blocklist:
         # insufficient memory
         - atmega_common

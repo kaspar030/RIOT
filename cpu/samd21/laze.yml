@@ -60,6 +60,9 @@ module:
         - cpu.c
         - vectors.c
 
+    selects:
+      - pm_layered
+
     depends:
         - core
         - cortexm

@@ -9,7 +9,8 @@ module:
         - cpp
         - timex
         - xtimer
-    export_vars:
-      CFLAGS:
-        - -I${relpath}/include
+    env:
+      export:
+        includes:
+        - ${relpath}/include
 

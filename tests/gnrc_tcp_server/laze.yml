@@ -16,6 +16,6 @@ app:
             - -DGNRC_IPV6_NIB_CONF_ARSM=1
             - -DGNRC_IPV6_NIB_CONF_QUEUE_PKT=1
 
-    blacklist:
+    blocklist:
         # insufficient memory
         - atmega_common

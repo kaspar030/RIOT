@@ -1,6 +1,6 @@
 app:
     - name: riotboot
-      whitelist:
+      allowlist:
           - cortexm
       sources:
           - main.c

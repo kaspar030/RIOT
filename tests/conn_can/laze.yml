@@ -15,6 +15,6 @@ app:
           CFLAGS:
               - -DLOG_LEVEL="LOG_ALL"
 
-      blacklist:
+      blocklist:
           # insufficient memory
           - atmega_common

@@ -4,7 +4,7 @@ context:
     env:
       CFLAGS:
         - -mmcu=atmega2560
-        - -DRIOT_MCU=\"atmega2560\"
+        - "-DRIOT_MCU=\\\"atmega2560\\\""
         - -DCPU_ATMEGA2560
         - -DMCU_ATMEGA2560
       RAM_LEN: 8K
@@ -15,9 +15,10 @@ module:
     context: atmega2560
     depends:
       - atmega_common
-    export_vars:
-      CFLAGS:
-        - -I${relpath}/include
+    env:
+      export:
+        includes:
+          - ${relpath}/include
 
       LINKFLAGS:
         - -I${relpath}/ldscripts_compat

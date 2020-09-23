@@ -20,6 +20,6 @@ app:
         CFLAGS:
             - -DIEEE802154_DEFAULT_CHANNEL="26"
 
-    blacklist:
+    blocklist:
         # insufficient memory
         - atmega_common

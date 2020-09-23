@@ -1,6 +1,5 @@
 defaults:
     app:
-      whitelist: riot
       sources: [ main.c ]
       depends: [ board ]
 

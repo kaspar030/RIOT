@@ -17,6 +17,8 @@ context:
             - -DCPU_FAM_NRF52
             - -DCPU_CORE_CORTEX_M4F
 
+          RIOTBOOT_LEN: "0x4000"
+
     - name: nrf52832
       parent: nrf52
       env:

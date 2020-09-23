@@ -1,22 +1,57 @@
-template:
-    "%NAME%":
-      - adc
-      - cpuid
-      - eeprom
-      - gpio
-      - i2c
-      - pm
-      - pwm
-      - spi
-      - timer
-      - uart
-
-module:
-  - name: "periph_%NAME%"
+defaults:
+  module:
     context: atmega_common
     depends:
       - periph_common
-      - feature/periph_%NAME%
 
+module:
+  - name: periph_adc
+    depends:
+      - feature/periph_adc
     sources:
-        - "%NAME%.c"
+      - adc.c
+  - name: periph_cpuid
+    depends:
+      - feature/periph_cpuid
+    sources:
+      - cpuid.c
+  - name: periph_eeprom
+    depends:
+      - feature/periph_eeprom
+    sources:
+      - eeprom.c
+  - name: periph_gpio
+    depends:
+      - feature/periph_gpio
+    sources:
+      - gpio.c
+  - name: periph_i2c
+    depends:
+      - feature/periph_i2c
+    sources:
+      - i2c.c
+  - name: periph_pm
+    depends:
+      - feature/periph_pm
+    sources:
+      - pm.c
+  - name: periph_pwm
+    depends:
+      - feature/periph_pwm
+    sources:
+      - pwm.c
+  - name: periph_spi
+    depends:
+      - feature/periph_spi
+    sources:
+      - spi.c
+  - name: periph_timer
+    depends:
+      - feature/periph_timer
+    sources:
+      - timer.c
+  - name: periph_uart
+    depends:
+      - feature/periph_uart
+    sources:
+      - uart.c
