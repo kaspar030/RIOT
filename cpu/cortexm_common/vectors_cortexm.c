@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <inttypes.h>
 
+#ifndef MODULE_RIOT_RS_RT
 #include "cpu.h"
 #include "periph_cpu.h"
 #include "kernel_init.h"
@@ -528,3 +529,4 @@ ISR_VECTOR(0) const cortexm_base_t cortex_vector_base = {
 #endif
     }
 };
+#endif /* MODULE_RIOT_RS_RT */
