@@ -658,6 +658,7 @@ HEXFILE ?= $(ELFFILE:.elf=.hex)
 BINFILE ?= $(ELFFILE:.elf=.bin)
 HASHFILE ?= $(BINFILE)
 MAPFILE ?= $(ELFFILE:.elf=.map)
+AFILE ?= $(BINDIR)/$(APPLICATION).a
 
 ifneq (,$(filter suit,$(USEMODULE)))
   include $(RIOTMAKE)/suit.base.inc.mk
@@ -680,6 +681,8 @@ DEBUG_ELFFILE ?= $(ELFFILE)
 elffile: $(ELFFILE)
 hexfile: $(HEXFILE)
 binfile: $(BINFILE)
+afile: $(AFILE)
+
 # FLASHFILE is the file used by the flasher
 # Usually set to $(ELFFILE), $(HEXFILE) or $(BINFILE) in the board/flasher
 # or application specific files
@@ -738,6 +741,9 @@ endif # RIOTNOLINK
 
 $(ELFFILE): $(BASELIBS) $(ARCHIVES) $(LD_SCRIPTS)
 	$(Q)$(_LINK) -o $@
+
+$(AFILE): $(BASELIBS) $(ARCHIVES)
+	$(AR) ar cD $@ $$(find $(BASELIBS:%.module=$(BINDIR)/%/*.o))
 
 .PHONY: $(APPLICATION_MODULE).module
 
