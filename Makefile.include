@@ -383,7 +383,12 @@ ifneq (,$(IOTLAB_NODE))
 endif
 
 # Add standard include directories
-INCLUDES += -I$(RIOTBASE)/core/include -I$(RIOTBASE)/drivers/include -I$(RIOTBASE)/sys/include
+INCLUDES += -I$(RIOTBASE)/core/lib/include
+ifneq ($(USE_RUST_CORE), 1)
+  INCLUDES += -I$(RIOTBASE)/core/include
+endif
+INCLUDES += -I$(RIOTBASE)/drivers/include
+INCLUDES += -I$(RIOTBASE)/sys/include
 
 # process provided features
 include $(RIOTBASE)/Makefile.features
@@ -591,6 +596,7 @@ ELFFILE ?= $(BINDIR)/$(APPLICATION).elf
 HEXFILE ?= $(ELFFILE:.elf=.hex)
 BINFILE ?= $(ELFFILE:.elf=.bin)
 MAPFILE ?= $(ELFFILE:.elf=.map)
+AFILE ?= $(BINDIR)/$(APPLICATION).a
 
 ifneq (,$(filter suit, $(USEMODULE)))
   include $(RIOTMAKE)/suit.base.inc.mk
@@ -605,6 +611,8 @@ include $(RIOTMAKE)/boot/riotboot.mk
 elffile: $(ELFFILE)
 hexfile: $(HEXFILE)
 binfile: $(BINFILE)
+afile: $(AFILE)
+
 # FLASHFILE is the file used by the flasher
 # Usually set to $(ELFFILE), $(HEXFILE) or $(BINFILE) in the board/flasher
 # or application specific files
@@ -644,7 +652,7 @@ _BASELIBS_VALUE_BEFORE_USAGE := $(BASELIBS)
 
 # Linker rule
 # Only use --start-group when archives are defined
-ARCHIVES_GROUP = $(if $(ARCHIVES),$(LINKFLAGPREFIX)--start-group $(ARCHIVES) -lm $(LINKFLAGPREFIX)--end-group, -lm)
+ARCHIVES_GROUP = $(if $(ARCHIVES),$(LINKFLAGPREFIX)--start-group $(ARCHIVES) $(LINKFLAGPREFIX)--end-group,)
 
 $(ELFFILE): FORCE
 ifeq ($(BUILDOSXNATIVE),1)
@@ -664,6 +672,14 @@ endif # RIOTNOLINK
 
 $(ELFFILE): $(BASELIBS) $(ARCHIVES)
 	$(Q)$(_LINK) -o $@
+
+$(AFILE): $(BASELIBS) $(ARCHIVES)
+	ld.lld -m armelf -r -o $@.o $$(find $(BASELIBS:%.module=$(BINDIR)/%/*.o)) $(ARCHIVES_GROUP)
+	$(AR) rcsD $@ $@.o
+
+#	rm -f $@
+#	$(AR) rcs $@ $$(find $(BASELIBS:%.module=$(BINDIR)/%/*.o))
+#	$(AR) qL $@ /usr/arm-none-eabi/lib/thumb/v7e-m/nofp/libc_nano.a
 
 .PHONY: $(APPLICATION_MODULE).module
 

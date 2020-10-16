@@ -22,6 +22,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <errno.h>
+#include "kernel_defines.h"
 #include "kernel_init.h"
 #include "thread.h"
 #include "irq.h"
@@ -60,8 +61,8 @@ static void *main_trampoline(void *arg)
     return NULL;
 }
 
-static char main_stack[THREAD_STACKSIZE_MAIN];
-static char idle_stack[THREAD_STACKSIZE_IDLE];
+static char __attribute__((aligned(4))) main_stack[THREAD_STACKSIZE_MAIN];
+static char __attribute__((aligned(4))) idle_stack[THREAD_STACKSIZE_IDLE];
 
 static void *idle_thread(void *arg)
 {
