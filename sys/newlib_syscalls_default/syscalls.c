@@ -70,13 +70,15 @@ extern char __heap_start__;
 #define _sheap __heap_start__
 #define __eheap (char *)((uintptr_t)&__stack - ISR_STACKSIZE)
 
-#else /* MODULE_MSP430_COMMON */
-
-/**
- * @brief manage the heap
- */
+#elif MODULE_RIOT_RS_RT
+extern char __sheap;                 /* start of the heap */
+extern char __eheap;                 /* end of the heap */
+#define _sheap __sheap
+#define _eheap __eheap
+#else
 extern char _sheap;                 /* start of the heap */
 extern char _eheap;                 /* end of the heap */
+#define __sheap _sheap
 #define __eheap &_eheap
 #endif
 
@@ -121,8 +123,8 @@ static char *heap_top[NUM_HEAPS] = {
 
 static const struct heap heaps[NUM_HEAPS] = {
     {
-        .start = &_sheap,
-        .end   = __eheap
+        .start = &__sheap,
+        .end   = (char *)(((uintptr_t)&__sheap) + 4096)
     },
 #if NUM_HEAPS > 1
     {
