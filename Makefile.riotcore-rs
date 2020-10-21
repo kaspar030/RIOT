@@ -1,0 +1,4 @@
+DISABLE_MODULE += cortexm_fpu
+USEMODULE += riotcore_rs
+
+CFLAGS += -Disr_pendsv=PendSV -Disr_svc=SVCall -Ddummy_handler_default=DefaultHandler -Dmain=riot_main
