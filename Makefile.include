@@ -721,7 +721,7 @@ _BASELIBS_VALUE_BEFORE_USAGE := $(BASELIBS)
 
 # Linker rule
 # Only use --start-group when archives are defined
-ARCHIVES_GROUP = $(if $(ARCHIVES),$(LINKFLAGPREFIX)--start-group $(ARCHIVES) -lm $(LINKFLAGPREFIX)--end-group, -lm)
+ARCHIVES_GROUP = $(if $(ARCHIVES),$(LINKFLAGPREFIX)--start-group $(ARCHIVES) $(LINKFLAGPREFIX)--end-group,)
 
 $(ELFFILE): FORCE
 ifeq ($(BUILDOSXNATIVE),1)
@@ -743,7 +743,8 @@ $(ELFFILE): $(BASELIBS) $(ARCHIVES) $(LD_SCRIPTS)
 	$(Q)$(_LINK) -o $@
 
 $(AFILE): $(BASELIBS) $(ARCHIVES)
-	$(AR) ar cD $@ $$(find $(BASELIBS:%.module=$(BINDIR)/%/*.o))
+	ld.lld -r -o $@.o $$(find $(BASELIBS:%.module=$(BINDIR)/%/*.o)) $(ARCHIVES_GROUP) -L/usr/arm-none-eabi/lib -lc_nano
+	$(AR) ar cD $@ $@.o
 
 .PHONY: $(APPLICATION_MODULE).module
 
