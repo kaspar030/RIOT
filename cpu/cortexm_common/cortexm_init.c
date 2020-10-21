@@ -71,11 +71,12 @@ CORTEXM_STATIC_INLINE void cortexm_init_misc(void)
 void cortexm_init(void)
 {
     /* configure the vector table location to internal flash */
-#if defined(CPU_CORE_CORTEX_M3) || defined(CPU_CORE_CORTEX_M33) || \
+#if (defined(CPU_CORE_CORTEX_M3) || defined(CPU_CORE_CORTEX_M33) || \
     defined(CPU_CORE_CORTEX_M4) || defined(CPU_CORE_CORTEX_M4F) || \
     defined(CPU_CORE_CORTEX_M7) || \
     (defined(CPU_CORE_CORTEX_M0PLUS) || defined(CPU_CORE_CORTEX_M23) \
-    && (__VTOR_PRESENT == 1))
+    && (__VTOR_PRESENT == 1))) \
+    && !MODULE_RIOTCORE_RS
     SCB->VTOR = (uint32_t)&_isr_vectors;
 #endif
 
