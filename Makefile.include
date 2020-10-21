@@ -743,7 +743,7 @@ $(ELFFILE): $(BASELIBS) $(ARCHIVES) $(LD_SCRIPTS)
 	$(Q)$(_LINK) -o $@
 
 $(AFILE): $(BASELIBS) $(ARCHIVES)
-	ld.lld -r -o $@.o $$(find $(BASELIBS:%.module=$(BINDIR)/%/*.o)) $(ARCHIVES_GROUP) -L/usr/arm-none-eabi/lib -lc_nano
+	ld.lld -r -o $@.o $$(find $(BASELIBS:%.module=$(BINDIR)/%/*.o)) $(ARCHIVES_GROUP) -L/usr/arm-none-eabi/lib/thumb/v7e-m/nofp -lc_nano
 	$(AR) ar cD $@ $@.o
 
 .PHONY: $(APPLICATION_MODULE).module
