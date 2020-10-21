@@ -38,7 +38,11 @@ extern "C" {
  * (numeric) value given for `x`. The Cortex-M base vectors are always defined
  * with `ISR_VECTOR(0)`, so the CPU specific vector(s) **must** start from 1.
  */
+#ifndef MODULE_RIOTCORE_RS
 #define ISR_VECTOR(x)   __attribute__((used,section(".vectors." # x )))
+#else
+#define ISR_VECTOR(x)   __attribute__((used,section(".vector_table.interrupts" )))
+#endif
 
 /**
  * @brief   Number of Cortex-M non-ISR exceptions
