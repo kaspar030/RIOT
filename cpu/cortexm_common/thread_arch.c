@@ -321,9 +321,11 @@ void __attribute__((naked)) __attribute__((used)) isr_pendsv(void) {
 #endif
     "push   {lr}                      \n" /* push exception return code */
 
+    "push {r12}\n" /* needed for riotcore-rs with LTO. TODO: optimize away */
     "cpsid  i                         \n" /* Disable IRQs during sched_run */
     "bl     sched_run                 \n" /* perform scheduling */
     "cpsie  i                         \n" /* Re-enable interrupts */
+    "pop {r12}\n"
 
 #if CPU_CORE_CORTEXM_FULL_THUMB
     "cmp    r0, r12                   \n" /* if r0 == 0: (no switch required) */
