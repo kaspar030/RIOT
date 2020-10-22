@@ -170,6 +170,9 @@ PSEUDOMODULES += xtimer_on_ztimer
 PSEUDOMODULES += zptr
 PSEUDOMODULES += ztimer%
 
+# cire_lib is not a submodule
+NO_PSEUDOMODULES += core_lib
+
 # ztimer's main module is called "ztimer_core"
 NO_PSEUDOMODULES += ztimer_core
 NO_PSEUDOMODULES += netdev_ieee802154_submac
