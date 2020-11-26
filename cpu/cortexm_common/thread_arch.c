@@ -95,6 +95,8 @@
 
 #include <stdio.h>
 
+#ifndef MODULE_RIOT_RS_CORE
+
 #include "sched.h"
 #include "thread.h"
 #include "irq.h"
@@ -314,7 +316,7 @@ void __attribute__((naked)) __attribute__((used)) isr_pendsv(void) {
     "push   {r4, lr}                  \n" /* push r4 and exception return code */
     "ldr    r4, [r1]                  \n" /* r4 = sched_active_thread   */
 
-    "push {r12}\n" /* needed for riotcore-rs with LTO. TODO: optimize away */
+    "push {r12}\n" /* needed for riot-rs-core with LTO. TODO: optimize away */
     "cpsid  i                         \n" /* Disable IRQs during sched_run */
     "bl     sched_run                 \n" /* perform scheduling */
     "cpsie  i                         \n" /* Re-enable interrupts */
@@ -535,3 +537,5 @@ void sched_arch_idle(void)
     __ISB();
     __disable_irq();
 }
+
+#endif /* !MODULE_RIOT_RS_CORE */

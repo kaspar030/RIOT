@@ -1,7 +1,11 @@
 MODULE = $(APPLICATION_MODULE)
 
 DIRS += $(RIOTCPU)/$(CPU) $(BOARDDIR)
-DIRS += $(RIOTBASE)/core $(RIOTBASE)/core/lib $(RIOTBASE)/drivers $(RIOTBASE)/sys
+DIRS += $(RIOTBASE)/core/lib $(RIOTBASE)/drivers $(RIOTBASE)/sys
+
+ifneq ($(USE_RUST_CORE),1)
+  DIRS += $(RIOTBASE)/core
+endif
 
 # For regular modules, adding files to BLOBS to their Makefile is sufficient to
 # create the corresponding headers.
