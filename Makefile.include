@@ -406,7 +406,9 @@ endif
 
 # Add standard include directories
 INCLUDES += -I$(RIOTBASE)/core/lib/include
-INCLUDES += -I$(RIOTBASE)/core/include
+ifneq ($(USE_RUST_CORE), 1)
+  INCLUDES += -I$(RIOTBASE)/core/include
+endif
 INCLUDES += -I$(RIOTBASE)/drivers/include
 INCLUDES += -I$(RIOTBASE)/sys/include
 
@@ -739,7 +741,11 @@ $(ELFFILE): $(BASELIBS) $(ARCHIVES)
 
 $(AFILE): $(BASELIBS) $(ARCHIVES)
 	ld.lld -r -o $@.o $$(find $(BASELIBS:%.module=$(BINDIR)/%/*.o)) $(ARCHIVES_GROUP) -L/usr/arm-none-eabi/lib/thumb/v7e-m/nofp -lc_nano
-	$(AR) ar cD $@ $@.o
+	$(AR) rcsD $@ $@.o
+
+#	rm -f $@
+#	$(AR) rcs $@ $$(find $(BASELIBS:%.module=$(BINDIR)/%/*.o))
+#	$(AR) qL $@ /usr/arm-none-eabi/lib/thumb/v7e-m/nofp/libc_nano.a
 
 .PHONY: $(APPLICATION_MODULE).module
 
