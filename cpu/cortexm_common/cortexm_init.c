@@ -76,7 +76,7 @@ void cortexm_init(void)
     defined(CPU_CORE_CORTEX_M7) || \
     (defined(CPU_CORE_CORTEX_M0PLUS) || defined(CPU_CORE_CORTEX_M23) \
     && (__VTOR_PRESENT == 1))) \
-    && !MODULE_RIOTCORE_RS
+    && !MODULE_RIOT_RS_RT /* riot-rs-rt doesn't use _isr_vectors */
     SCB->VTOR = (uint32_t)&_isr_vectors;
 #endif
 
