@@ -192,6 +192,7 @@ void xtimer_now_timex(timex_t *out)
     out->microseconds = now - (out->seconds * US_PER_SEC);
 }
 
+#ifndef MODULE_RIOT_RS_CORE
 static void _mutex_timeout(void *arg)
 {
     mutex_cancel(arg);
@@ -231,6 +232,7 @@ int xtimer_rmutex_lock_timeout(rmutex_t *rmutex, uint64_t timeout)
     }
     return -1;
 }
+#endif
 
 #ifdef MODULE_CORE_THREAD_FLAGS
 static void _set_timeout_flag_callback(void* arg)
