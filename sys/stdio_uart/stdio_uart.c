@@ -49,7 +49,7 @@ extern ethos_t ethos;
 
 #ifdef MODULE_STDIO_UART_RX
 static uint8_t _rx_buf_mem[STDIO_UART_RX_BUFSIZE];
-isrpipe_t stdio_uart_isrpipe = ISRPIPE_INIT(_rx_buf_mem);
+isrpipe_t stdio_uart_isrpipe;
 #endif
 
 void stdio_init(void)
@@ -58,6 +58,7 @@ void stdio_init(void)
     void *arg;
 
 #ifdef MODULE_STDIO_UART_RX
+    isrpipe_init(&stdio_uart_isrpipe, _rx_buf_mem, STDIO_UART_RX_BUFSIZE);
     cb = (uart_rx_cb_t) isrpipe_write_one;
     arg = &stdio_uart_isrpipe;
 #else
