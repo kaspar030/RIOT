@@ -39,7 +39,9 @@ static void _callback_unlock_mutex(void *arg)
 void ztimer_sleep(ztimer_clock_t *clock, uint32_t duration)
 {
     assert(!irq_is_in());
-    mutex_t mutex = MUTEX_INIT_LOCKED;
+    mutex_t mutex;
+    mutex_init(&mutex);
+    mutex_lock(&mutex);
 
     ztimer_t timer = {
         .callback = _callback_unlock_mutex,
