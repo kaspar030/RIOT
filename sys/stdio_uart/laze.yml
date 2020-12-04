@@ -22,4 +22,3 @@ module:
           - stdio_uart
 
     - name: stdin
-

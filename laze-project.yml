@@ -1,7 +1,7 @@
 context:
     - name: default
       env:
-          bindir: "build/bin/${builder}/${app}"
+          bindir: "${build-dir}/bin/${builder}/${app}"
           PREFIX: ""
           CC_WRAP:
               - ccache
