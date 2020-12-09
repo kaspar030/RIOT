@@ -740,7 +740,7 @@ $(ELFFILE): $(BASELIBS) $(ARCHIVES)
 	$(Q)$(_LINK) -o $@
 
 $(AFILE): $(BASELIBS) $(ARCHIVES)
-	ld.lld -r -o $@.o $$(find $(BASELIBS:%.module=$(BINDIR)/%/*.o)) $(ARCHIVES_GROUP) -L/usr/arm-none-eabi/lib/thumb/v7e-m/nofp -lc_nano
+	ld.lld -r -o $@.o $$(find $(BASELIBS:%.module=$(BINDIR)/%/*.o)) $(ARCHIVES_GROUP) -L/usr/arm-none-eabi/lib/thumb/v7e-m/nofp -L/usr/lib/arm-none-eabi/lib/thumb/v7e-m/nofp -lc_nano
 	$(AR) rcsD $@ $@.o
 
 #	rm -f $@
