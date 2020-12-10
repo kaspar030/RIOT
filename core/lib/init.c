@@ -22,6 +22,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <errno.h>
+#include "kernel_defines.h"
 #include "kernel_init.h"
 #include "thread.h"
 #include "irq.h"
