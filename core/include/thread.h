@@ -169,6 +169,7 @@ typedef void *(*thread_task_func_t)(void *arg);
 struct _thread {
     char *sp;                       /**< thread's stack pointer         */
     thread_status_t status;         /**< thread's status                */
+    uint32_t config;                /**< Config flags                   */
     uint8_t priority;               /**< thread's priority              */
 
     kernel_pid_t pid;               /**< thread's process id            */
@@ -240,6 +241,8 @@ struct _thread {
  */
 #define THREAD_CREATE_STACKTEST         (8)
 /** @} */
+
+#define THREAD_RUN_UNPRIVILEGED         (16)
 
 /**
  * @brief Creates a new thread.
