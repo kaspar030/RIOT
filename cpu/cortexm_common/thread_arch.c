@@ -329,7 +329,8 @@ void __attribute__((naked)) __attribute__((used)) isr_pendsv(void) {
     /* current thread context is now saved */
     "restore_context:                 \n" /* Label to skip thread state saving */
 
-    "ldr    r0, [r0]                  \n" /* load tcb->sp to register 1 */
+    "ldr    r1, [r0, 8]               \n" /* Load tcb->config to register r1 */
+    "ldr    r0, [r0]                  \n" /* load tcb->sp to register r0 */
     "ldmia  r0!, {r4-r11,lr}          \n" /* restore other registers, including lr */
 #ifdef MODULE_CORTEXM_FPU
     "tst    lr, #0x10                 \n"
@@ -337,6 +338,14 @@ void __attribute__((naked)) __attribute__((used)) isr_pendsv(void) {
     "vldmiaeq r0!, {s16-s31}          \n" /* load FPU registers if saved */
 #endif
     "msr    psp, r0                   \n" /* restore user mode SP to PSP reg */
+
+    "mrs    r2, control               \n"
+    "tst    r1, #0x01                 \n" /* Test for unprivileged */
+    "ite    ne                        \n"
+    "orrne  r2, r2, #0x01             \n" /* Set the unprivileged bit */
+    "biceq  r2, r2, #0x01             \n" /* Or clear the unprivileged bit */
+    "msr    control, r2               \n" /* Write control register back */
+
     "bx     lr                        \n" /* load exception return value to PC,
                                            * causes end of exception*/
 
