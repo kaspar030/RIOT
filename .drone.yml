@@ -1,16 +1,180 @@
-pipeline:
-    run_tests:
-        image: riot/riotbuild:latest
-        environment:
-            - CLICOLOR_FORCE=1
-            - NPROC_MAX=4
-        commands:
-            - pwd
-            - printenv
-            - git status
-            - git remote -v
-            - ./dist/tools/ci/build_and_test.sh
-matrix:
-    BUILDTEST_MCU_GROUP:
-        - static-tests
-        - host
+kind: pipeline
+type: docker
+name: build
+
+node:
+  type: build-manager
+
+trigger:
+  event:
+    - pull_request
+
+environment:
+  DRONE_CLONE_REPO: riot-ci/RIOT
+  CLICOLOR_FORCE: 1
+  NPROC_MAX: 4
+  GIT_CACHE_DIR: /cache/git
+
+clone:
+  disable: true
+
+services:
+  # this service launches a container running an autossh session that
+  # connects to murdock-slave@ci.riot-os.org, creating port forwards to the
+  # disque and redis instances there. It will be automatically killed at the end
+  # of this pipeline.
+  - name: services
+    image: kaspar030/autossh
+    settings:
+      ssh_key:
+        from_secret: ssh_key_murdock
+      user: murdock-slave
+      host: ci.riot-os.org
+      ssh_args: "-L0.0.0.0:7711:localhost:7711 -L0.0.0.0:6379:localhost:6379"
+    ports: [ 6379, 7711 ]
+
+steps:
+  # As we're building distributed, we need to make sure that every worker is
+  # using the exact same commit.
+  # We also want to test the PR branch *merged into current master*.
+  # This step creates that merge commit and pushes it to riot-ci/RIOT.
+  # The resulting commit hash will be stored in "merge_commit" in the working
+  # directory (which is shared with the subsequent steps by drone via a docker
+  # volume).
+  - name: clone
+    image: kaspar030/drone-clone
+    settings:
+      SSH_KEY:
+        from_secret: ssh_key_clone
+      mode: clone
+      base_repo: ${DRONE_REPO_LINK}
+      base_branch: ${DRONE_REPO_BRANCH}
+      build_repo: ${DRONE_GIT_HTTP_URL}
+      build_branch: ${DRONE_SOURCE_BRANCH}
+      build_commit: ${CI_COMMIT_SHA}
+      merge_commit_repo: riot-ci/RIOT
+
+  # This build step launches the distributed build.
+  - name: build
+    image: kaspar030/drone-dwq
+    commands:
+    # build a global build id (unique over all repositories)
+    # this is also used as queue for dwq
+    - export DRONE_BUILD_ID=drone-${DRONE_REPO}-${DRONE_BUILD_NUMBER}
+
+    - "# setting disque parameters"
+    - export DWQ_DISQUE_URL="services:7711"
+    - export DWQ_QUEUE=$${DRONE_BUILD_ID}
+    - export DWQ_COMMIT="$$(cat merge_commit)"
+    - export DWQ_REPO="https://github.com/$${DRONE_CLONE_REPO}"
+
+    - "# ensuring redis is operational"
+    - redis-cli -h services ping
+
+    - "# ensuring disque is operational"
+    - dwqc "true"
+
+    - "# launch the distributed build"
+    - >
+      dwqc -E BOARDS=native './.murdock get_jobs'
+      | dwqc --quiet -P --outfile result.json
+
+  # This step processes the build results
+  - name: process-results
+    image: kaspar030/drone-postbuild
+    commands:
+    # build a global build id (unique over all repositories)
+    # this is also used as queue for dwq
+    - export DRONE_BUILD_ID=drone-${DRONE_REPO}-${DRONE_BUILD_NUMBER}
+    - "# running post build scripts"
+    - >
+      for script in /scripts/post-build.d/*; do
+         echo "  running $script"
+         $script
+      done
+    - "# parsing build results"
+    - /scripts/parse_result.py result.json
+
+    when:
+     status:
+     - success
+     # also run on failure, we want to see why it failed :)
+     - failure
+
+
+  # This step sends a shutdown signal to all build workers.
+  # It needs to be executed by all workers.
+  - name: shutdown-workers
+    image: kaspar030/drone-dwq
+    commands:
+    # setting disque parameters
+    - export DWQ_DISQUE_URL="services:7711"
+
+    # send shutdown command to workers. NUMBER (4) MUST MATCH parallelism: parameter
+    # in next pipeline!
+    - export DRONE_BUILD_ID=drone-${DRONE_REPO}-${DRONE_BUILD_NUMBER}
+    - dwqm control --shutdown $$(for i in $$(seq 4); do echo $${DRONE_BUILD_ID}; done)
+
+    when:
+     status:
+     - success
+     - failure
+
+---
+kind: pipeline
+type: docker
+name: build-worker
+parallelism: 4
+
+#node:
+#  type: build-worker
+
+trigger:
+  event:
+    - pull_request
+
+clone:
+  disable: true
+
+services:
+  # this service launches a container running an autossh session that
+  # connects to murdock-slave@ci.riot-os.org, creating port forwards to the
+  # disque and redis instances there. It will be automatically killed at the end
+  # of this pipeline.
+  - name: services
+    image: kaspar030/autossh
+    settings:
+      ssh_key:
+        from_secret: ssh_key_murdock
+      user: murdock-slave
+      host: ci.riot-os.org
+      ssh_args: "-L0.0.0.0:7711:localhost:7711 -L0.0.0.0:6379:localhost:6379"
+    ports: [ 6379, 7711 ]
+
+steps:
+  # This step runs the dwq worker, which will execute build jobs sent by the
+  # "build" step from above
+  - name: handle-build-jobs
+    image: kaspar030/riotdocker:latest
+    environment:
+      CCACHE: ccache
+      CCACHE_DIR: /cache/ccache
+      NPROC_MAX: 4
+      GIT_CACHE_DIR: /cache/git
+      CLICOLOR_FORCE: 1
+
+    commands:
+    - "#"
+    - "# Running on runner ${DRONE_STAGE_MACHINE}"
+    - "#"
+    # setting disque parameters
+    - export DWQ_DISQUE_URL="services:7711"
+    # ensure ccache folder exists
+    - mkdir -p $${CCACHE_DIR}
+    - "# ensure git cache is initialized"
+    - git-cache init
+    # get latest dwq version (TODO: rely on container or pin)
+    - pip3 install --upgrade dwq
+    # launch dwq worker
+    - export DRONE_BUILD_ID=drone-${DRONE_REPO}-${DRONE_BUILD_NUMBER}
+    - dwqw --name $${DRONE_BUILD_ID} --jobs 4 --queues $${DRONE_BUILD_ID}
