@@ -163,6 +163,13 @@ extern "C" {
 #endif
 
 /**
+ * @brief Add runtime configuration flags to the thread_t
+ */
+#if defined(MODULE_THREAD_CRASH)
+#define THREAD_RUNTIME_CONFIG
+#endif
+
+/**
  * @brief Prototype for a thread entry function
  */
 typedef void *(*thread_task_func_t)(void *arg);
@@ -173,8 +180,10 @@ typedef void *(*thread_task_func_t)(void *arg);
 struct _thread {
     char *sp;                       /**< thread's stack pointer         */
     thread_status_t status;         /**< thread's status                */
-    uint32_t config;                /**< Config flags                   */
     uint8_t priority;               /**< thread's priority              */
+#if defined(THREAD_RUNTIME_CONFIG) || defined(MODULE_THREAD_CRASH)
+    uint16_t config;                /**< thread runtime config          */
+#endif
 
     kernel_pid_t pid;               /**< thread's process id            */
 
@@ -265,6 +274,16 @@ struct _thread {
  * @brief Thread runs as unprivileged
  */
 #define THREAD_CONFIG_UNPRIVILEGED      (1)
+/*
+ * @brief Mark the thread as allowed to crash. It will be marked as crashed and
+ *        no longer scheduled after it triggers a hard fault.
+ *
+ * @note  Only available when the `thread_crash` module is enabled
+ */
+#if defined(MODULE_THREAD_CRASH) || DOXYGEN
+#define THREAD_CONFIG_KILL_ON_CRASH     (2)
+#endif
+
 /** @} */
 
 /**
@@ -382,6 +401,26 @@ THREAD_MAYBE_INLINE void thread_yield_higher(void);
  *          by @ref thread_kill_zombie().
  */
 void thread_zombify(void);
+
+/**
+ * @brief   The supplied thread into the crashed state.
+ *
+ * This must be called from the fault exception handlers of the CPU. This
+ * function checks if the supplied thread is allowed to crash without taking
+ * down the system and stops and marks the thread as crashed if this is allowed.
+ * This function returns true if the system is allowed to continue with the
+ * thread marked as crashed. The system must panic if this function returns
+ * false.
+ *
+ * @internal
+ *
+ * @param   thread  Thread to mark as crashed
+ *
+ * @returns         True if the supplied thread is unscheduled and marked as
+ *                  crashed and the system is allowed to continue.
+ *                  False if the whole system must panic.
+ */
+bool thread_has_crashed(thread_t *active_thread);
 
 /**
  * @brief Terminates zombie thread.
