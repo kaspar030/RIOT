@@ -16,17 +16,21 @@ context:
           CFLAGS:
             - -Os
             - -g
-      tools:
+            - -gz
+      tasks:
           info:
               cmd:
-                - "echo binary: $$(realpath --relative-to ${relpath} ${out})"
+                - "echo binary: ${out}"
+                - 'echo CFLAGS=\"${CFLAGS}\"'
+          size:
+              cmd:
+                - "${SIZE} ${out}"
 
       rule:
           - name: CC
             in: 'c'
             out: 'o'
-            depfile: "$out.d"
-            deps: gcc
+            gcc_deps: "$out.d"
             cmd: '${CC_WRAP} ${CC} -MD -MF $out.d
                       ${CFLAGS_STD} ${CFLAGS_ARCH} ${CFLAGS_CODEGEN}
                       ${CFLAGS_DEFINES} ${CFLAGS_WARN} ${CFLAGS_GCC}
@@ -35,8 +39,7 @@ context:
           - name: CXX
             in: 'cpp'
             out: 'o'
-            depfile: "$out.d"
-            deps: gcc
+            gcc_deps: "$out.d"
             cmd: '${CC_WRAP} ${CXX} -MMD -MF $out.d ${CXXFLAGS_STD} ${CXXFLAGS}
                       ${CFLAGS_ARCH} ${CFLAGS_CODEGEN}
                       ${CFLAGS_DEFINES} ${CFLAGS_WARN} ${CFLAGS_GCC}
@@ -143,9 +146,12 @@ module:
         - feature/cpp
 
     - name: lto
-      global_vars:
+      env:
+        global:
           CFLAGS:
-              - -flto -ffat-lto-objects
+            - -flto -ffat-lto-objects
+          LINKFLAGS:
+            - -flto -Os
 
     - name: develhelp
       context: riot
