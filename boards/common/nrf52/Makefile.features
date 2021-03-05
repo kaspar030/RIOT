@@ -4,3 +4,4 @@ CPU = nrf52
 FEATURES_PROVIDED += periph_rtt
 FEATURES_PROVIDED += periph_timer
 FEATURES_PROVIDED += riotboot
+FEATURES_PROVIDED += riotboot-rs
