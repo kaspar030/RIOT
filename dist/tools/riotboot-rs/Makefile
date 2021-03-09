@@ -1,6 +1,6 @@
 PKG_NAME=riotboot-rs
 PKG_URL=https://github.com/future-proof-iot/riotboot-rs.git
-PKG_VERSION=c7d6b9030d36c4d1478e96e0d5231e0c9494004c
+PKG_VERSION=c2bb21f0281dbf403f888de8ae0c8802b4f583ce
 PKG_LICENSE=LGPL-2.1
 
 PKG_SOURCE_LOCAL ?= /home/francisco/workspace/riotboot-rs/
