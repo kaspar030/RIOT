@@ -1,9 +1,7 @@
 PKG_NAME=riotboot-rs
 PKG_URL=https://github.com/future-proof-iot/riotboot-rs.git
-PKG_VERSION=c2bb21f0281dbf403f888de8ae0c8802b4f583ce
-PKG_LICENSE=LGPL-2.1
-
-PKG_SOURCE_LOCAL ?= /home/francisco/workspace/riotboot-rs/
+PKG_VERSION=2b3bf13afcb444f11437481fb3ccdb8ffb152d4a
+PKG_LICENSE=MIT
 
 include $(RIOTBASE)/pkg/pkg.mk
 
@@ -25,7 +23,14 @@ else
   $(error unsupported CPU_CORE)
 endif
 
-CARGO_BUILD_FLAGS ?= --features verified
+CARGO_BUILD_FLAGS ?= --features internal
+
+# pass RIOT's RAM/ROM configuration to riotboot-rs build
+export RIOTBOOT_RAM_START=$(RAM_START_ADDR)
+export RIOTBOOT_FLASH_START=$(ROM_START_ADDR)
+export RIOTBOOT_FLASH_LEN=$(RIOTBOOT_LEN)
+export RIOTBOOT_SLOT0_OFFSET=$(SLOT0_OFFSET)
+export RIOTBOOT_SLOT1_OFFSET=$(SLOT1_OFFSET)
 
 all:
 	@$(Q)mkdir -p $(BINDIR)

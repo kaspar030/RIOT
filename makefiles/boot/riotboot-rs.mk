@@ -4,6 +4,12 @@ ifneq (,$(filter riotboot-rs,$(FEATURES_USED)))
 
 RIOTBOOT_RS_FLASH_DIR = $(RIOTBASE)/bootloaders/riotboot
 
+export RAM_START_ADDR
+export ROM_START_ADDR
+export RIOTBOOT_LEN
+export SLOT0_OFFSET
+export SLOT1_OFFSET
+
 riotboot-rs:
 	@$(Q)CC= CFLAGS= $(MAKE) -C $(RIOTTOOLS)/riotboot-rs
 
