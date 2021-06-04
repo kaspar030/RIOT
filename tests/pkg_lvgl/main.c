@@ -36,14 +36,14 @@ static lv_obj_t *chart;
 static lv_chart_series_t * cpu_ser;
 static lv_chart_series_t *mem_ser;
 static lv_obj_t *info_label;
-static lv_task_t *refr_task;
+static lv_timer_t *refr_task;
 
-static void sysmon_task(lv_task_t *param)
+static void sysmon_task(lv_timer_t *param)
 {
     (void)param;
 
     /* Get CPU and memory information */
-    uint8_t cpu_busy = 100 - lv_task_get_idle();
+    uint8_t cpu_busy = 100 - lv_timer_get_idle();
 
     lv_mem_monitor_t mem_mon;
     lv_mem_monitor(&mem_mon);
@@ -51,8 +51,8 @@ static void sysmon_task(lv_task_t *param)
     uint8_t mem_used_pct = mem_mon.used_pct;
 
     /* Add the CPU and memory data to the chart */
-    lv_chart_set_next(chart, cpu_ser, cpu_busy);
-    lv_chart_set_next(chart, mem_ser, mem_used_pct);
+    lv_chart_set_next_value(chart, cpu_ser, cpu_busy);
+    lv_chart_set_next_value(chart, mem_ser, mem_used_pct);
 
     /* Set the text info */
     lv_label_set_text_fmt(info_label,
@@ -82,35 +82,35 @@ void sysmon_create(void)
     lv_coord_t hres = lv_disp_get_hor_res(NULL);
     lv_coord_t vres = lv_disp_get_ver_res(NULL);
 
-    win = lv_win_create(lv_disp_get_scr_act(NULL), NULL);
-    lv_win_set_title(win, "System monitor");
+    win = lv_win_create(lv_scr_act(), 0);
+    lv_win_add_title(win, "System monitor");
 
     /* Make the window content responsive */
-    lv_win_set_layout(win, LV_LAYOUT_PRETTY_MID);
+    lv_obj_set_layout(win, LV_LAYOUT_FLEX);
 
     /* Create a chart with two data lines */
-    chart = lv_chart_create(win, NULL);
+    chart = lv_chart_create(lv_scr_act());
     lv_obj_set_size(chart, hres / 2.5, vres / 2);
-    lv_obj_set_pos(chart, LV_DPI / 10, LV_DPI / 10);
+    lv_obj_set_pos(chart, LV_DPI_DEF / 10, LV_DPI_DEF / 10);
     lv_chart_set_point_count(chart, CHART_POINT_NUM);
-    lv_chart_set_range(chart, 0, 100);
+    lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, 0, 100);
     lv_chart_set_type(chart, LV_CHART_TYPE_LINE);
-    cpu_ser = lv_chart_add_series(chart, LV_COLOR_RED);
-    mem_ser = lv_chart_add_series(chart, LV_COLOR_BLUE);
+    cpu_ser = lv_chart_add_series(chart, lv_palette_main(LV_PALETTE_RED), LV_CHART_AXIS_PRIMARY_Y);
+    mem_ser = lv_chart_add_series(chart, lv_palette_main(LV_PALETTE_BLUE), LV_CHART_AXIS_PRIMARY_Y);
 
     /* Set the data series to zero */
     uint16_t i;
     for(i = 0; i < CHART_POINT_NUM; i++) {
-        lv_chart_set_next(chart, cpu_ser, 0);
-        lv_chart_set_next(chart, mem_ser, 0);
+        lv_chart_set_next_value(chart, cpu_ser, 0);
+        lv_chart_set_next_value(chart, mem_ser, 0);
     }
 
     /* Create a label for the details of Memory and CPU usage */
-    info_label = lv_label_create(win, NULL);
+    info_label = lv_label_create(lv_scr_act());
     lv_label_set_recolor(info_label, true);
 
     /* Create the task used to refresh the chart and label */
-    refr_task = lv_task_create(sysmon_task, REFR_TIME, LV_TASK_PRIO_LOW, NULL);
+    refr_task = lv_timer_create(sysmon_task, REFR_TIME, NULL);
 }
 
 int main(void)
