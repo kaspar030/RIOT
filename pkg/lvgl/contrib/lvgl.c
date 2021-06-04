@@ -36,7 +36,7 @@
 #endif
 
 #ifndef LVGL_COLOR_BUF_SIZE
-#define LVGL_COLOR_BUF_SIZE         (LV_HOR_RES_MAX * 5)
+#define LVGL_COLOR_BUF_SIZE         (320 * 5)
 #endif
 
 #ifndef CONFIG_LVGL_INACTIVITY_PERIOD_MS
@@ -53,7 +53,7 @@
 
 static kernel_pid_t _task_thread_pid;
 
-static lv_disp_buf_t disp_buf;
+static lv_disp_draw_buf_t disp_buf;
 static lv_color_t buf[LVGL_COLOR_BUF_SIZE];
 
 static screen_dev_t *_screen_dev = NULL;
@@ -117,7 +117,7 @@ void lvgl_init(screen_dev_t *screen_dev)
     disp_drv.ver_res = disp_dev_height(screen_dev->display);
 
     disp_drv.flush_cb = _disp_map;
-    disp_drv.buffer = &disp_buf;
+    disp_drv.draw_buf = &disp_buf;
     lv_disp_t *disp = lv_disp_drv_register(&disp_drv);
 
 #if IS_USED(MODULE_LV_DRIVERS_DISPLAY_MONITOR)
@@ -131,7 +131,8 @@ void lvgl_init(screen_dev_t *screen_dev)
 #else
     (void)disp;
 #endif
-    lv_disp_buf_init(&disp_buf, buf, NULL, LVGL_COLOR_BUF_SIZE);
+
+    lv_disp_draw_buf_init(&disp_buf, buf, NULL, LVGL_COLOR_BUF_SIZE);
 
 #if IS_USED(MODULE_TOUCH_DEV)
     if (screen_dev->touch) {

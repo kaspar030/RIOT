@@ -4,8 +4,31 @@ USEMODULE += lvgl_draw
 USEMODULE += lvgl_font
 USEMODULE += lvgl_hal
 USEMODULE += lvgl_misc
-USEMODULE += lvgl_themes
 USEMODULE += lvgl_widgets
+
+USEMODULE += lvgl_extra
+
+USEMODULE += lvgl_layout_flex
+USEMODULE += lvgl_layout_grid
+
+USEMODULE += lvgl_theme_basic
+USEMODULE += lvgl_theme_default
+USEMODULE += lvgl_theme_mono
+
+USEMODULE += lvgl_widget_chart
+USEMODULE += lvgl_widget_list
+USEMODULE += lvgl_widget_spinbox
+USEMODULE += lvgl_widget_tileview
+USEMODULE += lvgl_widget_tabview
+USEMODULE += lvgl_widget_win
+USEMODULE += lvgl_widget_msgbox
+USEMODULE += lvgl_widget_meter
+USEMODULE += lvgl_widget_calendar
+USEMODULE += lvgl_widget_list
+USEMODULE += lvgl_widget_colorwheel
+USEMODULE += lvgl_widget_led
+USEMODULE += lvgl_widget_keyboard
+
 
 ifneq (,$(filter lvgl_contrib,$(USEMODULE)))
   USEMODULE += disp_dev
