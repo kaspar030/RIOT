@@ -75,7 +75,16 @@ void periph_init(void)
 
     /* Initialize RTC */
 #ifdef MODULE_PERIPH_INIT_RTC
+    struct tm time = {
+        .tm_year = RIOT_EPOCH - 1900,
+        .tm_mon  = 0,
+        .tm_mday = 0,
+        .tm_hour = 0,
+        .tm_min  = 0,
+        .tm_sec  = 0
+    };
     rtc_init();
+    rtc_set_time(&time);
 #endif
 
     /* Initialize Tamper Detection */
