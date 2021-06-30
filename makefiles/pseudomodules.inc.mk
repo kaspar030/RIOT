@@ -162,6 +162,8 @@ PSEUDOMODULES += ztimer%
 # ztimer's main module is called "ztimer_core"
 NO_PSEUDOMODULES += ztimer_core
 NO_PSEUDOMODULES += netdev_ieee802154_submac
+# ztimer64 is a distinct module
+NO_PSEUDOMODULES += ztimer64
 
 # print ascii representation in function od_hex_dump()
 PSEUDOMODULES += od_string
