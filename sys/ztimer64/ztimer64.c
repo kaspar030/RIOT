@@ -17,6 +17,11 @@
  *
  * This file contains ztimer64's main API implementation and functionality
  *
+ * TODO:
+ * - fix api (base -> relative, add absolute API)
+ * - add some kind of tick so base_clock overflows don't get lost
+ * - add proper unittests
+ *
  * @author      Kaspar Schleiser <kaspar@schleiser.de>
  *
  * @}
