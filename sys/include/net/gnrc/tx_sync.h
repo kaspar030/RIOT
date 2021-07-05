@@ -42,7 +42,8 @@ typedef struct {
  */
 static inline gnrc_tx_sync_t gnrc_tx_sync_init(void)
 {
-    gnrc_tx_sync_t result = { .signal = MUTEX_INIT_LOCKED };
+    gnrc_tx_sync_t result;
+    mutex_init_locked(&result.signal);
     return result;
 }
 
