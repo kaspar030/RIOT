@@ -14,7 +14,7 @@ ZEP_PORT_BASE ?= 17754
 TOPOLOGY      ?= example.topo
 GV_OUT        ?= example.gv
 
-RIOT_INCLUDE += -I$(RIOTBASE)/core/include
+RIOT_INCLUDE += -I$(RIOTBASE)/core/lib/include
 RIOT_INCLUDE += -I$(RIOTBASE)/cpu/native/include
 RIOT_INCLUDE += -I$(RIOTBASE)/drivers/include
 RIOT_INCLUDE += -I$(RIOTBASE)/sys/include
