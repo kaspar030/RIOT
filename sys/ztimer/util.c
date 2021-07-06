@@ -161,6 +161,7 @@ void ztimer_set_wakeup(ztimer_clock_t *clock, ztimer_t *timer, uint32_t offset,
     ztimer_set(clock, timer, offset);
 }
 
+#ifndef MODULE_RIOT_RS_CORE
 static void timeout_cb(void *arg)
 {
     mutex_cancel(arg);
@@ -199,3 +200,4 @@ int ztimer_rmutex_lock_timeout(ztimer_clock_t *clock, rmutex_t *rmutex,
     }
     return -ECANCELED;
 }
+#endif
