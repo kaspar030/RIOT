@@ -7,7 +7,7 @@ bin:
 	mkdir bin
 
 RIOTBASE:=../../..
-RIOT_INCLUDE=$(RIOTBASE)/core/include
+RIOT_INCLUDE=$(RIOTBASE)/core/lib/include
 SRCS:=$(wildcard *.c)
 $(BINARY): $(SRCS)
 	$(CC) $(CFLAGS) $(CFLAGS_EXTRA) -I$(RIOT_INCLUDE) $(SRCS) -o $@
