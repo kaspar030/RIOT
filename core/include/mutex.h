@@ -173,6 +173,11 @@ static inline void mutex_init(mutex_t *mutex)
     mutex->queue.next = NULL;
 }
 
+static inline void mutex_init_locked(mutex_t *mutex)
+{
+    mutex->queue.next = MUTEX_LOCKED;
+}
+
 /**
  * @brief   Initialize a mutex cancellation structure
  * @param   mutex       The mutex that the calling thread wants to lock
