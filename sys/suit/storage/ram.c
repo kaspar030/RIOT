@@ -40,7 +40,7 @@ static inline const suit_storage_ram_t *_get_ram_const(
     return container_of(storage, suit_storage_ram_t, storage);
 }
 
-static inline suit_storage_ram_region_t *_get_active_region(
+static inline suit_storage_region_t *_get_active_region(
     suit_storage_ram_t *ram)
 {
     return &ram->regions[ram->active_region];
@@ -76,8 +76,20 @@ static int _ram_init(suit_storage_t *storage)
 
     suit_storage_ram_t *ram = _get_ram(storage);
 
+    /* set suit_storage regions information */
+    ram->storage.regions = ram->regions;
+    ram->storage.regions_num = CONFIG_SUIT_STORAGE_RAM_REGIONS;
+
+    /* init the ram regions */
+    for (uint8_t i = 0; i < ram->storage.regions_num; i++) {
+        ram->regions[i].location = ram->ram_regions[i].mem;
+        ram->regions[i].used = 0;
+        ram->regions[i].size = CONFIG_SUIT_STORAGE_RAM_SIZE;
+        ram->regions[i].pre = NULL;
+        ram->regions[i].post = NULL;
+    }
     /* Clear the ram regions */
-    memset(ram->regions, 0,
+    memset(ram->ram_regions, 0,
            sizeof(suit_storage_ram_region_t) * CONFIG_SUIT_STORAGE_RAM_REGIONS);
     return SUIT_OK;
 }
@@ -87,13 +99,19 @@ static int _ram_start(suit_storage_t *storage, const suit_manifest_t *manifest,
 {
     (void)manifest;
     suit_storage_ram_t *ram = _get_ram(storage);
-    suit_storage_ram_region_t *region = _get_active_region(ram);
+    suit_storage_region_t *region = _get_active_region(ram);
 
     if (len > CONFIG_SUIT_STORAGE_RAM_SIZE) {
         return SUIT_ERR_STORAGE_EXCEEDED;
     }
 
-    region->occupied = 0;
+    for (suit_storage_hooks_t *i = region->pre; i != NULL; i = i->next) {
+        if (i->cb) {
+            i->cb(i->arg);
+        }
+    }
+
+    region->used = 0;
     return SUIT_OK;
 }
 
@@ -102,14 +120,14 @@ static int _ram_write(suit_storage_t *storage, const suit_manifest_t *manifest,
 {
     (void)manifest;
     suit_storage_ram_t *ram = _get_ram(storage);
-    suit_storage_ram_region_t *region = _get_active_region(ram);
+    suit_storage_region_t *region = _get_active_region(ram);
 
     if (offset + len > CONFIG_SUIT_STORAGE_RAM_SIZE) {
         return SUIT_ERR_STORAGE_EXCEEDED;
     }
 
-    memcpy(&region->mem[offset], buf, len);
-    region->occupied += len;
+    memcpy(&region->location[offset], buf, len);
+    region->used += len;
     return SUIT_OK;
 }
 
@@ -124,16 +142,32 @@ static int _ram_install(suit_storage_t *storage,
                         const suit_manifest_t *manifest)
 {
     (void)manifest;
-    (void)storage;
+
+    suit_storage_ram_t *ram = _get_ram(storage);
+    suit_storage_region_t *region = _get_active_region(ram);
+
+    for (suit_storage_hooks_t *i = region->post; i != NULL; i = i->next) {
+        if (i->cb) {
+            i->cb(i->arg);
+        }
+    }
     return SUIT_OK;
 }
 
 static int _ram_erase(suit_storage_t *storage)
 {
     suit_storage_ram_t *ram = _get_ram(storage);
-    suit_storage_ram_region_t *region = _get_active_region(ram);
+    suit_storage_region_t *region = _get_active_region(ram);
 
-    memset(region->mem, 0, CONFIG_SUIT_STORAGE_RAM_SIZE);
+    memset(region->location, 0, CONFIG_SUIT_STORAGE_RAM_SIZE);
+    region->used = 0;
+
+    for (suit_storage_hooks_t *i = region->post; i != NULL; i = i->next) {
+        if (i->cb) {
+            i->cb(i->arg);
+        }
+    }
+
     return SUIT_OK;
 }
 
@@ -141,13 +175,13 @@ static int _ram_read(suit_storage_t *storage, uint8_t *buf, size_t offset,
                      size_t len)
 {
     suit_storage_ram_t *ram = _get_ram(storage);
-    suit_storage_ram_region_t *region = _get_active_region(ram);
+    suit_storage_region_t *region = _get_active_region(ram);
 
     if (offset + len > CONFIG_SUIT_STORAGE_RAM_SIZE) {
         return SUIT_ERR_STORAGE_EXCEEDED;
     }
 
-    memcpy(buf, &region->mem[offset], len);
+    memcpy(buf, &region->location[offset], len);
 
     return SUIT_OK;
 }
@@ -156,10 +190,10 @@ static int _ram_read_ptr(suit_storage_t *storage,
                          const uint8_t **buf, size_t *len)
 {
     suit_storage_ram_t *ram = _get_ram(storage);
-    suit_storage_ram_region_t *region = _get_active_region(ram);
+    suit_storage_region_t *region = _get_active_region(ram);
 
-    *buf = region->mem;
-    *len = region->occupied;
+    *buf = region->location;
+    *len = region->used;
     return SUIT_OK;
 }
 
@@ -170,6 +204,17 @@ static bool _ram_has_location(const suit_storage_t *storage,
     uint32_t val;
 
     return _get_region_by_string(location, &val);
+}
+
+
+static suit_storage_region_t* _ram_get_region(const suit_storage_t *storage,
+                            const char *location)
+{
+    uint32_t val;
+    if (_get_region_by_string(location, &val) == true) {
+        return &storage->regions[val];
+    }
+    return NULL;
 }
 
 static int _ram_set_active_location(suit_storage_t *storage,
@@ -218,6 +263,7 @@ static const suit_storage_driver_t suit_storage_ram_driver = {
     .install = _ram_install,
     .erase = _ram_erase,
     .has_location = _ram_has_location,
+    .get_region = _ram_get_region,
     .set_active_location = _ram_set_active_location,
     .get_seq_no = _ram_get_seq_no,
     .set_seq_no = _ram_set_seq_no,

@@ -104,6 +104,9 @@
 extern "C" {
 #endif
 
+
+typedef struct suit_storage_region suit_storage_region_t;
+
 /**
  * @brief   Forward declaration for storage struct
  */
@@ -222,6 +225,17 @@ typedef struct suit_storage_driver {
     bool (*has_location)(const suit_storage_t *storage, const char *location);
 
     /**
+     * @brief Check if this storage backend services a location
+     *
+     * @param[in] storage     Storage context
+     * @param[in] location    Location to check
+     *
+     * @returns             True if this storage driver must be used for the
+     *                      supplied location
+     */
+    suit_storage_region_t* (*get_region)(const suit_storage_t *storage, const char *location);
+
+    /**
      * @brief Checks if the supplied offset is true or false for the current
      *        location
      *
@@ -287,12 +301,56 @@ typedef struct suit_storage_driver {
     char separator;
 } suit_storage_driver_t;
 
+typedef void (*suit_storage_cb_t)(void *arg);
+
+typedef struct suit_storage_hooks {
+    struct suit_storage_hooks *next;
+    suit_storage_cb_t cb;
+    void *arg;
+} suit_storage_hooks_t;
+
+struct suit_storage_region {
+    uint8_t* location;
+    size_t size;
+    size_t used;
+    suit_storage_hooks_t *pre;   /**< Storage pre install hook list*/
+    suit_storage_hooks_t *post;  /**< Storage post install hook list */
+};
+
 /**
  * @brief Generic storage backend state.
  */
 struct suit_storage {
     const suit_storage_driver_t *driver; /**< Storage driver functions */
+    suit_storage_region_t* regions;     /**< Pointer to an array of regions */
+    size_t regions_num;                  /**< Number of regions in this storage
+                                              device */
 };
+
+suit_storage_region_t* suit_storage_get_region_by_id(const char *id);
+
+int suit_storage_add_pre_hook(const char *id, suit_storage_hooks_t *hook);
+
+int suit_storage_rmv_pre_hook(const char *id, suit_storage_hooks_t *hook);
+
+int suit_storage_add_post_hook(const char *id, suit_storage_hooks_t *hook);
+
+int suit_storage_rmv_post_hook(const char *id, suit_storage_hooks_t *hook);
+
+static inline size_t suit_storage_region_size(suit_storage_region_t * region)
+{
+    return region->size;
+}
+
+static inline size_t suit_storage_region_size_used(suit_storage_region_t * region)
+{
+    return region->used;
+}
+
+static inline uint8_t* suit_storage_region_location(suit_storage_region_t * region)
+{
+    return region->location;
+}
 
 /**
  * @brief retrieve a storage backend based on the location ID string
@@ -528,6 +586,12 @@ static inline bool suit_storage_has_location(suit_storage_t *storage,
                                              const char *location)
 {
     return storage->driver->has_location(storage, location);
+}
+
+static inline suit_storage_region_t* suit_storage_get_region(suit_storage_t *storage,
+                                                             const char* location)
+{
+    return storage->driver->get_region(storage, location);
 }
 
 /**

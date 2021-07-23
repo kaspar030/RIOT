@@ -20,6 +20,7 @@
  */
 
 #include <string.h>
+#include "irq.h"
 #include "kernel_defines.h"
 
 #include "suit.h"
@@ -51,6 +52,17 @@ suit_storage_t *suit_storage_find_by_id(const char *id)
     for (size_t i = 0; i < reg_size; i++) {
         if (suit_storage_has_location(reg[i], id)) {
             return reg[i];
+        }
+    }
+    return NULL;
+}
+
+suit_storage_region_t *suit_storage_get_region_by_id(const char *id)
+{
+    for (size_t i = 0; i < reg_size; i++) {
+        suit_storage_region_t *region = suit_storage_get_region(reg[i], id);
+        if (region) {
+            return region;
         }
     }
     return NULL;
@@ -102,6 +114,83 @@ int suit_storage_set_seq_no_all(uint32_t seq_no)
 {
     for (size_t i = 0; i < reg_size; i++) {
         suit_storage_set_seq_no(reg[i], seq_no);
+    }
+    return 0;
+}
+
+int suit_storage_add_pre_hook(const char *id, suit_storage_hooks_t *hook)
+{
+    suit_storage_region_t *region = suit_storage_get_region_by_id(id);
+    if (region) {
+        unsigned state = irq_disable();
+        hook->next = region->pre;
+        region->pre = hook;
+        irq_restore(state);
+        return SUIT_OK;
+    }
+    return -1;
+}
+
+int suit_storage_rmv_pre_hook(const char *id, suit_storage_hooks_t *hook)
+{
+    suit_storage_region_t *region = suit_storage_get_region_by_id(id);
+    if (region) {
+        /* replace callbacks and data atomically to prevent mischief */
+        unsigned state = irq_disable();
+
+        /* A double linked list would be O(1) instead of O(n), but for the average
+         * use case with few (often only 1 entry) in the list, a single linked
+         * list is better
+         */
+        suit_storage_hooks_t **list = &region->pre;
+        while (*list) {
+            if (*list == hook) {
+                *list = hook->next;
+                irq_restore(state);
+                return -1;
+            }
+            list = &(*list)->next;
+        }
+        irq_restore(state);
+    }
+    return 0;
+}
+
+int suit_storage_add_post_hook(const char *id, suit_storage_hooks_t *hook)
+{
+    suit_storage_region_t *region = suit_storage_get_region_by_id(id);
+    if (region) {
+        unsigned state = irq_disable();
+        hook->next = region->post;
+        region->post = hook;
+        irq_restore(state);
+        return SUIT_OK;
+    }
+    return -1;
+}
+
+
+int suit_storage_rmv_post_hook(const char *id, suit_storage_hooks_t *hook)
+{
+    suit_storage_region_t *region = suit_storage_get_region_by_id(id);
+    if (region) {
+        /* replace callbacks and data atomically to prevent mischief */
+        unsigned state = irq_disable();
+
+        /* A double linked list would be O(1) instead of O(n), but for the average
+         * use case with few (often only 1 entry) in the list, a single linked
+         * list is better
+         */
+        suit_storage_hooks_t **list = &region->post;
+        while (*list) {
+            if (*list == hook) {
+                *list = hook->next;
+                irq_restore(state);
+                return -1;
+            }
+            list = &(*list)->next;
+        }
+        irq_restore(state);
     }
     return 0;
 }

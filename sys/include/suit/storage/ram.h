@@ -54,6 +54,23 @@ extern "C" {
 #endif
 
 /**
+ * @brief Storage location string separators
+ */
+#ifndef CONFIG_SUIT_STORAGE_RAM_LOCATION_SEPARATOR
+#define CONFIG_SUIT_STORAGE_RAM_LOCATION_SEPARATOR '.'
+#endif
+
+/**
+ * @brief Storage location string prefix
+ *
+ * Must include the leading and trailing separators
+ */
+#ifndef CONFIG_SUIT_STORAGE_RAM_LOCATION_PREFIX
+#define CONFIG_SUIT_STORAGE_RAM_LOCATION_PREFIX  ".ram."
+#endif
+
+
+/**
  * @brief Extra attributes for allocating the RAM struct
  */
 #ifndef CONFIG_SUIT_STORAGE_RAM_ATTR
@@ -80,7 +97,6 @@ extern "C" {
  * @brief Single in-memory storage region
  */
 typedef struct {
-    size_t occupied; /**< Region space filled */
     uint8_t mem[CONFIG_SUIT_STORAGE_RAM_SIZE]; /**< RAM area */
 } suit_storage_ram_region_t;
 
@@ -92,7 +108,8 @@ typedef struct CONFIG_SUIT_STORAGE_RAM_ATTR {
     /**
      * @brief ram storage regions
      */
-    suit_storage_ram_region_t regions[CONFIG_SUIT_STORAGE_RAM_REGIONS];
+    suit_storage_region_t regions[CONFIG_SUIT_STORAGE_RAM_REGIONS];
+    suit_storage_ram_region_t ram_regions[CONFIG_SUIT_STORAGE_RAM_REGIONS];
     size_t active_region; /**< Active region to write to */
     uint32_t sequence_no; /**< Ephemeral sequence number */
 } suit_storage_ram_t;
