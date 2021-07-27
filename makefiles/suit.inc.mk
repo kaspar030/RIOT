@@ -25,21 +25,25 @@ SUIT_VENDOR ?= "riot-os.org"
 SUIT_SEQNR ?= $(APP_VER)
 SUIT_CLASS ?= $(BOARD)
 
+ifneq (,$(filter riotboot,$(USEMODULE)))
+  SUIT_MANIFEST_PAYLOADS ?= $(SLOT0_RIOT_BIN) $(SLOT1_RIOT_BIN)
+  SUIT_MANIFEST_SLOTFILES ?= $(SLOT0_RIOT_BIN):$(SLOT0_OFFSET) \
+                             $(SLOT1_RIOT_BIN):$(SLOT1_OFFSET)
+endif
 #
-$(SUIT_MANIFEST): $(SLOT0_RIOT_BIN) $(SLOT1_RIOT_BIN)
+
+$(SUIT_MANIFEST): $(SUIT_MANIFEST_PAYLOADS)
 	$(Q)$(RIOTBASE)/dist/tools/suit/gen_manifest.py \
 	  --urlroot $(SUIT_COAP_ROOT) \
 	  --seqnr $(SUIT_SEQNR) \
 	  --uuid-vendor $(SUIT_VENDOR) \
 	  --uuid-class $(SUIT_CLASS) \
 	  -o $@.tmp \
-	  $(SLOT0_RIOT_BIN):$(SLOT0_OFFSET) \
-	  $(SLOT1_RIOT_BIN):$(SLOT1_OFFSET)
+	  $(SUIT_MANIFEST_SLOTFILES)
 
 	$(Q)$(SUIT_TOOL) create -f suit -i $@.tmp -o $@
 
 	$(Q)rm -f $@.tmp
-
 
 $(SUIT_MANIFEST_SIGNED): $(SUIT_MANIFEST) $(SUIT_SEC)
 	$(Q)$(SUIT_TOOL) sign -k $(SUIT_SEC) -m $(SUIT_MANIFEST) -o $@
@@ -57,7 +61,7 @@ SUIT_MANIFESTS := $(SUIT_MANIFEST) \
 
 suit/manifest: $(SUIT_MANIFESTS)
 
-suit/publish: $(SUIT_MANIFESTS) $(SLOT0_RIOT_BIN) $(SLOT1_RIOT_BIN)
+suit/publish: $(SUIT_MANIFESTS) $(SUIT_MANIFEST_PAYLOADS)
 	$(Q)mkdir -p $(SUIT_COAP_FSROOT)/$(SUIT_COAP_BASEPATH)
 	$(Q)cp $^ $(SUIT_COAP_FSROOT)/$(SUIT_COAP_BASEPATH)
 	$(Q)for file in $^; do \
