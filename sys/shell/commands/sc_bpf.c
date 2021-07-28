@@ -30,7 +30,7 @@ void _print_node(btree_node_t *node, size_t depth, void *ctx)
     (void)depth;
     (void)ctx;
     bpf_store_keyval_t *keyval = (bpf_store_keyval_t*)node;
-    printf("| %5d | %5d |\n", bpf_store_get_key(keyval), bpf_store_get_value(keyval));
+    printf("| %5d | %5d |\n", (int) bpf_store_get_key(keyval), (int) bpf_store_get_value(keyval));
 }
 
 int _sc_bpf(int argc, char **argv)
