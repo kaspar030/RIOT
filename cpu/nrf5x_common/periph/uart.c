@@ -270,7 +270,7 @@ void uart_write(uart_t uart, const uint8_t *data, size_t len)
 #ifdef MODULE_PERIPH_UART_NONBLOCKING
     for (size_t i = 0; i < len; i++) {
         /* in IRQ or interrupts disabled */
-        if (irq_is_in() || __get_PRIMASK()) {
+        if (irq_is_in() || !irq_is_enabled()) {
             if (tsrb_full(&uart_tx_rb[uart])) {
                 /* wait for end of ongoing transmission */
                 if (dev(uart)->EVENTS_TXSTARTED) {

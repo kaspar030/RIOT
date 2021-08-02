@@ -426,7 +426,7 @@ void uart_write(uart_t uart, const uint8_t *data, size_t len)
 #ifdef MODULE_PERIPH_UART_NONBLOCKING
     for (size_t i = 0; i < len; i++) {
         dev(uart)->CR1 |= (USART_CR1_TCIE);
-        if (irq_is_in() || __get_PRIMASK()) {
+        if (irq_is_in() || !irq_is_enabled()) {
             /* if ring buffer is full free up a spot */
             if (tsrb_full(&uart_tx_rb[uart])) {
                 send_byte(uart, tsrb_get_one(&uart_tx_rb[uart]));

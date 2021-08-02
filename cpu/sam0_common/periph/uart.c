@@ -288,7 +288,7 @@ void uart_write(uart_t uart, const uint8_t *data, size_t len)
 
 #ifdef MODULE_PERIPH_UART_NONBLOCKING
     for (const void* end = data + len; data != end; ++data) {
-        if (irq_is_in() || __get_PRIMASK()) {
+        if (irq_is_in() || !irq_is_enabled()) {
             /* if ring buffer is full free up a spot */
             if (tsrb_full(&uart_tx_rb[uart])) {
                 while (!dev(uart)->INTFLAG.bit.DRE) {}

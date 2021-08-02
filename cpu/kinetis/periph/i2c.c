@@ -369,7 +369,7 @@ int i2c_read_bytes(i2c_t dev, uint16_t addr, void *data, size_t len, uint8_t fla
     }
     if (len > 0) {
         /* We need IRQs enabled for interrupt based transfers */
-        assert(!__get_PRIMASK());
+        assert(irq_is_enabled());
         assert(!irq_is_in());
         bit_clear8(&i2c->C1, I2C_C1_TX_SHIFT);
         /* Configure IRQ transfer */
@@ -422,7 +422,7 @@ int i2c_write_bytes(i2c_t dev, uint16_t addr, const void *data, size_t len, uint
     }
     if (len > 0) {
         /* We need IRQs enabled for interrupt based transfers */
-        assert(!__get_PRIMASK());
+        assert(irq_is_enabled());
         assert(!irq_is_in());
         /* Configure IRQ transfer */
         bit_set8(&i2c->C1, I2C_C1_TX_SHIFT);

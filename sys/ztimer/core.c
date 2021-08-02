@@ -385,7 +385,7 @@ void ztimer_handler(ztimer_clock_t *clock)
         _ztimer_print(clock);
     }
     DEBUG("ztimer_handler(): %p done.\n", (void *)clock);
-    if (!irq_is_in()) {
+    if (!irq_is_in() || irq_is_enabled()) {
         thread_yield_higher();
     }
 }
