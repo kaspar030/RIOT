@@ -21,6 +21,11 @@ ifneq (,$(filter auto_init_gnrc_netif,$(USEMODULE)))
   USEMODULE += gnrc_netif_init_devs
 endif
 
+ifneq (,$(filter bpf,$(USEMODULE)))
+  USEMODULE += btree
+  USEMODULE += memarray
+endif
+
 ifneq (,$(filter congure_%,$(USEMODULE)))
   USEMODULE += congure
 endif
@@ -352,6 +357,10 @@ endif
 
 ifneq (,$(filter schedstatistics,$(USEMODULE)))
   USEMODULE += xtimer
+  USEMODULE += sched_cb
+endif
+
+ifneq (,$(filter sched_rbpf,$(USEMODULE)))
   USEMODULE += sched_cb
 endif
 
