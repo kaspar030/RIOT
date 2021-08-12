@@ -3,7 +3,7 @@ app:
         - embunit
         - fmt
         - memarray
-        - pkg/cn-cbor
+        - cn-cbor
     env:
       global:
         CFLAGS:

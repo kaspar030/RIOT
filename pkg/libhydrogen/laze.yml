@@ -9,10 +9,14 @@ module:
         - patches/0001-Add-support-for-RIOT-OS.patch
     depends:
       - random
+      - feature/arch_32bit
     sources: [hydrogen.c]
     env:
-      CFLAGS:
+      local:
+        CFLAGS:
         - -Wno-type-limits
-    export_vars:
-      includes:
+        - -Wno-stringop-overread
+        - -Wno-stringop-overflow
+      export:
+        includes:
         - ${srcdir}

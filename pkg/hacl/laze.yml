@@ -3,7 +3,7 @@ module:
     license: MIT
     download:
       git:
-        url: https://github.com/mitls/hacl-c
+        url: https://github.com/benpicco/hacl-c_archived
         commit: aac05f5094fc92569169d5a2af54c12387160634
       patches:
         - patches/0001-RIOT-Use-RIOT-random_bytes-function-instead-of-rando.patch
@@ -27,8 +27,9 @@ module:
       - Hacl_SHA2_512.c
 
     env:
-      CFLAGS:
-        - -DKRML_NOUINT128 -Wno-unused-parameter
-    export_vars:
-      includes:
-        - ${srcdir}
+      local:
+        CFLAGS:
+        - -DKRML_NOUINT128 -Wno-unused-parameter -Wno-array-parameter
+      export:
+        includes:
+          - ${srcdir}

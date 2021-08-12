@@ -5,6 +5,8 @@ subdirs:
 defaults:
     app:
         context: riot
+        blocklist:
+          - host
         sources:
           - main.c
         depends:
@@ -178,7 +180,8 @@ subdirs:
   - periph_uart
   - pipe
   - pkg_cayenne-lpp
-  #- pkg_cn-cbor
+  - pkg_cmsis-dsp
+  - pkg_cn-cbor
   - pkg_fatfs
   - pkg_fatfs_vfs
   - pkg_hacl

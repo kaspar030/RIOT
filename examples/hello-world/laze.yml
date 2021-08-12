@@ -1,4 +1,4 @@
 app:
-    - depends:
-        - riot_info
-        - develhelp
+  - depends:
+      - riot_info
+      - develhelp

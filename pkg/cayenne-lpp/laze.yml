@@ -7,6 +7,7 @@ module:
         commit: ad3aa26043e221eda28ac3da2484e1ef84986442
     sources:
       - cayenne_lpp.c
-    export_vars:
-      includes:
+    env:
+      export:
+        includes:
         - ${srcdir}
