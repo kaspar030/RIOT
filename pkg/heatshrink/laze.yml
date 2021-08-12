@@ -9,10 +9,11 @@ module:
       - heatshrink_decoder.c
       - heatshrink_encoder.c
     env:
-      CFLAGS:
-        - -Wno-implicit-fallthrough
-    export_vars:
-      includes:
-        - ${srcdir}
-      CFLAGS:
-        - -DHEATSHRINK_DYNAMIC_ALLOC=0
+      local:
+        CFLAGS:
+          - -Wno-implicit-fallthrough
+      export:
+        includes:
+          - ${srcdir}
+        CFLAGS:
+          - -DHEATSHRINK_DYNAMIC_ALLOC=0

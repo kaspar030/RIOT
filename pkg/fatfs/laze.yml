@@ -15,8 +15,9 @@ module:
       - fatfs_diskio_mtd
       - "!periph_rtc":
           - fatfs_nortc
-    export_vars:
-      includes:
+    vars:
+      export:
+        includes:
         - ${srcdir}/include
 
   - name: fatfs_nortc

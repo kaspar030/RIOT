@@ -18,6 +18,7 @@ context:
             - -DCPU_CORE_CORTEX_M4F
 
           RIOTBOOT_LEN: "0x4000"
+          ARM_MATH: -DARM_MATH_CM4
 
     - name: nrf52832
       parent: nrf52

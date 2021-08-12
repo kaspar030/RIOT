@@ -1,211 +1,165 @@
 context:
-    - name: default
-      env:
-          bindir: "${build-dir}/bin/${builder}/${app}"
-          PREFIX: ""
-          CC_WRAP:
-              - ccache
-          CC: ${PREFIX}gcc
-          CXX: ${PREFIX}c++
-          LINK: ${PREFIX}gcc
-          SIZE: ${PREFIX}size
-          OBJCOPY: ${PREFIX}objcopy
-          CFLAGS_WARN:
-            - -Wall
-            - -Werror
-          CFLAGS:
-            - -Os
-            - -g
-            - -gz
-      tasks:
-          info:
-              cmd:
-                - "echo binary: ${out}"
-                - 'echo CFLAGS=\"${CFLAGS}\"'
-          size:
-              cmd:
-                - "${SIZE} ${out}"
+  - name: default
+    env:
+      bindir: "${build-dir}/bin/${builder}/${app}"
+      PREFIX: ""
+      CC_WRAP:
+        - ccache
+      CC: ${PREFIX}gcc
+      CXX: ${PREFIX}c++
+      LINK: ${PREFIX}gcc
+      SIZE: ${PREFIX}size
+      OBJCOPY: ${PREFIX}objcopy
+      CFLAGS_WARN:
+        - -Wall
+        - -Werror
+      CFLAGS:
+        - -Os
+        - -g
+        - -gz
+    tasks:
+      info:
+        cmd:
+          - "echo binary: ${out}"
+          - 'echo CFLAGS=\"${CFLAGS}\"'
+      size:
+        cmd:
+          - "${SIZE} ${out}"
 
-      rule:
-          - name: CC
-            in: 'c'
-            out: 'o'
-            gcc_deps: "$out.d"
-            cmd: '${CC_WRAP} ${CC} -MD -MF $out.d
-                      ${CFLAGS_STD} ${CFLAGS_ARCH} ${CFLAGS_CODEGEN}
-                      ${CFLAGS_DEFINES} ${CFLAGS_WARN} ${CFLAGS_GCC}
-                      ${CFLAGS} ${includes}
-                      -c ${in} -o ${out}'
-          - name: CXX
-            in: 'cpp'
-            out: 'o'
-            gcc_deps: "$out.d"
-            cmd: '${CC_WRAP} ${CXX} -MMD -MF $out.d ${CXXFLAGS_STD} ${CXXFLAGS}
-                      ${CFLAGS_ARCH} ${CFLAGS_CODEGEN}
-                      ${CFLAGS_DEFINES} ${CFLAGS_WARN} ${CFLAGS_GCC}
-                      ${CFLAGS} ${includes}
-                      -c ${in} -o ${out}'
-          - name: ASM
-            in: 'S'
-            out: 'o'
-            cmd: '${CC_WRAP} ${CC} ${CFLAGS} ${CFLAGS_ARCH} -c ${in} -o ${out}'
-          - name: LINK
-            in: 'o'
-            options:
-                combine: true
-            cmd: '${LINK} ${LINKFLAGS} ${CFLAGS_STD} ${CFLAGS_ARCH}
-                          ${CFLAGS_CODEGEN} ${CFLAGS}
-                          ${in} ${libs} -o ${out}'
+    rule:
+      - name: CC
+        in: "c"
+        out: "o"
+        gcc_deps: "$out.d"
+        cmd: "${CC_WRAP} ${CC} -MD -MF $out.d
+          ${CFLAGS_STD} ${CFLAGS_ARCH} ${CFLAGS_CODEGEN}
+          ${CFLAGS_DEFINES} ${CFLAGS_WARN} ${CFLAGS_GCC}
+          ${CFLAGS} ${includes}
+          -c ${in} -o ${out}"
+      - name: CXX
+        in: "cpp"
+        out: "o"
+        gcc_deps: "$out.d"
+        cmd: "${CC_WRAP} ${CXX} -MMD -MF $out.d ${CXXFLAGS_STD} ${CXXFLAGS}
+          ${CFLAGS_ARCH} ${CFLAGS_CODEGEN}
+          ${CFLAGS_DEFINES} ${CFLAGS_WARN} ${CFLAGS_GCC}
+          ${CFLAGS} ${includes}
+          -c ${in} -o ${out}"
+      - name: ASM
+        in: "S"
+        out: "o"
+        cmd: "${CC_WRAP} ${CC} ${CFLAGS} ${CFLAGS_ARCH} -c ${in} -o ${out}"
+      - name: LINK
+        in: "o"
+        options:
+          combine: true
+        cmd: "${LINK} ${LINKFLAGS} ${CFLAGS_STD} ${CFLAGS_ARCH}
+          ${CFLAGS_CODEGEN} ${CFLAGS}
+          ${in} ${libs} -o ${out}"
 
-          - name: SYMLINK
-            cmd: 'ln -f ${in} ${out}'
+      - name: SYMLINK
+        cmd: "ln -f ${in} ${out}"
 
-            #- name: GIT_DOWNLOAD
-            #cmd: 'D=$$(dirname ${out}); rm -rf $$D && git clone ${URL} $$D -n && git -C $$D reset --hard ${COMMIT} && touch ${out}'
-          - name: GIT_DOWNLOAD
-            cmd: 'D=$$(dirname ${out}); rm -rf $$D && git-cache clone ${URL} ${COMMIT} $$D && touch ${out}'
+        #- name: GIT_DOWNLOAD
+        #cmd: 'D=$$(dirname ${out}); rm -rf $$D && git clone ${URL} $$D -n && git -C $$D reset --hard ${COMMIT} && touch ${out}'
+      - name: GIT_DOWNLOAD
+        cmd: "D=$$(dirname ${out}); rm -rf $$D && git-cache clone ${url} ${commit} $$D && echo ${commit} > ${out}"
 
-          - name: PATCH
-            cmd: 'D=$$(dirname ${out}); git -C $$D --git-dir=.git --work-tree=. reset --hard ${COMMIT} && git -C $$D am --ignore-whitespace ${in} || (git -C $$D am --abort; false; ) && touch ${out}'
+      - name: GIT_PATCH
+        cmd: 'D=$$(dirname ${out}); PATCHES="$$(realpath --relative-to $$D ${in})"; git -C $$D --git-dir=.git --work-tree=. reset --hard $$(cat $${D}/.laze-downloaded) && git -C $$D am --ignore-whitespace $$PATCHES || (git -C $$D am --abort; false; ) && touch ${out}'
 
-
-      rule:
-          - name: CC
-            in: 'c'
-            out: 'o'
-            depfile: "$out.d"
-            deps: gcc
-            cmd: '${CC_WRAP} ${CC} -MD -MF $out.d
-                      ${CFLAGS_STD} ${CFLAGS_ARCH} ${CFLAGS_CODEGEN}
-                      ${CFLAGS_DEFINES} ${CFLAGS_WARN} ${CFLAGS_GCC}
-                      ${CFLAGS} ${includes}
-                      -c ${in} -o ${out}'
-          - name: CXX
-            in: 'cpp'
-            out: 'o'
-            depfile: "$out.d"
-            deps: gcc
-            cmd: '${CC_WRAP} ${CXX} -MMD -MF $out.d ${CXXFLAGS_STD} ${CXXFLAGS}
-                      ${CFLAGS_ARCH} ${CFLAGS_CODEGEN}
-                      ${CFLAGS_DEFINES} ${CFLAGS_WARN} ${CFLAGS_GCC}
-                      ${CFLAGS} ${includes}
-                      -c ${in} -o ${out}'
-          - name: ASM
-            in: 'S'
-            out: 'o'
-            cmd: '${CC_WRAP} ${CC} ${CFLAGS} ${CFLAGS_ARCH} -c ${in} -o ${out}'
-          - name: LINK
-            in: 'o'
-            options:
-                combine: true
-            cmd: '${LINK} ${LINKFLAGS} ${CFLAGS_STD} ${CFLAGS_ARCH}
-                          ${CFLAGS_CODEGEN} ${CFLAGS}
-                          ${in} ${libs} -o ${out}'
-
-          - name: SYMLINK
-            cmd: 'ln -f ${in} ${out}'
-
-            #- name: GIT_DOWNLOAD
-            #cmd: 'D=$$(dirname ${out}); rm -rf $$D && git clone ${URL} $$D -n && git -C $$D reset --hard ${COMMIT} && touch ${out}'
-          - name: GIT_DOWNLOAD
-            cmd: 'D=$$(dirname ${out}); rm -rf $$D && git-cache clone ${URL} ${COMMIT} $$D && touch ${out}'
-
-          - name: PATCH
-            cmd: 'D=$$(dirname ${out}); git -C $$D --git-dir=.git --work-tree=. reset --hard ${COMMIT} && git -C $$D am --ignore-whitespace ${in} || (git -C $$D am --abort; false; ) && touch ${out}'
-
-
-    - name: riot
-      parent: default
-      env:
-          CFLAGS_DEFINES:
-            - ${notify}
-            - '-DRIOT_VERSION=\"laze\"'
-            - -DNDEBUG
-          CFLAGS_CODEGEN:
-            - -fdata-sections
-            - -ffunction-sections
-            - -fdiagnostics-color
-            - -fno-common
-            - -fno-delete-null-pointer-checks
-            - -fshort-enums
-          CFLAGS_WARN:
-            - -Wextra
-            - -Wformat-overflow
-            - -Wformat-truncation
-            - -Wformat=2
-            - -Wmissing-include-dirs
-              # these are invalid for cpp. maybe introduce C_ONLY_FLAGS?
-              #- -Wold-style-definition
-              #- -Wstrict-prototypes
-          CXXFLAGS_STD:
-            - -std=c++11
-          LINKFLAGS:
-            - -Wl,--gc-sections
-            - -Wl,-Map=${out}.map
-          includes:
-            - ${relpath}/core/include
-            - ${relpath}/drivers/include
-            - ${relpath}/sys/include
-      var_options:
-          testsuites:
-              start: -DTEST_SUITES=
-              joiner: ','
-          includes:
-            prefix: -I
-          notify:
-              prefix: -DMODULE_
-      tools:
-          size:
-              cmd:
-               - "${SIZE} ${out}"
-          test:
-              cmd:
-               - 'PYTHONPATH=$$(pwd)/dist/pythonlibs/; cd ${relpath} && LAZE=1 tests/*'
-
+  - name: riot
+    parent: default
+    env:
+      CFLAGS_DEFINES:
+        - ${notify}
+        - '-DRIOT_VERSION=\"laze\"'
+        - -DNDEBUG
+      CFLAGS_CODEGEN:
+        - -fdata-sections
+        - -ffunction-sections
+        - -fdiagnostics-color
+        - -fno-common
+        - -fno-delete-null-pointer-checks
+        - -fshort-enums
+        - -fno-builtin
+      CFLAGS_WARN:
+        - -Wextra
+        - -Wformat-overflow
+        - -Wformat-truncation
+        - -Wformat=2
+        - -Wmissing-include-dirs
+          # these are invalid for cpp. maybe introduce C_ONLY_FLAGS?
+          #- -Wold-style-definition
+          #- -Wstrict-prototypes
+      CXXFLAGS_STD:
+        - -std=c++11
+      LINKFLAGS:
+        - -Wl,--gc-sections
+        - -Wl,-Map=${out}.map
+      includes:
+        - ${relpath}/core/include
+        - ${relpath}/drivers/include
+        - ${relpath}/sys/include
+    var_options:
+      testsuites:
+        start: -DTEST_SUITES=
+        joiner: ","
+      includes:
+        prefix: -I
+      notify:
+        prefix: -DMODULE_
+    tools:
+      size:
+        cmd:
+          - "${SIZE} ${out}"
+      test:
+        cmd:
+          - "PYTHONPATH=$$(pwd)/dist/pythonlibs/; cd ${relpath} && LAZE=1 tests/*"
 
 builder:
-    - name: host
-      parent: default
-      tools:
-        run:
-          cmd:
-            - "${out}"
+  - name: host
+    parent: default
+    tools:
+      run:
+        cmd:
+          - "${out}"
 
 module:
-    - name: riot
-      context: riot
+  - name: riot
+    context: riot
 
-    - name: riot_info
-      context: riot
-      env:
-        export:
-          CFLAGS:
+  - name: riot_info
+    context: riot
+    env:
+      export:
+        CFLAGS:
           - -DRIOT_BOARD=\"${builder}\"
           - -DRIOT_APPLICATION=\"${app}\"
 
-    - name: host
-      context: host
+  - name: host
+    context: host
 
-    - name: cpp
-      depends:
-        - feature/cpp
+  - name: cpp
+    depends:
+      - feature/cpp
 
-    - name: lto
-      env:
-        global:
-          CFLAGS:
-            - -flto -ffat-lto-objects
-          LINKFLAGS:
-            - -flto -Os
+  - name: lto
+    env:
+      global:
+        CFLAGS:
+          - -flto -ffat-lto-objects
+        LINKFLAGS:
+          - -flto -Os
 
-    - name: develhelp
-      context: riot
-      env:
-        global:
-          CFLAGS_DEFINES:
-              - -DDEVELHELP
-              - -UNDEBUG
+  - name: develhelp
+    context: riot
+    env:
+      global:
+        CFLAGS_DEFINES:
+          - -DDEVELHELP
+          - -UNDEBUG
 
 subdirs:
-    #[ dist, core, boards, cpu, drivers, sys, examples, tests, pkg, bootloaders ]
-    [ core, boards, cpu, drivers, sys, examples, tests ]
+  #[ dist, core, boards, cpu, drivers, sys, examples, tests, pkg, bootloaders ]
+  [core, boards, cpu, drivers, sys, examples, tests, pkg]
