@@ -1,6 +1,9 @@
 context:
   - name: atmega_common
     parent: riot
+    disable:
+      # causes internal compiler error on gcc 11.2.0
+      - lto
     env:
       PREFIX: avr-
       LINKFLAGS:
