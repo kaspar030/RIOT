@@ -7,10 +7,12 @@ builder:
       #      - remove:
       #        - -Os
         CFLAGS_ARCH:
-            - -m32
+          - -m32
         CFLAGS_DEFINES:
-            - -DRIOT_MCU=\"native\"
-            - -DBOARD_NATIVE
+          - -DRIOT_MCU=\"native\"
+          - -DBOARD_NATIVE
+        LINKFLAGS:
+          - -z notext
         includes:
           - ${relpath}/include
         libs:

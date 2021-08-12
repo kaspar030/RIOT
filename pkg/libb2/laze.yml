@@ -1,25 +1,25 @@
 module:
-    - name: libb2
-      download:
-        git:
-          url: https://github.com/BLAKE2/libb2
-          commit: 60ea749837362c226e8501718f505ab138e5c19d # v0.98
-        patches:
-            - patches/0001-rename-config.h-to-libb2_config.h.patch
-        subdir: src
-      license: CC0-1.0
-      depends:
-          - board
-      env:
+  - name: libb2
+    download:
+      git:
+        url: https://github.com/BLAKE2/libb2
+        commit: 60ea749837362c226e8501718f505ab138e5c19d # v0.98
+      patches:
+        - patches/0001-rename-config.h-to-libb2_config.h.patch
+          #(subdir not implemented)subdir: src
+    license: CC0-1.0
+    depends:
+      - board
+    env:
+      local:
         CFLAGS:
           - -Wno-unused-function
-      export_vars:
+      export:
         includes:
-          - ${srcdir}
+          - ${srcdir}/src
           - ${relpath}/include
-      sources:
-        - blake2s-ref.c
-        - blake2b-ref.c
-        - blake2sp.c
-        - blake2bp.c
-
+    sources:
+      - src/blake2s-ref.c
+      - src/blake2b-ref.c
+      - src/blake2sp.c
+      - src/blake2bp.c

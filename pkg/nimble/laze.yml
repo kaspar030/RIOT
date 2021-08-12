@@ -145,8 +145,9 @@ module:
           - nimble/drivers/nrf52/src/ble_phy.c
           - nimble/drivers/nrf52/src/ble_phy_trace.c
 
-    export_vars:
-      includes:
+    env:
+      export:
+        includes:
         - ${srcdir}/nimble/include
         - ${srcdir}/porting/npl/riot/include
         - ${srcdir}/porting/nimble/include
@@ -157,7 +158,7 @@ module:
         - ${srcdir}/nimble/host/services/gatt/include
         - ${srcdir}/nimble/host/services/ipss/include
 
-      nimble:
+        nimble:
         - ${srcdir}
 
     env:
