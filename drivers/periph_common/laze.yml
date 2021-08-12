@@ -9,6 +9,24 @@ module:
           - periph_rtc: [ rtc.c ]
           - periph_spi: [ spi.c ]
           - periph_timer: [ timer.c ]
+      env:
+          local:
+              CFLAGS:
+
+# workaround for this warning:
+# drivers/periph_common/cpuid.c: In function 'cpuid_get':
+# drivers/periph_common/cpuid.c:34:5: error: 'memcpy' offset [0, 7] is out of the bounds [0, 0] [-Werror=array-bounds]
+#   34 |     memcpy(id, (void *)CPUID_ADDR, CPUID_LEN);
+#      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+                  - -Wno-array-bounds
+
+# workaround for this warning:
+# drivers/periph_common/cpuid.c: In function 'cpuid_get':
+# drivers/periph_common/cpuid.c:34:5: error: 'memcpy' reading 8 bytes from a region of size 0 [-Werror=stringop-overread]
+#   34 |     memcpy(id, (void *)CPUID_ADDR, CPUID_LEN);
+#      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                  - -Wno-stringop-overread
 
       depends:
           - periph_common_init
