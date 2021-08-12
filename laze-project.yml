@@ -82,7 +82,9 @@ context:
         - -fno-common
         - -fno-delete-null-pointer-checks
         - -fshort-enums
-        - -fno-builtin
+          # RIOT master uses this. Causes issues (e.g., no reference to "fabs()" on avr).
+          # Why no builtins?
+          #- -fno-builtin
       CFLAGS_WARN:
         - -Wextra
         - -Wformat-overflow
