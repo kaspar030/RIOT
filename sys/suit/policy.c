@@ -19,6 +19,9 @@
  * @}
  */
 
+#ifndef LOG_LEVEL
+#define LOG_LEVEL   LOG_ERROR
+#endif
 #include "log.h"
 #include "suit/policy.h"
 #include "suit.h"

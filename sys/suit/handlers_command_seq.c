@@ -40,6 +40,9 @@
 #endif
 #include "suit/transport/mock.h"
 
+#ifndef LOG_LEVEL
+#define LOG_LEVEL   LOG_ERROR
+#endif
 #include "log.h"
 
 static int _get_component_size(suit_manifest_t *manifest,

@@ -23,6 +23,9 @@
 
 #include "fmt.h"
 #include "kernel_defines.h"
+#ifndef LOG_LEVEL
+#define LOG_LEVEL   LOG_ERROR
+#endif
 #include "log.h"
 
 #include "suit.h"
@@ -161,7 +164,6 @@ static int _ram_erase(suit_storage_t *storage)
 
     memset(region->location, 0, CONFIG_SUIT_STORAGE_RAM_SIZE);
     region->used = 0;
-
     for (suit_storage_hooks_t *i = region->post; i != NULL; i = i->next) {
         if (i->cb) {
             i->cb(i->arg);

@@ -24,6 +24,10 @@
 #include <nanocbor/nanocbor.h>
 
 #include "kernel_defines.h"
+
+#ifndef LOG_LEVEL
+#define LOG_LEVEL   LOG_ERROR
+#endif
 #include "log.h"
 #include "suit/conditions.h"
 #include "suit/handlers.h"

@@ -27,6 +27,10 @@
 #include <string.h>
 
 #include "msg.h"
+
+#ifndef LOG_LEVEL
+#define LOG_LEVEL   LOG_ERROR
+#endif
 #include "log.h"
 #include "net/nanocoap.h"
 #include "net/nanocoap_sock.h"
@@ -50,9 +54,6 @@
 #if defined(MODULE_PROGRESS_BAR)
 #include "progress_bar.h"
 #endif
-
-#define ENABLE_DEBUG 0
-#include "debug.h"
 
 #ifndef SUIT_COAP_STACKSIZE
 /* allocate stack needed to do manifest validation */
@@ -85,7 +86,7 @@ static inline void _print_download_progress(suit_manifest_t *manifest,
     (void)manifest;
     (void)offset;
     (void)len;
-    DEBUG("_suit_flashwrite(): writing %u bytes at pos %u\n", len, offset);
+    LOG_DEBUG("_suit_flashwrite(): writing %u bytes at pos %u\n", len, offset);
 #if defined(MODULE_PROGRESS_BAR)
     if (image_size != 0) {
         char _suffix[7] = { 0 };
@@ -152,7 +153,7 @@ static ssize_t _nanocoap_request(sock_udp_t *sock, coap_pkt_t *pkt, size_t len)
         if (res == -EAGAIN) {
             res = sock_udp_send(sock, buf, pdu_len, NULL);
             if (res <= 0) {
-                DEBUG("nanocoap: error sending coap request, %d\n", (int)res);
+                LOG_DEBUG("nanocoap: error sending coap request, %d\n", (int)res);
                 break;
             }
         }
@@ -160,11 +161,11 @@ static ssize_t _nanocoap_request(sock_udp_t *sock, coap_pkt_t *pkt, size_t len)
         res = sock_udp_recv(sock, buf, len, deadline_left(deadline), NULL);
         if (res <= 0) {
             if (res == -ETIMEDOUT) {
-                DEBUG("nanocoap: timeout\n");
+                LOG_DEBUG("nanocoap: timeout\n");
 
                 tries_left--;
                 if (!tries_left) {
-                    DEBUG("nanocoap: maximum retries reached\n");
+                    LOG_DEBUG("nanocoap: maximum retries reached\n");
                     break;
                 }
                 else {
@@ -174,12 +175,12 @@ static ssize_t _nanocoap_request(sock_udp_t *sock, coap_pkt_t *pkt, size_t len)
                     continue;
                 }
             }
-            DEBUG("nanocoap: error receiving coap response, %d\n", (int)res);
+            LOG_DEBUG("nanocoap: error receiving coap response, %d\n", (int)res);
             break;
         }
         else {
             if (coap_parse(pkt, (uint8_t *)buf, res) < 0) {
-                DEBUG("nanocoap: error parsing packet\n");
+                LOG_DEBUG("nanocoap: error parsing packet\n");
                 res = -EBADMSG;
             }
             else if (coap_get_id(pkt) != id) {
@@ -218,7 +219,7 @@ static int _fetch_block(coap_pkt_t *pkt, uint8_t *buf, sock_udp_t *sock,
     }
 
     res = coap_get_code(pkt);
-    DEBUG("code=%i\n", res);
+    LOG_DEBUG("code=%i\n", res);
     if (res != 205) {
         return -res;
     }
@@ -248,9 +249,9 @@ int suit_coap_get_blockwise(sock_udp_ep_t *remote, const char *path,
     size_t num = 0;
     res = -1;
     while (more == 1) {
-        DEBUG("fetching block %u\n", (unsigned)num);
+        LOG_DEBUG("fetching block %u\n", (unsigned)num);
         res = _fetch_block(&pkt, buf, &sock, path, blksize, num);
-        DEBUG("res=%i\n", res);
+        LOG_DEBUG("res=%i\n", res);
 
         if (!res) {
             coap_block1_t block2;
@@ -259,13 +260,13 @@ int suit_coap_get_blockwise(sock_udp_ep_t *remote, const char *path,
 
             if (callback(arg, block2.offset, pkt.payload, pkt.payload_len,
                          more)) {
-                DEBUG("callback res != 0, aborting.\n");
+                LOG_DEBUG("callback res != 0, aborting.\n");
                 res = -1;
                 goto out;
             }
         }
         else {
-            DEBUG("error fetching block\n");
+            LOG_DEBUG("error fetching block\n");
             res = -1;
             goto out;
         }
@@ -445,7 +446,7 @@ static void *_suit_coap_thread(void *arg)
     msg_t m;
     while (true) {
         msg_receive(&m);
-        DEBUG("suit_coap: got msg with type %" PRIu32 "\n", m.content.value);
+        LOG_DEBUG("suit_coap: got msg with type %" PRIu32 "\n", m.content.value);
         switch (m.content.value) {
             case SUIT_MSG_TRIGGER:
                 LOG_INFO("suit_coap: trigger received\n");

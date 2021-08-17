@@ -29,6 +29,9 @@
 #include "suit/storage.h"
 #include "suit.h"
 
+#ifndef LOG_LEVEL
+#define LOG_LEVEL   LOG_ERROR
+#endif
 #include "log.h"
 
 static int _component_handler(suit_manifest_t *manifest, int key,
