@@ -716,10 +716,7 @@ ifneq (,$(filter suit,$(USEMODULE)))
   USEPKG += nanocbor
   USEPKG += libcose
   USEMODULE += uuid
-
-  ifeq (,$(filter libcose_crypt_%,$(USEMODULE)))
-    USEMODULE += libcose_crypt_c25519
-  endif
+  USEMODULE += libcose_crypt_hacl
 endif
 
 ifneq (,$(filter suit_transport_%, $(USEMODULE)))
