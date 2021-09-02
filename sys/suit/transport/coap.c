@@ -78,6 +78,11 @@ static char _stack[SUIT_COAP_STACKSIZE];
 static char _url[SUIT_URL_MAX];
 static uint8_t _manifest_buf[SUIT_MANIFEST_BUFSIZE];
 
+#ifdef MODULE_SUIT_STORAGE_FLASHWRITE
+#include "suit/storage/flashwrite.h"
+extern suit_storage_flashwrite_t suit_storage_flashwrite;
+#endif
+
 #ifdef MODULE_SUIT
 static inline void _print_download_progress(suit_manifest_t *manifest,
                                             size_t offset, size_t len,
@@ -86,7 +91,6 @@ static inline void _print_download_progress(suit_manifest_t *manifest,
     (void)manifest;
     (void)offset;
     (void)len;
-    LOG_DEBUG("_suit_flashwrite(): writing %u bytes at pos %u\n", len, offset);
 #if defined(MODULE_PROGRESS_BAR)
     if (image_size != 0) {
         char _suffix[7] = { 0 };
@@ -98,6 +102,7 @@ static inline void _print_download_progress(suit_manifest_t *manifest,
         }
     }
 #else
+    LOG_DEBUG("suit: writing %u bytes at pos %u\n", len, offset);
     (void) image_size;
 #endif
 }
@@ -370,17 +375,20 @@ static void _suit_handle_url(const char *url)
 #endif
 #ifdef MODULE_SUIT_STORAGE_FLASHWRITE
         if (res == 0) {
-            const riotboot_hdr_t *hdr = riotboot_slot_get_hdr(
-                riotboot_slot_other());
-            riotboot_hdr_print(hdr);
-            xtimer_sleep(1);
+            suit_component_t *comp = &manifest.components[manifest.component_current];
+            if (res == 0 && comp->storage_backend == &suit_storage_flashwrite.storage) {
+                 const riotboot_hdr_t *hdr = riotboot_slot_get_hdr(
+                    riotboot_slot_other());
+                riotboot_hdr_print(hdr);
+                xtimer_sleep(1);
 
-            if (riotboot_hdr_validate(hdr) == 0) {
-                LOG_INFO("suit_coap: rebooting...\n");
-                pm_reboot();
-            }
-            else {
-                LOG_INFO("suit_coap: update failed, hdr invalid\n ");
+                if (riotboot_hdr_validate(hdr) == 0) {
+                    LOG_INFO("suit_coap: rebooting...\n");
+                    pm_reboot();
+                }
+                else {
+                    LOG_INFO("suit_coap: update failed, hdr invalid\n ");
+                }
             }
         }
 #endif
