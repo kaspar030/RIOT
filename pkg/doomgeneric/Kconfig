@@ -1,0 +1,10 @@
+# Copyright (c) 2021 Kaspar Schleiser <kaspar@schleiser.de>
+#
+# This file is subject to the terms and conditions of the GNU Lesser
+# General Public License v2.1. See the file LICENSE in the top level
+# directory for more details.
+#
+
+config PACKAGE_DOOMGENERIC
+    bool "DOOM game"
+    depends on TEST_KCONFIG
