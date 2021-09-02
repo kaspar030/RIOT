@@ -1,1 +1,1 @@
-INCLUDES += -I$(PKGDIRBASE)/doomgeneric
+INCLUDES += -I$(PKGDIRBASE)/doomgeneric/doomgeneric

@@ -6,4 +6,4 @@ PKG_LICENSE=GPL-v2
 include $(RIOTBASE)/pkg/pkg.mk
 
 all:
-	$(QQ)"$(MAKE)" -C $(PKG_SOURCE_DIR) -f $(RIOTBASE)/Makefile.base
+	$(QQ)"$(MAKE)" -C $(PKG_SOURCE_DIR)/doomgeneric -f ${PKG_DIR}/Makefile.doomgeneric
