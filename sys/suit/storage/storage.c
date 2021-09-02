@@ -60,9 +60,11 @@ suit_storage_t *suit_storage_find_by_id(const char *id)
 suit_storage_region_t *suit_storage_get_region_by_id(const char *id)
 {
     for (size_t i = 0; i < reg_size; i++) {
-        suit_storage_region_t *region = suit_storage_get_region(reg[i], id);
-        if (region) {
-            return region;
+        if (suit_storage_has_get_region(reg[i])) {
+            suit_storage_region_t *region = suit_storage_get_region(reg[i], id);
+            if (region) {
+                return region;
+            }
         }
     }
     return NULL;

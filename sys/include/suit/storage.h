@@ -594,6 +594,11 @@ static inline suit_storage_region_t* suit_storage_get_region(suit_storage_t *sto
     return storage->driver->get_region(storage, location);
 }
 
+static inline bool suit_storage_has_get_region(const suit_storage_t *storage)
+{
+    return (storage->driver->get_region);
+}
+
 /**
  * @brief Checks if the supplied offset is true or false for the current
  *        location
