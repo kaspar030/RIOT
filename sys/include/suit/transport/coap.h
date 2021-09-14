@@ -31,6 +31,21 @@
 extern "C" {
 #endif
 
+#ifdef MODULE_SUIT_PERIODIC_FETCH
+#include "timex.h"
+/**
+ * @brief    Fetch new updates with interval
+ */
+#ifndef SUIT_PERIODIC_FETCH_INTERVAL_MS
+#define SUIT_PERIODIC_FETCH_INTERVAL_MS     (1 * 60 * MS_PER_SEC)
+#endif
+
+/**
+ * @brief    Set the resource to fetch manifest
+ */
+void suit_coap_set_manifest_resource(const char* uri);
+#endif
+
 /**
  * @brief    Start SUIT CoAP thread
  */
@@ -46,10 +61,10 @@ void suit_coap_run(void);
  */
 #define SUIT_COAP_SUBTREE \
     { \
-        .path="/suit/", \
-        .methods=COAP_MATCH_SUBTREE | COAP_METHOD_GET | COAP_METHOD_POST | COAP_METHOD_PUT, \
-        .handler=coap_subtree_handler, \
-        .context=(void*)&coap_resource_subtree_suit \
+        .path = "/suit/", \
+        .methods = COAP_MATCH_SUBTREE | COAP_METHOD_GET | COAP_METHOD_POST | COAP_METHOD_PUT, \
+        .handler = coap_subtree_handler, \
+        .context = (void *)&coap_resource_subtree_suit \
     }
 
 /*
@@ -145,8 +160,8 @@ typedef enum {
  * @returns      0         on success
  */
 int suit_coap_get_blockwise_url(const char *url,
-                               coap_blksize_t blksize,
-                               coap_blockwise_cb_t callback, void *arg);
+                                coap_blksize_t blksize,
+                                coap_blockwise_cb_t callback, void *arg);
 
 /**
  * @brief   Trigger a SUIT udate

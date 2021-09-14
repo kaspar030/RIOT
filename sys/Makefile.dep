@@ -725,6 +725,11 @@ endif
 
 ifneq (,$(filter suit_transport_coap, $(USEMODULE)))
   USEMODULE += nanocoap
+  USEMODULE += ztimer_usec
+  USEMODULE += ztimer_msec
+  ifneq (,$(filter suit_periodic_fetch, $(USEMODULE)))
+    USEMODULE += ztimer_periodic
+  endif
 endif
 
 ifneq (,$(filter suit_storage_%, $(USEMODULE)))

@@ -36,7 +36,7 @@
 #include "net/nanocoap_sock.h"
 #include "thread.h"
 #include "periph/pm.h"
-#include "xtimer.h"
+#include "ztimer.h"
 
 #include "suit/transport/coap.h"
 #include "net/sock/util.h"
@@ -120,7 +120,7 @@ ssize_t coap_subtree_handler(coap_pkt_t *pkt, uint8_t *buf, size_t len,
 
 static inline uint32_t _now(void)
 {
-    return xtimer_now_usec();
+    return ztimer_now(ZTIMER_MSEC);
 }
 
 static inline uint32_t deadline_from_interval(int32_t interval)
@@ -148,7 +148,7 @@ static ssize_t _nanocoap_request(sock_udp_t *sock, coap_pkt_t *pkt, size_t len)
 
     /* TODO: timeout random between between ACK_TIMEOUT and (ACK_TIMEOUT *
      * ACK_RANDOM_FACTOR) */
-    uint32_t timeout = CONFIG_COAP_ACK_TIMEOUT * US_PER_SEC;
+    uint32_t timeout = CONFIG_COAP_ACK_TIMEOUT * MS_PER_SEC;
     uint32_t deadline = deadline_from_interval(timeout);
 
     /* add 1 for initial transmit */
@@ -163,7 +163,7 @@ static ssize_t _nanocoap_request(sock_udp_t *sock, coap_pkt_t *pkt, size_t len)
             }
         }
 
-        res = sock_udp_recv(sock, buf, len, deadline_left(deadline), NULL);
+        res = sock_udp_recv(sock, buf, len, deadline_left(deadline) * US_PER_MS, NULL);
         if (res <= 0) {
             if (res == -ETIMEDOUT) {
                 LOG_DEBUG("nanocoap: timeout\n");
@@ -242,7 +242,7 @@ int suit_coap_get_blockwise(sock_udp_ep_t *remote, const char *path,
     coap_pkt_t pkt;
 
     /* HACK: use random local port */
-    local.port = 0x8000 + (xtimer_now_usec() % 0XFFF);
+    local.port = 0x8000 + (ztimer_now(ZTIMER_USEC) & 0xffff);
 
     sock_udp_t sock;
     int res = sock_udp_create(&sock, &local, remote, 0);
@@ -380,8 +380,7 @@ static void _suit_handle_url(const char *url)
                  const riotboot_hdr_t *hdr = riotboot_slot_get_hdr(
                     riotboot_slot_other());
                 riotboot_hdr_print(hdr);
-                xtimer_sleep(1);
-
+                ztimer_sleep(ZTIMER_MSEC, MS_PER_SEC);
                 if (riotboot_hdr_validate(hdr) == 0) {
                     LOG_INFO("suit_coap: rebooting...\n");
                     pm_reboot();
@@ -467,8 +466,34 @@ static void *_suit_coap_thread(void *arg)
     return NULL;
 }
 
+#ifdef MODULE_SUIT_PERIODIC_FETCH
+#include "ztimer/periodic.h"
+static const char* _manifest_resource = NULL;
+ztimer_periodic_t _periodic_fetch;
+
+static int _periodic_fetch_cb(void *arg)
+{
+    (void)arg;
+    if (_manifest_resource) {
+        suit_coap_trigger((uint8_t *) _manifest_resource,
+                          strlen(_manifest_resource));
+    }
+    return 0;
+}
+
+void suit_coap_set_manifest_resource(const char* uri)
+{
+    _manifest_resource = uri;
+}
+#endif
+
 void suit_coap_run(void)
 {
+#ifdef MODULE_SUIT_PERIODIC_FETCH
+    ztimer_periodic_init(ZTIMER_MSEC, &_periodic_fetch, _periodic_fetch_cb,
+                         NULL, SUIT_PERIODIC_FETCH_INTERVAL_MS);
+    ztimer_periodic_start(&_periodic_fetch);
+#endif
     thread_create(_stack, SUIT_COAP_STACKSIZE, SUIT_COAP_PRIO,
                   THREAD_CREATE_STACKTEST,
                   _suit_coap_thread, NULL, "suit_coap");

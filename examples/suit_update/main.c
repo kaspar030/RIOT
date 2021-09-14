@@ -191,6 +191,9 @@ int main(void)
     cmd_print_riotboot_hdr(0, NULL);
 #endif
 
+#ifdef MODULE_SUIT_PERIODIC_FETCH
+    suit_coap_set_manifest_resource(SUIT_MANIFEST_RESOURCE);
+#endif
     /* start suit coap updater thread */
     suit_coap_run();
 

@@ -162,6 +162,7 @@ PSEUDOMODULES += stm32_eth_link_up
 PSEUDOMODULES += stm32mp1_eng_mode
 PSEUDOMODULES += suit_transport_%
 PSEUDOMODULES += suit_storage_%
+PSEUDOMODULES += suit_periodic_fetch
 PSEUDOMODULES += sys_bus_%
 PSEUDOMODULES += vdd_lc_filter_%
 PSEUDOMODULES += wakaama_objects_%

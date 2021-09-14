@@ -148,7 +148,7 @@ static int _ram_install(suit_storage_t *storage,
 
     suit_storage_ram_t *ram = _get_ram(storage);
     suit_storage_region_t *region = _get_active_region(ram);
-
+    suit_storage_set_seq_no(storage, manifest->seq_number);
     for (suit_storage_hooks_t *i = region->post; i != NULL; i = i->next) {
         if (i->cb) {
             i->cb(i->arg);

@@ -48,6 +48,7 @@ USEMODULE += progress_bar
 # Optional feature to trigger suit update through gpio callback
 FEATURES_OPTIONAL += periph_gpio_irq
 
+USEMODULE += suit_periodic_fetch
 # Default COAP manifest resource location when fetched through gpio trigger
 CFLAGS += -DSUIT_MANIFEST_RESOURCE=\"$(SUIT_COAP_ROOT)/$(SUIT_NOTIFY_MANIFEST)\"
 
@@ -64,6 +65,7 @@ endif
 USE_ETHOS ?= 1
 
 ifeq (1,$(USE_ETHOS))
+  SUIT_COAP_SERVER=[fd00:dead:beef::1]
   USEMODULE += stdio_ethos
   USEMODULE += gnrc_uhcpc
 
