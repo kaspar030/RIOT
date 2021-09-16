@@ -75,7 +75,7 @@ static int _seq_no_handler(suit_manifest_t *manifest, int key,
              seq_nr, stored_seq_no);
 
     if (seq_nr <= stored_seq_no) {
-        LOG_ERROR("seq_nr <= running image\n)");
+        LOG_DEBUG("seq_nr <= running image\n)");
         return SUIT_ERR_SEQUENCE_NUMBER;
     }
 
