@@ -79,7 +79,7 @@ extern char __eheap;                 /* end of the heap */
 extern char _sheap;                 /* start of the heap */
 extern char _eheap;                 /* end of the heap */
 #define __sheap _sheap
-#define __eheap &_eheap
+#define __eheap _eheap
 #endif
 
 /**
@@ -124,7 +124,7 @@ static char *heap_top[NUM_HEAPS] = {
 static const struct heap heaps[NUM_HEAPS] = {
     {
         .start = &__sheap,
-        .end   = (char *)(((uintptr_t)&__sheap) + 4096)
+        .end   = &__eheap,
     },
 #if NUM_HEAPS > 1
     {
