@@ -6,3 +6,5 @@ module:
     depends:
         - iolist
         - netdev_eth
+        - gnrc:
+          - gnrc_netif_ethernet

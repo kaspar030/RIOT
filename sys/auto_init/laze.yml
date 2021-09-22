@@ -2,9 +2,9 @@ module:
     - name: auto_init
       sources:
           - auto_init.c
+      notify_all: true
       uses:
-          - all
-          # "all" makes laze collect all "-DMODULE_FOO", but it will not pass any
+          # "notify_all" makes laze collect all "-DMODULE_FOO", but it will not pass any
           # exported vars / includes. Should those be needed, add them here:
           - asymcute
           - gnrc_sock

@@ -30,6 +30,9 @@ module:
       export:
         includes:
         - ${relpath}/include
+      global:
+        libs:
+          - -lm
 
   - name: feature/periph_cpuid
   - name: feature/periph_eeprom

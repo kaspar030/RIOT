@@ -3,6 +3,7 @@ module:
     depends:
         - periph_gpio
         - periph_pwm
+        - periph_qdec
         - feature/motor_driver
     sources:
         - motor_driver.c

@@ -4,3 +4,5 @@ module:
         - vfs:
           - mtd-vfs.c
         - mtd.c
+    uses:
+      - vfs

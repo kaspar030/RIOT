@@ -3,10 +3,19 @@ module:
     depends:
         - auto_init
         - gnrc_netif
+        - netdev_eth:
+          - gnrc_netif_ethernet
+        - netdev_ieee802154:
+          - gnrc_netif_ieee802154
     uses:
-        # at86rf2xx
+        - at86rf2xx
         - gnrc_gomach
         - gnrc_lwmac
+
+        - netdev_tap
+        - enc28j60
+        - encx24j600
+        - kw2xrf
     sources:
         - at86rf2xx:
           - auto_init_at86rf2xx.c
