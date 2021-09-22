@@ -15,11 +15,12 @@ module:
         - sched.c
         - thread.c
       depends:
+          - ?core_msg
+          - ?periph_pm
+      selects:
           - board
           - ?core_init
-          - ?core_msg
           - ?core_panic
-          - ?periph_pm
       uses:
           - core_msg
           - core_mbox

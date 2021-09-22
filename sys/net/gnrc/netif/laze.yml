@@ -20,6 +20,7 @@ module:
           - gnrc_lwmac
           - gnrc_mac
           - gnrc_netif_dedup
+          - gnrc_netif_ethernet
           - gnrc_netif_ieee802154
           - gnrc_rpl
           - gnrc_sixloenc
@@ -47,6 +48,12 @@ module:
     - name: gnrc_netif_ethernet
       depends:
           - gnrc_netif
+      uses:
+          - gnrc_ipv6
+          - gnrc_sixloenc
+          - l2filter
+          - netstats_l2
+          - od
       sources:
             - ethernet/gnrc_netif_ethernet.c
 
