@@ -1,42 +1,42 @@
 module:
-    - name: at86rf2xx
-      sources:
-          - at86rf2xx.c
-          - at86rf2xx_getset.c
-          - at86rf2xx_internal.c
-          - at86rf2xx_netdev.c
-      depends:
-          - ieee802154
-          - luid
-          - netdev_ieee802154
-          - periph_gpio_irq
-          - periph_spi
-          - xtimer
-          - gnrc:
-              - auto_init_at86rf2xx
-      uses:
-          - at86rf212b
-          - at86rf231
-          - at86rf233
-          - at86rfa1
-          - at86rfr2
-          - gnrc
-          - gnrc_sixlowpan
-          - netstats_l2
-          - openthread
-          - sixlowpan
+  - name: at86rf2xx
+    sources:
+      - at86rf2xx.c
+      - at86rf2xx_getset.c
+      - at86rf2xx_internal.c
+      - at86rf2xx_netdev.c
+    depends:
+      - ieee802154
+      - luid
+      - netdev_ieee802154
+      - periph_gpio_irq
+      - periph_spi
+      - xtimer
+      - gnrc:
+          - auto_init_at86rf2xx
+    uses:
+      - at86rf212b
+      - at86rf231
+      - at86rf233
+      - at86rfa1
+      - at86rfr2
+      - gnrc
+      - gnrc_sixlowpan
+      - netstats_l2
+      - openthread
+      - sixlowpan
 
-      env:
-        export:
-          includes:
-              - ${relpath}/include
+    env:
+      export:
+        includes:
+          - ${relpath}/include
 
-    - name: at86rf233
-      depends: [ at86rf2xx ]
+  - name: at86rf233
+    depends: [at86rf2xx]
 
-    - name: at86rf212b
-      depends: [ at86rf2xx ]
+  - name: at86rf212b
+    depends: [at86rf2xx]
 
-    - name: auto_init_at86rf2xx
-      depends:
-          - ?auto_init_gnrc_netif
+  - name: auto_init_at86rf2xx
+    depends:
+      - ?auto_init_gnrc_netif
