@@ -68,3 +68,35 @@ void trace_reset(void)
     tracebuf_pos = 0;
     irq_restore(state);
 }
+
+#ifdef MODULE_SHELL_COMMANDS
+#include <string.h>
+#include <stdlib.h>
+#include "shell.h"
+static int _sc_trace(int argc, char **argv)
+{
+    if (argc >= 2) {
+        if (strncmp(argv[1], "reset", 5) == 0) {
+            trace_reset();
+            puts("trace buffer cleared.");
+            return 0;
+        } else if (strncmp(argv[1], "dump", 4) == 0) {
+            trace_dump();
+            return 0;
+        } else if (strncmp(argv[1], "test", 4) == 0) {
+            if (argc > 2) {
+                trace(atoll(argv[2]));
+            }
+            else {
+                trace(xtimer_now_usec());
+            }
+            return 0;
+        }
+    }
+
+    puts("usage: trace <reset|dump|test [val]>");
+    return 1;
+}
+
+SHELL_COMMAND(trace, "Print or empty trace buffer", _sc_trace);
+#endif
