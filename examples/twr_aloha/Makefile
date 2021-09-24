@@ -29,6 +29,7 @@ USEMODULE += shell
 USEMODULE += shell_commands
 USEMODULE += ps
 USEMODULE += ztimer_usec
+USEMODULE += trace
 
 # Set the device role: 0x0 for tag, 0x4 for an anchor
 DW1000_ROLE ?= 0x00
@@ -54,5 +55,8 @@ CFLAGS += -DDW1000_RX_DIAGNOSTIC=1
 UWB_TWR_ALGORITHM_ONLY_ONE ?= UWB_DATA_CODE_SS_TWR
 # Uncomment to fix the TWR algoritm
 # CFLAGS += -DUWB_TWR_ALGORITHM_ONLY_ONE=$(UWB_TWR_ALGORITHM_ONLY_ONE)
+
+# increase uwb core stacksize (it is printing)
+CFLAGS+="-DUWB_CORE_STACKSIZE=(THREAD_STACKSIZE_DEFAULT+THREAD_EXTRA_STACKSIZE_PRINTF)"
 
 include $(RIOTBASE)/Makefile.include
