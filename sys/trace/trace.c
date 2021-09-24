@@ -54,9 +54,9 @@ void trace_dump(void)
     uint32_t t_last = 0;
 
     for (size_t i = 0; i < n; i++) {
-        printf("n=%4lu t=%s%8" PRIu32 " v=0x%08lx\n", (unsigned long)i,
+        printf("n=%4lu t=%s%8" PRIu32 " v=0x%08lx (%lu)\n", (unsigned long)i,
                i ? "+" : " ",
-               tracebuf[i].time - t_last, (unsigned long)tracebuf[i].val);
+               tracebuf[i].time - t_last, (unsigned long)tracebuf[i].val, (unsigned long)tracebuf[i].val);
         t_last = tracebuf[i].time;
     }
 }
