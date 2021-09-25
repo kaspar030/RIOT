@@ -34,6 +34,7 @@ $(RBPF_OBJS):  %.o:%.c
 	    -Wno-gnu-variable-sized-type-not-at-end \
 	    -Wno-address-of-packed-member -Wno-tautological-compare \
 	    -Wno-unknown-warning-option \
+	    -fno-stack-protector \
 	    $(EXTRA_CFLAGS) -c $< -o -| $(LLC) -march=bpf -mcpu=v2 -filetype=obj -o $@
 
 $(RBPF_BINS): %.bin:%.o
