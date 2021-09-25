@@ -11,6 +11,7 @@ EXTRA_CFLAGS += -Os -emit-llvm
 
 RBPFINCLUDE += \
     -I$(RIOTBASE)/drivers/include \
+    -I$(RIOTBASE)/core/lib/include \
     -I$(RIOTBASE)/core/include \
     -I$(RIOTBASE)/sys/include \
     #
