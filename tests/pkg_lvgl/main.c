@@ -58,9 +58,9 @@ static void sysmon_task(lv_timer_t *param)
     lv_label_set_text_fmt(info_label,
                           "%s%s CPU: %d %%%s\n\n"
                           LV_TXT_COLOR_CMD"%s MEMORY: %d %%"LV_TXT_COLOR_CMD"\n"
-                          "Total: %d bytes\n"
-                          "Used: %d bytes\n"
-                          "Free: %d bytes\n"
+                          "Total: %" PRIu32 " bytes\n"
+                          "Used: %" PRIu32 " bytes\n"
+                          "Free: %" PRIu32 " bytes\n"
                           "Frag: %d %%",
                           LV_TXT_COLOR_CMD,
                           CPU_LABEL_COLOR,
@@ -68,9 +68,10 @@ static void sysmon_task(lv_timer_t *param)
                           LV_TXT_COLOR_CMD,
                           MEM_LABEL_COLOR,
                           mem_used_pct,
-                          (int)mem_mon.total_size,
-                          (int)mem_mon.total_size - mem_mon.free_size,
-                          mem_mon.free_size, mem_mon.frag_pct);
+                          mem_mon.total_size,
+                          mem_mon.total_size - mem_mon.free_size,
+                          mem_mon.free_size,
+                          mem_mon.frag_pct);
 
     /* Force a wakeup of lvgl when each task is called: this ensures an activity
        is triggered and wakes up lvgl during the next LVGL_INACTIVITY_PERIOD ms */
