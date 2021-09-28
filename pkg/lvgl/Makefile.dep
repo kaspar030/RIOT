@@ -15,20 +15,19 @@ USEMODULE += lvgl_theme_basic
 USEMODULE += lvgl_theme_default
 USEMODULE += lvgl_theme_mono
 
-USEMODULE += lvgl_widget_chart
-USEMODULE += lvgl_widget_list
-USEMODULE += lvgl_widget_spinbox
-USEMODULE += lvgl_widget_tileview
-USEMODULE += lvgl_widget_tabview
-USEMODULE += lvgl_widget_win
-USEMODULE += lvgl_widget_msgbox
-USEMODULE += lvgl_widget_meter
 USEMODULE += lvgl_widget_calendar
-USEMODULE += lvgl_widget_list
+USEMODULE += lvgl_widget_chart
 USEMODULE += lvgl_widget_colorwheel
-USEMODULE += lvgl_widget_led
 USEMODULE += lvgl_widget_keyboard
-
+USEMODULE += lvgl_widget_led
+USEMODULE += lvgl_widget_list
+USEMODULE += lvgl_widget_meter
+USEMODULE += lvgl_widget_msgbox
+USEMODULE += lvgl_widget_spinbox
+USEMODULE += lvgl_widget_spinner
+USEMODULE += lvgl_widget_tabview
+USEMODULE += lvgl_widget_tileview
+USEMODULE += lvgl_widget_win
 
 ifneq (,$(filter lvgl_contrib,$(USEMODULE)))
   USEMODULE += disp_dev

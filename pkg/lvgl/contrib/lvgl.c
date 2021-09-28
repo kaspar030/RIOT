@@ -74,10 +74,10 @@ static void _disp_map(lv_disp_drv_t *drv, const lv_area_t *area, lv_color_t *col
 
 #if IS_USED(MODULE_TOUCH_DEV)
 /* adapted from https://github.com/lvgl/lvgl/tree/v6.1.2#add-littlevgl-to-your-project */
-static bool _touch_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data)
+static void _touch_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data)
 {
     if (!_screen_dev->touch) {
-        return false;
+        return;
     }
 
     (void)indev_driver;
@@ -97,8 +97,6 @@ static bool _touch_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data)
     /* Set the coordinates (if released use the last pressed coordinates) */
     data->point.x = last_x;
     data->point.y = last_y;
-
-    return false;
 }
 #endif
 
@@ -107,6 +105,8 @@ void lvgl_init(screen_dev_t *screen_dev)
     lv_init();
     _screen_dev = screen_dev;
     assert(screen_dev->display);
+
+    lv_disp_draw_buf_init(&disp_buf, buf, NULL, LVGL_COLOR_BUF_SIZE);
 
     lv_disp_drv_t disp_drv;
 
@@ -118,6 +118,7 @@ void lvgl_init(screen_dev_t *screen_dev)
 
     disp_drv.flush_cb = _disp_map;
     disp_drv.draw_buf = &disp_buf;
+
     lv_disp_t *disp = lv_disp_drv_register(&disp_drv);
 
 #if IS_USED(MODULE_LV_DRIVERS_DISPLAY_MONITOR)
@@ -131,8 +132,6 @@ void lvgl_init(screen_dev_t *screen_dev)
 #else
     (void)disp;
 #endif
-
-    lv_disp_draw_buf_init(&disp_buf, buf, NULL, LVGL_COLOR_BUF_SIZE);
 
 #if IS_USED(MODULE_TOUCH_DEV)
     if (screen_dev->touch) {

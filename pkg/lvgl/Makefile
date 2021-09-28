@@ -1,12 +1,11 @@
 PKG_NAME=lvgl
 PKG_URL=https://github.com/littlevgl/lvgl
-PKG_VERSION=ec9de515b36641be565d7bace5863ab631ce3b69 # v7.11.0
+PKG_VERSION=2e942060f077de19667ec200afcfd2b32352064b  # v8.0.2
 PKG_LICENSE=MIT
 
 include $(RIOTBASE)/pkg/pkg.mk
 
 CFLAGS += -Wno-empty-body
-CFLAGS += -Wno-cast-align
 
 LVGL_MODULES =      \
     lvgl_core       \
@@ -15,7 +14,6 @@ LVGL_MODULES =      \
     lvgl_font       \
     lvgl_hal        \
     lvgl_misc       \
-    lvgl_themes     \
     lvgl_widgets    \
     #
 
@@ -31,19 +29,19 @@ LVGL_THEMES_MODULES =  \
     #
 
 LVGL_WIDGETS_MODULES =  \
+    lvgl_widget_calendar \
     lvgl_widget_chart   \
+    lvgl_widget_colorwheel \
+    lvgl_widget_keyboard   \
+    lvgl_widget_led \
     lvgl_widget_list   \
+    lvgl_widget_meter \
+    lvgl_widget_msgbox \
     lvgl_widget_spinbox   \
+    lvgl_widget_spinner   \
+    lvgl_widget_tileview   \
     lvgl_widget_tabview \
     lvgl_widget_win \
-    lvgl_widget_msgbox \
-    lvgl_widget_meter \
-    lvgl_widget_calendar \
-    lvgl_widget_list \
-    lvgl_widget_colorwheel \
-    lvgl_widget_led \
-    lvgl_widget_tileview   \
-    lvgl_widget_keyboard   \
     #
 
 .PHONY: lvgl_% lvgl_theme_% lvgl_widget_% lvgl_layout_% lvgl_extra
