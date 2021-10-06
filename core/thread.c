@@ -189,9 +189,11 @@ uintptr_t thread_measure_stack_free(const char *stack)
 }
 #endif
 
-kernel_pid_t thread_create(char *stack, int stacksize, uint8_t priority,
-                           int flags, thread_task_func_t function, void *arg,
-                           const char *name)
+kernel_pid_t thread_create_detached(thread_t *thread, char *stack,
+                                    int stacksize, uint8_t priority,
+                                    int flags, thread_task_func_t function,
+                                    void *arg,
+                                    const char *name)
 {
     if (priority >= SCHED_PRIO_LEVELS) {
         return -EINVAL;
@@ -212,19 +214,24 @@ kernel_pid_t thread_create(char *stack, int stacksize, uint8_t priority,
         stacksize -= misalignment;
     }
 
-    /* make room for the thread control block */
-    stacksize -= sizeof(thread_t);
+    if (thread == NULL) {
+#ifdef PICOLIBC_TLS
+        puts("PICOLIBC && detached threads not supported");
+#endif
+        /* make room for the thread control block */
+        stacksize -= sizeof(thread_t);
 
-    /* round down the stacksize to a multiple of thread_t alignments (usually 16/32bit) */
-    stacksize -= stacksize % ALIGN_OF(thread_t);
+        /* round down the stacksize to a multiple of thread_t alignments (usually 16/32bit) */
+        stacksize -= stacksize % ALIGN_OF(thread_t);
 
-    if (stacksize < 0) {
-        DEBUG("thread_create: stacksize is too small!\n");
+        if (stacksize < 0) {
+            DEBUG("thread_create: stacksize is too small!\n");
+        }
+        /* allocate our thread control block at the top of our stackspace. Cast to
+         * (uintptr_t) intermediately to silence -Wcast-align. (We manually made
+         * sure alignment is correct above.) */
+        thread = (thread_t *)(uintptr_t)(stack + stacksize);
     }
-    /* allocate our thread control block at the top of our stackspace. Cast to
-     * (uintptr_t) intermediately to silence -Wcast-align. (We manually made
-     * sure alignment is correct above.) */
-    thread_t *thread = (thread_t *)(uintptr_t)(stack + stacksize);
 
 #ifdef PICOLIBC_TLS
     stacksize -= _tls_size();
@@ -319,6 +326,14 @@ kernel_pid_t thread_create(char *stack, int stacksize, uint8_t priority,
     irq_restore(state);
 
     return pid;
+}
+
+kernel_pid_t thread_create(char *stack, int stacksize, uint8_t priority,
+                           int flags, thread_task_func_t function, void *arg,
+                           const char *name)
+{
+    return thread_create_detached(NULL, stack, stacksize, priority, flags,
+                                  function, arg, name);
 }
 
 static const char *state_names[STATUS_NUMOF] = {
