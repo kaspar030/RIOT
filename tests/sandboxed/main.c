@@ -70,7 +70,7 @@ int main(void)
 {
     kernel_pid_t pid = thread_create_sandboxed(&sandboxed, &sandbox, mem, sizeof(mem), THREAD_STACKSIZE_MAIN,
                                               THREAD_PRIORITY_MAIN,
-                                              THREAD_CREATE_STACKTEST,
+                                              THREAD_CREATE_STACKTEST | THREAD_RUN_UNPRIVILEGED,
                                               _sandboxed, NULL, "sandboxed");
 
     printf("pid=%" PRIkernel_pid "\n", pid);
