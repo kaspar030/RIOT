@@ -276,6 +276,11 @@ kernel_pid_t thread_create(char *stack,
                            void *arg,
                            const char *name);
 
+kernel_pid_t thread_create_detached(thread_t *thread, char *stack,
+                                    int stacksize, uint8_t priority,
+                                    int flags, thread_task_func_t function,
+                                    void *arg,
+                                    const char *name);
 /**
  * @brief       Retrieve a thread control block by PID.
  * @pre         @p pid is valid
