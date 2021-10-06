@@ -39,7 +39,7 @@ static void *_sandboxed(void *arg)
 {
     (void)arg;
 
-    __asm__("svc 99\n");
+    __asm__("svc 88\n");
 
     if (is_privileged()) {
     }
