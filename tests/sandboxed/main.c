@@ -59,11 +59,12 @@ kernel_pid_t thread_create_sandboxed(thread_t *thread, sandbox_t *sandbox, char 
 
     assert(stack_size <= mem_len);
 
-    return thread_create_detached(thread, mem_start, stack_size,
+    kernel_pid_t pid = thread_create_detached(thread, mem_start, stack_size,
                                               priority,
                                               flags,
                                               function, arg, name);
-
+    thread->sandbox = sandbox;
+    return pid;
 }
 
 int main(void)
@@ -78,7 +79,7 @@ int main(void)
     mpu_configure(
         1,                                               /* 1 */
         0,                               /* ROM */
-        MPU_ATTR(0, AP_RO_RO, 0, 1, 0, 1, MPU_SIZE_512M) /* Allow read/write but no exec */
+        MPU_ATTR(0, AP_RO_RO, 0, 1, 0, 1, MPU_SIZE_512M) /* Allow read & exec*/
     );
 
     puts("starting sandbox");
