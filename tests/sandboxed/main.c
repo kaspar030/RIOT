@@ -20,6 +20,7 @@
  */
 #include <stdio.h>
 
+#include "mpu.h"
 #include "cpu.h"
 #include "thread.h"
 #include "sandbox.h"
@@ -27,7 +28,7 @@
 static thread_t sandboxed;
 static sandbox_t sandbox;
 
-static char mem[THREAD_STACKSIZE_MAIN * 2];
+static char __attribute__((aligned(32))) mem[4096];
 
 bool is_privileged(void)
 {
@@ -38,12 +39,11 @@ static void *_sandboxed(void *arg)
 {
     (void)arg;
 
-    puts("_sandboxed()");
+    __asm__("svc 99\n");
+
     if (is_privileged()) {
-        puts("priviledged");
     }
     else {
-        puts("unpriviledged");
     }
     return 0;
 }
@@ -68,6 +68,20 @@ kernel_pid_t thread_create_sandboxed(thread_t *thread, sandbox_t *sandbox, char 
 
 int main(void)
 {
+    extern char *_sram;
+    mpu_configure(
+        0,                                               /* Region 0 (lowest priority) */
+        (uintptr_t)&_sram,                               /* RAM base address */
+        MPU_ATTR(1, AP_RW_RO, 0, 1, 0, 1, MPU_SIZE_512M) /* Allow read/write but no exec */
+    );
+
+    mpu_configure(
+        1,                                               /* 1 */
+        0,                               /* ROM */
+        MPU_ATTR(0, AP_RO_RO, 0, 1, 0, 1, MPU_SIZE_512M) /* Allow read/write but no exec */
+    );
+
+    puts("starting sandbox");
     kernel_pid_t pid = thread_create_sandboxed(&sandboxed, &sandbox, mem, sizeof(mem), THREAD_STACKSIZE_MAIN,
                                               THREAD_PRIORITY_MAIN,
                                               THREAD_CREATE_STACKTEST | THREAD_RUN_UNPRIVILEGED,
