@@ -130,6 +130,10 @@
 #include "thread_flags.h"
 #endif
 
+#ifdef MODULE_CORE_SANDBOX
+#include "sandbox.h"
+#endif
+
 #include "thread_arch.h"
 
 #ifdef __cplusplus
@@ -208,6 +212,9 @@ struct _thread {
 #ifdef PICOLIBC_TLS
     void *tls;                      /**< thread local storage ptr */
 #endif
+#ifdef MODULE_CORE_SANDBOX
+    sandbox_t *sandbox;
+#endif
 #ifdef HAVE_THREAD_ARCH_T
     thread_arch_t arch;             /**< architecture dependent part    */
 #endif
@@ -240,6 +247,7 @@ struct _thread {
  *        debugging and profiling purposes)
  */
 #define THREAD_CREATE_STACKTEST         (8)
+
 /** @} */
 
 #define THREAD_RUN_UNPRIVILEGED         (16)

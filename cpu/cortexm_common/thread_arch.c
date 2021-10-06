@@ -205,6 +205,7 @@ char *thread_stack_init(thread_task_func_t task_func,
     /* exception return code  - return to task-mode process stack pointer */
     stk--;
     *stk = (uint32_t)EXCEPT_RET_TASK_MODE;
+
 #if !CPU_CORE_CORTEXM_FULL_THUMB
     /* start with r7 - r4 */
     for (int i = 7; i >= 4; i--) {

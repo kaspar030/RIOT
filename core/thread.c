@@ -279,8 +279,8 @@ kernel_pid_t thread_create_detached(thread_t *thread, char *stack,
     sched_threads[pid] = thread;
 
     thread->pid = pid;
-    thread->sp = thread_stack_init(function, arg, stack, stacksize);
     thread->config |= flags & THREAD_RUN_UNPRIVILEGED ? 1 : 0;
+    thread->sp = thread_stack_init(function, arg, stack, stacksize);
 
 #if defined(DEVELHELP) || defined(SCHED_TEST_STACK) || \
     defined(MODULE_MPU_STACK_GUARD)

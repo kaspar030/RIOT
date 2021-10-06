@@ -201,7 +201,22 @@ thread_t *__attribute__((used)) sched_run(void)
         _set_tls(next_thread->tls);
 #endif
 
+#ifdef MODULE_CORE_SANDBOX
+        if (next_thread->sandbox) {
+            mpu_configure(
+                2,                                              /* MPU region 2 */
+                (uintptr_t)next_thread->sandbox->mem_start,     /* Base Address (rounded up) */
+                MPU_ATTR(1, AP_RW_RW, 0, 1, 0, 1, MPU_SIZE_4K)  /* Attributes and Size */
+                );
+
+        }
+#endif
 #ifdef MODULE_MPU_STACK_GUARD
+#ifdef MODULE_CORE_SANDBOX
+        /* skip stack guard if there's a sandbox config */
+        if (!next_thread->sandbox)
+#endif
+
         mpu_configure(
             2,                                              /* MPU region 2 */
             (uintptr_t)next_thread->stack_start + 31,       /* Base Address (rounded up) */
