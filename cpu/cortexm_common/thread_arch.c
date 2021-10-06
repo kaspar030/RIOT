@@ -477,6 +477,11 @@ void __attribute__((interrupt ("IRQ"))) __attribute__((used)) isr_svc(void)
             SCB->ICSR = SCB_ICSR_PENDSVSET_Msk;
             __DSB();
             break;
+        case 99: /* SVC number used by cpu_switch_context_exit */
+            void sched_exit_cleanup(thread_t*);
+            sched_exit_cleanup(me);
+            SCB->ICSR = SCB_ICSR_PENDSVSET_Msk;
+            break;
     }
     return;
 }
