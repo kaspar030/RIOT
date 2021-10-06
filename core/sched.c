@@ -296,18 +296,27 @@ void sched_switch(uint16_t other_prio)
     }
 }
 
+void sched_exit_cleanup(thread_t *thread)
+{
+    sched_threads[thread->pid] = NULL;
+    sched_num_threads--;
+
+    sched_set_status(thread, STATUS_STOPPED);
+
+    sched_active_thread = NULL;
+}
+
 NORETURN void sched_task_exit(void)
 {
+    thread_t *me = thread_get_active();
+    if (me->config & 1 /* TODO: Why not THREAD_RUN_UNPRIVILEGED? */) {
+        __asm__("svc 99");
+    }
     DEBUG("sched_task_exit: ending thread %" PRIkernel_pid "...\n",
           thread_getpid());
 
     (void)irq_disable();
-    sched_threads[thread_getpid()] = NULL;
-    sched_num_threads--;
-
-    sched_set_status(thread_get_active(), STATUS_STOPPED);
-
-    sched_active_thread = NULL;
+    sched_exit_cleanup(me);
     cpu_switch_context_exit();
 }
 
