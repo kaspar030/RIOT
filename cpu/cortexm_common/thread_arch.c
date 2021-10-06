@@ -442,44 +442,12 @@ void __attribute__((naked)) __attribute__((used)) isr_pendsv(void) {
 #endif
 
 #ifdef MODULE_CORTEXM_SVC
-void __attribute__((naked)) __attribute__((used)) isr_svc(void)
+static inline uint32_t _get_svc_arg(uint32_t *svc_args, size_t num)
 {
-    /* these two variants do exactly the same, but Cortex-M3 can use Thumb2
-     * conditional execution, which are a bit faster. */
-
-    /* TODO: currently, cpu_switch_context_exit() is used to start threading
-     * from kernel_init(), which executes on MSP.  That could probably be
-     * rewritten to not use the supervisor call at all. Then we can assume that
-     * svc is only used by threads, saving a couple of instructions. /Kaspar
-     */
-
-#if defined(CPU_CORE_CORTEX_M0) || defined(CPU_CORE_CORTEX_M0PLUS) \
-    || defined(CPU_CORE_CORTEX_M23)
-    __asm__ volatile (
-    ".thumb_func            \n"
-    "movs   r0, #4          \n" /* if bit4(lr) == 1):       */
-    "mov    r1, lr          \n"
-    "tst    r0, r1          \n"
-    "beq    came_from_msp   \n" /*     goto came_from_msp   */
-    "mrs    r0, psp         \n" /* r0 = psp                 */
-    "b      _svc_dispatch   \n" /* return svc_dispatch(r0)  */
-    "came_from_msp:         \n"
-    "mrs    r0, msp         \n" /* r0 = msp                 */
-    "b      _svc_dispatch   \n" /* return svc_dispatch(r0)  */
-    );
-#else
-    __asm__ volatile (
-    ".thumb_func            \n"
-    "tst    lr, #4          \n" /* switch bit4(lr) == 1):   */
-    "ite    eq              \n"
-    "mrseq  r0, msp         \n" /* case 1: r0 = msp         */
-    "mrsne  r0, psp         \n" /* case 0: r0 = psp         */
-    "b      _svc_dispatch   \n" /* return svc_dispatch()    */
-    );
-#endif
+    return svc_args[num];
 }
 
-static void __attribute__((used)) _svc_dispatch(unsigned int *svc_args)
+void __attribute__((interrupt ("IRQ"))) __attribute__((used)) isr_svc(void)
 {
     /* stack frame:
      * r0, r1, r2, r3, r12, r14, the return address and xPSR
@@ -498,16 +466,20 @@ static void __attribute__((used)) _svc_dispatch(unsigned int *svc_args)
      * address [stacked_PC - 2], because SVC is a 2 byte instruction.  The SVC
      * number is the lower byte of the instruction.
      */
-    unsigned int svc_number = ((char *)svc_args[6])[-2];
+    uint32_t *svc_args = (uint32_t*)__get_PSP();
+    //unsigned int svc_number = ((char *)svc_args[6])[-2];
+    thread_t *me = thread_get_active();
+    uint32_t syscall_num = _get_svc_arg(svc_args, 0);
 
-    switch (svc_number) {
+    DEBUG("syscall from thread pid :%d, num: %lu\n", me->pid, syscall_num);
+
+    switch (syscall_num) {
         case 1: /* SVC number used by cpu_switch_context_exit */
             SCB->ICSR = SCB_ICSR_PENDSVSET_Msk;
-            break;
-        default:
-            DEBUG("svc: unhandled SVC #%u\n", svc_number);
+            __DSB();
             break;
     }
+    return;
 }
 
 #else /* MODULE_CORTEXM_SVC */
