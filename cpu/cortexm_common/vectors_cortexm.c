@@ -160,7 +160,7 @@ void reset_handler_default(void)
     );
 #endif
 
-#ifdef MODULE_MPU_STACK_GUARD
+#ifdef MODULE_MPU_STACK_GUARDdisabled
     if (((uintptr_t)&_sstack) != SRAM_BASE) {
         mpu_configure(
             1,                                              /* MPU region 1 */
