@@ -451,6 +451,14 @@ void hard_fault_default(void)
     defined(CPU_CORE_CORTEX_M7)
 void mem_manage_default(void)
 {
+    uint8_t mem_status = SCB->CFSR & 0xff;
+    printf("MemManage fault status: 0x%.2x\n", mem_status);
+    if (mem_status & 0x80) {
+        printf("Fault trigger with address 0x%"PRIx32"\n", SCB->MMFAR);
+    }
+    else {
+        printf("Invalid fault address\n");
+    }
     core_panic(PANIC_MEM_MANAGE, "MEM MANAGE HANDLER");
 }
 
