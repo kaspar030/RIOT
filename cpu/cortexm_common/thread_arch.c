@@ -467,9 +467,8 @@ void __attribute__((interrupt ("IRQ"))) __attribute__((used)) isr_svc(void)
      * number is the lower byte of the instruction.
      */
     uint32_t *svc_args = (uint32_t*)__get_PSP();
-    //unsigned int svc_number = ((char *)svc_args[6])[-2];
     thread_t *me = thread_get_active();
-    uint32_t syscall_num = _get_svc_arg(svc_args, 0);
+    uint32_t syscall_num = ((char *)svc_args[6])[-2];
 
     DEBUG("syscall from thread pid :%d, num: %lu\n", me->pid, syscall_num);
 
