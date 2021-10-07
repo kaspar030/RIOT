@@ -179,6 +179,9 @@ endif
 ifneq (,$(filter sys_bus,$(USEMODULE)))
   DIRS += bus
 endif
+ifneq (,$(filter syscall,$(USEMODULE)))
+  DIRS += syscall
+endif
 ifneq (,$(filter tcp,$(USEMODULE)))
   DIRS += net/transport_layer/tcp
 endif
