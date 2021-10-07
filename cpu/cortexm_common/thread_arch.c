@@ -471,17 +471,21 @@ void __attribute__((interrupt ("IRQ"))) __attribute__((used)) isr_svc(void)
     uint32_t syscall_num = ((char *)svc_args[6])[-2];
 
     DEBUG("syscall from thread pid :%d, num: %lu\n", me->pid, syscall_num);
+    void sched_exit_cleanup(thread_t*);
+    uint32_t syscall_handle(unsigned syscall_num, uint32_t *args);
 
     switch (syscall_num) {
         case 1: /* SVC number used by cpu_switch_context_exit */
             SCB->ICSR = SCB_ICSR_PENDSVSET_Msk;
             __DSB();
             break;
-        case 99: /* SVC number used by cpu_switch_context_exit */
-            void sched_exit_cleanup(thread_t*);
+        case 2: /* SVC number used by cpu_switch_context_exit */
             sched_exit_cleanup(me);
             SCB->ICSR = SCB_ICSR_PENDSVSET_Msk;
+            __DSB();
             break;
+        default:
+            svc_args[0] = syscall_handle(syscall_num, svc_args);
     }
     return;
 }
