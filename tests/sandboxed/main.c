@@ -25,6 +25,8 @@
 #include "thread.h"
 #include "sandbox.h"
 
+#include "uapi/syscall.h"
+
 static thread_t sandboxed;
 static sandbox_t sandbox;
 
@@ -39,11 +41,11 @@ static void *_sandboxed(void *arg)
 {
     (void)arg;
 
-    __asm__("svc 88\n");
-
     if (is_privileged()) {
+        sys_puts("Privileged!");
     }
     else {
+        sys_puts("Unprivileged!");
     }
     return 0;
 }
@@ -85,7 +87,7 @@ int main(void)
     puts("starting sandbox");
     kernel_pid_t pid = thread_create_sandboxed(&sandboxed, &sandbox, mem, sizeof(mem), THREAD_STACKSIZE_MAIN,
                                               THREAD_PRIORITY_MAIN,
-                                              THREAD_CREATE_STACKTEST | THREAD_RUN_UNPRIVILEGED,
+                                              THREAD_CREATE_STACKTEST | THREAD_CREATE_RUN_UNPRIVILEGED,
                                               _sandboxed, NULL, "sandboxed");
 
     printf("pid=%" PRIkernel_pid "\n", pid);
