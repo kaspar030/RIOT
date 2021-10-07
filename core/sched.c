@@ -309,7 +309,7 @@ void sched_exit_cleanup(thread_t *thread)
 NORETURN void sched_task_exit(void)
 {
     thread_t *me = thread_get_active();
-    if (me->config & 1 /* TODO: Why not THREAD_RUN_UNPRIVILEGED? */) {
+    if (me->config & THREAD_CONFIG_UNPRIVILEGED) {
         __asm__("svc 99");
     }
     DEBUG("sched_task_exit: ending thread %" PRIkernel_pid "...\n",

@@ -248,9 +248,24 @@ struct _thread {
  */
 #define THREAD_CREATE_STACKTEST         (8)
 
+/**
+ * @brief Create a thread running in unprivileged/user mode
+ */
+#define THREAD_CREATE_RUN_UNPRIVILEGED  (16)
 /** @} */
 
-#define THREAD_RUN_UNPRIVILEGED         (16)
+/**
+ * @name Thread runtime configuration flags
+ *
+ * @note Not to be confused with the initial state controls
+ * @{
+ */
+
+/**
+ * @brief Thread runs as unprivileged
+ */
+#define THREAD_CONFIG_UNPRIVILEGED      (1)
+/** @} */
 
 /**
  * @brief Creates a new thread.
