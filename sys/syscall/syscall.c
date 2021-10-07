@@ -22,13 +22,27 @@
 #include <stdio.h>
 #include "mutex.h"
 #include "uapi/syscall.h"
+#include "sched.h"
+#include "thread.h"
 
 static inline void _syscall_mutex_lock(uint32_t *args)
 {
     mutex_t *mutex = (mutex_t*)(uintptr_t)args[0];
+    thread_t *me = thread_get_active();
     /* Nope */
     /* Try to lock and set the thread to waiting if not possible */
-    mutex_lock(mutex);
+    if (mutex_trylock(mutex)) {
+        return; /* Mutex now locked */
+    }
+    sched_set_status(me, STATUS_MUTEX_BLOCKED);
+    if (mutex->queue.next == MUTEX_LOCKED) {
+        mutex->queue.next = (list_node_t *)&me->rq_entry;
+        mutex->queue.next->next = NULL;
+    }
+    else {
+        thread_add_to_list(&mutex->queue, me);
+    }
+    thread_yield_higher();
 }
 
 static inline void _syscall_mutex_unlock(uint32_t *args)
