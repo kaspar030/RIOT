@@ -33,16 +33,18 @@ extern "C" {
 
 #define SYSCALL_API_INLINED
 
-static inline __attribute__((always_inline)) void syscall_dispatch(unsigned num,
-                                                                   uint32_t arg)
+static inline __attribute__((always_inline)) uint32_t syscall_dispatch(unsigned num,
+                                                                       uint32_t arg)
 {
+    register uint32_t arg0 __asm ("r0") = arg;
+    register uint32_t result __asm ("r0");
     __asm volatile (
-            "mov r0, %[arg] \n"
             "svc %[num] \n"
-            :
-            : [arg] "r" (arg), [num] "i" (num)
-            : "memory", "r0"
+            : "=r" (result)
+            : [num] "i" (num), "0" (arg0)
+            : "memory"
             );
+    return result;
 }
 
 static inline __attribute__((always_inline)) void

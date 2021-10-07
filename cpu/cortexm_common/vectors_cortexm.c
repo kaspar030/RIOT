@@ -170,6 +170,13 @@ void reset_handler_default(void)
 
     }
 #endif
+#ifdef MODULE_CORE_SANDBOX
+    mpu_configure(
+        3,                                               /* Region 0 (lowest priority) */
+        (uintptr_t)0,                               /* RAM base address */
+        MPU_ATTR(0, AP_RW_RO, 0, 1, 0, 1, MPU_SIZE_512M) /* Allow read/write but no exec */
+    );
+#endif
 
 #if defined(MODULE_MPU_STACK_GUARD) || defined(MODULE_MPU_NOEXEC_RAM)
     mpu_enable();
