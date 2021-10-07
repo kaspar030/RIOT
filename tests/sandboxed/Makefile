@@ -5,4 +5,6 @@ USEMODULE += syscall
 FEATURES_REQUIRED += cortexm_mpu
 FEATURES_BLACKLIST += cortexm_fpu
 
+BLOBS += bare/bare.bin
+
 include $(RIOTBASE)/Makefile.include

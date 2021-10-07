@@ -25,7 +25,7 @@
 #include "thread.h"
 #include "sandbox.h"
 
-#include "uapi/syscall.h"
+#include "blob/bare/bare.bin.h"
 
 static thread_t sandboxed;
 static sandbox_t sandbox;
@@ -35,19 +35,6 @@ static char __attribute__((aligned(32))) mem[4096];
 bool is_privileged(void)
 {
     return (__get_IPSR()>0) || ((__get_CONTROL() & CONTROL_nPRIV_Msk) == 0);
-}
-
-static void *_sandboxed(void *arg)
-{
-    (void)arg;
-
-    if (is_privileged()) {
-        sys_puts("Privileged!");
-    }
-    else {
-        sys_puts("Unprivileged!");
-    }
-    return 0;
 }
 
 kernel_pid_t thread_create_sandboxed(thread_t *thread, sandbox_t *sandbox, char *mem_start,
@@ -88,7 +75,7 @@ int main(void)
     kernel_pid_t pid = thread_create_sandboxed(&sandboxed, &sandbox, mem, sizeof(mem), THREAD_STACKSIZE_MAIN,
                                               THREAD_PRIORITY_MAIN,
                                               THREAD_CREATE_STACKTEST | THREAD_CREATE_RUN_UNPRIVILEGED,
-                                              _sandboxed, NULL, "sandboxed");
+                                              (void*)(((uintptr_t)bare_bin)|1), NULL, "sandboxed");
 
     printf("pid=%" PRIkernel_pid "\n", pid);
     return 0;
