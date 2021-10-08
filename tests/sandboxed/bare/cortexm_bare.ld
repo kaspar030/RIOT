@@ -7,12 +7,6 @@ _rom_length = 1024;
 _ram_start_addr = 0x3000000;
 _ram_length = 4096;
 
-PHDRS
-{
-  code         PT_LOAD;
-  data         PT_LOAD;
-}
-
 MEMORY
 {
     rom      (rx)   : ORIGIN = _rom_start_addr, LENGTH = _rom_length
@@ -32,51 +26,29 @@ SECTIONS
 
         . = ALIGN(4);
         _efixed = .;            /* End of text section */
-    } > rom :code
+    } > rom
 
-   /*------------------------------------------------------------- */
-   /* PLT section contains code for accessing the dynamically linked functions
-    * this measn functions from shared libraries in a position independent manner */
-   .plt : ALIGN(4)
-   {
-       *(.plt)
-       . = ALIGN(4);
-   } >rom :code
-
+    /* .ARM.exidx is sorted, so has to go in its own output section.  */
+    PROVIDE_HIDDEN (__exidx_start = .);
+    .ARM.exidx :
+    {
+      *(.ARM.exidx* .gnu.linkonce.armexidx.*)
+    } > rom
+    PROVIDE_HIDDEN (__exidx_end = .);
 
     . = ALIGN(4);
     _etext = .;
 
+    _srelocate = .;
     .relocate :
     {
         . = ALIGN(4);
-        _srelocate = .;
         *(.ramfunc .ramfunc.*);
         *(.data .data.*);
         KEEP (*(SORT(.xfa.*)))
         . = ALIGN(4);
-        _erelocate = .;
-    } > ram AT> rom :data
-
-   /* The global offset table is the table for indirectly accessing the global variables
-    * The table contains addresses of the global variables. The text section contains 
-    * a address of the GOT base and a offset in it to access the appropriate variables.
-    * This is done to access the variables in a position independent manner. */
-   .got : ALIGN(4)
-   {
-       _sgot = .;
-       *(.got)
-   } >ram AT> rom :data
-
-   /* got.plt section contains entries which is used with the PLT to access the functions 
-    * in a position independent manner. */
-   .got.plt : ALIGN(4)
-   {
-        _sgot_plt = .;
-       *(.got.plt)
-       _edata = .;
-   } >ram AT> rom :data
-/*------------------------------------------------------------- */
+    } > ram AT> rom
+    _erelocate = LOADADDR(.relocate);
 
     /* .bss section which is used for uninitialized data */
     .bss (NOLOAD) :
@@ -87,7 +59,7 @@ SECTIONS
         *(COMMON)
         . = ALIGN(4);
         _ebss = . ;
-    } > ram :data
+    } > ram
 
     /*
      * collect all uninitialized sections that go into RAM
@@ -98,7 +70,7 @@ SECTIONS
         *(.noinit)
         . = ALIGN(4);
         __noinit_end = .;
-    }  > ram :data
+    }  > ram
 
     /* heap section */
     . = ALIGN(4);

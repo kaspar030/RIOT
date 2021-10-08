@@ -1,8 +1,16 @@
-CC = arm-none-eabi-gcc
-OBJCOPY = arm-none-eabi-objcopy
-CFLAGS_ARCH = -mcpu=cortex-m4 -mlittle-endian -mthumb -mfloat-abi=soft
-CFLAGS = $(CFLAGS_ARCH) -Os -fpie -msingle-pic-base -mpic-register=r9 -mno-pic-data-is-text-relative
-LINKFLAGS = $(CFLAGS_ARCH) -nostdlib -Wl,-Tcortexm_bare.ld
+## gcc config
+#CC = arm-none-eabi-gcc
+#OBJCOPY = arm-none-eabi-objcopy
+#CFLAGS_ARCH = -mcpu=cortex-m4 -mlittle-endian -mthumb -mfloat-abi=soft -fno-builtin
+#CFLAGS = $(CFLAGS_ARCH) -Os -fPIC -msingle-pic-base -mpic-register=r9 -mno-pic-data-is-text-relative
+#LINKFLAGS = $(CFLAGS_ARCH) -nostdlib -Wl,-Tcortexm_bare.ld
+
+# # clang config
+# CC = clang
+# OBJCOPY = llvm-objcopy
+# CFLAGS_ARCH = -target thumbv7m-none-eabi
+# CFLAGS = $(CFLAGS_ARCH) -Os -frwpi
+# LINKFLAGS = $(CFLAGS_ARCH) -nostdlib -Wl,-Tcortexm_bare.ld
 
 all: bare.bin
 
