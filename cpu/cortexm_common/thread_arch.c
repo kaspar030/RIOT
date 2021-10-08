@@ -143,7 +143,9 @@ char *thread_stack_init(thread_task_func_t task_func,
                              int stack_size)
 {
     uint32_t *stk;
+
     stk = (uint32_t *)((uintptr_t)stack_start + stack_size);
+    uintptr_t stack_top = (intptr_t)stk;
 
     /* adjust to 32 bit boundary by clearing the last two bits in the address */
     stk = (uint32_t *)(((uint32_t)stk) & ~((uint32_t)0x3));
@@ -221,7 +223,12 @@ char *thread_stack_init(thread_task_func_t task_func,
     /* r11 - r4 */
     for (int i = 11; i >= 4; i--) {
         stk--;
-        *stk = i;
+        if (i == 9) {
+            *stk = stack_top;
+        }
+        else {
+            *stk = i;
+        }
     }
 #endif
 
