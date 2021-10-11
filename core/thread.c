@@ -250,7 +250,7 @@ kernel_pid_t thread_create_detached(thread_t *thread, char *stack,
     }
 
 #if defined(MODULE_THREAD_CRASH)
-    thread->config = flags & THREAD_CONFIG_KILL_ON_CRASH;
+    thread->config |= (flags & THREAD_CREATE_KILL_ON_CRASH) ? THREAD_CONFIG_KILL_ON_CRASH : 0;
 #endif
 
 #ifdef PICOLIBC_TLS
