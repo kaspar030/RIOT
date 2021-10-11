@@ -33,6 +33,7 @@ typedef enum {
     SYSCALL_MUTEX_LOCK,
     SYSCALL_MUTEX_UNLOCK,
     SYSCALL_PUTS,
+    SYSCALL_PUTU32X,
 } syscall_num_t;
 
 
@@ -41,6 +42,11 @@ void sys_mutex_unlock(void *mutex);
 static inline void sys_puts(char *str)
 {
     syscall_dispatch(SYSCALL_PUTS, (uint32_t)(intptr_t)str);
+}
+
+static inline void sys_putu32x(uint32_t val)
+{
+    syscall_dispatch(SYSCALL_PUTU32X, val);
 }
 
 static inline void sys_mutex_lock(void *mutex)

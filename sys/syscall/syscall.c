@@ -57,6 +57,18 @@ static inline void _syscall_puts(uint32_t *args)
     puts(str);
 }
 
+#include "fmt.h"
+static inline void _syscall_putu32x(uint32_t *args)
+{
+#ifdef MODULE_FMT
+    print_u32_hex(args[0]);
+    print("\n", 1);
+#else
+    printf("0x%08x\n", (unsigned)args[0]);
+#endif
+}
+
+
 void syscall_handle(unsigned syscall_num, uint32_t *args)
 {
     switch(syscall_num) {
@@ -66,5 +78,7 @@ void syscall_handle(unsigned syscall_num, uint32_t *args)
             return _syscall_mutex_unlock(args);
         case SYSCALL_PUTS:
             return _syscall_puts(args);
+        case SYSCALL_PUTU32X:
+            return _syscall_putu32x(args);
     }
 }
