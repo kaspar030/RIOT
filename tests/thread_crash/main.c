@@ -53,7 +53,7 @@ int main(void)
     thread_create(_stack,
                   sizeof(_stack),
                   THREAD_PRIORITY_MAIN - 1,
-                  THREAD_CREATE_STACKTEST | THREAD_CONFIG_KILL_ON_CRASH,
+                  THREAD_CREATE_STACKTEST | THREAD_CREATE_KILL_ON_CRASH,
                   _crashing_thread,
                   NULL,
                   "crashing");
