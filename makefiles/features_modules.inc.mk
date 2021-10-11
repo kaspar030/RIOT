@@ -29,6 +29,8 @@ endif
 # select cpu_check_address pseudomodule if the corresponding feature is used
 USEMODULE += $(filter cpu_check_address, $(FEATURES_USED))
 
+USEMODULE += $(filter fault_exception_recovery, $(FEATURES_USED))
+
 # select bootloader_stm32 module if the feature is used
 USEMODULE += $(filter bootloader_stm32, $(FEATURES_USED))
 
