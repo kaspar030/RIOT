@@ -495,6 +495,7 @@ void mem_manage_default(void)
     }
     core_panic(PANIC_MEM_MANAGE, "MEM MANAGE HANDLER");
 }
+#endif
 
 void __attribute__((naked)) fault_handler_default(void)
 {
