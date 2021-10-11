@@ -4,7 +4,7 @@ SEARCH_DIR(.)
 
 _rom_start_addr = 0x0;
 _rom_length = 1024;
-_ram_start_addr = 0x3000000;
+_ram_start_addr = 0x8000000;
 _ram_length = 4096;
 
 MEMORY
@@ -39,16 +39,16 @@ SECTIONS
     . = ALIGN(4);
     _etext = .;
 
-    _srelocate = .;
     .relocate :
     {
+        _srelocate = .;
         . = ALIGN(4);
         *(.ramfunc .ramfunc.*);
         *(.data .data.*);
         KEEP (*(SORT(.xfa.*)))
         . = ALIGN(4);
+        _erelocate = .;
     } > ram AT> rom
-    _erelocate = LOADADDR(.relocate);
 
     /* .bss section which is used for uninitialized data */
     .bss (NOLOAD) :
