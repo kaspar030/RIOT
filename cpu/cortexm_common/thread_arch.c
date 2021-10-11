@@ -223,13 +223,11 @@ char *thread_stack_init(thread_task_func_t task_func,
     /* r11 - r4 */
     for (int i = 11; i >= 4; i--) {
         stk--;
-        if (i == 9) {
-            *stk = stack_top;
-        }
-        else {
-            *stk = i;
-        }
+        *stk = i;
     }
+
+    stk[4] = (uintptr_t)task_func-1;
+    stk[5] = stack_top;
 #endif
 
     /* The returned stack pointer will be aligned on a 32 bit boundary not on a
