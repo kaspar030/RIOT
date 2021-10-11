@@ -337,7 +337,9 @@ void __attribute__((naked)) __attribute__((used)) isr_pendsv(void) {
     /* current thread context is now saved */
     "restore_context:                 \n" /* Label to skip thread state saving */
 
-    "ldr    r1, [r0, 8]               \n" /* Load tcb->config to register r1 */
+#ifdef MODULE_CORE_SANDBOX
+    "ldr    r1, [r0, %[config_offset]]\n" /* Load tcb->config to register r1 */
+#endif /* MODULE_CORE_SANDBOX */
     "ldr    r0, [r0]                  \n" /* load tcb->sp to register r0 */
     "ldmia  r0!, {r4-r11,lr}          \n" /* restore other registers, including lr */
 #ifdef MODULE_CORTEXM_FPU
@@ -348,10 +350,12 @@ void __attribute__((naked)) __attribute__((used)) isr_pendsv(void) {
     "msr    psp, r0                   \n" /* restore user mode SP to PSP reg */
 
     "mrs    r2, control               \n"
+#ifdef MODULE_CORE_SANDBOX
     "tst    r1, #0x01                 \n" /* Test for unprivileged */
     "ite    ne                        \n"
     "orrne  r2, r2, #0x01             \n" /* Set the unprivileged bit */
     "biceq  r2, r2, #0x01             \n" /* Or clear the unprivileged bit */
+#endif /* MODULE_CORE_SANDBOX */
     "msr    control, r2               \n" /* Write control register back */
 
     "bx     lr                        \n" /* load exception return value to PC,
@@ -363,6 +367,9 @@ void __attribute__((naked)) __attribute__((used)) isr_pendsv(void) {
                                             * sched_active_thread */
      :
      :
+#ifdef MODULE_CORE_SANDBOX
+     [config_offset] "i" (offsetof(thread_t, config)) /* Use tcb->config as input */
+#endif
      :
     );
 }

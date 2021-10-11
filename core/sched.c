@@ -309,9 +309,11 @@ void sched_exit_cleanup(thread_t *thread)
 NORETURN void sched_task_exit(void)
 {
     thread_t *me = thread_get_active();
+#ifdef MODULE_CORE_SANDBOX
     if (me->config & THREAD_CONFIG_UNPRIVILEGED) {
         __asm__("svc 2");
     }
+#endif
     DEBUG("sched_task_exit: ending thread %" PRIkernel_pid "...\n",
           thread_getpid());
 

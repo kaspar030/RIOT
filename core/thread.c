@@ -207,7 +207,7 @@ uintptr_t thread_measure_stack_free(const char *stack)
 
 kernel_pid_t thread_create_detached(thread_t *thread, char *stack,
                                     int stacksize, uint8_t priority,
-                                    int flags, thread_task_func_t function,
+                                    unsigned flags, thread_task_func_t function,
                                     void *arg,
                                     const char *name)
 {
@@ -299,7 +299,9 @@ kernel_pid_t thread_create_detached(thread_t *thread, char *stack,
     sched_threads[pid] = thread;
 
     thread->pid = pid;
+#ifdef MODULE_CORE_SANDBOX
     thread->config |= flags & THREAD_CREATE_RUN_UNPRIVILEGED ? THREAD_CONFIG_UNPRIVILEGED : 0;
+#endif
     thread->sp = thread_stack_init(function, arg, stack, stacksize);
 
 #if defined(DEVELHELP) || defined(SCHED_TEST_STACK) || \
@@ -350,7 +352,7 @@ kernel_pid_t thread_create_detached(thread_t *thread, char *stack,
 }
 
 kernel_pid_t thread_create(char *stack, int stacksize, uint8_t priority,
-                           int flags, thread_task_func_t function, void *arg,
+                           unsigned flags, thread_task_func_t function, void *arg,
                            const char *name)
 {
     return thread_create_detached(NULL, stack, stacksize, priority, flags,

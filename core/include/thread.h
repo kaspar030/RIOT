@@ -165,7 +165,7 @@ extern "C" {
 /**
  * @brief Add runtime configuration flags to the thread_t
  */
-#if defined(MODULE_THREAD_CRASH)
+#if defined(MODULE_CORE_SANDBOX)
 #define THREAD_RUNTIME_CONFIG
 #endif
 
@@ -181,8 +181,8 @@ struct _thread {
     char *sp;                       /**< thread's stack pointer         */
     thread_status_t status;         /**< thread's status                */
     uint8_t priority;               /**< thread's priority              */
-#if defined(THREAD_RUNTIME_CONFIG) || defined(MODULE_THREAD_CRASH)
-    uint16_t config;                /**< thread runtime config          */
+#if defined(THREAD_RUNTIME_CONFIG)
+    uint32_t config;                /**< thread runtime config          */
 #endif
 
     kernel_pid_t pid;               /**< thread's process id            */
@@ -264,6 +264,12 @@ struct _thread {
 /** @} */
 
 /**
+ * @brief Create a thread running in unprivileged/user mode
+ */
+#define THREAD_CREATE_KILL_ON_CRASH     (32)
+/** @} */
+
+/**
  * @name Thread runtime configuration flags
  *
  * @note Not to be confused with the initial state controls
@@ -313,14 +319,14 @@ struct _thread {
 kernel_pid_t thread_create(char *stack,
                            int stacksize,
                            uint8_t priority,
-                           int flags,
+                           unsigned flags,
                            thread_task_func_t task_func,
                            void *arg,
                            const char *name);
 
 kernel_pid_t thread_create_detached(thread_t *thread, char *stack,
                                     int stacksize, uint8_t priority,
-                                    int flags, thread_task_func_t function,
+                                    unsigned flags, thread_task_func_t function,
                                     void *arg,
                                     const char *name);
 /**
