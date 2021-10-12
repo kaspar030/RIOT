@@ -19,6 +19,7 @@
  * @}
  */
 #include <stdio.h>
+#include <string.h>
 
 #include "mpu.h"
 #include "cpu.h"
@@ -47,6 +48,9 @@ kernel_pid_t thread_create_sandboxed(thread_t *thread, sandbox_t *sandbox, char 
     sandbox->mem_len = mem_len;
 
     assert(stack_size <= mem_len);
+
+    /* clean out this sandbox' memory. implicitly initializes .bss */
+    memset(mem_start, 0, mem_len);
 
     kernel_pid_t pid = thread_create_detached(thread, mem_start, stack_size,
                                               priority,
