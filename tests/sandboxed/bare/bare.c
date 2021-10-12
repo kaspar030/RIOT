@@ -45,7 +45,6 @@ void __attribute((section(".crt"))) _start(void *arg){
     register uintptr_t *stack_top;
 
     __asm__ ("mov %0, r9\n" : "=r" (stack_top));
-    //stack_top -= 0x8000000;
 
     /* this relocates .data from the binary (which is maybe on flash)
      * into RAM */
