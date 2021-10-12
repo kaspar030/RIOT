@@ -23,7 +23,6 @@
 #define SYSCALL_ARCH_H
 
 #include <stdint.h>
-#include "cpu_conf.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,6 +31,18 @@ extern "C" {
 #ifndef DOXYGEN
 
 #define SYSCALL_API_INLINED
+
+#ifndef RIOT_VERSION
+static inline uint32_t __get_PSP(void)
+{
+  uint32_t result;
+
+  __asm volatile ("MRS %0, psp"  : "=r" (result) );
+  return(result);
+}
+#else
+#include "cpu_conf.h"
+#endif
 
 static inline __attribute__((always_inline)) uint32_t syscall_dispatch(unsigned num,
                                                                        uint32_t arg)
