@@ -1,49 +1,16 @@
 #include <stdint.h>
 
-static inline __attribute__((always_inline)) uint32_t syscall_dispatch(
-    unsigned num,
-    uint32_t arg)
-{
-    register uint32_t arg0 __asm("r0") = arg;
-    register uint32_t result __asm("r0");
-    __asm volatile (
-        "svc %[num] \n"
-        : "=r" (result)
-        : [num] "i" (num), "0" (arg0)
-        : "memory"
-        );
-
-    return result;
-}
-
-typedef enum {
-    SYSCALL_THREAD_YIELD    = 1,
-    SYSCALL_THREAD_EXIT     = 2,
-    SYSCALL_MUTEX_LOCK,
-    SYSCALL_MUTEX_UNLOCK,
-    SYSCALL_PUTS,
-    SYSCALL_PUTU32X,
-} syscall_num_t;
-
-static inline void sys_puts(char *str)
-{
-    syscall_dispatch(SYSCALL_PUTS, (uint32_t)(intptr_t)str);
-}
-
-static inline void sys_putu32x(uint32_t val)
-{
-    syscall_dispatch(SYSCALL_PUTU32X, val);
-}
-
+#include "syscall.h"
 
 void _start_c(void *arg);
 
 extern const char _srelocate, _erelocate, _etext;
 
 void __attribute((section(".crt"))) _start(void *arg){
-    /* RIOT passes the stack top in R9 */
-    register uintptr_t *stack_top;
+    /* RIOT passes the stack top in R9.
+     * This is also the start of this sandbox' data/bss memory */
 
+    register uintptr_t *stack_top;
     __asm__ ("mov %0, r9\n" : "=r" (stack_top));
 
     /* this relocates .data from the binary (which is maybe on flash)
@@ -55,6 +22,8 @@ void __attribute((section(".crt"))) _start(void *arg){
     for (const uintptr_t *p = reloc_start; p < reloc_end;) {
         *stack_top++ = *p++;
     }
+
+    /* RIOT cleans bss */
     sys_puts("_start(): reloc done, jumping to _start_c()");
     _start_c(arg);
 }
