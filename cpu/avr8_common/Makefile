@@ -2,6 +2,8 @@
 MODULE = avr8_common
 
 # add a list of subdirectories, that should also be build
-DIRS = avr_libc_extra
+ifneq (libc,$(RIOT_LIBC))
+  DIRS += avr_libc_extra
+endif
 
 include $(RIOTBASE)/Makefile.base
