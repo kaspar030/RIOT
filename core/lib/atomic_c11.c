@@ -33,6 +33,8 @@
  * @author Joakim Nohlgård <joakim.nohlgard@eistec.se>
  */
 
+#ifndef MODULE_LIBC
+
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -388,5 +390,6 @@ void __sync_synchronize(void)
      */
     __asm__ volatile ("" : : : "memory");
 }
+#endif
 #endif
 /** @} */

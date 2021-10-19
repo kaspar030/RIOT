@@ -917,3 +917,7 @@ ifneq (,$(filter fido2_ctap,$(USEMODULE)))
 endif
 
 include $(RIOTBASE)/sys/test_utils/Makefile.dep
+
+ifneq (,$(filter libc,$(USEMODULE)))
+  include $(RIOTBASE)/sys/libc/Makefile.dep
+endif
