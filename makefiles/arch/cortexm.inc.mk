@@ -29,10 +29,10 @@ CFLAGS += $(CFLAGS_CPU) $(CFLAGS_LINK) $(CFLAGS_DBG) $(CFLAGS_OPT)
 ASFLAGS += $(CFLAGS_CPU) $(CFLAGS_DBG)
 LINKFLAGS += -L$(RIOTCPU)/$(CPU)/ldscripts -L$(RIOTCPU)/cortexm_common/ldscripts
 LINKER_SCRIPT ?= $(CPU_MODEL).ld
-LINKFLAGS += -T$(LINKER_SCRIPT) -Wl,--fatal-warnings
+LINKFLAGS += -T$(LINKER_SCRIPT) $(LINKFLAGPREFIX)--fatal-warnings
 
 LINKFLAGS += $(CFLAGS_CPU) $(CFLAGS_DBG) $(CFLAGS_OPT) -static -lgcc -nostartfiles
-LINKFLAGS += -Wl,--gc-sections
+LINKFLAGS += $(LINKFLAGPREFIX)--gc-sections
 
 # extract version inside the first parentheses
 ARM_GCC_VERSION = $(shell $(TARGET_ARCH)-gcc --version | sed -n '1 s/[^(]*(\([^\)]*\)).*/\1/p')
