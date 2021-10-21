@@ -31,7 +31,10 @@ LINKFLAGS += -L$(RIOTCPU)/$(CPU)/ldscripts -L$(RIOTCPU)/cortexm_common/ldscripts
 LINKER_SCRIPT ?= $(CPU_MODEL).ld
 LINKFLAGS += -T$(LINKER_SCRIPT) $(LINKFLAGPREFIX)--fatal-warnings
 
-LINKFLAGS += $(CFLAGS_CPU) $(CFLAGS_DBG) $(CFLAGS_OPT) -static -lgcc -nostartfiles
+ifeq (gnu, $(TOOLCHAIN))
+ LINKFLAGS += $(CFLAGS_CPU) $(CFLAGS_DBG) $(CFLAGS_OPT) -static -lgcc -nostartfiles
+endif
+
 LINKFLAGS += $(LINKFLAGPREFIX)--gc-sections
 
 # extract version inside the first parentheses
