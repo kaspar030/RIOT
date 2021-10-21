@@ -53,8 +53,10 @@ endif
 
 ifeq ($(LTO),1)
   $(warning Building with Link-Time-Optimizations is currently an experimental feature. Expect broken binaries.)
-  LTOFLAGS = -flto
-  LINKFLAGS += $(LTOFLAGS) -ffunction-sections -fdata-sections
+  CFLAGS += -flto
+  ifeq (gnu, $(TOOLCHAIN))
+    LINKFLAGS += -flto -ffunction-sections -fdata-sections
+  endif
 endif
 
 # Forbid common symbols to prevent accidental aliasing.
