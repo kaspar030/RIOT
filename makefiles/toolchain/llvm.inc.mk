@@ -12,26 +12,15 @@ CCAS       ?= $(CC)
 AS          = $(LLVMPREFIX)as
 AR          = $(LLVMPREFIX)ar
 NM          = $(LLVMPREFIX)nm
-# LLVM does have a linker, however, it is not entirely
-# compatible with GCC. For instance spec files as used in
-# `makefiles/libc/newlib.mk` are not supported. Therefore
-# we just use GCC for now.
-LINK        = $(PREFIX)gcc
-LINKXX      = $(PREFIX)g++
-# objcopy does not have a clear substitute in LLVM, use GNU binutils
-# OBJCOPY   = $(LLVMPREFIX)objcopy
-_OBJCOPY    := $(shell command -v $(PREFIX)objcopy || command -v gobjcopy || command -v objcopy)
-OBJCOPY    ?= $(_OBJCOPY)
-ifeq ($(OBJCOPY),)
-  $(warning objcopy not found. Hex file will not be created.)
-  OBJCOPY     = true
-endif
-# Default to the native (g)objdump, helps when using toolchain from docker
-_OBJDUMP    := $(or $(shell command -v $(LLVMPREFIX)objdump || command -v gobjdump),objdump)
-OBJDUMP     ?= $(_OBJDUMP)
+LINK        = ld.lld
+LINKXX      = ld.lld
+OBJCOPY     = $(LLVMPREFIX)objcopy
+OBJDUMP     = $(LLVMPREFIX)objsize
 SIZE        = $(LLVMPREFIX)size
-# LLVM lacks a binutils strip tool as well...
-#export STRIP      = $(LLVMPREFIX)strip
+STRIP       = $(LLVMPREFIX)strip
+
+LINKFLAGPREFIX =
+
 # We use GDB for debugging for now, maybe LLDB will be supported in the future.
 include $(RIOTMAKE)/tools/gdb.inc.mk
 
@@ -59,8 +48,7 @@ ifneq (,$(TARGET_ARCH))
   # Tell clang to cross compile
   CFLAGS     += -target $(TARGET_ARCH_LLVM)
   CXXFLAGS   += -target $(TARGET_ARCH_LLVM)
-  # We currently don't use LLVM for linking (see comment above).
-  # LINKFLAGS  += -target $(TARGET_ARCH_LLVM)
+  #LINKFLAGS  +=
 
   # Clang on Linux uses GCC's C and C++ headers and libstdc++ (installed with GCC)
 
