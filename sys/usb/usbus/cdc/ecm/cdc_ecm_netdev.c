@@ -59,7 +59,7 @@ static int _send(netdev_t *netdev, const iolist_t *iolist)
 {
     assert(iolist);
     usbus_cdcecm_device_t *cdcecm = _netdev_to_cdcecm(netdev);
-    uint8_t *buf = cdcecm->ep_in->ep->buf;
+    uint8_t *buf = cdcecm->data_in;
     const iolist_t *iolist_start = iolist;
     size_t len = iolist_size(iolist);
     /* interface with alternative function ID 1 is the interface containing the
