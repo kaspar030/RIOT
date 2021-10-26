@@ -166,8 +166,9 @@ usbus_endpoint_t *usbus_add_endpoint(usbus_t *usbus, usbus_interface_t *iface,
     if (usbdev_ep) {
         ep = dir == USB_EP_DIR_IN ? &usbus->ep_in[usbdev_ep->num]
                                   : &usbus->ep_out[usbdev_ep->num];
-        ep->maxpacketsize = usbdev_ep->len;
+        ep->maxpacketsize = len;
         ep->ep = usbdev_ep;
+        ep->ep->len = len;
         if (iface) {
             ep->next = iface->ep;
             iface->ep = ep;
@@ -325,6 +326,7 @@ static void _event_cb(usbdev_t *usbdev, usbdev_event_t event)
                            sizeof(uint8_t));
                 flag = USBUS_HANDLER_FLAG_RESET;
                 msg = USBUS_EVENT_USB_RESET;
+                DEBUG("usbus: USB reset detected\n");
                 break;
             case USBDEV_EVENT_SUSPEND:
                 DEBUG("usbus: USB suspend detected\n");
