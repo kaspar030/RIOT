@@ -251,7 +251,7 @@ static int _control_handler(usbus_t *usbus, usbus_handler_t *handler,
                   setup->value);
             cdcecm->active_iface = (uint8_t)setup->value;
             if (cdcecm->active_iface == 1) {
-                usbdev_ep_xmit(cdcecm->ep_out->ep, cdcecm->in_buf,
+                usbdev_ep_xmit(cdcecm->ep_out->ep, cdcecm->data_out,
                                USBUS_CDCECM_EP_DATA_SIZE);
                 _notify_link_up(cdcecm);
             }
@@ -300,7 +300,7 @@ static void _handle_rx_flush_ev(event_t *ev)
                                                  rx_flush);
 
     cdcecm->len = 0; /* Flush packet */
-    usbdev_ep_xmit(cdcecm->ep_out->ep, cdcecm->in_buf, USBUS_CDCECM_EP_DATA_SIZE);
+    usbdev_ep_xmit(cdcecm->ep_out->ep, cdcecm->data_out, USBUS_CDCECM_EP_DATA_SIZE);
 }
 
 static void _transfer_handler(usbus_t *usbus, usbus_handler_t *handler,
@@ -319,7 +319,7 @@ static void _transfer_handler(usbus_t *usbus, usbus_handler_t *handler,
         cdcecm->len += len;
         if (len == USBUS_CDCECM_EP_DATA_SIZE) {
             /* ready next chunk */
-            usbdev_ep_xmit(ep, cdcecm->in_buf + cdcecm->len,
+            usbdev_ep_xmit(ep, cdcecm->data_out + cdcecm->len,
                            USBUS_CDCECM_EP_DATA_SIZE);
         }
         else {

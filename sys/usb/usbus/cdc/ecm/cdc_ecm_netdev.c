@@ -142,7 +142,7 @@ static int _recv(netdev_t *netdev, void *buf, size_t max_len, void *info)
         return pktlen;
     }
     if (pktlen <= max_len) {
-        memcpy(buf, cdcecm->in_buf, pktlen);
+        memcpy(buf, cdcecm->data_out, pktlen);
     }
     _signal_rx_flush(cdcecm);
     return (pktlen <= max_len) ? (int)pktlen : -ENOBUFS;

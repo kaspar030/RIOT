@@ -108,10 +108,14 @@ typedef struct usbus_cdcecm_device {
     usbus_t *usbus;                         /**< Ptr to the USBUS context */
     mutex_t out_lock;                       /**< mutex used for locking netif/USBUS send */
     size_t tx_len;                          /**< Length of the current tx frame */
-    uint8_t in_buf[ETHERNET_FRAME_LEN];     /**< Buffer for the received frames */
     size_t len;                             /**< Length of the current rx frame */
     usbus_cdcecm_notif_t notif;             /**< Startup message notification tracker */
     unsigned active_iface;                  /**< Current active data interface */
+
+    /**
+     * @brief Buffer for received frames
+     */
+    usbdev_ep_buf_t data_out[ETHERNET_FRAME_LEN];
 
     /**
      * @brief Host in device out data buffer
