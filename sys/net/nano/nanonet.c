@@ -46,7 +46,7 @@ void nanonet_init(void)
 {
     DEBUG("nanonet: initializing...\n");
 
-    nanonet_thread = (thread_t *)sched_active_thread;
+    nanonet_thread = thread_get_active();
     event_queue_init(&nanonet_events);
 
     nanonet_init_devices();
