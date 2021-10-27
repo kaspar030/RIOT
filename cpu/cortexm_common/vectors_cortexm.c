@@ -445,7 +445,6 @@ __attribute__((used)) void hard_fault_handler(uint32_t* sp, uint32_t corrupted, 
 
 void hard_fault_default(void)
 {
-    __BKPT(1);
     core_panic(PANIC_HARD_FAULT, "HARD FAULT HANDLER");
 }
 
