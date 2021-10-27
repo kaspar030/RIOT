@@ -1,0 +1,18 @@
+USEMODULE += iolist
+USEMODULE += tsrb
+USEMODULE += event
+USEMODULE += nanonet_netdev
+
+ifneq (,$(filter nanonet_ipv4,$(USEMODULE)))
+  USEMODULE += nanonet_arp
+  USEMODULE += nanonet_icmp
+endif
+
+ifneq (,$(filter nanonet_ipv6,$(USEMODULE)))
+  USEMODULE += nanonet_ndp
+  USEMODULE += nanonet_icmpv6
+endif
+
+ifneq (,$(filter nanonet_tcp,$(USEMODULE)))
+  USEMODULE += random
+endif

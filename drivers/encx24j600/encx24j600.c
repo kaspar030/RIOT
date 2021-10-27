@@ -117,8 +117,8 @@ static void _isr(netdev_t *netdev)
         uint16_t estat = reg_get(dev, ENC_ESTAT);
 
         netdev_event_t event = (estat & ENC_PHYLNK) ?
-            NETDEV_EVENT_LINK_DOWN :
-            NETDEV_EVENT_LINK_UP;
+            NETDEV_EVENT_LINK_UP :
+            NETDEV_EVENT_LINK_DOWN;
 
         netdev->event_callback(netdev, event);
     }
@@ -344,6 +344,11 @@ static int _recv(netdev_t *netdev, void *buf, size_t len, void *info)
 
     (void)info;
     lock(dev);
+
+    if (!_packets_available(dev)) {
+        unlock(dev);
+        return -1;
+    }
 
     /* read frame header */
     sram_op(dev, ENC_RRXDATA, dev->rx_next_ptr, (char*)&hdr, sizeof(hdr));
