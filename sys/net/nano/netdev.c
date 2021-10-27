@@ -23,7 +23,6 @@
 #include <string.h>
 
 #include "byteorder.h"
-#include "kernel_types.h"
 #include "thread.h"
 #include "thread_flags.h"
 #include "xtimer.h"
@@ -270,6 +269,7 @@ void nanonet_init_devices(void)
 #endif
 
 #ifdef MODULE_USBUS_CDC_ECM
+    DEBUG("nanonet: setting up cdc_ecm\n");
     cdcecm_netdev_setup(&cdcecm);
     nanonet_init_netdev_eth(n++);
 #endif

@@ -1,11 +1,13 @@
+DEVELHELP = 0
 include ../Makefile.tests_common
+DISABLE_MODULE += test_utils_interactive_sync
 
 USEMODULE += nanocoap
 
-USEMODULE += netdev_default
+#USEMODULE += netdev_default
 
-USEMODULE += nanonet nanonet_udp nanonet_ipv6 nanonet_eth nanonet_ipv4
-USEMODULE += nanonet_tcp xtimer fmt
+USEMODULE += nanonet nanonet_udp nanonet_eth nanonet_ipv4 nanonet_ipv6
+#USEMODULE += nanonet_tcp xtimer fmt
 
 DISABLE_MODULE += core_msg
 #
@@ -26,7 +28,7 @@ DISABLE_MODULE += core_msg
 #USEMODULE += encx24j600
 
 # use this for USB ethernet
-#USEMODULE += usbus_cdc_ecm
+USEMODULE += usbus_cdc_ecm
 
 #
 # debug build
