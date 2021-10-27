@@ -46,12 +46,11 @@ static sam0_common_usb_t _usbdevs[USB_INST_NUM];
 const usbdev_driver_t driver;
 
 static void _usbdev_ep_init(usbdev_ep_t *ep);
-static int _usbdev_ep_ready(usbdev_ep_t *ep, size_t len);
+static int _usbdev_ep_xmit(usbdev_ep_t *ep, uint8_t *buf, size_t len);
 static usbdev_ep_t *_usbdev_new_ep(usbdev_t *dev, usb_ep_type_t type,
-                                   usb_ep_dir_t dir, size_t buf_len);
+                                   usb_ep_dir_t dir, size_t len);
 
-static int _bank_set_size(usbdev_ep_t *ep);
-static int _ep_unready(usbdev_ep_t *ep);
+//static int _bank_set_size(usbdev_ep_t *ep);
 
 static inline unsigned _ep_num(unsigned num, usb_ep_dir_t dir)
 {
@@ -141,13 +140,6 @@ static void _disable_ep_irq_in(UsbDeviceEndpoint *ep_reg)
     DEBUG("Disabling IN irq\n");
     ep_reg->EPINTENCLR.reg = USB_DEVICE_EPINTENCLR_TRCPT1 |
                              USB_DEVICE_EPINTENCLR_STALL1;
-}
-
-static void _bank_set_address(usbdev_ep_t *ep)
-{
-    UsbDeviceDescBank *bank = _bank_from_ep(ep);
-
-    bank->ADDR.reg = (uint32_t)ep->buf;
 }
 
 static int _bank_set_size(usbdev_ep_t *ep)
@@ -254,7 +246,7 @@ static inline void _poweron(sam0_common_usb_t *dev)
 }
 
 static usbdev_ep_t *_usbdev_new_ep(usbdev_t *dev, usb_ep_type_t type,
-                                   usb_ep_dir_t dir, size_t buf_len)
+                                   usb_ep_dir_t dir, size_t size)
 {
     sam0_common_usb_t *usbdev = (sam0_common_usb_t *)dev;
     /* The IP supports all types for all endpoints */
@@ -278,17 +270,9 @@ static usbdev_ep_t *_usbdev_new_ep(usbdev_t *dev, usb_ep_type_t type,
     if (res) {
         res->dev = dev;
         res->dir = dir;
-        if (usbdev->used + buf_len < SAM_USB_BUF_SPACE) {
-            res->buf = usbdev->buffer + usbdev->used;
-            res->len = buf_len;
-            if (_bank_set_size(res) < 0) {
-                return NULL;
-            }
-            usbdev->used += buf_len;
-            _bank_set_address(res);
-            res->type = type;
-            res->dev = dev;
-        }
+        res->type = type;
+        res->len = size;
+        _bank_set_size(res);
     }
     return res;
 }
@@ -332,7 +316,6 @@ static void _usbdev_init(usbdev_t *dev)
     DEBUG("Initializing sam0 usb peripheral\n");
     /* Only one usb device on this board */
     sam0_common_usb_t *usbdev = (sam0_common_usb_t *)dev;
-    usbdev->used = 0;
     /* Set GPIO */
     gpio_init(usbdev->config->dp, GPIO_IN);
     gpio_init(usbdev->config->dm, GPIO_IN);
@@ -682,16 +665,6 @@ static int _usbdev_ep_set(usbdev_ep_t *ep, usbopt_ep_t opt,
             _ep_set_stall(ep, *(usbopt_enable_t *)value);
             res = sizeof(usbopt_enable_t);
             break;
-        case USBOPT_EP_READY:
-            assert(value_len == sizeof(usbopt_enable_t));
-            if (*((usbopt_enable_t *)value)) {
-                _ep_unready(ep);
-            }
-            else {
-                _usbdev_ep_ready(ep, 0);
-            }
-            res = sizeof(usbopt_enable_t);
-            break;
         default:
             DEBUG("sam_usb: Unhandled set call: 0x%x\n", opt);
             break;
@@ -699,23 +672,11 @@ static int _usbdev_ep_set(usbdev_ep_t *ep, usbopt_ep_t opt,
     return res;
 }
 
-static int _ep_unready(usbdev_ep_t *ep)
+static int _usbdev_ep_xmit(usbdev_ep_t *ep, uint8_t *buf, size_t len)
 {
     UsbDeviceEndpoint *ep_reg = _ep_reg_from_ep(ep);
 
-    if (ep->dir == USB_EP_DIR_IN) {
-        ep_reg->EPSTATUSCLR.reg = USB_DEVICE_EPSTATUSCLR_BK1RDY;
-    }
-    else {
-        ep_reg->EPSTATUSSET.reg = USB_DEVICE_EPSTATUSSET_BK0RDY;
-    }
-    return 0;
-}
-
-static int _usbdev_ep_ready(usbdev_ep_t *ep, size_t len)
-{
-    UsbDeviceEndpoint *ep_reg = _ep_reg_from_ep(ep);
-
+    _bank_from_ep(ep)->ADDR.reg = (uint32_t)(intptr_t)buf;
     if (ep->dir == USB_EP_DIR_IN) {
         _disable_ep_stall_in(ep_reg);
         _bank_from_ep(ep)->PCKSIZE.bit.BYTE_COUNT = len;
@@ -797,5 +758,5 @@ const usbdev_driver_t driver = {
     .ep_get = _usbdev_ep_get,
     .ep_set = _usbdev_ep_set,
     .ep_esr = _usbdev_ep_esr,
-    .ready = _usbdev_ep_ready,
+    .xmit = _usbdev_ep_xmit,
 };
