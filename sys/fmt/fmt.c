@@ -578,6 +578,20 @@ void print_float(float f, unsigned precision)
     print(buf, len);
 }
 
+void print_s32_dfp(int32_t val, int fp_digits) {
+    if (fp_digits >= 0) {
+        print_s32_dec(val);
+        while (fp_digits--) {
+            print("0", 1);
+        }
+    }
+    else {
+        char buf[12]; /* "-214748364.8" */
+        size_t len = fmt_s32_dfp(buf, val, fp_digits);
+        print(buf, len);
+    }
+}
+
 void print_str(const char* str)
 {
     print(str, fmt_strlen(str));

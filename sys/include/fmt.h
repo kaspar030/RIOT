@@ -497,6 +497,16 @@ void print_s64_dec(uint64_t val);
 void print_float(float f, unsigned precision);
 
 /**
+ * @brief Print 32-bit fixed point number as decimal string
+ *
+ * See fmt_s32_dfp() for more details
+ *
+ * @param[in]  val          Fixed point value
+ * @param[in]  fp_digits    Number of digits after the decimal point
+ */
+void print_s32_dfp(int32_t val, int fp_digits);
+
+/**
  * @brief Print null-terminated string to stdout
  *
  * @param[in]   str  Pointer to string to print
