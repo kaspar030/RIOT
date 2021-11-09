@@ -38,7 +38,7 @@ subdirs:
   # #    - oonf_api
   # #    - openthread
   # #    - qDSA
-  # - relic
+  - relic
   # #    - semtech-loramac
   # #    - spiffs
   # #    - tiny-asn1
