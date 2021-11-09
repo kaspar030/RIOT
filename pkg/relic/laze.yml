@@ -8,6 +8,7 @@ module:
     build:
       cmd:
         - rm -rf ${bindir}/*
+        - mkdir -p ${bindir}
         - export CC='${CC}'
         - export CXX='${CXX}'
         - export LINK='${LINK}'
@@ -21,18 +22,19 @@ module:
       out: lib/librelic_s.a
       build_before_dependees: true
     env:
-      TOOLCHAIN_FILE: ${bindir}/xcompile-toolchain.cmake
-      CFLAGS:
-        - -Wno-unused-function
-        - -Wno-missing-include-dirs
-        - remove:
-            - -Werror
-            - -Werror=old-style-definition
-            - -Werror=strict-prototypes
-            - -std=gnu99
-    export_vars:
-      LINKFLAGS:
-        - --whole-archive
-      includes:
-        - ${bindir}/include
-        - ${srcdir}/include
+      local:
+        srcdir: ${srcdir}
+        TOOLCHAIN_FILE: ${bindir}/xcompile-toolchain.cmake
+        CFLAGS:
+          - -Wno-unused-function
+          - -Wno-missing-include-dirs
+          - -Wno-error
+          - -Wno-error=old-style-definition
+          - -Wno-error=strict-prototypes
+          - -std=gnu99
+      export:
+        LINKFLAGS:
+          - --whole-archive
+        includes:
+          - ${bindir}/include
+          - ${srcdir}/include

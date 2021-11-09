@@ -12,7 +12,7 @@ defaults:
         depends:
             - board
             - riot
-            - test_utils_interactive_sync
+            - ?test_utils_interactive_sync
             - ?develhelp
 
 subdirs:
