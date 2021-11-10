@@ -103,7 +103,7 @@ endif
 # The IRQ header for a given family requires the family headers to be fetched
 # before since it's generated from all CMSIS content of that family
 $(STM32IRQS_INCLUDE_FILE): $(STM32FAM_INCLUDE_FILE)
-	$(Q)$(RIOTBASE)/cpu/stm32/dist/irqs/gen_irqs.py $(CPU_FAM)
+	$(Q)$(RIOTBASE)/cpu/stm32/dist/irqs/gen_irqs.py $(CPU_FAM) $(STM32CMSIS_INCLUDE_DIR) $(STM32FAM_INCLUDE_FILE)
 
 # Include clock configuration directory
 INCLUDES += -I$(RIOTCPU)/stm32/include/clk

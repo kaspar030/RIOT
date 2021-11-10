@@ -13,17 +13,6 @@ import argparse
 import re
 
 
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-RIOTBASE = os.getenv(
-    "RIOTBASE", os.path.abspath(os.path.join(CURRENT_DIR, "../../../..")))
-STM32_INCLUDE_DIR = os.path.join(RIOTBASE, "cpu/stm32/include")
-STM32_CMSIS_INCLUDE_DIR = os.path.join(
-    RIOTBASE, STM32_INCLUDE_DIR, "vendor/cmsis/{}/Include/")
-STM32_CMSIS_HEADER = os.path.join(
-    RIOTBASE, STM32_CMSIS_INCLUDE_DIR, "{}.h")
-STM32_IRQS_DIR = os.path.join(
-    RIOTBASE, STM32_INCLUDE_DIR, "irqs/{}/irqs.h")
-
 IRQS_FORMAT = """
 /*
  * PLEASE DON'T EDIT
@@ -49,9 +38,9 @@ extern "C" {{
 """
 
 
-def list_cpu_lines(cpu_fam):
+def list_cpu_lines(cpu_fam, cmsis_includes):
     """Returns the list CPU lines for a given family"""
-    headers = os.listdir(STM32_CMSIS_INCLUDE_DIR.format(cpu_fam))
+    headers = os.listdir(cmsis_includes)
     if "Templates" in headers:
         headers.remove("Templates")
     if "partition_stm32l5xx.h" in headers:
@@ -61,9 +50,8 @@ def list_cpu_lines(cpu_fam):
     return sorted([header.split(".")[0] for header in headers])
 
 
-def irq_numof(cpu_fam, cpu_line):
+def irq_numof(cpu_line_cmsis):
     """Parse the CMSIS to get the list IRQs."""
-    cpu_line_cmsis = STM32_CMSIS_HEADER.format(cpu_fam, cpu_line)
 
     with open(cpu_line_cmsis, 'rb') as cmsis:
         cmsis_content = cmsis.readlines()
@@ -125,23 +113,27 @@ def generate_irqs(context):
         cpu_fam=context["cpu_fam"].upper(),
         irq_lines="\n".join(irq_lines),
         )
-    dest_file = os.path.join(STM32_IRQS_DIR.format(context["cpu_fam"]))
 
-    if not os.path.exists(os.path.dirname(dest_file)):
-        os.makedirs(os.path.dirname(dest_file))
+    dest_file = context["dest_file"]
+
+    dest_dir = os.path.dirname(dest_file)
+    if dest_dir != "" and not os.path.exists(dest_dir):
+        os.makedirs(dest_dir)
     with open(dest_file, "w") as f_dest:
         f_dest.write(irqs_content)
 
 
 def main(args):
     """Main function."""
-    cpu_lines = list_cpu_lines(args.cpu_fam)
+    cpu_lines = list_cpu_lines(args.cpu_fam, args.cmsis_includes)
     context = {
         "cpu_fam": args.cpu_fam,
+        "cmsis_includes": args.cmsis_includes,
+        "dest_file": args.dest_file,
         "cpu_lines": [
             {
                 "line": cpu_line.upper().replace("X", "x"),
-                "irq_numof": irq_numof(args.cpu_fam, cpu_line),
+                "irq_numof": irq_numof(os.path.join(args.cmsis_includes, "{}.h".format(cpu_line)))
             }
             for cpu_line in cpu_lines
         ]
@@ -150,7 +142,9 @@ def main(args):
 
 
 PARSER = argparse.ArgumentParser()
-PARSER.add_argument("cpu_fam", help="STM32 CPU Family")
+PARSER.add_argument("cpu_fam", help="STM32 CPU Family (f0, ...)")
+PARSER.add_argument("cmsis_includes", help="cmsis Includes/ location")
+PARSER.add_argument("dest_file", help="output header filename")
 
 if __name__ == "__main__":
     main(PARSER.parse_args())
