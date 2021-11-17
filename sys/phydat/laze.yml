@@ -4,4 +4,5 @@ module:
         - fmt
     sources:
         - phydat.c
+        - phydat_json.c
         - phydat_str.c
