@@ -1,4 +1,7 @@
 app:
   - depends:
         - periph_flashpage
+        - ?periph_flashpage_pagewise
+        - ?periph_flashpage_rwee
         - shell
+        - od
