@@ -11,5 +11,5 @@ module:
     - name: board
       context: nucleo-f411re
       depends:
-          - cpu/stm32f4
+          - stm32f4
           - nucleo64
