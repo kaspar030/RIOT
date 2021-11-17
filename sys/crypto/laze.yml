@@ -6,10 +6,27 @@ module:
       - chacha_prng.c
       - ciphers.c
       - helper.c
+    uses:
+      - crypto_aes_128
+      - crypto_aes_192
+      - crypto_aes_256
+
     env:
       local:
         CFLAGS:
             - -DRIOT_CHACHA_PRNG_DEFAULT=0x12345678
+
+  - name: crypto_aes_128
+    depends:
+      - crypto
+
+  - name: crypto_aes_192
+    depends:
+      - crypto
+
+  - name: crypto_aes_256
+    depends:
+      - crypto
 
 subdirs:
     - modes
