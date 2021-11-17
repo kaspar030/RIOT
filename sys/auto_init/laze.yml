@@ -11,6 +11,4 @@ module:
 
 subdirs:
     - can
-    - netif
-    - saul
     - storage
