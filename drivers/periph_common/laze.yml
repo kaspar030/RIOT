@@ -1,55 +1,56 @@
 module:
-    - name: periph_common
-      sources:
-          - periph_cpuid: [ cpuid.c ]
-          - periph_eeprom: [ eeprom.c ]
-          - periph_flashpage: [ flashpage.c ]
-          - periph_i2c: [ i2c.c ]
-          - periph_pm: [ pm.c ]
-          - periph_rtc: [ rtc.c ]
-          - periph_spi: [ spi.c ]
-          - periph_timer: [ timer.c ]
-      env:
-          local:
-              CFLAGS:
+  - name: periph_common
+    sources:
+      - periph_cpuid: [cpuid.c]
+      - periph_eeprom: [eeprom.c]
+      - periph_flashpage: [flashpage.c]
+      - periph_i2c: [i2c.c]
+      - periph_pm: [pm.c]
+      - periph_rtc: [rtc.c]
+      - rtt_rtc: [rtc.c]
+      - periph_spi: [spi.c]
+      - periph_timer: [timer.c]
+    env:
+      local:
+        CFLAGS:
+          # workaround for this warning:
+          # drivers/periph_common/cpuid.c: In function 'cpuid_get':
+          # drivers/periph_common/cpuid.c:34:5: error: 'memcpy' offset [0, 7] is out of the bounds [0, 0] [-Werror=array-bounds]
+          #   34 |     memcpy(id, (void *)CPUID_ADDR, CPUID_LEN);
+          #      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# workaround for this warning:
-# drivers/periph_common/cpuid.c: In function 'cpuid_get':
-# drivers/periph_common/cpuid.c:34:5: error: 'memcpy' offset [0, 7] is out of the bounds [0, 0] [-Werror=array-bounds]
-#   34 |     memcpy(id, (void *)CPUID_ADDR, CPUID_LEN);
-#      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          - -Wno-array-bounds
 
-                  - -Wno-array-bounds
+          # workaround for this warning:
+          # drivers/periph_common/cpuid.c: In function 'cpuid_get':
+          # drivers/periph_common/cpuid.c:34:5: error: 'memcpy' reading 8 bytes from a region of size 0 [-Werror=stringop-overread]
+          #   34 |     memcpy(id, (void *)CPUID_ADDR, CPUID_LEN);
+          #      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          - -Wno-stringop-overread
 
-# workaround for this warning:
-# drivers/periph_common/cpuid.c: In function 'cpuid_get':
-# drivers/periph_common/cpuid.c:34:5: error: 'memcpy' reading 8 bytes from a region of size 0 [-Werror=stringop-overread]
-#   34 |     memcpy(id, (void *)CPUID_ADDR, CPUID_LEN);
-#      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                  - -Wno-stringop-overread
+    depends:
+      - periph_common_init
+      - periph_rtc:
+          - periph_rtc_common
+    uses:
+      - board
 
-      depends:
-          - periph_common_init
-          - periph_rtc:
-              - periph_rtc_common
-      uses:
-          - board
+  - name: periph_common_init
+    sources:
+      - init.c
+    depends:
+      - periph_common
+    uses:
+      - periph_hwrng
+      - periph_i2c
+      - periph_rtc
+      - periph_rtt
+      - periph_spi
+      - periph_usbdev
+      - periph_wdt
 
-    - name: periph_common_init
-      sources:
-          - init.c
-      depends:
-          - periph_common
-      uses:
-          - periph_hwrng
-          - periph_i2c
-          - periph_rtc
-          - periph_rtt
-          - periph_spi
-          - periph_usbdev
-          - periph_wdt
-
-    # periph_rtc_common is an extra module as it needs to be individually
-    # selectable by tests/unittests/tests-rtc
-    - name: periph_rtc_common
-      sources: [rtc.c]
+  # periph_rtc_common is an extra module as it needs to be individually
+  # selectable by tests/unittests/tests-rtc
+  - name: periph_rtc_common
+    sources:
+      - rtc.c
