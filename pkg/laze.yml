@@ -7,6 +7,7 @@ subdirs:
   - jsmn
   - libb2
   - libhydrogen
+  - tiny-asn1
 
   # http
   # #    - c25519
