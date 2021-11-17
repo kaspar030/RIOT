@@ -37,12 +37,13 @@ module:
           - nrf5x
       sources:
           - cpu.c
-          - vectors.c
 
     - name: nrf52832
       context: nrf52832
       depends:
           - nrf52
+      sources:
+        - vectors/vectors_nrf52832xxaa.c
 
     - name: feature/ble_nimble
       context: nrf52
