@@ -1,5 +1,6 @@
 module:
-  - name: auto_init_gnrc_netif
+  - name: gnrc_netif_init_devs
+    sources: init.c
     depends:
         - auto_init
         - gnrc_netif
@@ -11,7 +12,6 @@ module:
         - at86rf2xx
         - gnrc_gomach
         - gnrc_lwmac
-
         - netdev_tap
         - enc28j60
         - encx24j600

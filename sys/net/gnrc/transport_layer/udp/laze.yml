@@ -2,6 +2,7 @@ module:
     - name: gnrc_udp
       depends:
           - ?auto_init_gnrc_udp
+          - gnrc_nettype_udp
           - inet_csum
           - udp
       uses:

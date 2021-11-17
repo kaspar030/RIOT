@@ -1,6 +1,7 @@
 module:
   - name: gnrc_icmpv6
     depends:
+        - gnrc_nettype_icmpv6
         - inet_csum
         - icmpv6
     uses:
