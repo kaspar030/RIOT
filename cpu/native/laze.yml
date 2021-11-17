@@ -30,6 +30,8 @@ module:
           - core
           - periph_uart
           - stdio_native
+      selects:
+          - core_idle_thread
       uses:
           - can_linux
           - mtd_native
