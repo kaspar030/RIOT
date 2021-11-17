@@ -1,5 +1,7 @@
 module:
-  - name: auto_init_saul
+  - name: saul_init_devs
+    sources:
+        - init.c
     depends:
         - ?auto_init
         - ?adcxx1c_params
