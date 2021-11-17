@@ -19,7 +19,8 @@ module:
           ${RELIC_CONFIG_FLAGS}
           -S ${srcdir} -B ${bindir} -G Ninja
         - ninja -C ${bindir}
-      out: lib/librelic_s.a
+      out:
+        - ${bindir}/librelic_s.a
       build_before_dependees: true
     env:
       local:
