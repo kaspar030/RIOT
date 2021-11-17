@@ -1,64 +1,65 @@
 module:
-    - name: core
-      sources:
-        - assert.c
-        - atomic_c11.c
-        - atomic_sync.c
-        - bitarithm.c
-        - clist.c
-        - cond.c
-        - lifo.c
-        - mutex.c
-        - priority_queue.c
-        - ringbuffer.c
-        - rmutex.c
-        - sched.c
-        - thread.c
-      depends:
-          - ?core_msg
-          - ?periph_pm
-      selects:
-          - board
-          - ?core_init
-          - ?core_panic
-      uses:
-          - core_msg
-          - core_mbox
-          - core_thread_flags
-          - mpu_stack_guard
-          - sched_cb
+  - name: core
+    sources:
+      - assert.c
+      - atomic_c11.c
+      - atomic_sync.c
+      - bitarithm.c
+      - clist.c
+      - cond.c
+      - mutex.c
+      - priority_queue.c
+      - ringbuffer.c
+      - rmutex.c
+      - sched.c
+      - thread.c
+    depends:
+      - board
+      - ?core_msg
+      - ?periph_pm
+    selects:
+      - ?core_init
+      - ?core_panic
+    uses:
+      - core_idle_thread
+      - core_msg
+      - core_mbox
+      - core_thread_flags
+      - mpu_stack_guard
+      - sched_cb
 
-    - name: core_init
-      sources:
-          - init.c
-      depends:
-          - ?auto_init
-      uses:
-          - core
+  - name: core_idle_thread
+  - name: core_init
+    sources:
+      - init.c
+    depends:
+      - ?auto_init
+    uses:
+      - core
 
-    - name: core_msg
-      sources:
-          - msg.c
-      uses:
-          - core
+  - name: core_msg
+    sources:
+      - msg.c
+    uses:
+      - core
 
-    - name: core_mbox
-      sources:
-          - mbox.c
-      uses:
-          - core
+  - name: core_mbox
+    sources:
+      - mbox.c
+    uses:
+      - core
 
-    - name: core_panic
-      sources:
-        - panic.c
-      uses:
-          - core
-          - ps
+  - name: core_panic
+    sources:
+      - panic.c
+    uses:
+      - core
+      - ps
 
-    - name: core_thread_flags
-      sources:
-          - thread_flags.c
-      uses:
-          - core
+  - name: core_thread_flags
+    sources:
+      - thread_flags.c
+    uses:
+      - core
 
-    - name: sched_cb
+  - name: sched_cb
