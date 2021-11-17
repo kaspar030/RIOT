@@ -6,6 +6,8 @@ module:
         - md5.c
         - sha1.c
         - sha3.c
+        - sha224.c
         - sha256.c
+        - sha2xx_common.c
       depends:
           - crypto
