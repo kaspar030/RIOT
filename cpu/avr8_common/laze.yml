@@ -1,2 +1,41 @@
-subdir:
-    - avr_libc_extra
+defaults:
+  module:
+    context: avr8_common
+
+context:
+  - name: avr8_common
+    parent: riot
+    select:
+      - arch_8bit
+      - arch_avr8
+      - avr8_common
+      - avr_libc_extra
+      - core_idle_thread
+    disable:
+      # causes internal compiler error on gcc 11.2.0
+      - lto
+    env:
+      PREFIX: avr-
+      LINKFLAGS:
+        - -Wl,--defsym=__TEXT_REGION_LENGTH__=${ROM_LEN}-${RAM_LEN}
+        - -Wl,--defsym=__DATA_REGION_LENGTH__=${RAM_LEN}
+        - -e reset_handler
+      includes:
+        - ${relpath}/include
+
+module:
+  - name: avr8_common
+    depends:
+      - board
+    sources:
+      - avr8_cpu.c
+      - startup.c
+      - thread_arch.c
+
+  # features
+  - name: arch_8bit
+  - name: arch_avr8
+    #- name: cpp
+
+subdirs:
+  - avr_libc_extra

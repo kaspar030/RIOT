@@ -1,11 +1,9 @@
 subdirs:
-    - avr8_common
-    - atmega_common
     - atmega2560
     - cortexm_common
     - native
     - atmega_common
-    - atmega2560
+    - avr8_common
     - cortexm_common
     - nrf5x_common
     - nrf52

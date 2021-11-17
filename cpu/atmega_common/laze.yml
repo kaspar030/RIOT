@@ -1,38 +1,22 @@
 context:
   - name: atmega_common
-    parent: riot
-    disable:
-      # causes internal compiler error on gcc 11.2.0
-      - lto
+    parent: avr8_common
     env:
-      PREFIX: avr-
-      LINKFLAGS:
-        - -Wl,--defsym=__TEXT_REGION_LENGTH__=${ROM_LEN}-${RAM_LEN}
-        - -Wl,--defsym=__DATA_REGION_LENGTH__=${RAM_LEN}
-        - -e reset_handler
+      includes:
+        - ${relpath}/include
+      libs:
+        - -lm
 
 defaults:
   module:
-    context:
-      atmega_common
+    context: atmega_common
 
 module:
   - name: atmega_common
     depends:
-      - avr_libc_extra
       - core
     sources:
-      - cpu.c
-      - irq_arch.c
-      - startup.c
-      - thread_arch.c
-    env:
-      export:
-        includes:
-        - ${relpath}/include
-      global:
-        libs:
-          - -lm
+      - atmega_cpu.c
 
   - name: feature/periph_cpuid
   - name: feature/periph_eeprom
