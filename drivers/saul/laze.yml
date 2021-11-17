@@ -26,5 +26,8 @@ module:
       depends:
           - saul
           - saul_reg
-          - ?auto_init_saul
+          - ?saul_init_devs
           - ?saul_board
+
+subdir:
+    - init_devs
