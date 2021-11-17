@@ -8,9 +8,8 @@ context:
               - -mfloat-abi=soft
           CFLAGS_DEFINES:
               - -DRIOT_MCU=\"samd21\"
-              - -DCPU_SAMD21
-              - -DCPU_FAM_SAMD21
-              - -DCPU_ARCH_CORTEX_M0PLUS
+              - -DCPU_CORE_CORTEX_M0PLUS
+              - -DCPU_COMMON_SAMD21
           includes:
               - ${relpath}/include
           LINKFLAGS:
@@ -26,9 +25,9 @@ context:
       env:
           CFLAGS_DEFINES:
               - -DCPU_SAMR21
-              - -DCPU_SAMD21A
-              - -D__SAMD21G18A__
-              - -DCPU_MODEL_SAMD21G18A
+              - -D__SAMR21G18A__
+              - -DCPU_MODEL_SAMR21G18A
+              - -DCPU_FAM_SAMR21
           ROM_LEN: "0x40000"
           RAM_LEN: "0x8000"
 
@@ -57,10 +56,9 @@ module:
     context: samr21g18a
   - name: cpu/samd21
     context: samd21
-
     sources:
         - cpu.c
-        - vectors.c
+        - vectors/vectors_samd2x.c
 
     selects:
       - pm_layered
