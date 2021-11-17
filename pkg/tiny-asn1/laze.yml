@@ -1,0 +1,13 @@
+module:
+  - name: tiny-asn1
+    download:
+      git:
+        url: https://gitlab.com/mtausig/tiny-asn1.git
+        commit: 7005fcff4706e96b857f257ef94b8518211c9fbc
+
+    sources:
+      - src/tiny-asn1.c
+    env:
+      export:
+        includes:
+          - ${srcdir}/src
