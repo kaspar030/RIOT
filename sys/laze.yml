@@ -65,3 +65,4 @@ subdirs:
     - vfs
     - xtimer
     - zptr
+    - ztimer
