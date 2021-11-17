@@ -1,0 +1,38 @@
+module:
+  - name: test_utils_result_output
+    sources:
+      - result_output.c
+    uses:
+      - test_utils_result_output_check
+      - test_utils_result_output_json
+      - test_utils_result_output_txt
+
+  - name: test_utils_result_output_check
+    sources:
+      - check/result_output_check.c
+    depends:
+      - test_utils_result_output
+    env:
+      export:
+        includes:
+          - ${relpath}/check
+
+  - name: test_utils_result_output_json
+    sources:
+      - json/result_output_json.c
+    depends:
+      - test_utils_result_output
+    env:
+      export:
+        includes:
+          - ${relpath}/json
+
+  - name: test_utils_result_output_txt
+    sources:
+      - txt/result_output_txt.c
+    depends:
+      - test_utils_result_output
+    env:
+      export:
+        includes:
+          - ${relpath}/txt

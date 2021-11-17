@@ -1,2 +1,3 @@
 subdirs:
   - interactive_sync
+  - result_output
