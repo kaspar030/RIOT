@@ -14,8 +14,9 @@ and the resulting builds have not been tested much.
 ## How to try
 
 ### Install laze and prerequisites
+
 1. install ninja using the package manager of your choice
-2. get a rust toolchain either through package manager or https://rustup.rs/
+2. get a rust toolchain either through package manager or [rustup](https://rustup.rs/)
 3. install laze using cargo: `cargo install laze`
 
 ### Usage
@@ -25,17 +26,17 @@ application folder.
 
 E.g.,
 
-    $ cd examples/hello-world
-    $ laze build
+    cd examples/hello-world
+    laze build
 
 You can specify a single board using `-b <board-name>`:
 
-    $ laze build -b samr21-xpro
+    laze build -b samr21-xpro
 
 Most boards have a "flash" task which invokes a default flasher:
 
-    $ laze task -b samr21-xpro flash
+    laze task -b samr21-xpro flash
 
 Tasks build their dependencies, so this also works:
 
-    $ laze task -b native run
+    laze task -b native run
