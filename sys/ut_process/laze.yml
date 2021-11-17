@@ -1,0 +1,6 @@
+module:
+  - name: ut_process
+    depends:
+      - fmt
+    sources:
+      - ut_process.c
