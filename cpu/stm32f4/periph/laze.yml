@@ -1,5 +1,0 @@
-module:
-  - name: periph_adc
-    context: stm32f4
-    sources:
-        - adc.c

@@ -1,0 +1,9 @@
+module:
+  - name: stm32_clk
+    context: stm32
+    depends:
+      - stm32
+    sources:
+      - stmclk_common.c
+      - stm32f4:
+        - stmclk_f2f4f7.c

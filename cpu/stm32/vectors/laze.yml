@@ -1,0 +1,11 @@
+module:
+  - name: stm32_vectors
+    context: stm32
+    depends:
+      - stm32_cmsis
+    build:
+      cmd:
+        - "echo STM32 srcdir: ${stm32_cmsis_srcdir}"
+        - touch ${stm32_cmsis_srcdir}/.done
+      out:
+        - ${stm32_cmsis_srcdir}/.done
