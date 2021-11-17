@@ -10,7 +10,7 @@ module:
       context: nucleo-f401re
       depends:
           - nucleo64
-          - cpu/stm32f4
+          - stm32f4
 
     - name: feature/periph_qdec
       context: nucleo-f401re

@@ -20,8 +20,6 @@ module:
       depends: [ boards_common_arduino-atmega ]
     - name: feature/periph_spi
       depends: [ boards_common_arduino-atmega ]
-    - name: feature/periph_spi
-      depends: [ boards_common_arduino-atmega ]
     - name: feature/periph_timer
       depends: [ boards_common_arduino-atmega ]
     - name: feature/periph_uart

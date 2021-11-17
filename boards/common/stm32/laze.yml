@@ -1,5 +1,5 @@
 module:
-    - name: stm32
+    - name: boards/common/stm32
       context: stm32
       env:
         global:

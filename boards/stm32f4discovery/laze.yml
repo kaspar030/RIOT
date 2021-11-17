@@ -11,8 +11,8 @@ module:
       sources:
           - board.c
       depends:
-          - cpu/stm32f4
-          - stm32
+          - stm32f4
+          - boards/common/stm32
 
     - name: feature/periph_dac
       context: stm32f4discovery
