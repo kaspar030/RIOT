@@ -1,6 +1,3 @@
-module:
-  - name: netif
-
 subdirs:
         - application_layer
         - ble
@@ -11,6 +8,5 @@ subdirs:
         - netdev_test
         - netif
         - network_layer
-        - routing
         - sock
         - transport_layer
