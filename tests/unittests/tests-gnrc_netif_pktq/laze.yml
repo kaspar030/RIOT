@@ -1,0 +1,17 @@
+app:
+    - depends:
+        - tests-gnrc_netif_pktq
+
+module:
+    - name: tests-gnrc_netif_pktq
+      sources:
+          - tests-gnrc_netif_pktq.c
+      depends:
+          - gnrc_netif_pktq
+          - unittests-base
+      env:
+        global:
+          testsuites:
+              - gnrc_netif_pktq
+          CFLAGS:
+            - -DCONFIG_GNRC_NETIF_PKTQ_POOL_SIZE=4

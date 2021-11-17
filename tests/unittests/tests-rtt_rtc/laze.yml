@@ -1,0 +1,27 @@
+app:
+  - depends:
+      - tests-rtt_rtc
+
+module:
+  - name: tests-rtt_rtc
+    sources:
+      - mock_rtt.c
+      - tests-rtt_rtc.c
+    depends:
+      - rtt_rtc
+      - unittests-base
+    # TODO: implement "conflicts"/"disables" on regular modules
+    #disables:
+    #    - periph_rtt
+    env:
+      global:
+        testsuites:
+          - rtt_rtc
+        CFLAGS:
+          - -DMOCK_RTT_FREQUENCY=32
+          - -DMOCK_RTT_MAX_VALUE=0xFFFF
+            #disable:
+            #  - arch_esp32
+    # TODO: blacklist mulle
+    # mulle always enables periph_rtt.
+    # This clashes with mock_rtt.

@@ -1,0 +1,15 @@
+app:
+    - depends:
+        - tests-ut_process
+
+module:
+    - name: tests-ut_process
+      sources:
+          - tests-ut_process.c
+      depends:
+          - ut_process
+          - unittests-base
+      env:
+        global:
+          testsuites:
+              - ut_process

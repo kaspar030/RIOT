@@ -3,37 +3,40 @@ app:
       - tests-gnrc_ipv6_nib
 
     blocklist:
-        # insufficient memory
-        - atmega_common
+      # insufficient memory
+      - atmega_common
+
 module:
-    - name: tests-gnrc_ipv6_nib
-      sources:
-          - tests-gnrc_ipv6_nib-abr.c
-          - tests-gnrc_ipv6_nib-ft.c
-          - tests-gnrc_ipv6_nib-internal.c
-          - tests-gnrc_ipv6_nib-nc.c
-          - tests-gnrc_ipv6_nib-pl.c
-          - tests-gnrc_ipv6_nib.c
-      depends:
-          - gnrc_ipv6
+  - name: tests-gnrc_ipv6_nib
+    sources:
+      - tests-gnrc_ipv6_nib-abr.c
+      - tests-gnrc_ipv6_nib-ft.c
+      - tests-gnrc_ipv6_nib-internal.c
+      - tests-gnrc_ipv6_nib-nc.c
+      - tests-gnrc_ipv6_nib-pl.c
+      - tests-gnrc_ipv6_nib.c
+    depends:
+      - core
+      - gnrc_ipv6
+      - gnrc_ipv6_nib
+
+      # required for GNRC_IPV6_NIB_CONF_MULTIHOP_P6C
+      - gnrc_sixlowpan_nd
+
+      - test_suites_define
+      - unittests-base
+    env:
+      global:
+        testsuites:
           - gnrc_ipv6_nib
-
-          # required for GNRC_IPV6_NIB_CONF_MULTIHOP_P6C
-          - gnrc_sixlowpan_nd
-
-          - test_suites_define
-          - unittests-base
-      env:
-        global:
-          testsuites:
-              - gnrc_ipv6_nib
-          CFLAGS:
-            - -DGNRC_IPV6_NIB_CONF_ROUTER=1
-            - -DGNRC_IPV6_NIB_NUMOF=16
-            - -DGNRC_IPV6_NIB_OFFL_NUMOF=25
-            - -DGNRC_IPV6_NIB_DEFAULT_ROUTER_NUMOF=4
-            - -DGNRC_IPV6_NIB_ABR_NUMOF=4
-            - -DGNRC_IPV6_NIB_CONF_6LBR=1
-            - -DGNRC_IPV6_NIB_CONF_MULTIHOP_P6C=1
-            - -DGNRC_IPV6_NIB_CONF_DC=1
-            - -I${root}/sys/net/gnrc/network_layer/ipv6/nib
+        CFLAGS:
+          - -DCONFIG_GNRC_IPV6_NIB_ROUTER=1
+          - -DCONFIG_GNRC_IPV6_NIB_NUMOF=16
+          - -DCONFIG_GNRC_IPV6_NIB_OFFL_NUMOF=25
+          - -DCONFIG_GNRC_IPV6_NIB_DEFAULT_ROUTER_NUMOF=4
+          - -DCONFIG_GNRC_IPV6_NIB_ABR_NUMOF=4
+          - -DCONFIG_GNRC_IPV6_NIB_6LBR=1
+          - -DCONFIG_GNRC_IPV6_NIB_MULTIHOP_P6C=1
+          - -DCONFIG_GNRC_IPV6_NIB_DC=1
+        includes:
+          - ${root}/sys/net/gnrc/network_layer/ipv6/nib
