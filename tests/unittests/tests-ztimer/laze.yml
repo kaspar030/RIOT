@@ -1,0 +1,19 @@
+app:
+    - depends:
+        - tests-ztimer
+
+module:
+    - name: tests-ztimer
+      sources:
+          - tests-ztimer.c
+          - tests-ztimer-mock.c
+          - tests-ztimer-convert-muldiv64.c
+      depends:
+          - ztimer_core
+          - ztimer_mock
+          - ztimer_convert_muldiv64
+          - unittests-base
+      env:
+        global:
+          testsuites:
+              - ztimer

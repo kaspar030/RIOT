@@ -1,0 +1,19 @@
+app:
+    - depends:
+        - tests-uri_parser
+
+      blocklist:
+      # insufficient memory
+        - atmega_common
+
+module:
+    - name: tests-uri_parser
+      sources:
+          - tests-uri_parser.c
+      depends:
+          - uri_parser
+          - unittests-base
+      env:
+        global:
+          testsuites:
+              - uri_parser

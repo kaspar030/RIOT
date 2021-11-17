@@ -12,17 +12,16 @@ module:
         - tests-hashes-cmac.c
         - tests-hashes-md5.c
         - tests-hashes-sha1.c
+        - tests-hashes-sha224.c
         - tests-hashes-sha256.c
         - tests-hashes-sha256-chain.c
         - tests-hashes-sha256-hmac.c
         - tests-hashes-sha3.c
       depends:
-          - crypto
+          - crypto_aes_256
           - hashes
           - unittests-base
       env:
         global:
           testsuites:
               - hashes
-          CFLAGS:
-              - -DCRYPTO_AES

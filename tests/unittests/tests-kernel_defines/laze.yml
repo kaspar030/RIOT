@@ -1,0 +1,15 @@
+app:
+    - depends:
+        - tests-kernel_defines
+
+module:
+    - name: tests-kernel_defines
+      sources:
+          - tests-kernel_defines.c
+      depends:
+          - riot_version
+          - unittests-base
+      env:
+        global:
+          testsuites:
+              - kernel_defines

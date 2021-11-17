@@ -1,15 +1,15 @@
 app:
     - depends:
-        - tests-base64
+        - tests-turo
 
 module:
-    - name: tests-base64
+    - name: tests-turo
       sources:
-          - tests-base64.c
+          - tests-turo.c
       depends:
-          - base64url
+          - test_utils_result_output_check
           - unittests-base
       env:
         global:
           testsuites:
-              - base64
+              - turo

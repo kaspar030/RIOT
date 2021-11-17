@@ -5,16 +5,18 @@ app:
 module:
     - name: tests-core
       sources:
+        - tests-core.c
         - tests-core-atomic.c
         - tests-core-bitarithm.c
         - tests-core-byteorder.c
         - tests-core-cib.c
         - tests-core-clist.c
-        - tests-core-lifo.c
         - tests-core-list.c
         - tests-core-priority-queue.c
         - tests-core-ringbuffer.c
-        - tests-core.c
+        - tests-core-xfa.c
+        - tests-core-xfa-data1.c
+        - tests-core-xfa-data2.c
       depends:
           - unittests-base
       env:
