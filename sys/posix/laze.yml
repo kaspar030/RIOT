@@ -9,4 +9,4 @@ subdirs:
     - pthread
     - semaphore
     - sockets
-    - time
+    - sleep
