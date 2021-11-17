@@ -81,6 +81,7 @@ subdirs:
     - pulse_counter
     - rgbled
     - rn2xx3
+    - rtt_rtc
     - saul
     - sdcard_spi
     - sds011
