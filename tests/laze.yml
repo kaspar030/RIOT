@@ -208,7 +208,7 @@ subdirs:
   #- pkg_ucglib
   #- pkg_umorse
   - posix_semaphore
-  - posix_time
+  - posix_sleep
   - ps_schedstatistics
   - pthread
   - pthread_barrier
