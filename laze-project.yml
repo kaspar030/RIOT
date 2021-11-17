@@ -131,6 +131,12 @@ module:
   - name: riot
     context: riot
 
+  - name: riot_version
+    env:
+      export:
+        CFLAGS:
+          - -DRIOT_VERSION_CODE=RIOT_VERSION_NUM\(2022,01,0,0\)
+
   - name: riot_info
     context: riot
     env:
