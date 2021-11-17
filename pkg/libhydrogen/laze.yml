@@ -4,9 +4,7 @@ module:
     download:
       git:
         url: https://github.com/jedisct1/libhydrogen
-        commit: 39eb529905ce118b674a7723c0d2b48074b9986d
-      patches:
-        - patches/0001-Add-support-for-RIOT-OS.patch
+        commit: a4de6e098b5bbbd5389eb8058130f782b53826c3
     depends:
       - random
       - feature/arch_32bit
