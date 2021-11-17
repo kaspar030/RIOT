@@ -26,6 +26,7 @@ module:
       - gnrc_ipv6
       - gnrc_ipv6_ext
       - gnrc_lwmac
+      - gnrc_nettypes
       - gnrc_sixloenc
       - gnrc_sixlowpan
       - gnrc_tcp
@@ -57,15 +58,6 @@ module:
     depends:
       - gnrc_ipv6
       - gnrc_ipv6_nib_router
-
-  - name: gnrc_ipv6_hdr
-    depends:
-      - gnrc_pktbuf
-      - ipv6_hdr
-    uses:
-      - ipv6_hdr
-      - gnrc_pktbuf
-      - gnrc_ipv6
 
   - name: gnrc_ipv6_router_default
     depends:
@@ -103,6 +95,36 @@ module:
   - name: gnrc_neterr
   - name: gnrc_pktbuf_cmd
   - name: pktqueue
+
+  # this module "uses" all nettypes.
+  - name: gnrc_nettypes
+    uses:
+      - gnrc_nettype_custom
+      - gnrc_nettype_gomach
+      - gnrc_nettype_icmpv6
+      - gnrc_nettype_ipv6
+      - gnrc_nettype_ipv6_ext
+      - gnrc_nettype_lowawan
+      - gnrc_nettype_lwmac
+      - gnrc_nettype_ndn
+      - gnrc_nettype_sixlowpan
+      - gnrc_nettype_tcp
+      - gnrc_nettype_udp
+
+  # nettype modules
+  - name: gnrc_nettype_ccn
+  - name: gnrc_nettype_custom
+  - name: gnrc_nettype_gomach
+  - name: gnrc_nettype_icmpv6
+  - name: gnrc_nettype_ipv6
+  - name: gnrc_nettype_ipv6_ext
+  - name: gnrc_nettype_lowawan
+  - name: gnrc_nettype_lwmac
+  - name: gnrc_nettype_ndn
+  - name: gnrc_nettype_sixlowpan
+  - name: gnrc_nettype_tcp
+  - name: gnrc_nettype_udp
+
 
 subdirs:
   - application_layer

@@ -4,6 +4,8 @@ module:
           - gnrc_ipv6.c
       depends:
           - ?auto_init_gnrc_ipv6
+          - gnrc_netif_ipv6
+          - gnrc_nettype_ipv6
           - gnrc_ipv6_hdr
           - gnrc_ipv6_nib
           - ipv6_addr

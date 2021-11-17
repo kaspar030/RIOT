@@ -1,75 +1,107 @@
 module:
-    - name: gnrc_netif
-      depends:
-          - fmt
-          - netif
-          - l2util
-          - netdev_ieee802154:
-              - gnrc_netif_ieee802154
-          - netdev_eth:
-              - gnrc_netif_ethernet
-
-      uses:
-          - cc110x
-          - esp_now
-          - gnrc_gomach
-          - gnrc_ipv6
-          - gnrc_ipv6_nib
-          - gnrc_ipv6_router
-          - gnrc_lorawan
-          - gnrc_lwmac
-          - gnrc_mac
-          - gnrc_netif_dedup
-          - gnrc_netif_ethernet
+  - name: gnrc_netif
+    depends:
+      - fmt
+      - netif
+      - l2util
+      - netdev_ieee802154:
           - gnrc_netif_ieee802154
-          - gnrc_rpl
-          - gnrc_sixloenc
-          - gnrc_sixlowpan
-          - gnrc_sixlowpan_iphc
-          - gnrc_sixlowpan_nd
-          - l2filter
-          - netdev_eth
-          - netdev_ieee802154
-          - netopt
-          - netstats
-          - netstats_ipv6
-          - netstats_l2
-          - nordic_softdevice_ble
-          - nrfmin
-          - od
-          - xbee
+      - netdev_eth:
+          - gnrc_netif_ethernet
 
-      sources:
-          - _netif.c
-          - gnrc_netif.c
-          - gnrc_netif_device_type.c
-          - gnrc_netif_raw.c
+    uses:
+      - cc110x
+      - esp_now
+      - gnrc_gomach
+      - gnrc_ipv6
+      - gnrc_ipv6_nib
+      - gnrc_ipv6_router
+      - gnrc_lorawan
+      - gnrc_lwmac
+      - gnrc_mac
+      - gnrc_netif_dedup
+      - gnrc_netif_ipv6
+      - gnrc_netif_ethernet
+      - gnrc_netif_ieee802154
+      - gnrc_netif_mac
+      - gnrc_rpl
+      - gnrc_sixloenc
+      - gnrc_sixlowpan
+      - gnrc_sixlowpan_iphc
+      - gnrc_sixlowpan_nd
+      - l2filter
+      - netdev_eth
+      - netdev_ieee802154
+      - netopt
+      - netstats
+      - netstats_ipv6
+      - netstats_l2
+      - nordic_softdevice_ble
+      - nrfmin
+      - od
+      - xbee
 
-    - name: gnrc_netif_ethernet
-      depends:
-          - gnrc_netif
-      uses:
-          - gnrc_ipv6
-          - gnrc_sixloenc
-          - l2filter
-          - netstats_l2
-          - od
-      sources:
-            - ethernet/gnrc_netif_ethernet.c
+    sources:
+      - _netif.c
+      - gnrc_netif.c
+      - gnrc_netif_device_type.c
+      - gnrc_netif_raw.c
 
-    - name: gnrc_netif_ieee802154
-      sources:
-            - ieee802154/gnrc_netif_ieee802154.c
-      depends:
-          - gnrc_netif
-          - ieee802154
-      uses:
-          - gnrc_ipv6
-          - gnrc_mac
-          - gnrc_netif_dedup
-          - l2filter
-          - netstats_l2
-          - od
+  - name: gnrc_netif_ethernet
+    depends:
+      - gnrc_netif
+    uses:
+      - gnrc_ipv6
+      - gnrc_sixloenc
+      - l2filter
+      - netstats_l2
+      - od
+    sources:
+      - ethernet/gnrc_netif_ethernet.c
+
+  - name: gnrc_netif_ieee802154
+    sources:
+      - ieee802154/gnrc_netif_ieee802154.c
+    depends:
+      - gnrc_netif
+      - ieee802154
+    uses:
+      - gnrc_ipv6
+      - gnrc_mac
+      - gnrc_netif_dedup
+      - l2filter
+      - netstats_l2
+      - od
+      # uses all netif pseudomodules
+      - gnrc_netif_6lo
+      - gnrc_netif_bus
+      - gnrc_netif_dedup
+      - gnrc_netif_events
+      - gnrc_netif_ipv6
+      - gnrc_netif_lorawan
+      - gnrc_netif_mac
+      - gnrc_netif_pktq
+      - gnrc_netif_single
 
 subdirs:
-    - hdr
+  - hdr
+
+---
+# netif modules
+defaults:
+  module:
+    depends:
+      - gnrc_netif
+
+module:
+  - name: gnrc_netif_6lo
+  - name: gnrc_netif_bus
+  - name: gnrc_netif_dedup
+  - name: gnrc_netif_events
+  - name: gnrc_netif_ipv6
+  - name: gnrc_netif_lorawan
+  - name: gnrc_netif_mac
+  - name: gnrc_netif_pktq
+    sources:
+      - pktq/gnrc_netif_pktq.c
+  - name: gnrc_netif_single

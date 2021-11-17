@@ -5,3 +5,7 @@ module:
         - od
     sources:
         - gnrc_pktbuf_static.c
+    env:
+      export:
+        includes:
+          - ${relpath}/include
