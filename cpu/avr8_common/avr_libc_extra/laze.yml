@@ -1,7 +1,7 @@
 module:
   - name: avr_libc_extra
     sources:
-      - atmega_stdio.c
+      - avr8_stdio.c
       - posix_unistd.c
     depends:
       - board
