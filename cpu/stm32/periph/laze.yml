@@ -5,7 +5,7 @@ defaults:
       - periph_common
 
 module:
-  - name: periph_flashüage
+  - name: periph_flashpage
     sources:
       - flashpage.c
     env:
@@ -51,6 +51,11 @@ module:
     sources:
       - uart.c
 
+  - name: periph_adc
+    context: stm32f4
+    sources:
+        - adc.c
+
   - name: periph_dac
     sources: [dac.c]
     depends: [ feature/periph_dac ]
@@ -60,9 +65,15 @@ module:
     sources: [i2c_2.c]
 
   - name: periph_gpio
-    sources: [gpio.c]
+    sources: [gpio_all.c]
     uses:
       - periph_gpio_irq
+
+  # - name: periph_gpio
+  #   context: stm32f1
+  #   sources: [gpio_f1.c]
+  #   uses:
+  #     - periph_gpio_irq
 
   - name: periph_gpio_irq
     depends:
