@@ -1,0 +1,14 @@
+module:
+    - name: rtt_rtc
+      sources:
+          - rtt_rtc.c
+      depends:
+        - periph_common
+      # TODO: implement "provides" in laze
+      # provides:
+      #   - periph_rtc
+      #   - periph_rtc_ms
+      #
+      # TODO: make this a hard dependency
+      uses:
+        - periph_rtt
