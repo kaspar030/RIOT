@@ -1,3 +1,10 @@
 module:
-    - sources:
+    - name: base64
+      sources:
         - base64.c
+      uses:
+        - base64url
+
+    - name: base64url
+      depends:
+        - base64
