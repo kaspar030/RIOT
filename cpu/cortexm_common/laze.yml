@@ -13,7 +13,6 @@ context:
             - -fno-delete-null-pointer-checks
         CFLAGS_DEFINES:
             - -DDONT_USE_CMSIS_INIT
-            - -DCOREIF_NG=1
         LINKFLAGS:
             - -L${relpath}/ldscripts
             - -static
@@ -38,11 +37,9 @@ module:
     - name: cortexm
       sources:
        - cortexm_init.c
-       - irq_arch.c
        - mpu.c
        - panic.c
        - thread_arch.c
-
       depends:
           - core
           - cortexm_common
