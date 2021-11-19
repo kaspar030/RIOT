@@ -11,4 +11,3 @@ module:
 
 subdirs:
     - can
-    - storage
