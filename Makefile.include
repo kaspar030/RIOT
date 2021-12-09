@@ -276,6 +276,7 @@ ifeq ($(QUIET),1)
   MAKEFLAGS += --no-print-directory
 else
   Q=
+  VERBOSE=-v
 endif
 
 # Set this to 1 to enable pretty-printing the assert location in addition
