@@ -61,4 +61,5 @@ endif
 
 .PHONY: buildtest-ci
 buildtest-ci:
-	@cd $(RIOTBASE) && APPS=$$(realpath --relative-to $(RIOTBASE) $(APPDIR)) dwqc -EAPPS -EBOARDS --progress --tries 1 "./.murdock build"
+	$(Q)APPS=$$(realpath --relative-to $(RIOTBASE) $(APPDIR)) \
+		dwqc -EAPPS -EBOARDS --progress --tries 1 $(VERBOSE) "./.murdock build"
