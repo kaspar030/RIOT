@@ -21,12 +21,18 @@
 
 #include <stdio.h>
 
+#pragma GCC diagnostic ignored "-Wreturn-type"
+__attribute__ ((noinline)) unsigned svc(void) {
+    __asm("svc 42");
+}
+
 int main(void)
 {
     puts("Hello World!");
 
     printf("You are running RIOT on a(n) %s board.\n", RIOT_BOARD);
     printf("This board features a(n) %s MCU.\n", RIOT_MCU);
+    printf("svc()=%u\n", svc());
 
     return 0;
 }

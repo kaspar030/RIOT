@@ -496,6 +496,9 @@ static void __attribute__((used)) _svc_dispatch(unsigned int *svc_args)
         case 1: /* SVC number used by cpu_switch_context_exit */
             SCB->ICSR = SCB_ICSR_PENDSVSET_Msk;
             break;
+        case 42:
+            svc_args[0] = 42;
+            break;
         default:
             DEBUG("svc: unhandled SVC #%u\n", svc_number);
             break;
