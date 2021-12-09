@@ -494,4 +494,8 @@ get_jobs() {
     get_compile_jobs
 }
 
+build() {
+    get_jobs | dwqc ${DWQ_JOBID:+--subjob} ${DWQ_ENV}
+}
+
 $*
