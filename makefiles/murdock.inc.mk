@@ -58,3 +58,7 @@ ifneq (,$(TEST_ON_CI_ENABLED))
 else
 	$(Q)rm -f $@
 endif
+
+.PHONY: buildtest-ci
+buildtest-ci:
+	@cd $(RIOTBASE) && APPS=$$(realpath --relative-to $(RIOTBASE) $(APPDIR)) dwqc --progress --tries 1 "./.murdock build"
