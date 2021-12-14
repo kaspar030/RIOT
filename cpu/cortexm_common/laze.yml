@@ -4,7 +4,7 @@ context:
     env:
         PREFIX: arm-none-eabi-
         CFLAGS_STD:
-            - -std=c99
+            - -std=c11
         CFLAGS_ARCH:
             - -mlittle-endian -mthumb
             - -mno-thumb-interwork
@@ -61,6 +61,8 @@ module:
     - name: feature/arch_32bit
 
     - name: mpu_stack_guard
+      depends:
+        - feature/cortexm_mpu
 
     - name: printf_float
       env:
@@ -88,6 +90,7 @@ module:
       env:
         export:
           CFLAGS:
+              - -DSLOT0_LEN=${SLOT0_LEN}
               - -DSLOT0_OFFSET=${SLOT0_OFFSET}
 
 subdirs:

@@ -2,24 +2,27 @@ context:
   - name: stm32
     parent: cortexm
     env:
-      CFLAGS:
-        - -I${relpath}/include
-        - -I${relpath}/include/clk
+      includes:
+        - ${relpath}/include
+        - ${relpath}/include/clk
       LINKFLAGS:
         - -L${relpath}/ldscripts
+      CFLAGS_DEFINES:
+        - -DCPU_LINE_${stm32_cpu_line}
+        - -D${stm32_cpu_line}
 
   - name: stm32f4
     parent: stm32
     env:
-      stm32_cpu_line: f4
-      CFLAGS:
+      stm32_cpu_fam: f4
+      CFLAGS_ARCH:
         - -mcpu=cortex-m4
         - -mfloat-abi=soft
+      CFLAGS_DEFINES:
         - -DRIOT_MCU=\"stm32f4\"
         - -DCPU_STM32F4
         - -DCPU_FAM_STM32F4
         - -DCPU_CORE_CORTEX_M4F
-        - -I${relpath}/include
       LINKFLAGS:
         - -Tstm32.ld
         - -Wl,--defsym=_rom_start_addr=0x08000000
@@ -34,10 +37,9 @@ context:
   - name: stm32f411re
     parent: stm32f4
     env:
-      CFLAGS:
+      stm32_cpu_line: STM32F411xE
+      CFLAGS_DEFINES:
         - -DCPU_MODEL_STM32F411RE
-        - -DCPU_LINE_STM32F411xE
-        - -DSTM32F411xE
       ROM_LEN: "512K"
       RAM_LEN: "128K"
       FLASHSIZE: "524288"
@@ -45,9 +47,9 @@ context:
   - name: stm32f401re
     parent: stm32f4
     env:
-      CFLAGS:
+      stm32_cpu_line: STM32F401xE
+      CFLAGS_DEFINES:
         - -DCPU_MODEL_STM32F401RE
-        - -DCPU_LINE_STM32F401xE
         - -DSTM32F401xE
       ROM_LEN: "512K"
       RAM_LEN: "96K"
@@ -56,10 +58,9 @@ context:
   - name: stm32f407vg
     parent: stm32f4
     env:
-      CFLAGS:
+      stm32_cpu_line: STM32F407xx
+      CFLAGS_DEFINES:
         - -DCPU_MODEL_STM32F407VG
-        - -DCPU_LINE_STM32F407xx
-        - -DSTM32F407xx
       ROM_LEN: "1024K"
       RAM_LEN: "192K"
       FLASHSIZE: "1048576"
@@ -86,24 +87,55 @@ module:
 
   - name: stm32_irqs
     context: stm32
+    sources:
+      - dist/irqs/gen_irqs.py
     depends:
       - stm32_cmsis
+    is_build_dep: true
     build:
       cmd:
         - ${relpath}/dist/irqs/gen_irqs.py
-            ${stm32_cpu_line}
             ${stm32_cmsis_srcdir}/Include
-            ${stm32_irqs_dir}/irqs/${stm32_cpu_line}/irqs.h
+            ${stm32_cpu_fam}
+            ${out}
       out:
-        - ${stm32_irqs_dir}/irqs/${stm32_cpu_line}/irqs.h
+        - ${stm32_irqs_dir}/irqs/${stm32_cpu_fam}/irqs.h
     env:
       export:
         stm32_irqs_dir: ${build-dir}/generated/stm32
         includes:
           - ${stm32_irqs_dir}
 
+  - name: stm32_vectors_gen
+    context: stm32
+    sources:
+      - dist/irqs/gen_vectors.py
+    depends:
+      - stm32_cmsis
+      - stm32_irqs
+    is_build_dep: true
+    build:
+      cmd:
+        - ${relpath}/dist/irqs/gen_vectors.py
+            ${stm32_cmsis_srcdir}/Include
+            ${stm32_cpu_line}
+            ${out}
+      out:
+        - ${stm32_vectors_dir}/${stm32_cpu_line}.c
+    env:
+      export:
+        stm32_vectors_dir: ${build-dir}/generated/stm32/vectors
+
+  - name: stm32_vectors
+    context: stm32
+    depends:
+      - stm32_vectors_gen
+    srcdir: ${stm32_vectors_dir}
+    sources:
+      - ${stm32_cpu_line}.c
+
 subdirs:
   - periph
   - include/vendor
   - stmclk
-  - vectors
+    #- vectors

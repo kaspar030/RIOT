@@ -37,6 +37,7 @@ module:
           - nrf5x
       sources:
           - cpu.c
+          - spi_twi_irq.c
 
     - name: nrf52832
       context: nrf52832
@@ -46,6 +47,9 @@ module:
         - vectors/vectors_nrf52832xxaa.c
 
     - name: feature/ble_nimble
+      context: nrf52
+
+    - name: feature/cortexm_mpu
       context: nrf52
 
 subdirs:

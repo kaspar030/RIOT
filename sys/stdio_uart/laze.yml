@@ -22,3 +22,6 @@ module:
           - stdio_uart
 
     - name: stdin
+      depends:
+        - stdio_uart:
+          - stdio_uart_rx

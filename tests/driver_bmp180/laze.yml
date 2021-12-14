@@ -2,7 +2,7 @@ app:
   - depends:
         - bmp180
         - printf_float
-        - xtimer
+        - ztimer_msec
     env:
       local:
         CFLAGS:

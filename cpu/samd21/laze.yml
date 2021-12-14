@@ -15,10 +15,9 @@ context:
           LINKFLAGS:
               - -Wl,--defsym=_rom_start_addr=0x00000000
               - -Wl,--defsym=_ram_start_addr=0x20000000
-          EDBG_TARGET_TYPE:
-              - -t atmel_cm0p
           ARM_MATH:
               - -DARM_MATH_CM0PLUS
+          EDBG_TARGET_TYPE: -t samd21
 
     - name: samr21g18a
       parent: samd21
@@ -30,11 +29,16 @@ context:
               - -DCPU_FAM_SAMR21
           ROM_LEN: "0x40000"
           RAM_LEN: "0x8000"
+          EDBG_TARGET_TYPE: -t samr21
+          SLOT0_LEN: "0x1f800"
+          SLOT0_OFFSET: "0x1000"
+          SLOT1_LEN: "0x1f800"
+          SLOT1_OFFSET: "133120"
 
     - name: samd21g18a
       parent: samd21
       env:
-          CFLAGS:
+          CFLAGS_DEFINES:
               - -DCPU_SAMD21A
               - -D__SAMD21G18A__
               - -DCPU_MODEL_SAMD21G18A
@@ -44,7 +48,7 @@ context:
     - name: samd21j18a
       parent: samd21
       env:
-          CFLAGS:
+          CFLAGS_DEFINES:
               - -DCPU_SAMD21A
               - -D__SAMD21J18A__
               - -DCPU_MODEL_SAMD21J18A

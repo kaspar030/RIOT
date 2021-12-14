@@ -23,8 +23,11 @@ module:
   - name: periph_gpio
     depends:
       - feature/periph_gpio
+    uses:
+      - periph_gpio_irq
     sources:
       - gpio.c
+  - name: periph_gpio_irq
   - name: periph_i2c
     depends:
       - feature/periph_i2c

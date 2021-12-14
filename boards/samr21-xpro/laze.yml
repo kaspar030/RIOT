@@ -28,6 +28,11 @@ module:
     depends:
       - cpu/samd21
       - periph_gpio
+    env:
+      export:
+        includes:
+          - ${relpath}/include
+
 
   - name: saul_board
     depends:

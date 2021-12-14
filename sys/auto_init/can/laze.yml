@@ -8,6 +8,19 @@ module:
           - can_pm
           - can_trx
           - esp_can
+          - ?auto_init_periph_can
+          - ?auto_init_mcp2515
       sources:
-          - auto_init_can.c
-          - auto_init_can_native.c
+          - init.c
+
+    - name: auto_init_periph_can
+      depends:
+          - auto_init_can
+      sources:
+          - auto_init_periph_can.c
+
+    - name: auto_init_mcp2515
+      depends:
+          - auto_init_can
+      sources:
+          - auto_init_mcp2515.c

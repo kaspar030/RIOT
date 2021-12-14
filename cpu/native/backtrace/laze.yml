@@ -1,5 +1,5 @@
 module:
-  - name: trace
+  - name: backtrace
     context: cpu/native
     sources:
-      - trace.c
+      - backtrace.c

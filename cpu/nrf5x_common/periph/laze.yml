@@ -3,6 +3,9 @@ defaults:
     context: nrf5x
 
 module:
+  - name: periph_i2c
+    sources:
+      - i2c_nrf52_nrf9160.c
   - name: periph_flashpage
     sources:
       - flashpage.c
@@ -16,8 +19,11 @@ module:
     sources:
       - rtt.c
   - name: periph_spi
+    depends:
+      - periph_gpio_irq
     sources:
-      - spi.c
+      - spi_nrf52_nrf9160.c
+
   - name: periph_temperature
     sources:
       - temperature.c
@@ -32,9 +38,9 @@ module:
       - wdt.c
   - name: periph_gpio
     sources:
-        - gpio.c
+      - gpio.c
     uses:
-        - periph_gpio_irq
+      - periph_gpio_irq
   - name: periph_gpio_irq
   - name: periph_wdt_cb
     context: nrf5x

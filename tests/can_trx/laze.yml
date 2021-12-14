@@ -7,3 +7,7 @@ app:
         - tja1042
       uses:
         - tja1042
+      env:
+        local:
+          CFLAGS:
+            - -DTJA1042_STB_PIN=GPIO_PIN\(0,0\)

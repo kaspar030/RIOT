@@ -3,6 +3,7 @@ defaults:
     context: sam0
     depends:
       - periph_common
+      - board
 
 module:
   - name: periph_adc
@@ -11,12 +12,30 @@ module:
     sources: [cpuid.c]
   - name: periph_flashpage
     sources: [flashpage.c]
+    env:
+      local:
+        CFLAGS:
+          - -Wno-array-bounds
+          - -Wno-stringop-overread
+
+  - name: periph_flashpage_pagewise
   - name: periph_i2c
     sources: [i2c.c]
+
   - name: periph_rtc
-    sources: [rtc.c]
+    depends:
+      - periph_rtc_rtt
   - name: periph_rtt
-    sources: [rtt.c]
+    depends:
+      - periph_rtc_rtt
+  - name: periph_rtc_rtt
+    sources: [rtc_rtt.c]
+    # TODO: periph_rtc and periph_rtt conflict!
+
+  - name: periph_pwm
+    sources:
+      - pwm.c
+
   - name: periph_spi
     sources: [spi.c]
   - name: periph_timer

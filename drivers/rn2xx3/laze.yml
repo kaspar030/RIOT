@@ -4,7 +4,7 @@ module:
           - fmt
           - periph_gpio
           - periph_uart
-          - xtimer
+          - ztimer_msec
       uses:
           - rn2903
           - rn2483

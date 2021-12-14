@@ -25,6 +25,7 @@ module:
   - name: auto_init_ztimer
     depends:
       - ?auto_init
+      - ?ztimer_auto_init
 
   - name: ztimer_now64
   - name: ztimer_extend
@@ -34,6 +35,10 @@ module:
   - name: ztimer_sec
 
   - name: ztimer_auto_init
+    depends:
+      - ztimer_convert_frac
+      - ztimer_convert_shift
+      - ztimer_periph_timer
     uses:
       - auto_init_ztimer
       - pm_layered
@@ -54,6 +59,7 @@ module:
   - name: ztimer_convert_frac
     depends:
       - ztimer_convert
+      - frac
     sources:
       - convert_frac.c
 
@@ -68,7 +74,7 @@ module:
       - ztimer_convert
     sources:
       - convert_shift.c
- 
+
   - name: ztimer_mock
     sources:
       - mock.c
@@ -81,22 +87,22 @@ module:
     depends:
       - periph_timer
     sources:
-      - periph_timer
+      - periph_timer.c
 
   - name: ztimer_periph_rtt
     depends:
       - periph_rtt
     sources:
-      - periph_rtt
+      - periph_rtt.c
 
   - name: ztimer_periph_rtc
     depends:
       - periph_rtc
     sources:
-      - periph_rtc
+      - periph_rtc.c
 
   - name: ztimer_periph_ptp
     depends:
       - periph_ptp
     sources:
-      - periph_ptp
+      - periph_ptp.c

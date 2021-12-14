@@ -5,6 +5,9 @@ module:
       depends:
         - periph_gpio
         - periph_gpio_irq
+      uses:
+        - pn532_i2c
+        - pn532_spi
 
     - name: pn532_i2c
       depends:

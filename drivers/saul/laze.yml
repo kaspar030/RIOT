@@ -29,5 +29,5 @@ module:
           - ?saul_init_devs
           - ?saul_board
 
-subdir:
+subdirs:
     - init_devs

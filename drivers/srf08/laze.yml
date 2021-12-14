@@ -1,7 +1,11 @@
 module:
   - name: srf08
     depends:
-        - xtimer
-        - periph_i2c
+      - xtimer
+      - periph_i2c
     sources:
-        - srf08.c
+      - srf08.c
+    env:
+      export:
+        includes:
+          - ${relpath}/include

@@ -1,0 +1,27 @@
+defaults:
+  module:
+    depends:
+      - eui_provider
+
+module:
+  - name: netdev_eth
+    sources:
+      - eth.c
+    uses:
+      - l2filter
+
+  - name: netdev_ieee80415
+    sources:
+      - ieee80415.c
+    uses:
+      - gnrc
+      - gnrc_sixlowpan
+      - ieee802154_security
+      - l2filter
+      - netdev_ieee802154_mr_fsk
+      - netdev_ieee802154_mr_ofdm
+      - netdev_ieee802154_mr_oqpsk
+
+  - name: netdev_layer
+    sources:
+      - layer.c

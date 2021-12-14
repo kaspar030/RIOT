@@ -3,6 +3,8 @@ module:
       depends:
           - ?auto_init_gnrc_sixlowpan
           - sixlowpan
+          - gnrc_netif_sixlowpan
+          - gnrc_nettype_sixlowpan
       uses:
           - ccn_lite
           - gnrc_ipv6
