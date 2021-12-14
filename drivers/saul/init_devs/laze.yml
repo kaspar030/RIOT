@@ -1,7 +1,5 @@
 module:
   - name: saul_init_devs
-    sources:
-        - init.c
     depends:
         - ?auto_init
         - ?adcxx1c_params
@@ -33,28 +31,54 @@ module:
         - tsl2561
         - veml6070
     sources:
-        - auto_init_adc.c
-        - auto_init_adcxx1c.c
-        - auto_init_adxl345.c
-        - auto_init_bmp180.c
-        - auto_init_bmx055.c
-        - auto_init_bmx280.c
-        - auto_init_dht.c
-        - auto_init_gpio.c
-        - auto_init_hdc1000.c
-        - auto_init_io1_xplained.c
-        - auto_init_isl29020.c
-        - auto_init_jc42.c
-        - auto_init_l3g4200d.c
-        - auto_init_lis3dh.c
-        - auto_init_lpsxxx.c
-        - auto_init_lsm303dlhc.c
-        - auto_init_lsm6dsl.c
-        - auto_init_mag3110.c
-        - auto_init_mma8x5x.c
-        - auto_init_nrf_temperature.c
-        - auto_init_sht1x.c
-        - auto_init_si70xx.c
-        - auto_init_tcs37727.c
-        - auto_init_tsl2561.c
-        - auto_init_veml6070.c
+        - init.c
+        - saul_adc:
+            - auto_init_saul_adc.c
+        - saul_gpio:
+            - auto_init_saul_gpio.c
+        - adcxx1c:
+            - auto_init_adcxx1c.c
+        - adxl345:
+            - auto_init_adxl345.c
+        - bmp180:
+            - auto_init_bmp180.c
+        - bmx055:
+            - auto_init_bmx055.c
+        - bmx280:
+            - auto_init_bmx280.c
+        - dht:
+            - auto_init_dht.c
+        - hdc1000:
+            - auto_init_hdc1000.c
+        - io1_xplained:
+            - auto_init_io1_xplained.c
+        - isl29020:
+            - auto_init_isl29020.c
+        - jc42:
+            - auto_init_jc42.c
+        - l3g4200d:
+            - auto_init_l3g4200d.c
+        - lis3dh:
+            - auto_init_lis3dh.c
+        - lpsxxx:
+            - auto_init_lpsxxx.c
+        - lsm303dlhc:
+            - auto_init_lsm303dlhc.c
+        - lsm6dsl:
+            - auto_init_lsm6dsl.c
+        - mag3110:
+            - auto_init_mag3110.c
+        - mma8x5x:
+            - auto_init_mma8x5x.c
+        - saul_nrf_temperature:
+            - auto_init_saul_nrf_temperature.c
+        - sht1x:
+            - auto_init_sht1x.c
+        - si70xx:
+            - auto_init_si70xx.c
+        - tcs37727:
+            - auto_init_tcs37727.c
+        - tsl2561:
+            - auto_init_tsl2561.c
+        - veml6070:
+            - auto_init_veml6070.c

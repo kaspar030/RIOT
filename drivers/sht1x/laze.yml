@@ -3,6 +3,7 @@ module:
     depends:
         - periph_gpio
         - xtimer
+        - ?auto_init_sht1x
     uses:
         - sht10
         - sht11

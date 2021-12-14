@@ -25,9 +25,14 @@ module:
     sources:
       - rtc.c
 
-  - name: periph_rtt_lptim
+        #  - name: periph_rtt
+        #    context: stm32f1
+        #    sources:
+        #      - rtt_f1.c
+
+  - name: periph_rtt
     sources:
-      - rtt_lptim.c
+      - rtt_all.c
 
   - name: periph_timer
     sources:
@@ -52,16 +57,73 @@ module:
       - uart.c
 
   - name: periph_adc
-    context: stm32f4
+    context:
+      - stm32f4
+        #- stm32f7
     sources:
-        - adc.c
+      - adc_f4_f7.c
+
+        #  - name: periph_adc
+        #    context:
+        #      - stm32f0
+        #      - stm32g0
+        #    sources:
+        #      - adc_f0_g0.c
+
+        #  - name: periph_adc
+        #    context: stm32f1
+        #    sources:
+        #      - adc_f1.c
+        #
+        #  - name: periph_adc
+        #    context: stm32f2
+        #    sources:
+        #      - adc_f2.c
+        #
+        #  - name: periph_adc
+        #    context: stm32f3
+        #    sources:
+        #      - adc_f3.c
+        #
+        #  - name: periph_adc
+        #    context: stm32l0
+        #    sources:
+        #      - adc_l0.c
+        #
+        #  - name: periph_adc
+        #    context: stm32l1
+        #    sources:
+        #      - adc_l1.c
+        #
+        #  - name: periph_adc
+        #    context: stm32l4
+        #    sources:
+        #      - adc_l4.c
 
   - name: periph_dac
     sources: [dac.c]
-    depends: [ feature/periph_dac ]
+    depends: [feature/periph_dac]
+
+    #  - name: periph_i2c
+    #    context:
+    #      - stm32f0
+    #      - stm32f3
+    #      - stm32f7
+    #      - stm32g0
+    #      - stm32g4
+    #      - stm32l0
+    #      - stm32l4
+    #      - stm32l5
+    #      - stm32wb
+    #      - stm32wl
+    #    sources: [i2c_1.c]
 
   - name: periph_i2c
-    context: stm32f4
+    context:
+      #- stm32f1
+      #- stm32f2
+      #- stm32l1
+      - stm32f4
     sources: [i2c_2.c]
 
   - name: periph_gpio
@@ -89,5 +151,4 @@ module:
 
   - name: periph_eeprom
     sources: [eeprom.c]
-    depends: [ feature/periph_eeprom ]
-
+    depends: [feature/periph_eeprom]

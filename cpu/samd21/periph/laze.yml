@@ -3,7 +3,3 @@ module:
     context: samd21
     sources:
         - pm.c
-  - name: periph_pwm
-    context: samd21
-    sources:
-        - pwm.c

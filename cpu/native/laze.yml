@@ -55,5 +55,5 @@ subdirs:
     - mtd
     - netdev_tap
     - stdio_native
-    - trace
+    - backtrace
     - vfs

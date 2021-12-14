@@ -6,6 +6,8 @@ module:
       - chacha_prng.c
       - ciphers.c
       - helper.c
+    depends:
+      - ?crypto_aes_128
     uses:
       - crypto_aes_128
       - crypto_aes_192

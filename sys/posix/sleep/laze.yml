@@ -4,5 +4,6 @@ module:
         - posix_sleep.c
     depends:
         - posix_headers
-        - xtimer
+        - ztimer_msec
+        - ztimer_usec
         - timex

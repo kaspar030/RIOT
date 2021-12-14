@@ -3,7 +3,7 @@ module:
     depends:
         - periph_gpio
         - periph_pwm
-        - xtimer
+        - ztimer_usec
     sources:
         - dsp0401.c
     env:

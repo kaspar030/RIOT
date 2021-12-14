@@ -8,10 +8,26 @@ module:
         - periph_spi
     uses:
         - lis2dh12_spi
+        - lis2dh12_i2c
+        - lis2dh12_int
+        - periph_gpio_irq
     env:
       export:
         includes:
             - ${relpath}/include
 
   - name: lis2dh12_spi
-    depends: [ lis2dh12 ]
+    depends: 
+    - lis2dh12
+    - periph_spi
+    - periph_gpio
+
+  - name: lis2dh12_i2c
+    depends: 
+     - lis2dh12
+     - periph_i2c
+
+  - name: lis2dh12_int
+    depends:
+    - lis2dh12
+    - periph_gpio_irq

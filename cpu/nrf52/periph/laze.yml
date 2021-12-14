@@ -6,9 +6,6 @@ module:
   - name: periph_adc
     sources:
       - adc.c
-  - name: periph_i2c
-    sources:
-      - i2c.c
   - name: periph_pwm
     sources:
       - pwm.c

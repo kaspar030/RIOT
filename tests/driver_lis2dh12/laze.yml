@@ -2,4 +2,6 @@ app:
   - depends:
         - fmt
         - lis2dh12_spi
+        - lis2dh12_int
+        - shell
         - xtimer

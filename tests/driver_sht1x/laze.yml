@@ -1,7 +1,9 @@
 app:
   - depends:
         - ps
-        - saul_default
         - shell
         - shell_commands
+        - saul
         - sht11
+        - saul_default
+        - saul_init_devs

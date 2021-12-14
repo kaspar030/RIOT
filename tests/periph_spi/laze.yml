@@ -3,4 +3,5 @@ app:
         - periph_spi
         - shell
         - shell_commands
+        - schedstatistics
         - xtimer

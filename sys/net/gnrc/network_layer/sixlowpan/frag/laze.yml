@@ -7,6 +7,8 @@ module:
       - xtimer
     uses:
         - gnrc_sixlowpan_iphc
+        - gnrc_sixlowpan_frag_hint
+        - gnrc_tx_sync
     sources:
         - gnrc_sixlowpan_frag.c
 

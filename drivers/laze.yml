@@ -68,9 +68,7 @@ subdirs:
     - mtd_sdcard
     - mtd_spi_nor
     - my9221
-    - netdev_eth
-    - netdev_ieee802154
-    - netdev_layer
+    - netdev
     - nrf24l01p
     - nvram
     - nvram_spi

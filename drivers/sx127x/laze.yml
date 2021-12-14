@@ -7,7 +7,7 @@ module:
           - periph_gpio
           - periph_gpio_irq
           - periph_spi
-          - xtimer
+          - ztimer_msec
       uses:
           - sx1272
           - sx1276

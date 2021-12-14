@@ -1,6 +1,7 @@
 app:
   - depends:
         - shell
+        - shell_commands
     uses:
         - periph_rtc
         - pm_layered

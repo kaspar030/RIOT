@@ -2,8 +2,8 @@ builder:
   - name: samd21-xpro
     parent: samd21j18a
     env:
-        CFLAGS:
-            - -I${relpath}/include
+      includes:
+        - ${relpath}/include
 
 module:
   - name: board
@@ -11,5 +11,5 @@ module:
     sources:
       - board.c
     depends:
-        - cpu/samd21
-        - periph_gpio
+      - cpu/samd21
+      - periph_gpio

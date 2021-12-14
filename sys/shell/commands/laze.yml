@@ -35,6 +35,8 @@ module:
           - sc_disk.c
         - periph_rtc:
           - sc_rtc.c
+        - periph_pm:
+          - sc_pm.c
         - ps:
           - sc_ps.c
         - random:
@@ -74,6 +76,8 @@ module:
         - netstats_ipv6
         - netstats_rpl
         - periph_rtc
+        - periph_pm
+        - pm_layered
         - ps
         - random
         - saul_reg

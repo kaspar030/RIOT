@@ -8,9 +8,17 @@ module:
   - name: periph_cpuid
     sources:
       - cpuid.c
-  - name: periph_gpio
+
+  - name: periph_gpio_linux
     sources:
-      - gpio.c
+      - gpio_linux.c
+    uses:
+      - periph_gpio_irq
+
+  - name: periph_gpio_mock
+    sources:
+      - gpio_mock.c
+
   - name: periph_hwrng
     sources:
       - hwrng.c
@@ -27,6 +35,8 @@ module:
   - name: periph_rtc
     sources:
       - rtc.c
+    depends:
+      - ztimer_msec
   - name: periph_spidev_linux
     sources:
       - spidev_linux

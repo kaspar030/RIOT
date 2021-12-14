@@ -5,7 +5,7 @@ module:
         - periph_gpio
         - periph_gpio_irq
         - periph_spi
-        - xtimer
+        - ztimer_msec
     sources:
         - ata8520e.c
     env:

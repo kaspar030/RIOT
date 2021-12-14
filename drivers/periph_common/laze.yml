@@ -6,8 +6,6 @@ module:
       - periph_flashpage: [flashpage.c]
       - periph_i2c: [i2c.c]
       - periph_pm: [pm.c]
-      - periph_rtc: [rtc.c]
-      - rtt_rtc: [rtc.c]
       - periph_spi: [spi.c]
       - periph_timer: [timer.c]
     env:
@@ -32,8 +30,11 @@ module:
       - periph_common_init
       - periph_rtc:
           - periph_rtc_common
+      - rtt_rtc:
+          - periph_rtc_common
     uses:
       - board
+      - periph_flashpage_pagewise
 
   - name: periph_common_init
     sources:
