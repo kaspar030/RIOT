@@ -13,13 +13,6 @@ import argparse
 import re
 
 
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-RIOTBASE = os.getenv(
-    "RIOTBASE", os.path.abspath(os.path.join(CURRENT_DIR, "../../../..")))
-STM32_INCLUDE_DIR = os.path.join(RIOTBASE, "cpu/stm32/include")
-STM32_IRQS_DIR = os.path.join(
-    RIOTBASE, STM32_INCLUDE_DIR, "irqs/{}/irqs.h")
-
 IRQS_FORMAT = """
 /*
  * PLEASE DON'T EDIT
@@ -123,7 +116,7 @@ def generate_irqs(context):
         cpu_fam=context["cpu_fam"].upper(),
         irq_lines="\n".join(irq_lines),
         )
-    dest_file = os.path.join(STM32_IRQS_DIR.format(context["cpu_fam"]))
+    dest_file = context["dest_file"]
 
     if not os.path.exists(os.path.dirname(dest_file)):
         os.makedirs(os.path.dirname(dest_file))
@@ -136,6 +129,7 @@ def main(args):
     cpu_lines = list_cpu_lines(args.cmsis_dir, args.cpu_fam)
     context = {
         "cpu_fam": args.cpu_fam,
+        "dest_file": args.dest_file,
         "cpu_lines": [
             {
                 "line": cpu_line.upper().replace("X", "x"),
@@ -150,6 +144,7 @@ def main(args):
 PARSER = argparse.ArgumentParser()
 PARSER.add_argument("cmsis_dir", help="CMSIS directory")
 PARSER.add_argument("cpu_fam", help="STM32 CPU Family")
+PARSER.add_argument("dest_file", help="output header file")
 
 if __name__ == "__main__":
     main(PARSER.parse_args())
