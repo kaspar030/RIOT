@@ -94,7 +94,7 @@ $(STM32FAM_INCLUDE_FILE): FORCE $(CLEAN)
 # The vectors source file requires the family headers to be fetched before since
 # it's generated from the CMSIS content
 $(VECTORS_FILE): $(STM32FAM_INCLUDE_FILE)
-	$(Q)$(RIOTBASE)/cpu/stm32/dist/irqs/gen_vectors.py $(STM32CMSIS_INCLUDE_DIR) $(CPU_LINE)
+	$(Q)$(RIOTBASE)/cpu/stm32/dist/irqs/gen_vectors.py $(STM32CMSIS_INCLUDE_DIR) $(CPU_LINE) $@
 
 ifeq (,$(filter STM32MP157Cxx STM32F030x4,$(CPU_LINE)))
   # IRQs of STM32F030x4 and STM32MP157Cxx lines are not available in the CMSIS
@@ -108,7 +108,7 @@ endif
 # The IRQ header for a given family requires the family headers to be fetched
 # before since it's generated from all CMSIS content of that family
 $(STM32IRQS_INCLUDE_FILE): $(STM32FAM_INCLUDE_FILE)
-	$(Q)$(RIOTBASE)/cpu/stm32/dist/irqs/gen_irqs.py $(STM32CMSIS_INCLUDE_DIR) $(CPU_FAM)
+	$(Q)$(RIOTBASE)/cpu/stm32/dist/irqs/gen_irqs.py $(STM32CMSIS_INCLUDE_DIR) $(CPU_FAM) $@
 
 # Include clock configuration directory
 INCLUDES += -I$(RIOTCPU)/stm32/include/clk

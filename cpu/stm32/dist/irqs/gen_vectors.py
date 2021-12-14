@@ -107,7 +107,7 @@ def parse_cmsis(cmsis_dir, cpu_line):
     return {"isrs": isrs, "cpu_line": cpu_line}
 
 
-def generate_vectors(context):
+def generate_vectors(context, dest_file):
     """Use vector template string to generate the vectors C file."""
     isr_line_format = "WEAK_DEFAULT void isr_{func}(void);"
     irq_line_format = "    [{irq:<35}] = isr_{func},"
@@ -125,10 +125,6 @@ def generate_vectors(context):
         irq_lines="\n".join(irq_lines),
     )
 
-    dest_file = os.path.join(
-        STM32_VECTORS_DIR, "{}.c".format(context["cpu_line"])
-    )
-
     with open(dest_file, "w") as f_dest:
         f_dest.write(vectors_content)
 
@@ -136,12 +132,13 @@ def generate_vectors(context):
 def main(args):
     """Main function."""
     context = parse_cmsis(args.cmsis_dir, args.cpu_line)
-    generate_vectors(context)
+    generate_vectors(context, args.dest_file)
 
 
 PARSER = argparse.ArgumentParser()
 PARSER.add_argument("cmsis_dir", help="CMSIS directory")
 PARSER.add_argument("cpu_line", help="STM32 CPU line")
+PARSER.add_argument("dest_file", help="generated vectors .c file")
 
 if __name__ == "__main__":
     main(PARSER.parse_args())
