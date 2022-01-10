@@ -15,3 +15,7 @@ endif
 
 TESTRUNNER_RESET_DELAY = 1
 $(call target-export-variables,test,TESTRUNNER_RESET_DELAY)
+
+RIOT_EMULATOR ?= qemu
+QEMU ?= qemu-system-riscv32
+QEMU_MACHINE ?= sifive_e
