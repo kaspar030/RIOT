@@ -23,7 +23,8 @@
 #include "thread.h"
 
 #include "timex.h"
-#include "ztimer.h"
+// #include "ztimer.h"
+// #include "ztimer/periodic.h"
 #include "log.h"
 
 #include "lvgl/lvgl.h"
@@ -36,7 +37,7 @@
 #endif
 
 #ifndef LVGL_COLOR_BUF_SIZE
-#define LVGL_COLOR_BUF_SIZE         (320 * 5)
+#define LVGL_COLOR_BUF_SIZE         (LV_HOR_RES_MAX * 5)
 #endif
 
 #ifndef CONFIG_LVGL_INACTIVITY_PERIOD_MS
@@ -53,8 +54,10 @@
 
 static kernel_pid_t _task_thread_pid;
 
+// static lv_color_t buf[LVGL_COLOR_BUF_SIZE];
 static lv_disp_draw_buf_t disp_buf;
-static lv_color_t buf[LVGL_COLOR_BUF_SIZE];
+static lv_color_t buf1[LVGL_COLOR_BUF_SIZE];
+static lv_color_t buf2[LVGL_COLOR_BUF_SIZE];
 
 static screen_dev_t *_screen_dev = NULL;
 
@@ -74,10 +77,10 @@ static void _disp_map(lv_disp_drv_t *drv, const lv_area_t *area, lv_color_t *col
 
 #if IS_USED(MODULE_TOUCH_DEV)
 /* adapted from https://github.com/lvgl/lvgl/tree/v6.1.2#add-littlevgl-to-your-project */
-static void _touch_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data)
+static bool _touch_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data)
 {
     if (!_screen_dev->touch) {
-        return;
+        return false;
     }
 
     (void)indev_driver;
@@ -97,6 +100,8 @@ static void _touch_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data)
     /* Set the coordinates (if released use the last pressed coordinates) */
     data->point.x = last_x;
     data->point.y = last_y;
+
+    return false;
 }
 #endif
 
@@ -106,17 +111,20 @@ void lvgl_init(screen_dev_t *screen_dev)
     _screen_dev = screen_dev;
     assert(screen_dev->display);
 
-    lv_disp_draw_buf_init(&disp_buf, buf, NULL, LVGL_COLOR_BUF_SIZE);
+    lv_disp_draw_buf_init(&disp_buf, buf1, buf2, LVGL_COLOR_BUF_SIZE);
 
     lv_disp_drv_t disp_drv;
 
     lv_disp_drv_init(&disp_drv);
+    disp_drv.draw_buf = &disp_buf;
+    disp_drv.flush_cb = _disp_map;
     /* Configure horizontal and vertical resolutions based on the
        underlying display device parameters */
     disp_drv.hor_res = disp_dev_width(screen_dev->display);
     disp_drv.ver_res = disp_dev_height(screen_dev->display);
 
     disp_drv.flush_cb = _disp_map;
+
     disp_drv.draw_buf = &disp_buf;
 
     lv_disp_t *disp = lv_disp_drv_register(&disp_drv);
@@ -144,27 +152,43 @@ void lvgl_init(screen_dev_t *screen_dev)
 #endif
 }
 
+// static int _timer_cb(void *arg)
+// {
+//     (void)arg;
+//     lv_tick_inc(CONFIG_LVGL_TASK_HANDLER_DELAY_MS);
+//     return 0;
+// }
+
 void lvgl_run(void)
 {
-    _task_thread_pid = thread_getpid();
+    // ztimer_periodic_t timer;
+    // ztimer_periodic_init(ZTIMER_USEC, &timer, _timer_cb, NULL, CONFIG_LVGL_TASK_HANDLER_DELAY_MS);
+    // ztimer_periodic_start(&timer);
 
-    lv_task_handler();
+    // _task_thread_pid = thread_getpid();
 
     while (1) {
         /* Normal operation (no sleep) in < CONFIG_LVGL_INACTIVITY_PERIOD_MS msec
            inactivity */
         if (lv_disp_get_inactive_time(NULL) < CONFIG_LVGL_INACTIVITY_PERIOD_MS) {
-            lv_task_handler();
+            puts("handle task before");
+            lv_timer_handler();
+            puts("handle task after");
         }
         else {
+            puts("blocking");
             /* Block after LVGL_ACTIVITY_PERIOD msec inactivity */
             thread_flags_wait_one(LVGL_THREAD_FLAG);
-
+            puts("unblocking");
             /* trigger an activity so the task handler is called on the next loop */
             lv_disp_trig_activity(NULL);
+            puts("activity");
         }
 
-        ztimer_sleep(ZTIMER_MSEC, CONFIG_LVGL_TASK_HANDLER_DELAY_MS);
+        // ztimer_sleep(ZTIMER_USEC, CONFIG_LVGL_TASK_HANDLER_DELAY_US);
+        // lv_timer_handler();
+        // xtimer_usleep(CONFIG_LVGL_TASK_HANDLER_DELAY_US);
+        // lv_tick_inc(CONFIG_LVGL_TASK_HANDLER_DELAY_US / US_PER_MS);
     }
 }
 
