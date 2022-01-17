@@ -4,6 +4,9 @@ INCLUDES += -I$(PKGDIRBASE)
 # Don't use relative includes in lvgl
 CFLAGS += -DLV_CONF_INCLUDE_SIMPLE
 
+# fix "cast increases required alignment of target type" raised from a header file
+CFLAGS += -Wno-cast-align
+
 ifneq (,$(filter lvgl_contrib,$(USEMODULE)))
   DIRS += $(RIOTBASE)/pkg/lvgl/contrib
 endif

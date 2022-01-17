@@ -23,7 +23,7 @@
 #include "thread.h"
 
 #include "timex.h"
-// #include "ztimer.h"
+#include "ztimer.h"
 // #include "ztimer/periodic.h"
 #include "log.h"
 
@@ -185,7 +185,7 @@ void lvgl_run(void)
             puts("activity");
         }
 
-        // ztimer_sleep(ZTIMER_USEC, CONFIG_LVGL_TASK_HANDLER_DELAY_US);
+        ztimer_sleep(ZTIMER_MSEC, CONFIG_LVGL_TASK_HANDLER_DELAY_MS);
         // lv_timer_handler();
         // xtimer_usleep(CONFIG_LVGL_TASK_HANDLER_DELAY_US);
         // lv_tick_inc(CONFIG_LVGL_TASK_HANDLER_DELAY_US / US_PER_MS);
