@@ -5,6 +5,10 @@ PKG_LICENSE=MIT
 
 include $(RIOTBASE)/pkg/pkg.mk
 
+IGNORE_MODULES := lv_drivers_monitor \
+                  lv_drivers_mouse \
+                  #
+
 LV_DRIVERS_MODULES := $(filter-out $(IGNORE_MODULES),$(filter lv_drivers_%,$(USEMODULE)))
 
 .PHONY: lvgl_%
