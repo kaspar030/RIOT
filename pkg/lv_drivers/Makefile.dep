@@ -3,11 +3,9 @@ USEPKG += lvgl
 ifneq (,$(filter lv_drivers_display_monitor,$(USEMODULE)))
   FEATURES_REQUIRED += arch_native
   USEMODULE += lv_drivers_monitor
-  DEFAULT_MODULE += auto_init_lv_drivers_monitor
 endif
 
 ifneq (,$(filter lv_drivers_indev_mouse,$(USEMODULE)))
   FEATURES_REQUIRED += arch_native
   USEMODULE += lv_drivers_mouse
-  DEFAULT_MODULE += auto_init_lv_drivers_mouse
 endif

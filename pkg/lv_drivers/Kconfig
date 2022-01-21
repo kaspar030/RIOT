@@ -16,9 +16,19 @@ if PACKAGE_LVGL
 config MODULE_LV_DRIVERS_DISPLAY_MONITOR
     bool "Monitor driver"
     depends on HAS_ARCH_NATIVE
+    select MODULE_LV_DRIVERS_MONITOR
+
+config MODULE_LV_DRIVERS_MONITOR
+    bool "Monitor driver Adaptation Code"
+    depends on HAS_ARCH_NATIVE
+    select MODULE_LV_DRIVERS_MOUSE
 
 config MODULE_LV_DRIVERS_INDEV_MOUSE
     bool "Mouse Driver"
+    depends on HAS_ARCH_NATIVE
+
+config MODULE_LV_DRIVERS_MOUSE
+    bool "Mouse Driver Adaptation Code"
     depends on HAS_ARCH_NATIVE
 
 config HAVE_DISPLAY_MONITOR
