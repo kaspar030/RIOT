@@ -13,8 +13,6 @@ USEMODULE += lvgl_contrib_touch
 # SDL requires more stack
 ifeq (native,$(BOARD))
   CFLAGS += -DTHREAD_STACKSIZE_DEFAULT=64*1024
-else
-  CFLAGS += -DTHREAD_STACKSIZE_DEFAULT=1024*4
 endif
 
 include $(RIOTBASE)/Makefile.include
