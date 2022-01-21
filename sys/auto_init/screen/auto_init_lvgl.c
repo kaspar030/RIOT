@@ -27,6 +27,7 @@
 #if IS_USED(MODULE_TOUCH_DEV)
 #include "touch_dev.h"
 #endif
+
 static screen_dev_t s_screen;
 extern disp_dev_reg_t *disp_dev_reg;
 
@@ -44,7 +45,7 @@ static void _touch_event_callback(void *arg)
 
 void auto_init_lvgl(void)
 {
-    printf("[auto_init_screen] initializing lvgl\n");
+    LOG_DEBUG("[auto_init_screen] initializing lvgl\n");
 
     /* Only a single screen is supported by lvgl */
     disp_dev_reg_t *disp_dev = disp_dev_reg_find_screen(CONFIG_LVGL_SCREEN_DEFAULT);
