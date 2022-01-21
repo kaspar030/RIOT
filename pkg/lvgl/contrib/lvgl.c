@@ -57,6 +57,7 @@ static lv_disp_buf_t disp_buf;
 static lv_color_t buf[LVGL_COLOR_BUF_SIZE];
 
 static screen_dev_t *_screen_dev = NULL;
+
 static void _disp_map(lv_disp_drv_t *drv, const lv_area_t *area, lv_color_t *color_p)
 {
     if (!_screen_dev->display) {
@@ -65,6 +66,8 @@ static void _disp_map(lv_disp_drv_t *drv, const lv_area_t *area, lv_color_t *col
 
     disp_dev_map(_screen_dev->display, area->x1, area->x2, area->y1, area->y2,
                  (const uint16_t *)color_p);
+
+    LOG_DEBUG("[lvgl] flush display\n");
 
     lv_disp_flush_ready(drv);
 }
@@ -112,8 +115,8 @@ void lvgl_init(screen_dev_t *screen_dev)
        underlying display device parameters */
     disp_drv.hor_res = disp_dev_width(screen_dev->display);
     disp_drv.ver_res = disp_dev_height(screen_dev->display);
-    disp_drv.flush_cb = _disp_map;
 
+    disp_drv.flush_cb = _disp_map;
     disp_drv.buffer = &disp_buf;
     lv_disp_t *disp = lv_disp_drv_register(&disp_drv);
 
@@ -146,6 +149,7 @@ void lvgl_run(void)
     _task_thread_pid = thread_getpid();
 
     lv_task_handler();
+
     while (1) {
         /* Normal operation (no sleep) in < CONFIG_LVGL_INACTIVITY_PERIOD_MS msec
            inactivity */
