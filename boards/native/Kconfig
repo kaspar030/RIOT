@@ -27,5 +27,4 @@ config BOARD_NATIVE
     select HAVE_DISPLAY_MONITOR
     select HAVE_INDEV_MOUSE
 
-
 rsource "drivers/Kconfig"
