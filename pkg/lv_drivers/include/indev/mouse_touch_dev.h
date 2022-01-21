@@ -42,4 +42,4 @@ extern const touch_dev_driver_t mouse_touch_dev_driver;
 }
 #endif
 
-#endif /* MOUSE_TOUCH_DEV_H */
+#endif /* INDEV_MOUSE_TOUCH_DEV_H */
