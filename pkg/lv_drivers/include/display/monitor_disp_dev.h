@@ -16,8 +16,8 @@
  * @author      Alexandre Abadie <alexandre.abadie@inria.fr>
  */
 
-#ifndef MONITOR_DISP_DEV_H
-#define MONITOR_DISP_DEV_H
+#ifndef DISPLAY_MONITOR_DISP_DEV_H
+#define DISPLAY_MONITOR_DISP_DEV_H
 
 #include "disp_dev.h"
 #include "lvgl/lvgl.h"
@@ -50,4 +50,4 @@ extern const disp_dev_driver_t monitor_disp_dev_driver;
 }
 #endif
 
-#endif /* MONITOR_DISP_DEV_H */
+#endif /* DISPLAY_MONITOR_DISP_DEV_H */

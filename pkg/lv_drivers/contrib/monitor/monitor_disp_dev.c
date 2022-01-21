@@ -22,17 +22,9 @@
 #include "display/monitor.h"
 #include "display/monitor_disp_dev.h"
 
-
 static void _monitor_map(const disp_dev_t *dev, uint16_t x1, uint16_t x2,
                          uint16_t y1, uint16_t y2, const uint16_t *color)
 {
-    (void)dev;
-    (void)x1;
-    (void)x2;
-    (void)y1;
-    (void)y2;
-    (void)color;
-
     const monitor_t *monitor = (monitor_t *)dev;
     lv_area_t area = { .x1 = x1, .y1 = y1, .x2 = x2, .y2 = y2 };
 

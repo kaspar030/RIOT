@@ -11,4 +11,3 @@ ifneq (,$(filter lv_drivers_indev_mouse,$(USEMODULE)))
   USEMODULE += lv_drivers_mouse
   DEFAULT_MODULE += auto_init_lv_drivers_mouse
 endif
-
