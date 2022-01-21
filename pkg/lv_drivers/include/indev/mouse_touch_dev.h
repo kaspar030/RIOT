@@ -16,8 +16,8 @@
  * @author      Alexandre Abadie <alexandre.abadie@inria.fr>
  */
 
-#ifndef MOUSE_TOUCH_DEV_H
-#define MOUSE_TOUCH_DEV_H
+#ifndef INDEV_MOUSE_TOUCH_DEV_H
+#define INDEV_MOUSE_TOUCH_DEV_H
 
 #include "touch_dev.h"
 #include "lvgl/lvgl.h"
