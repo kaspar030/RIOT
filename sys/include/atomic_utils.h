@@ -274,7 +274,11 @@ static inline void * atomic_load_ptr(void **ptr_addr) {
  */
 static inline kernel_pid_t atomic_load_kernel_pid(const volatile kernel_pid_t *var)
 {
+#if MODULE_RIOT_RS_CORE
+    return atomic_load_u8((const volatile uint8_t *)var);
+#else
     return atomic_load_u16((const volatile uint16_t *)var);
+#endif
 }
 /** @} */
 
@@ -343,7 +347,11 @@ static inline void atomic_store_ptr(void **dest, const void *val) {
 static inline void atomic_store_kernel_pid(volatile kernel_pid_t *dest,
                                            kernel_pid_t val)
 {
+#if MODULE_RIOT_RS_CORE
+    atomic_store_u8((volatile uint8_t *)dest, (uint8_t)val);
+#else
     atomic_store_u16((volatile uint16_t *)dest, (uint16_t)val);
+#endif
 }
 /** @} */
 
