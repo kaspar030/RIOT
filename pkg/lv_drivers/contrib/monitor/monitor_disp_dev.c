@@ -7,7 +7,7 @@
  */
 
 /**
- * @ingroup     drivers_monitor
+ * @ingroup     pkg_lvgl_drivers_monitor
  * @{
  *
  * @file
