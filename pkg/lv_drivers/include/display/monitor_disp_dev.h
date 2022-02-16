@@ -7,7 +7,8 @@
  */
 
 /**
- * @ingroup     drivers_monitor
+ * @defgroup    pkg_lvgl_drivers_monitor LVGL SDL display driver
+ * @ingroup     pkg_lvgl
  * @{
  *
  * @file
@@ -51,3 +52,4 @@ extern const disp_dev_driver_t monitor_disp_dev_driver;
 #endif
 
 #endif /* DISPLAY_MONITOR_DISP_DEV_H */
+/** @} **/
