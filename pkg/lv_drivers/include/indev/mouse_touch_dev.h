@@ -7,7 +7,8 @@
  */
 
 /**
- * @ingroup     drivers_mouse
+ * @defgroup    pkg_lvgl_drivers_mouse LVGL mouse driver
+ * @ingroup     pkg_lvgl
  * @{
  *
  * @file
@@ -43,3 +44,4 @@ extern const touch_dev_driver_t mouse_touch_dev_driver;
 #endif
 
 #endif /* INDEV_MOUSE_TOUCH_DEV_H */
+/** @} **/
