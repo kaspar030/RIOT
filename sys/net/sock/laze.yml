@@ -25,6 +25,8 @@ module:
     - name: sock_async
       depends:
           - sock
+          - gnrc:
+            - gnrc_sock_async
       uses:
           - sock_async_event
       env:

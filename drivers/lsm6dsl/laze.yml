@@ -2,7 +2,7 @@ module:
   - name: lsm6dsl
     depends:
         - periph_i2c
-        - xtimer
+        - ztimer_msec
     sources:
         - lsm6dsl.c
         - saul:

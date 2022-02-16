@@ -1,6 +1,6 @@
 module:
   - name: dns
     sources:
-        - dns.c
+        - msg.c
     depends:
         - posix_headers

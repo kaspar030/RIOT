@@ -1,4 +1,5 @@
 subdirs:
+    - eui_provider
     - ieee802154
     - csma_sender
     - l2filter

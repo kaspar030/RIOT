@@ -1,0 +1,12 @@
+module:
+  - name: eui_provider
+    depends:
+      - ?edbg_eui
+    sources:
+      - eui_provider.c
+    uses:
+      - netdev_register
+    env:
+      export:
+        includes:
+          - ${relpath}/include

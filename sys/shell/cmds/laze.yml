@@ -1,86 +1,89 @@
 module:
   - name: shell_commands
     options:
-        use_optional_source_deps: True
+      use_optional_source_deps: True
+    depends:
+      - gnrc_icmpv6_echo:
+          - netutils
     sources:
-        - app_metadata:
+      - app_metadata:
           - sc_app_metadata.c
-        - at30tse75x:
+      - at30tse75x:
           - sc_at30tse75x.c
-        - ccn-lite-utils: 
+      - ccn-lite-utils:
           - sc_ccnl.c
-        - cpu/x86:
-            - sc_x86_lspci.c
-        - fib:
-            - sc_fib.c
-        - gnrc_icmpv6_echo:
-            - sc_gnrc_icmpv6_echo.c
-        - gnrc_ipv6_blacklist:
-            - sc_blacklist.c
-        - gnrc_ipv6_nib:
-            - sc_gnrc_ipv6_nib.c
-        - gnrc_ipv6_whitelist:
-            - sc_whitelist.c
-        - gnrc_netif:
-            - sc_gnrc_netif.c
-        - gnrc_pktbuf_cmd:
-            - sc_gnrc_pktbuf.c
-        - gnrc_rpl: 
+      - cpu/x86:
+          - sc_x86_lspci.c
+      - fib:
+          - sc_fib.c
+      - gnrc_icmpv6_echo:
+          - sc_gnrc_icmpv6_echo.c
+      - gnrc_ipv6_blacklist:
+          - sc_blacklist.c
+      - gnrc_ipv6_nib:
+          - sc_gnrc_ipv6_nib.c
+      - gnrc_ipv6_whitelist:
+          - sc_whitelist.c
+      - gnrc_netif:
+          - sc_gnrc_netif.c
+      - gnrc_pktbuf_cmd:
+          - sc_gnrc_pktbuf.c
+      - gnrc_rpl:
           - sc_gnrc_rpl.c
-        - gnrc_sixlowpan_ctx:
+      - gnrc_sixlowpan_ctx:
           - sc_gnrc_6ctx.c
-        - lpc2387:
+      - lpc2387:
           - sc_heap.c
-        - mci:
+      - mci:
           - sc_disk.c
-        - periph_rtc:
+      - periph_rtc:
           - sc_rtc.c
-        - periph_pm:
+      - periph_pm:
           - sc_pm.c
-        - ps:
+      - ps:
           - sc_ps.c
-        - random:
+      - random:
           - sc_random.c
-        - saul_reg:
+      - saul_reg:
           - sc_saul_reg.c
-        - sc_sys.c
-        - shell_commands.c
-        - sht1x:
+      - sc_sys.c
+      - shell_commands.c
+      - sht1x:
           - sc_sht1x.c
-        - sntp:
+      - sntp:
           - sc_sntp.c
-        - vfs:
+      - vfs:
           - sc_vfs.c
 
     uses:
-        - at30tse75x
-        - ccn-lite-utils
-        - cpu/x86
-        - fib
-        - gnrc_icmpv6_echo
-        - gnrc_ipv6_blacklist
-        - gnrc_ipv6_nc
-        - gnrc_ipv6_whitelist
-        - gnrc_netif
-        - gnrc_pktbuf_cmd
-        - gnrc_rpl
-        - gnrc_sixlowpan_ctx
-        - gnrc_sixlowpan_nd_border_router
-        - gnrc_txtsnd
-        - ipv6_addr
-        - l2filter
-        - lpc2387
-        - mci
-        - netstats
-        - netstats_l2
-        - netstats_ipv6
-        - netstats_rpl
-        - periph_rtc
-        - periph_pm
-        - pm_layered
-        - ps
-        - random
-        - saul_reg
-        - sht1x
-        - sntp
-        - vfs
+      - at30tse75x
+      - ccn-lite-utils
+      - cpu/x86
+      - fib
+      - gnrc_icmpv6_echo
+      - gnrc_ipv6_blacklist
+      - gnrc_ipv6_nc
+      - gnrc_ipv6_whitelist
+      - gnrc_netif
+      - gnrc_pktbuf_cmd
+      - gnrc_rpl
+      - gnrc_sixlowpan_ctx
+      - gnrc_sixlowpan_nd_border_router
+      - gnrc_txtsnd
+      - ipv6_addr
+      - l2filter
+      - lpc2387
+      - mci
+      - netstats
+      - netstats_l2
+      - netstats_ipv6
+      - netstats_rpl
+      - periph_rtc
+      - periph_pm
+      - pm_layered
+      - ps
+      - random
+      - saul_reg
+      - sht1x
+      - sntp
+      - vfs

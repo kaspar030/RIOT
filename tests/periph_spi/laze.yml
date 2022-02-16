@@ -4,4 +4,5 @@ app:
         - shell
         - shell_commands
         - schedstatistics
-        - xtimer
+        - ztimer_usec
+        - ztimer_sec

@@ -3,8 +3,9 @@ module:
     sources:
       - asymcute.c
     depends:
-      - event
       - event_timeout
       - event_callback
-      - gnrc_sock_udp
-
+      - sock_udp
+      - sock_util
+      - sock_async_event
+      - random

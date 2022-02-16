@@ -30,6 +30,7 @@ subdirs:
     - ds75lx
     - dsp0401
     - dynamixel
+    - edbg_eui
     - enc28j60
     - encx24j600
     - ethos

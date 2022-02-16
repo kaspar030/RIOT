@@ -1,7 +1,7 @@
 app:
   - depends:
         - si7006
-        - xtimer
+        - ztimer_msec
     env:
       local:
         CFLAGS:

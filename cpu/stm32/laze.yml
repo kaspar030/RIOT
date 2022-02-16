@@ -29,7 +29,7 @@ context:
         - -Wl,--defsym=_ram_start_addr=0x20000000
       ARM_MATH: -DARM_MATH_CM4
     disable:
-      - periph_flashpage
+      #- periph_flashpage
       - periph_hwrng
       - periph_rtc
       - periph_rtt

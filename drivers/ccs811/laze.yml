@@ -3,7 +3,7 @@ module:
       depends:
           - periph_gpio
           - periph_i2c
-          - xtimer
+          - ztimer_usec
       uses:
           - ccs811_full
       sources:

@@ -1,0 +1,6 @@
+module:
+  - name: netutils
+    sources:
+      - util.c
+    uses:
+      - sock_dns

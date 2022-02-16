@@ -1,7 +1,7 @@
 app:
   - depends:
         - lis3mdl
-        - xtimer
+        - ztimer_msec
     env:
       local:
         CFLAGS:

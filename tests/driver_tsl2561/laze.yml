@@ -1,7 +1,7 @@
 app:
   - depends:
         - tsl2561
-        - xtimer
+        - ztimer_msec
     env:
       local:
         CFLAGS:

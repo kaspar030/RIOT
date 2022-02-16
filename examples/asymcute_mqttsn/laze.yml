@@ -1,6 +1,7 @@
 app:
     - depends:
           - asymcute
+          - gnrc_sock_udp
           - sock_util
 
           # this pulls in GNRC's default configuration

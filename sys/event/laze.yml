@@ -19,3 +19,9 @@ module:
       depends:
           - event
           - xtimer
+    - name: event_timeout_ztimer
+      sources:
+          - timeout_ztimer.c
+      depends:
+          - event
+          - ztimer_usec

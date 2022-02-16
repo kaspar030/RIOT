@@ -6,6 +6,8 @@ defaults:
 
 module:
   - name: periph_flashpage
+    depends:
+      - periph_flash_common
     sources:
       - flashpage.c
     env:
@@ -151,4 +153,12 @@ module:
 
   - name: periph_eeprom
     sources: [eeprom.c]
-    depends: [feature/periph_eeprom]
+    depends: 
+     - feature/periph_eeprom
+     - periph_flash_common
+
+ # flashpage and eeprom periph implementations share flash lock/unlock functions
+ # defined in flash_common.c
+  - name: periph_flash_common
+    sources:
+      - flash_common.c
