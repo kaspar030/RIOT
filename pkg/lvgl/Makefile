@@ -1,6 +1,6 @@
 PKG_NAME=lvgl
 PKG_URL=https://github.com/littlevgl/lvgl
-PKG_VERSION=d38eb1e689fa5a64c25e677275172d9c8a4ab2f0  # v8.1.0
+PKG_VERSION=0b5a1d4b23975b920ff841ea9cd038802f51711b # v8.2.0
 PKG_LICENSE=MIT
 
 include $(RIOTBASE)/pkg/pkg.mk
@@ -10,6 +10,7 @@ CFLAGS += -Wno-empty-body
 LVGL_MODULES =      \
     lvgl_core       \
     lvgl_draw       \
+    lvgl_draw_sw    \
     lvgl_extra      \
     lvgl_font       \
     lvgl_hal        \
@@ -37,6 +38,7 @@ LVGL_EXTRA_WIDGETS_MODULES =  \
     lvgl_extra_widget_keyboard   \
     lvgl_extra_widget_led \
     lvgl_extra_widget_list   \
+    lvgl_extra_widget_menu \
     lvgl_extra_widget_meter \
     lvgl_extra_widget_msgbox \
     lvgl_extra_widget_spinbox   \
@@ -61,6 +63,9 @@ lvgl_extra_widget_%:
 
 lvgl_extra:
 	$(QQ)"$(MAKE)" -C $(PKG_SOURCE_DIR)/src/extra -f $(CURDIR)/Makefile.lvgl_module MODULE=$@
+
+lvgl_draw_sw:
+	$(QQ)"$(MAKE)" -C $(PKG_SOURCE_DIR)/src/draw/sw -f $(CURDIR)/Makefile.lvgl_module MODULE=$@
 
 lvgl_%:
 	$(QQ)"$(MAKE)" -C $(PKG_SOURCE_DIR)/src/$* -f $(CURDIR)/Makefile.lvgl_module MODULE=$@

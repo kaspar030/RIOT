@@ -1,6 +1,7 @@
 USEMODULE += lvgl
 USEMODULE += lvgl_core
 USEMODULE += lvgl_draw
+USEMODULE += lvgl_draw_sw
 USEMODULE += lvgl_font
 USEMODULE += lvgl_extra
 USEMODULE += lvgl_hal
@@ -22,6 +23,7 @@ USEMODULE += lvgl_extra_widget_imgbtn
 USEMODULE += lvgl_extra_widget_keyboard
 USEMODULE += lvgl_extra_widget_led
 USEMODULE += lvgl_extra_widget_list
+USEMODULE += lvgl_extra_widget_menu
 USEMODULE += lvgl_extra_widget_meter
 USEMODULE += lvgl_extra_widget_msgbox
 USEMODULE += lvgl_extra_widget_spinbox
