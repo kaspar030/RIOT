@@ -31,9 +31,9 @@
 #include "lvgl_riot.h"
 
 #include "screen_dev.h"
-#if IS_USED(MODULE_LV_DRIVERS_DISPLAY_MONITOR)
-#include "display/monitor_disp_dev.h"
-#include "display/monitor.h"
+#if IS_USED(MODULE_LV_DRIVERS_DISPLAY_SDL)
+#include "display/sdl_disp_dev.h"
+#include "display/sdl.h"
 #endif
 
 #ifndef LVGL_COLOR_BUF_SIZE
@@ -129,14 +129,14 @@ void lvgl_init(screen_dev_t *screen_dev)
 
     lv_disp_t *disp = lv_disp_drv_register(&disp_drv);
 
-#if IS_USED(MODULE_LV_DRIVERS_DISPLAY_MONITOR)
-    /* monitor init start the SDL handler inside an lvgl task, therefore
+#if IS_USED(MODULE_LV_DRIVERS_DISPLAY_SDL)
+    /* sdl init start the SDL handler inside an lvgl task, therefore
        it needs to be started after lv_init() but before auto_init_lvgl()*/
-    monitor_init();
-    /* since the lv_driver monitor is LVGL based it needs a pointer to
+    sdl_init();
+    /* since the lv_driver sdl is LVGL based it needs a pointer to
        the display driver */
-    monitor_t *monitor = (monitor_t *)screen_dev->display;
-    monitor->disp_drv = &disp->driver;
+    sdl_t *sdl = (sdl_t *)screen_dev->display;
+    sdl->disp_drv = disp->driver;
 #else
     (void)disp;
 #endif

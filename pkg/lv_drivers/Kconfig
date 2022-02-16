@@ -13,13 +13,13 @@ menuconfig PACKAGE_LV_DRIVERS
 
 if PACKAGE_LVGL
 
-config MODULE_LV_DRIVERS_DISPLAY_MONITOR
-    bool "Monitor driver"
+config MODULE_LV_DRIVERS_DISPLAY_SDL
+    bool "SDL driver"
     depends on HAS_ARCH_NATIVE
-    select MODULE_LV_DRIVERS_MONITOR
+    select MODULE_LV_DRIVERS_SDL
 
-config MODULE_LV_DRIVERS_MONITOR
-    bool "Monitor driver Adaptation Code"
+config MODULE_LV_DRIVERS_SDL
+    bool "SDL driver Adaptation Code"
     depends on HAS_ARCH_NATIVE
     select MODULE_LV_DRIVERS_MOUSE
 
@@ -31,11 +31,11 @@ config MODULE_LV_DRIVERS_MOUSE
     bool "Mouse Driver Adaptation Code"
     depends on HAS_ARCH_NATIVE
 
-config HAVE_DISPLAY_MONITOR
+config HAVE_DISPLAY_SDL
     bool
-    select MODULE_LV_DRIVERS_DISPLAY_MONITOR if MODULE_DISP_DEV
+    select MODULE_LV_DRIVERS_DISPLAY_SDL if MODULE_DISP_DEV
     help
-        Indicates a display monitor is present
+        Indicates SDL is present
 
 config HAVE_INDEV_MOUSE
     bool

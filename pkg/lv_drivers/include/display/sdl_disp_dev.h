@@ -7,7 +7,7 @@
  */
 
 /**
- * @defgroup    pkg_lvgl_drivers_monitor LVGL SDL display driver
+ * @defgroup    pkg_lvgl_drivers_sdl LVGL SDL display driver
  * @ingroup     pkg_lvgl
  * @{
  *
@@ -17,8 +17,8 @@
  * @author      Alexandre Abadie <alexandre.abadie@inria.fr>
  */
 
-#ifndef DISPLAY_MONITOR_DISP_DEV_H
-#define DISPLAY_MONITOR_DISP_DEV_H
+#ifndef DISPLAY_SDL_DISP_DEV_H
+#define DISPLAY_SDL_DISP_DEV_H
 
 #include "disp_dev.h"
 #include "lvgl/lvgl.h"
@@ -30,26 +30,26 @@ extern "C" {
 /**
  * @brief   Default screen identifiers
  */
-#ifndef MONITOR_PARAM_SCREEN_ID
-#define MONITOR_PARAM_SCREEN_ID     0
+#ifndef SDL_PARAM_SCREEN_ID
+#define SDL_PARAM_SCREEN_ID     0
 #endif
 
 /**
- * @brief   Device descriptor for a monitor
+ * @brief   Device descriptor for a sdl
  */
 typedef struct {
     disp_dev_t *dev;            /**< Pointer to the generic display device */
     lv_disp_drv_t* disp_drv;    /**< pointer to the display driver */
-} monitor_t;
+} sdl_t;
 
 /**
  * @brief   Reference to the display device driver struct
  */
-extern const disp_dev_driver_t monitor_disp_dev_driver;
+extern const disp_dev_driver_t sdl_disp_dev_driver;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* DISPLAY_MONITOR_DISP_DEV_H */
+#endif /* DISPLAY_SDL_DISP_DEV_H */
 /** @} **/

@@ -33,9 +33,9 @@ void auto_init_screen(void)
             extern void auto_init_periph_ltdc(void);
             auto_init_periph_ltdc();
         }
-        if (IS_USED(MODULE_LV_DRIVERS_DISPLAY_MONITOR)) {
-            extern void auto_init_monitor(void);
-            auto_init_monitor();
+        if (IS_USED(MODULE_LV_DRIVERS_DISPLAY_SDL)) {
+            extern void auto_init_sdl(void);
+            auto_init_sdl();
         }
     }
 
