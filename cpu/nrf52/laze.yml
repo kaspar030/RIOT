@@ -28,6 +28,8 @@ context:
             - -DCPU_NRF52832
             - -DCPU_MODEL_NRF52832XXAA
         ROM_LEN: "0x80000"
+        SLOT0_LEN: "0x3f000"
+        SLOT1_LEN: "0x3f000"
         RAM_LEN: "0x10000"
 
 module:

@@ -8,5 +8,5 @@ module:
         - gnrc_sock_async
         - sock_async_event
         - sock_util
-        - event_timeout
+        - event_timeout_ztimer
         - event_callback

@@ -4,6 +4,7 @@ app:
         - gnrc_sock_check_reuse
         - gnrc_sock_udp
         - ps
+        - xtimer
     uses:
         - gnrc_sock_check_reuse
     sources:

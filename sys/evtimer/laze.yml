@@ -1,6 +1,9 @@
 module:
   - name: evtimer
     depends:
-        - xtimer
+        - evtimer_on_ztimer
+        - ztimer_msec
     sources:
         - evtimer.c
+
+  - name: evtimer_on_ztimer

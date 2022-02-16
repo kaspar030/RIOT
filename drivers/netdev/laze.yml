@@ -10,9 +10,11 @@ module:
     uses:
       - l2filter
 
-  - name: netdev_ieee80415
+  - name: netdev_ieee802154
+    depends:
+      - random
     sources:
-      - ieee80415.c
+      - ieee802154.c
     uses:
       - gnrc
       - gnrc_sixlowpan

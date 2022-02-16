@@ -8,7 +8,7 @@ module:
         - periph_gpio
         - periph_spi
         - periph_timer
-        - xtimer
+        - ztimer_usec
     sources:
         - sdcard_spi.c
     env:

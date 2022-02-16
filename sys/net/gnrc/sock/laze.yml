@@ -20,11 +20,16 @@ module:
 
    - name: gnrc_sock_async
      depends:
+         - gnrc_netreg
          - gnrc_sock
          - sock_async
          - gnrc_netapi_callbacks
      uses:
         - sock_async_event
+     env:
+       export:
+         CFLAGS:
+             - -DSOCK_HAS_ASYNC
 
 subdirs:
         - ip

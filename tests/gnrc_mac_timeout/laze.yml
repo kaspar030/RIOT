@@ -1,6 +1,7 @@
 app:
   - depends:
         - gnrc_mac
+        - xtimer
     blocklist:
         # insufficient memory
         - atmega_common

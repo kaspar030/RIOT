@@ -5,3 +5,5 @@ app:
      - shell
      - shell_commands
      - printf_float
+     - ztimer_usec
+     - ztimer_sec

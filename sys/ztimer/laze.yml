@@ -50,7 +50,7 @@ module:
       - ztimer_usec
 
     sources:
-      - auto_init.c
+      - init.c
 
   - name: ztimer_convert
     sources:

@@ -28,6 +28,7 @@ context:
 
     rule:
       - name: CC
+        description: CC ${out}
         in: "c"
         out: "o"
         gcc_deps: "$out.d"

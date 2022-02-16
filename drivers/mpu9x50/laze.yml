@@ -2,7 +2,7 @@ module:
   - name: mpu9x50
     depends:
         - periph_i2c
-        - xtimer
+        - ztimer_msec
 
     uses:
         - mpu9150

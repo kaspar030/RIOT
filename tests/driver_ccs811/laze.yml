@@ -1,3 +1,4 @@
 app:
   - depends:
         - ccs811
+        - ztimer_usec

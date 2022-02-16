@@ -19,6 +19,7 @@ module:
       - gnrc_lorawan
       - gnrc_lwmac
       - gnrc_mac
+      - gnrc_netif_6lo
       - gnrc_netif_dedup
       - gnrc_netif_ipv6
       - gnrc_netif_ethernet

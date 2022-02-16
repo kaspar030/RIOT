@@ -4,7 +4,12 @@ module:
     download:
       git:
         url: https://github.com/relic-toolkit/relic.git
-        commit: 0b0442a8218df8d309266923f2dd5b9ae3b318ce
+        commit: e3f82e36250b228f3b4646781f6e06a8be497d18
+      patches:
+        - patches/0001-use-modul-random-for-seeding.patch
+        - patches/0002-add-RIOT-random-support-to-cmake-and-relic_conf.h.patch
+    depends:
+      - random
     build:
       cmd:
         - rm -rf ${bindir}/*
@@ -12,16 +17,16 @@ module:
         - export CC='${CC}'
         - export CXX='${CXX}'
         - export LINK='${LINK}'
-        - dist/tools/cmake/generate-xcompile-toolchain.sh > ${TOOLCHAIN_FILE}
-        - COMP='${CFLAGS} ${CFLAGS_ARCH} ${CFLAGS_CODEGEN}' cmake
+        - export CFLAGS='${CFLAGS} ${CFLAGS_ARCH} ${CFLAGS_CODEGEN} ${CFLAGS_DEFINES}'
+        - ${root}/dist/tools/cmake/generate-xcompile-toolchain.sh > ${TOOLCHAIN_FILE}
+        - cmake
           -DCMAKE_TOOLCHAIN_FILE=$$(realpath ${TOOLCHAIN_FILE})
           -DCHECK=off -DTESTS=0 -DBENCH=0 -DSHLIB=off -Wno-dev
           ${RELIC_CONFIG_FLAGS}
           -S ${srcdir} -B ${bindir} -G Ninja
         - ninja -C ${bindir}
       out:
-        - ${bindir}/librelic_s.a
-      build_before_dependees: true
+        - ${bindir}/lib/librelic_s.a
     env:
       local:
         srcdir: ${srcdir}
@@ -32,6 +37,9 @@ module:
           - -Wno-error
           - -Wno-error=old-style-definition
           - -Wno-error=strict-prototypes
+          - -Wno-array-parameter
+          - -Wno-stringop-overflow
+          - -Wno-unused-but-set-variable
           - -std=gnu99
       export:
         LINKFLAGS:
@@ -39,3 +47,6 @@ module:
         includes:
           - ${bindir}/include
           - ${srcdir}/include
+      global:
+        libs:
+          - ${bindir}/lib/librelic_s.a

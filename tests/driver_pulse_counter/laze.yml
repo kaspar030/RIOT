@@ -1,3 +1,4 @@
 app:
   - depends:
         - pulse_counter
+        - ztimer_msec

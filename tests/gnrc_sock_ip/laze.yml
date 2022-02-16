@@ -3,6 +3,7 @@ app:
         - gnrc_ipv6
         - gnrc_sock_ip
         - ps
+        - xtimer
     sources:
       - stack.c
     env:

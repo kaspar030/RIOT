@@ -6,6 +6,7 @@ module:
       - at86rf2xx_internal.c
       - at86rf2xx_netdev.c
     depends:
+      - eui_provider
       - ieee802154
       - luid
       - netdev_ieee802154
