@@ -7,7 +7,7 @@
  */
 
 /**
- * @ingroup     drivers_mouse
+ * @ingroup     pkg_lvgl_drivers_mouse
  * @{
  *
  * @file
