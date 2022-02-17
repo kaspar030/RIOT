@@ -113,7 +113,7 @@ void lvgl_init(screen_dev_t *screen_dev)
 
     lv_disp_draw_buf_init(&disp_buf, buf1, buf2, LVGL_COLOR_BUF_SIZE);
 
-    lv_disp_drv_t disp_drv;
+    static lv_disp_drv_t disp_drv;
 
     lv_disp_drv_init(&disp_drv);
     disp_drv.draw_buf = &disp_buf;
@@ -143,7 +143,7 @@ void lvgl_init(screen_dev_t *screen_dev)
 
 #if IS_USED(MODULE_TOUCH_DEV)
     if (screen_dev->touch) {
-        lv_indev_drv_t indev_drv;
+        static lv_indev_drv_t indev_drv;
         lv_indev_drv_init(&indev_drv);
         indev_drv.type = LV_INDEV_TYPE_POINTER;
         indev_drv.read_cb = _touch_read;
