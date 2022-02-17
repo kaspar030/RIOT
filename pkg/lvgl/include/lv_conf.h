@@ -77,19 +77,28 @@ extern "C" {
 /*1: use custom malloc/free, 0: use the built-in `lv_mem_alloc()` and `lv_mem_free()`*/
 #define LV_MEM_CUSTOM      0
 #if LV_MEM_CUSTOM == 0
-/*Size of the memory available for `lv_mem_alloc()` in bytes (>= 2kB)*/
-#  define LV_MEM_SIZE    (5U * 1024U)          /*[bytes]*/
+    /*Size of the memory available for `lv_mem_alloc()` in bytes (>= 2kB)*/
+    #  define LV_MEM_SIZE    (48U * 1024U)          /*[bytes]*/
 
-/*Set an address for the memory pool instead of allocating it as a normal array. Can be in external SRAM too.*/
-#  define LV_MEM_ADR          0     /*0: unused*/
+    /*Set an address for the memory pool instead of allocating it as a normal array. Can be in external SRAM too.*/
+    #define LV_MEM_ADR 0     /*0: unused*/
+    /*Instead of an address give a memory allocator that will be called to get a memory pool for LVGL. E.g. my_malloc*/
+    #if LV_MEM_ADR == 0
+        //#define LV_MEM_POOL_INCLUDE your_alloc_library  /* Uncomment if using an external allocator*/
+        //#define LV_MEM_POOL_ALLOC   your_alloc          /* Uncomment if using an external allocator*/
+    #endif
+
 #else       /*LV_MEM_CUSTOM*/
-#  define LV_MEM_CUSTOM_INCLUDE <stdlib.h>   /*Header for the dynamic memory function*/
-#  define LV_MEM_CUSTOM_ALLOC     malloc
-#  define LV_MEM_CUSTOM_FREE      free
+    #define LV_MEM_CUSTOM_INCLUDE <stdlib.h>   /*Header for the dynamic memory function*/
+    #define LV_MEM_CUSTOM_ALLOC     malloc
+    #define LV_MEM_CUSTOM_FREE      free
+    #define LV_MEM_CUSTOM_REALLOC   realloc
 #endif     /*LV_MEM_CUSTOM*/
 
+#define LV_MEM_BUF_MAX_NUM 16
+
 /*Use the standard `memcpy` and `memset` instead of LVGL's own functions. (Might or might not be faster).*/
-#define LV_MEMCPY_MEMSET_STD    1
+#define LV_MEMCPY_MEMSET_STD    0
 
 /*====================
    HAL SETTINGS
@@ -118,10 +127,16 @@ extern "C" {
 #define LV_DRAW_COMPLEX 1
 #if LV_DRAW_COMPLEX != 0
 
-/*Allow buffering some shadow calculation.
- *LV_SHADOW_CACHE_SIZE is the max. shadow size to buffer, where shadow size is `shadow_width + radius`
- *Caching has LV_SHADOW_CACHE_SIZE^2 RAM cost*/
-#define LV_SHADOW_CACHE_SIZE    0
+    /*Allow buffering some shadow calculation.
+    *LV_SHADOW_CACHE_SIZE is the max. shadow size to buffer, where shadow size is `shadow_width + radius`
+    *Caching has LV_SHADOW_CACHE_SIZE^2 RAM cost*/
+    #define LV_SHADOW_CACHE_SIZE 0
+
+    /* Set number of maximally cached circle data.
+    * The circumference of 1/4 circle are saved for anti-aliasing
+    * radius * 4 bytes are used per circle (the most often used radiuses are saved)
+    * 0: to disable caching */
+    #define LV_CIRCLE_CACHE_SIZE 4
 #endif /*LV_DRAW_COMPLEX*/
 
 /*Default image cache size. Image caching keeps the images opened.
@@ -131,64 +146,98 @@ extern "C" {
  *0: to disable caching*/
 #define LV_IMG_CACHE_DEF_SIZE       0
 
-/*Maximum buffer size to allocate for rotation. Only used if software rotation is enabled in the display driver.*/
-#define LV_DISP_ROT_MAX_BUF         (10*1024)
+/*Number of stops allowed per gradient. Increase this to allow more stops.
+ *This adds (sizeof(lv_color_t) + 1) bytes per additional stop*/
+#define LV_GRADIENT_MAX_STOPS       2
+
+/*Default gradient buffer size.
+ *When LVGL calculates the gradient "maps" it can save them into a cache to avoid calculating them again.
+ *LV_GRAD_CACHE_DEF_SIZE sets the size of this cache in bytes.
+ *If the cache is too small the map will be allocated only while it's required for the drawing.
+ *0 mean no caching.*/
+#define LV_GRAD_CACHE_DEF_SIZE      0
+
+/*Allow dithering the gradients (to achieve visual smooth color gradients on limited color depth display)
+ *LV_DITHER_GRADIENT implies allocating one or two more lines of the object's rendering surface
+ *The increase in memory consumption is (32 bits * object width) plus 24 bits * object width if using error diffusion */
+#define LV_DITHER_GRADIENT      0
+#if LV_DITHER_GRADIENT
+    /*Add support for error diffusion dithering.
+     *Error diffusion dithering gets a much better visual result, but implies more CPU consumption and memory when drawing.
+     *The increase in memory consumption is (24 bits * object's width)*/
+    #define LV_DITHER_ERROR_DIFFUSION   0
+#endif
+
+/*Maximum buffer size to allocate for rotation.
+ *Only used if software rotation is enabled in the display driver.*/
+#define LV_DISP_ROT_MAX_BUF (10*1024)
+
 /*-------------
  * GPU
  *-----------*/
 
 /*Use STM32's DMA2D (aka Chrom Art) GPU*/
-#define LV_USE_GPU_STM32_DMA2D  0
+#define LV_USE_GPU_STM32_DMA2D 0
 #if LV_USE_GPU_STM32_DMA2D
-/*Must be defined to include path of CMSIS header of target processor
-e.g. "stm32f769xx.h" or "stm32f429xx.h"*/
-#define LV_GPU_DMA2D_CMSIS_INCLUDE
+    /*Must be defined to include path of CMSIS header of target processor
+    e.g. "stm32f769xx.h" or "stm32f429xx.h"*/
+    #define LV_GPU_DMA2D_CMSIS_INCLUDE
 #endif
 
 /*Use NXP's PXP GPU iMX RTxxx platforms*/
-#define LV_USE_GPU_NXP_PXP      0
+#define LV_USE_GPU_NXP_PXP 0
 #if LV_USE_GPU_NXP_PXP
-/*1: Add default bare metal and FreeRTOS interrupt handling routines for PXP (lv_gpu_nxp_pxp_osa.c)
- *   and call lv_gpu_nxp_pxp_init() automatically during lv_init(). Note that symbol SDK_OS_FREE_RTOS
- *   has to be defined in order to use FreeRTOS OSA, otherwise bare-metal implementation is selected.
- *0: lv_gpu_nxp_pxp_init() has to be called manually before lv_init()
- */
-#define LV_USE_GPU_NXP_PXP_AUTO_INIT 0
+    /*1: Add default bare metal and FreeRTOS interrupt handling routines for PXP (lv_gpu_nxp_pxp_osa.c)
+    *   and call lv_gpu_nxp_pxp_init() automatically during lv_init(). Note that symbol SDK_OS_FREE_RTOS
+    *   has to be defined in order to use FreeRTOS OSA, otherwise bare-metal implementation is selected.
+    *0: lv_gpu_nxp_pxp_init() has to be called manually before lv_init()
+    */
+    #define LV_USE_GPU_NXP_PXP_AUTO_INIT 0
 #endif
 
 /*Use NXP's VG-Lite GPU iMX RTxxx platforms*/
-#define LV_USE_GPU_NXP_VG_LITE   0
+#define LV_USE_GPU_NXP_VG_LITE 0
+
+/*Use SDL renderer API*/
+#define LV_USE_GPU_SDL 0
+#if LV_USE_GPU_SDL
+    #define LV_GPU_SDL_INCLUDE_PATH <SDL2/SDL.h>
+    /*Texture cache size, 8MB by default*/
+    #define LV_GPU_SDL_LRU_SIZE (1024 * 1024 * 8)
+    /*Custom blend mode for mask drawing, disable if you need to link with older SDL2 lib*/
+    #define LV_GPU_SDL_CUSTOM_BLEND_MODE (SDL_VERSION_ATLEAST(2, 0, 6))
+#endif
 
 /*-------------
  * Logging
  *-----------*/
 
 /*Enable the log module*/
-#define LV_USE_LOG      0
+#define LV_USE_LOG 0
 #if LV_USE_LOG
 
-/*How important log should be added:
- *LV_LOG_LEVEL_TRACE       A lot of logs to give detailed information
- *LV_LOG_LEVEL_INFO        Log important events
- *LV_LOG_LEVEL_WARN        Log if something unwanted happened but didn't cause a problem
- *LV_LOG_LEVEL_ERROR       Only critical issue, when the system may fail
- *LV_LOG_LEVEL_USER        Only logs added by the user
- *LV_LOG_LEVEL_NONE        Do not log anything*/
-#  define LV_LOG_LEVEL    LV_LOG_LEVEL_WARN
+    /*How important log should be added:
+    *LV_LOG_LEVEL_TRACE       A lot of logs to give detailed information
+    *LV_LOG_LEVEL_INFO        Log important events
+    *LV_LOG_LEVEL_WARN        Log if something unwanted happened but didn't cause a problem
+    *LV_LOG_LEVEL_ERROR       Only critical issue, when the system may fail
+    *LV_LOG_LEVEL_USER        Only logs added by the user
+    *LV_LOG_LEVEL_NONE        Do not log anything*/
+    #define LV_LOG_LEVEL LV_LOG_LEVEL_INFO
 
-/*1: Print the log with 'printf';
- *0: User need to register a callback with `lv_log_register_print_cb()`*/
-#  define LV_LOG_PRINTF   0
+    /*1: Print the log with 'printf';
+    *0: User need to register a callback with `lv_log_register_print_cb()`*/
+    #define LV_LOG_PRINTF 0
 
-/*Enable/disable LV_LOG_TRACE in modules that produces a huge number of logs*/
-#  define LV_LOG_TRACE_MEM            1
-#  define LV_LOG_TRACE_TIMER          1
-#  define LV_LOG_TRACE_INDEV          1
-#  define LV_LOG_TRACE_DISP_REFR      1
-#  define LV_LOG_TRACE_EVENT          1
-#  define LV_LOG_TRACE_OBJ_CREATE     1
-#  define LV_LOG_TRACE_LAYOUT         1
-#  define LV_LOG_TRACE_ANIM           1
+    /*Enable/disable LV_LOG_TRACE in modules that produces a huge number of logs*/
+    #define LV_LOG_TRACE_MEM        1
+    #define LV_LOG_TRACE_TIMER      1
+    #define LV_LOG_TRACE_INDEV      1
+    #define LV_LOG_TRACE_DISP_REFR  1
+    #define LV_LOG_TRACE_EVENT      1
+    #define LV_LOG_TRACE_OBJ_CREATE 1
+    #define LV_LOG_TRACE_LAYOUT     1
+    #define LV_LOG_TRACE_ANIM       1
 
 #endif  /*LV_USE_LOG*/
 
@@ -205,40 +254,46 @@ e.g. "stm32f769xx.h" or "stm32f429xx.h"*/
 #define LV_USE_ASSERT_OBJ           0   /*Check the object's type and existence (e.g. not deleted). (Slow)*/
 
 /*Add a custom handler when assert happens e.g. to restart the MCU*/
-#define LV_ASSERT_HANDLER_INCLUDE   <stdint.h>
-#define LV_ASSERT_HANDLER   while(1);   /*Halt by default*/
+#define LV_ASSERT_HANDLER_INCLUDE <stdint.h>
+#define LV_ASSERT_HANDLER while(1);   /*Halt by default*/
 
 /*-------------
  * Others
  *-----------*/
 
-/*1: Show CPU usage and FPS count in the right bottom corner*/
-#define LV_USE_PERF_MONITOR     0
+/*1: Show CPU usage and FPS count*/
+#define LV_USE_PERF_MONITOR 0
+#if LV_USE_PERF_MONITOR
+    #define LV_USE_PERF_MONITOR_POS LV_ALIGN_BOTTOM_RIGHT
+#endif
 
-/*1: Show the used memory and the memory fragmentation  in the left bottom corner
+/*1: Show the used memory and the memory fragmentation
  * Requires LV_MEM_CUSTOM = 0*/
-#define LV_USE_MEM_MONITOR      0
+#define LV_USE_MEM_MONITOR 0
+#if LV_USE_MEM_MONITOR
+    #define LV_USE_MEM_MONITOR_POS LV_ALIGN_BOTTOM_LEFT
+#endif
 
 /*1: Draw random colored rectangles over the redrawn areas*/
-#define LV_USE_REFR_DEBUG       0
+#define LV_USE_REFR_DEBUG 0
 
 /*Change the built in (v)snprintf functions*/
-#define LV_SPRINTF_CUSTOM   0
+#define LV_SPRINTF_CUSTOM 0
 #if LV_SPRINTF_CUSTOM
-#  define LV_SPRINTF_INCLUDE <stdio.h>
-#  define lv_snprintf     snprintf
-#  define lv_vsnprintf    vsnprintf
+    #define LV_SPRINTF_INCLUDE <stdio.h>
+    #define lv_snprintf  snprintf
+    #define lv_vsnprintf vsnprintf
 #else   /*LV_SPRINTF_CUSTOM*/
-#  define LV_SPRINTF_USE_FLOAT 0
+    #define LV_SPRINTF_USE_FLOAT 0
 #endif  /*LV_SPRINTF_CUSTOM*/
 
-#define LV_USE_USER_DATA      1
+#define LV_USE_USER_DATA 1
 
 /*Garbage Collector settings
- *Used if lvgl is binded to higher level language and the memory is managed by that language*/
+ *Used if lvgl is bound to higher level language and the memory is managed by that language*/
 #define LV_ENABLE_GC 0
 #if LV_ENABLE_GC != 0
-#  define LV_GC_INCLUDE "gc.h"                           /*Include Garbage Collector related things*/
+    #define LV_GC_INCLUDE "gc.h"                           /*Include Garbage Collector related things*/
 #endif /*LV_ENABLE_GC*/
 
 /*=====================
@@ -338,10 +393,10 @@ e.g. "stm32f769xx.h" or "stm32f429xx.h"*/
 #define LV_USE_FONT_COMPRESSED  0
 
 /*Enable subpixel rendering*/
-#define LV_USE_FONT_SUBPX       0
+#define LV_USE_FONT_SUBPX 0
 #if LV_USE_FONT_SUBPX
-/*Set the pixel order of the display. Physical order of RGB channels. Doesn't matter with "normal" fonts.*/
-#define LV_FONT_SUBPX_BGR       0  /*0: RGB; 1:BGR order*/
+    /*Set the pixel order of the display. Physical order of RGB channels. Doesn't matter with "normal" fonts.*/
+    #define LV_FONT_SUBPX_BGR 0  /*0: RGB; 1:BGR order*/
 #endif
 
 /*=================
@@ -446,74 +501,77 @@ e.g. "stm32f769xx.h" or "stm32f429xx.h"*/
 /*-----------
  * Widgets
  *----------*/
-#define LV_USE_CALENDAR     1
+#define LV_USE_CALENDAR   1
 #if LV_USE_CALENDAR
-# define LV_CALENDAR_WEEK_STARTS_MONDAY 0
-# if LV_CALENDAR_WEEK_STARTS_MONDAY
-#  define LV_CALENDAR_DEFAULT_DAY_NAMES {"Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"}
-# else
-#  define LV_CALENDAR_DEFAULT_DAY_NAMES {"Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"}
-# endif
+    #define LV_CALENDAR_WEEK_STARTS_MONDAY 0
+    #if LV_CALENDAR_WEEK_STARTS_MONDAY
+        #define LV_CALENDAR_DEFAULT_DAY_NAMES {"Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"}
+    #else
+        #define LV_CALENDAR_DEFAULT_DAY_NAMES {"Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"}
+    #endif
 
-# define LV_CALENDAR_DEFAULT_MONTH_NAMES {"January", "February", "March",  "April", "May",  "June", "July", "August", "September", "October", "November", "December"}
-# define LV_USE_CALENDAR_HEADER_ARROW       1
-# define LV_USE_CALENDAR_HEADER_DROPDOWN    1
+    #define LV_CALENDAR_DEFAULT_MONTH_NAMES {"January", "February", "March",  "April", "May",  "June", "July", "August", "September", "October", "November", "December"}
+    #define LV_USE_CALENDAR_HEADER_ARROW 1
+    #define LV_USE_CALENDAR_HEADER_DROPDOWN 1
 #endif  /*LV_USE_CALENDAR*/
 
-#define LV_USE_CHART        1
+#define LV_USE_CHART      1
 
-#define LV_USE_COLORWHEEL   1
+#define LV_USE_COLORWHEEL 1
 
-#define LV_USE_IMGBTN       1
+#define LV_USE_IMGBTN     1
 
-#define LV_USE_KEYBOARD     1
+#define LV_USE_KEYBOARD   1
 
-#define LV_USE_LED          1
+#define LV_USE_LED        1
 
-#define LV_USE_LIST         1
+#define LV_USE_LIST       1
 
-#define LV_USE_METER        1
+#define LV_USE_MENU       1
 
-#define LV_USE_MSGBOX       1
+#define LV_USE_METER      1
 
-#define LV_USE_SPINBOX      1
+#define LV_USE_MSGBOX     1
 
-#define LV_USE_SPINNER      1
+#define LV_USE_SPINBOX    1
 
-#define LV_USE_TABVIEW      1
+#define LV_USE_SPINNER    1
 
-#define LV_USE_TILEVIEW     1
+#define LV_USE_TABVIEW    1
 
-#define LV_USE_WIN          1
+#define LV_USE_TILEVIEW   1
 
-#define LV_USE_SPAN         1
+#define LV_USE_WIN        1
+
+#define LV_USE_SPAN       1
 #if LV_USE_SPAN
-/*A line text can contain maximum num of span descriptor */
-#  define LV_SPAN_SNIPPET_STACK_SIZE   64
+    /*A line text can contain maximum num of span descriptor */
+    #define LV_SPAN_SNIPPET_STACK_SIZE 64
 #endif
 
 /*-----------
  * Themes
  *----------*/
+
 /*A simple, impressive and very complete theme*/
-#define LV_USE_THEME_DEFAULT    1
+#define LV_USE_THEME_DEFAULT 1
 #if LV_USE_THEME_DEFAULT
 
-/*0: Light mode; 1: Dark mode*/
-# define LV_THEME_DEFAULT_DARK     0
+    /*0: Light mode; 1: Dark mode*/
+    #define LV_THEME_DEFAULT_DARK 0
 
-/*1: Enable grow on press*/
-# define LV_THEME_DEFAULT_GROW              1
+    /*1: Enable grow on press*/
+    #define LV_THEME_DEFAULT_GROW 1
 
-/*Default transition time in [ms]*/
-# define LV_THEME_DEFAULT_TRANSITON_TIME    80
+    /*Default transition time in [ms]*/
+    #define LV_THEME_DEFAULT_TRANSITION_TIME 80
 #endif /*LV_USE_THEME_DEFAULT*/
 
-/*An very simple them that is a good starting point for a custom theme*/
- #define LV_USE_THEME_BASIC    1
+/*A very simple theme that is a good starting point for a custom theme*/
+#define LV_USE_THEME_BASIC 1
 
 /*A theme designed for monochrome displays*/
-#define LV_USE_THEME_MONO       1
+#define LV_USE_THEME_MONO 1
 
 /*-----------
  * Layouts

@@ -24,7 +24,7 @@
 
 #include "timex.h"
 #include "ztimer.h"
-// #include "ztimer/periodic.h"
+#include "ztimer/periodic.h"
 #include "log.h"
 
 #include "lvgl/lvgl.h"
@@ -54,7 +54,7 @@
 
 static kernel_pid_t _task_thread_pid;
 
-// static lv_color_t buf[LVGL_COLOR_BUF_SIZE];
+//static lv_color_t buf[LVGL_COLOR_BUF_SIZE];
 static lv_disp_draw_buf_t disp_buf;
 static lv_color_t buf1[LVGL_COLOR_BUF_SIZE];
 static lv_color_t buf2[LVGL_COLOR_BUF_SIZE];
@@ -152,43 +152,28 @@ void lvgl_init(screen_dev_t *screen_dev)
 #endif
 }
 
-// static int _timer_cb(void *arg)
-// {
-//     (void)arg;
-//     lv_tick_inc(CONFIG_LVGL_TASK_HANDLER_DELAY_MS);
-//     return 0;
-// }
-
 void lvgl_run(void)
 {
-    // ztimer_periodic_t timer;
-    // ztimer_periodic_init(ZTIMER_USEC, &timer, _timer_cb, NULL, CONFIG_LVGL_TASK_HANDLER_DELAY_MS);
-    // ztimer_periodic_start(&timer);
-
-    // _task_thread_pid = thread_getpid();
+    _task_thread_pid = thread_getpid();
 
     while (1) {
         /* Normal operation (no sleep) in < CONFIG_LVGL_INACTIVITY_PERIOD_MS msec
            inactivity */
-        if (lv_disp_get_inactive_time(NULL) < CONFIG_LVGL_INACTIVITY_PERIOD_MS) {
-            puts("handle task before");
-            lv_timer_handler();
-            puts("handle task after");
-        }
-        else {
-            puts("blocking");
-            /* Block after LVGL_ACTIVITY_PERIOD msec inactivity */
-            thread_flags_wait_one(LVGL_THREAD_FLAG);
-            puts("unblocking");
-            /* trigger an activity so the task handler is called on the next loop */
-            lv_disp_trig_activity(NULL);
-            puts("activity");
-        }
+        //if (lv_disp_get_inactive_time(NULL) < CONFIG_LVGL_INACTIVITY_PERIOD_MS) {
+        //    lv_timer_handler();
+        //}
+        //else {
+        //    puts("blocking");
+        //    /* Block after LVGL_ACTIVITY_PERIOD msec inactivity */
+        //    thread_flags_wait_one(LVGL_THREAD_FLAG);
+        //    puts("unblocking");
+        //    /* trigger an activity so the task handler is called on the next loop */
+        //    lv_disp_trig_activity(NULL);
+        //    puts("activity");
+        //}
 
+        lv_timer_handler();
         ztimer_sleep(ZTIMER_MSEC, CONFIG_LVGL_TASK_HANDLER_DELAY_MS);
-        // lv_timer_handler();
-        // xtimer_usleep(CONFIG_LVGL_TASK_HANDLER_DELAY_US);
-        // lv_tick_inc(CONFIG_LVGL_TASK_HANDLER_DELAY_US / US_PER_MS);
     }
 }
 
