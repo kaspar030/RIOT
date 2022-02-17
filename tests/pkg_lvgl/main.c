@@ -31,87 +31,33 @@
 /* Must be lower than LVGL_INACTIVITY_PERIOD_MS for autorefresh */
 #define REFR_TIME           200
 
-static lv_obj_t *win;
-static lv_obj_t *chart;
-static lv_chart_series_t * cpu_ser;
-static lv_chart_series_t *mem_ser;
-static lv_obj_t *info_label;
-static lv_timer_t *refr_task;
 
-static void sysmon_task(lv_timer_t *param)
+static void btn_event_cb(lv_event_t *e)
 {
-    (void)param;
+        lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t * btn = lv_event_get_target(e);
+    if(code == LV_EVENT_CLICKED) {
+        static uint8_t cnt = 0;
+        cnt++;
 
-    /* Get CPU and memory information */
-    uint8_t cpu_busy = 100 - lv_timer_get_idle();
+        /*Get the first child of the button which is the label and change its text*/
+        lv_obj_t * label = lv_obj_get_child(btn, 0);
+        lv_label_set_text_fmt(label, "Button: %d", cnt);
+    }
 
-    lv_mem_monitor_t mem_mon;
-    lv_mem_monitor(&mem_mon);
-
-    uint8_t mem_used_pct = mem_mon.used_pct;
-
-    /* Add the CPU and memory data to the chart */
-    lv_chart_set_next_value(chart, cpu_ser, cpu_busy);
-    lv_chart_set_next_value(chart, mem_ser, mem_used_pct);
-
-    /* Set the text info */
-    lv_label_set_text_fmt(info_label,
-                          "%s%s CPU: %d %%%s\n\n"
-                          LV_TXT_COLOR_CMD"%s MEMORY: %d %%"LV_TXT_COLOR_CMD"\n"
-                          "Total: %" PRIu32 " bytes\n"
-                          "Used: %" PRIu32 " bytes\n"
-                          "Free: %" PRIu32 " bytes\n"
-                          "Frag: %d %%",
-                          LV_TXT_COLOR_CMD,
-                          CPU_LABEL_COLOR,
-                          cpu_busy,
-                          LV_TXT_COLOR_CMD,
-                          MEM_LABEL_COLOR,
-                          mem_used_pct,
-                          mem_mon.total_size,
-                          mem_mon.total_size - mem_mon.free_size,
-                          mem_mon.free_size,
-                          mem_mon.frag_pct);
-
-    /* Force a wakeup of lvgl when each task is called: this ensures an activity
-       is triggered and wakes up lvgl during the next LVGL_INACTIVITY_PERIOD ms */
-    lvgl_wakeup();
 }
 
 void sysmon_create(void)
 {
-    lv_coord_t hres = lv_disp_get_hor_res(NULL);
-    lv_coord_t vres = lv_disp_get_ver_res(NULL);
+    lv_obj_t * btn = lv_btn_create(lv_scr_act());     /*Add a button the current screen*/
+    lv_obj_set_pos(btn, 10, 10);                            /*Set its position*/
+    lv_obj_set_size(btn, 120, 50);                          /*Set its size*/
+    lv_obj_add_event_cb(btn, btn_event_cb, LV_EVENT_ALL, NULL);           /*Assign a callback to the button*/
 
-    win = lv_win_create(lv_scr_act(), 0);
-    lv_win_add_title(win, "System monitor");
+    lv_obj_t * label = lv_label_create(btn);          /*Add a label to the button*/
+    lv_label_set_text(label, "Button");                     /*Set the labels text*/
+    lv_obj_center(label);
 
-    /* Make the window content responsive */
-    lv_obj_set_layout(win, LV_LAYOUT_FLEX);
-
-    /* Create a chart with two data lines */
-    chart = lv_chart_create(lv_scr_act());
-    lv_obj_set_size(chart, hres / 2.5, vres / 2);
-    lv_obj_set_pos(chart, LV_DPI_DEF / 10, LV_DPI_DEF / 10);
-    lv_chart_set_point_count(chart, CHART_POINT_NUM);
-    lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, 0, 100);
-    lv_chart_set_type(chart, LV_CHART_TYPE_LINE);
-    cpu_ser = lv_chart_add_series(chart, lv_palette_main(LV_PALETTE_RED), LV_CHART_AXIS_PRIMARY_Y);
-    mem_ser = lv_chart_add_series(chart, lv_palette_main(LV_PALETTE_BLUE), LV_CHART_AXIS_PRIMARY_Y);
-
-    /* Set the data series to zero */
-    uint16_t i;
-    for(i = 0; i < CHART_POINT_NUM; i++) {
-        lv_chart_set_next_value(chart, cpu_ser, 0);
-        lv_chart_set_next_value(chart, mem_ser, 0);
-    }
-
-    /* Create a label for the details of Memory and CPU usage */
-    info_label = lv_label_create(lv_scr_act());
-    lv_label_set_recolor(info_label, true);
-
-    /* Create the task used to refresh the chart and label */
-    refr_task = lv_timer_create(sysmon_task, REFR_TIME, NULL);
 }
 
 int main(void)
