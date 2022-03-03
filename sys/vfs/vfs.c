@@ -1233,4 +1233,22 @@ int vfs_format_by_path(const char *path)
     return -ENOENT;
 }
 
+void vfs_init(void)
+{
+    /* note: currently this is not needed (and not called) by RIOT.
+     * RIOT-rs needs it, though. */
+
+    /* _vfs_open_files() is statically initialized (all zero).
+     * _allocate_fd() finds "free" fds by checking if their number equals
+     * `KERNEL_PID_UNDEF`, which equals `0` in RIOT.
+     * In RIOT-rs, `0` is a valid pid, so `KERNEL_PID_UNDEF` has a different
+     * value. This needs to be accomodated.
+     */
+    if (KERNEL_PID_UNDEF != 0) {
+        for (unsigned i = 0; i < VFS_MAX_OPEN_FILES; i++) {
+            _vfs_open_files[i].pid = KERNEL_PID_UNDEF;
+        }
+    }
+}
+
 /** @} */
