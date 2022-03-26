@@ -5,13 +5,9 @@ subdirs:
 defaults:
     app:
         context: riot
-        blocklist:
-          - host
         sources:
           - main.c
         depends:
-            - board
-            - riot
             - ?test_utils_interactive_sync
             - ?develhelp
 
@@ -264,11 +260,10 @@ subdirs:
 # C++ tests
 defaults:
     app:
+        context: riot
         sources:
           - main.cpp
         depends:
-            - board
-            - riot
             - ?develhelp
         tasks:
             test:

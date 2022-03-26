@@ -1,7 +1,7 @@
 defaults:
     app:
+      context: riot
       sources: [ main.c ]
-      depends: [ board ]
 
 subdirs:
     - asymcute_mqttsn
