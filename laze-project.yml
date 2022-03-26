@@ -71,6 +71,10 @@ context:
 
   - name: riot
     parent: default
+    select:
+      # All riot applications need a board.
+      # This pulls in cpu, core, ...
+      - board
     env:
       CFLAGS_DEFINES:
         - ${notify}
@@ -129,9 +133,6 @@ builder:
           - "${out}"
 
 module:
-  - name: riot
-    context: riot
-
   - name: riot_version
     env:
       export:
