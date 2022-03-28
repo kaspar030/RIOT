@@ -108,6 +108,9 @@ context:
         - ${relpath}/core/include
         - ${relpath}/drivers/include
         - ${relpath}/sys/include
+      # workaround for `${root}` not being early-applied to tasks
+      riotbase:
+        - ${relpath}
     var_options:
       testsuites:
         start: -DTEST_SUITES=
