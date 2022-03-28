@@ -38,6 +38,7 @@ context:
           ${CFLAGS} ${includes}
           -c ${in} -o ${out}"
       - name: CXX
+        description: CXX ${out}
         in: "cpp"
         out: "o"
         gcc_deps: "$out.d"
@@ -47,10 +48,12 @@ context:
           ${CFLAGS} ${includes}
           -c ${in} -o ${out}"
       - name: ASM
+        description: ASM ${out}
         in: "S"
         out: "o"
         cmd: "${CC_WRAP} ${CC} ${CFLAGS} ${CFLAGS_ARCH} -c ${in} -o ${out}"
       - name: LINK
+        description: LINK ${out}
         in: "o"
         options:
           combine: true
@@ -58,12 +61,10 @@ context:
           ${CFLAGS_CODEGEN} ${CFLAGS}
           ${in} ${libs} -o ${out}"
 
-      - name: SYMLINK
-        cmd: "ln -f ${in} ${out}"
-
         #- name: GIT_DOWNLOAD
         #cmd: 'D=$$(dirname ${out}); rm -rf $$D && git clone ${URL} $$D -n && git -C $$D reset --hard ${COMMIT} && touch ${out}'
       - name: GIT_DOWNLOAD
+        description: GIT_DOWNLOAD ${URL}@${COMMIT}
         cmd: "D=$$(dirname ${out}); rm -rf $$D && git-cache clone ${url} ${commit} $$D && echo ${commit} > ${out}"
 
       - name: GIT_PATCH
