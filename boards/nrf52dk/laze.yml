@@ -9,9 +9,9 @@ builder:
     tools:
       flash:
         cmd:
-          - echo openocd
+          - openocd
               -c 'source [find interface/jlink.cfg]'
-              -f ${riotbase}/boards/common/nrf52/dist/openocd.cfg
+              -f ${root}/boards/common/nrf52/dist/openocd.cfg
               -c 'tcl_port 0'
               -c 'telnet_port 0'
               -c 'gdb_port 0'
