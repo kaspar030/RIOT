@@ -1,4 +1,4 @@
-module:
+modules:
   - name: dsp0401
     depends:
         - periph_gpio

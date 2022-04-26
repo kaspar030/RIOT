@@ -1,4 +1,4 @@
-app:
+apps:
 - depends:
     - micro-ecc
     - periph_hwrng

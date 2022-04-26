@@ -1,8 +1,8 @@
-app:
+apps:
   - depends:
       - tests-rtt_rtc
 
-module:
+modules:
   - name: tests-rtt_rtc
     sources:
       - mock_rtt.c
@@ -19,7 +19,7 @@ module:
         CFLAGS:
           - -DMOCK_RTT_FREQUENCY=32
           - -DMOCK_RTT_MAX_VALUE=0xFFFF
-            #disable:
+            #disables:
             #  - arch_esp32
     # TODO: blacklist mulle
     # mulle always enables periph_rtt.

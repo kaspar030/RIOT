@@ -1,4 +1,4 @@
-module:
+modules:
   - name: at30tse75x
     depends:
         - ztimer_usec

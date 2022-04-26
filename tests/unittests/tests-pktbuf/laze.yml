@@ -1,4 +1,4 @@
-app:
+apps:
     - depends:
         - tests-pktbuf
 
@@ -6,7 +6,7 @@ app:
           # insufficient memory
           - atmega_common
 
-module:
+modules:
     - name: tests-pktbuf
       sources: [tests-pktbuf.c]
       depends:

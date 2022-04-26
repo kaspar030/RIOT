@@ -1,4 +1,4 @@
-module:
+modules:
     - name: analog_util
       sources:
           - adc_util.c

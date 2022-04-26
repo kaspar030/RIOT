@@ -1,4 +1,4 @@
-module:
+modules:
   - name: periph_common
     sources:
       - periph_cpuid: [cpuid.c]

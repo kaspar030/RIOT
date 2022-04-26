@@ -1,4 +1,4 @@
-module:
+modules:
   - name: ds3234
     depends:
         - periph_spi

@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - tsl2561
         - ztimer_msec

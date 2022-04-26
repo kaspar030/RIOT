@@ -1,4 +1,4 @@
-module:
+modules:
   - name: bmp180
     depends:
         - periph_i2c

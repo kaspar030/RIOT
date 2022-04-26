@@ -1,11 +1,11 @@
-app:
+apps:
   - depends:
         - tests-gnrc_ipv6
     blocklist:
         # insufficient memory
         - atmega_common
 
-module:
+modules:
     - name: tests-gnrc_ipv6
       sources: [tests-gnrc_ipv6.c]
       depends:

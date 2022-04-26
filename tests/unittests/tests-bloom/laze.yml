@@ -1,10 +1,10 @@
-app:
+apps:
   - depends:
         - tests-bloom
     blocklist:
         # insufficient memory
         - atmega_common
-module:
+modules:
     - name: tests-bloom
       sources:
         - tests-bloom.c

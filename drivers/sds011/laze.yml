@@ -1,4 +1,4 @@
-module:
+modules:
   - name: sds011
     depends:
         - periph_gpio

@@ -1,4 +1,4 @@
-module:
+modules:
     - name: pn532_core
       sources:
         - pn532.c

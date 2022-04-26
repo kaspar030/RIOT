@@ -1,4 +1,4 @@
-module:
+modules:
     - name: sock_async_event
       sources:
           - sock_async_event.c

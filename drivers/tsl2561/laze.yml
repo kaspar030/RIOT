@@ -1,4 +1,4 @@
-module:
+modules:
   - name: tsl2561
     sources:
         - tsl2561.c

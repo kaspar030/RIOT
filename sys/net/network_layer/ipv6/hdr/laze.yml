@@ -1,4 +1,4 @@
-module:
+modules:
   - name: ipv6_hdr
     depends:
       - ipv6_addr

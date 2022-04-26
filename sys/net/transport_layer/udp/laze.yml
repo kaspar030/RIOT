@@ -1,4 +1,4 @@
-module:
+modules:
   - name: udp
     sources:
         - udp_hdr_print.c

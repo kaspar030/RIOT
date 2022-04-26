@@ -1,4 +1,4 @@
-module:
+modules:
   - name: checksum
     sources:
         - crc8.c

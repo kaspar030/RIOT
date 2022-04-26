@@ -1,4 +1,4 @@
-module:
+modules:
   - name: saul_init_devs
     depends:
         - ?auto_init

@@ -1,4 +1,4 @@
-app:
+apps:
     - name: riotboot
       allowlist:
           - cortexm
@@ -7,7 +7,7 @@ app:
       depends:
           - board
           - riotboot_slot
-      disable:
+      disables:
           - auto_init
           - core_init
           - core_msg

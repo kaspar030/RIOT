@@ -1,4 +1,4 @@
-module:
+modules:
     - sources:
         - adddi3.c
         - anddi3.c

@@ -1,4 +1,4 @@
-module:
+modules:
     - name: xtimer
       sources:
           - xtimer.c

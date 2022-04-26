@@ -1,4 +1,4 @@
-module:
+modules:
   - name: apa102
     depends:
         - periph_gpio

@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
       - vcnl4010
       - xtimer

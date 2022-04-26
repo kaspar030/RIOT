@@ -3,7 +3,7 @@ defaults:
     depends:
       - eui_provider
 
-module:
+modules:
   - name: netdev_eth
     sources:
       - eth.c

@@ -1,4 +1,4 @@
-module:
+modules:
   - name: cayenne-lpp
     license: LGPLv2.1
     download:

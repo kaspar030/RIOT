@@ -1,4 +1,4 @@
-module:
+modules:
     - name: boards/common/stm32
       context: stm32
       env:

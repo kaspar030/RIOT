@@ -1,4 +1,4 @@
-module:
+modules:
   - name: gnrc_netreg
     uses:
         - gnrc_netapi_mbox

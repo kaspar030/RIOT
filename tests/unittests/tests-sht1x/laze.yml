@@ -1,8 +1,8 @@
-app:
+apps:
     - depends:
         - tests-sht1x
 
-module:
+modules:
     - name: tests-sht1x
       sources: [tests-sht1x.c]
       depends:

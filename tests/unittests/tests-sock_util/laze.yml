@@ -1,8 +1,8 @@
-app:
+apps:
     - depends:
         - tests-sock_util
 
-module:
+modules:
     - name: tests-sock_util
       sources: [tests-sock_util.c]
       depends:

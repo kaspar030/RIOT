@@ -1,4 +1,4 @@
-module:
+modules:
   - name: servo
     sources:
         - servo.c

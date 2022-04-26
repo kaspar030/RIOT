@@ -2,16 +2,16 @@ defaults:
   module:
     context: avr8_common
 
-context:
+contexts:
   - name: avr8_common
     parent: riot
-    select:
+    selects:
       - arch_8bit
       - arch_avr8
       - avr8_common
       - avr_libc_extra
       - core_idle_thread
-    disable:
+    disables:
       # causes internal compiler error on gcc 11.2.0
       - lto
     env:
@@ -23,7 +23,7 @@ context:
       includes:
         - ${relpath}/include
 
-module:
+modules:
   - name: avr8_common
     depends:
       - board

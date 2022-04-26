@@ -1,8 +1,8 @@
-app:
+apps:
   - depends:
         - tests-matstat
 
-module:
+modules:
     - name: tests-matstat
       sources: [tests-matstat.c]
       depends:

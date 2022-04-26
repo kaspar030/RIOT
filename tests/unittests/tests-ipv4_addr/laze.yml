@@ -1,8 +1,8 @@
-app:
+apps:
   - depends:
         - tests-ipv4_addr
 
-module:
+modules:
     - name: tests-ipv4_addr
       sources: [tests-ipv4_addr.c]
       depends:

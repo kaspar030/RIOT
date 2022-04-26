@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - fmt_table
         - ina2xx

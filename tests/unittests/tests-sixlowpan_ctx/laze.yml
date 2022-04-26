@@ -1,8 +1,8 @@
-app:
+apps:
     - depends:
         - tests-sixlowpan_ctx
 
-module:
+modules:
     - name: tests-sixlowpan_ctx
       sources: [tests-sixlowpan_ctx.c]
       depends:

@@ -1,8 +1,8 @@
-app:
+apps:
     - depends:
         - tests-netopt
 
-module:
+modules:
     - name: tests-netopt
       sources: [tests-netopt.c]
       depends:

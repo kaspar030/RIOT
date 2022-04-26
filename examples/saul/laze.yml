@@ -1,4 +1,4 @@
-app:
+apps:
     - depends:
         - ps
         - saul_default

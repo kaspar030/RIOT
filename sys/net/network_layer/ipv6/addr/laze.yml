@@ -1,4 +1,4 @@
-module:
+modules:
   - name: ipv6_addr
     sources:
         - ipv6_addr.c

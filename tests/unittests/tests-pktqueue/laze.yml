@@ -1,8 +1,8 @@
-app:
+apps:
     - depends:
         - tests-pktqueue
 
-module:
+modules:
     - name: tests-pktqueue
       sources: [tests-pktqueue.c]
       depends:

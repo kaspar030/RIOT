@@ -1,4 +1,4 @@
-context:
+contexts:
     - name: samd21
       parent: sam0
       env:
@@ -55,7 +55,7 @@ context:
           ROM_LEN: "0x40000"
           RAM_LEN: "0x8000"
 
-module:
+modules:
   - name: feature/riotboot
     context: samr21g18a
   - name: cpu/samd21

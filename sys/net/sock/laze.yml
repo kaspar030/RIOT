@@ -1,4 +1,4 @@
-module:
+modules:
     - name: sock
       uses:
         - gnrc_sock

@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - l3g4200d
         - xtimer

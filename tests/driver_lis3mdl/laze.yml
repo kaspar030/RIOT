@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - lis3mdl
         - ztimer_msec

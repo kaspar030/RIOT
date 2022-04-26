@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - event_callback
         - event_timeout

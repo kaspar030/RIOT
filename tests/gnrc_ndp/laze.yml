@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - embunit
         - gnrc_ipv6_nib_router

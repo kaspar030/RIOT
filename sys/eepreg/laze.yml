@@ -1,4 +1,4 @@
-module:
+modules:
   - name: eepreg
     sources:
       - eepreg.c

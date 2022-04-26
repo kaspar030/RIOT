@@ -1,4 +1,4 @@
-module:
+modules:
   - name: grove_ledbar
     depends:
         - my9221

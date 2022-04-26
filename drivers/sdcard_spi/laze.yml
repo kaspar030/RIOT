@@ -1,4 +1,4 @@
-module:
+modules:
   - name: sdcard_spi
     depends:
         - auto_init:

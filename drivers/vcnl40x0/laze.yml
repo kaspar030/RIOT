@@ -1,4 +1,4 @@
-module:
+modules:
   - name: vcnl40x0
     depends:
       - periph_i2c

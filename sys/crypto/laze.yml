@@ -1,4 +1,4 @@
-module:
+modules:
   - name: crypto
     sources:
       - aes.c

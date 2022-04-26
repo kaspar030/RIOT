@@ -1,4 +1,4 @@
-context:
+contexts:
     - name: nrf5x
       parent: cortexm
 
@@ -8,7 +8,7 @@ context:
           LINKFLAGS:
               - -Tcortexm.ld
 
-module:
+modules:
     - name: nrf5x
       context: nrf5x
       depends:

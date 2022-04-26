@@ -1,4 +1,4 @@
-module:
+modules:
   - name: hd44780
     depends:
         - div

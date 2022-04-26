@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - bmx055
         - saul_default

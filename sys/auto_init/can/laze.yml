@@ -1,4 +1,4 @@
-module:
+modules:
     - name: auto_init_can
       depends:
           - auto_init

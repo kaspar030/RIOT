@@ -4,7 +4,7 @@ defaults:
     depends:
       - periph_common
 
-module:
+modules:
   - name: periph_flashpage
     depends:
       - periph_flash_common

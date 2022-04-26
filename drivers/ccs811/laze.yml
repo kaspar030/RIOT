@@ -1,4 +1,4 @@
-module:
+modules:
     - name: ccs811
       depends:
           - periph_gpio

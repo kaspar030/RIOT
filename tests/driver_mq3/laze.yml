@@ -1,4 +1,4 @@
-app:
+apps:
     - depends:
       - mq3
       - xtimer

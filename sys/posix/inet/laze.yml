@@ -1,4 +1,4 @@
-module:
+modules:
   - name: posix_inet
     depends:
         - posix_headers

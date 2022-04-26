@@ -1,8 +1,8 @@
-app:
+apps:
     - depends:
         - tests-kernel_defines
 
-module:
+modules:
     - name: tests-kernel_defines
       sources:
           - tests-kernel_defines.c

@@ -1,4 +1,4 @@
-module:
+modules:
     - name: nimble_scanner
       sources:
           - nimble_scanner.c

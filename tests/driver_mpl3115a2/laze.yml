@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - mpl3115a2
         - xtimer

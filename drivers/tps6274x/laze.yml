@@ -1,4 +1,4 @@
-module:
+modules:
   - name: tps6274x
     depends:
         - periph_gpio

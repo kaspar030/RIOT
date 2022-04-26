@@ -1,4 +1,4 @@
-module:
+modules:
   - name: gnrc_icmpv6
     depends:
         - gnrc_nettype_icmpv6

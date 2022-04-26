@@ -1,8 +1,8 @@
-app:
+apps:
   - depends:
         - tests-ecc
 
-module:
+modules:
     - name: tests-ecc
       sources:
           - tests-ecc.c

@@ -1,4 +1,4 @@
-module:
+modules:
   - name: tmp00x
     sources:
         - tmp00x.c

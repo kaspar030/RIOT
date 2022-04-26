@@ -1,4 +1,4 @@
-module:
+modules:
   - name: xbee
     depends:
         - ieee802154

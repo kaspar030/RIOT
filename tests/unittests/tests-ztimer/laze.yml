@@ -1,8 +1,8 @@
-app:
+apps:
     - depends:
         - tests-ztimer
 
-module:
+modules:
     - name: tests-ztimer
       sources:
           - tests-ztimer.c

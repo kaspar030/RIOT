@@ -1,4 +1,4 @@
-module:
+modules:
   - name: div
     sources:
         - div.c

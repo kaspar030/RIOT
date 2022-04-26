@@ -1,4 +1,4 @@
-module:
+modules:
     - name: l2util
       sources: [l2util.c]
       uses:

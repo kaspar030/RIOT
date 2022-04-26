@@ -1,4 +1,4 @@
-context:
+contexts:
   - name: atmega2560
     parent: atmega_common
     env:
@@ -10,7 +10,7 @@ context:
       RAM_LEN: 8K
       ROM_LEN: 256K
 
-module:
+modules:
   - name: atmega2560
     context: atmega2560
     depends:

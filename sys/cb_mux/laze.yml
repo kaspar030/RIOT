@@ -1,4 +1,4 @@
-module:
+modules:
   - name: cb_mux
     sources:
         - cb_mux.c

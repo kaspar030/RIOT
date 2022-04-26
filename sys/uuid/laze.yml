@@ -1,4 +1,4 @@
-module:
+modules:
     - name: uuid
       sources:
           - uuid.c

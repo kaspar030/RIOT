@@ -1,4 +1,4 @@
-module:
+modules:
   - name: fatfs
     license: BSD-1-Clause
     download:

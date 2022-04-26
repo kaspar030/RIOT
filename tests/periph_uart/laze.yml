@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - periph_uart
         - shell

@@ -1,4 +1,4 @@
-module:
+modules:
   - name: hts221
     depends:
         - periph_i2c

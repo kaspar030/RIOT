@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - gnrc_netdev_default
         - gnrc

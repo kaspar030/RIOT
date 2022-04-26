@@ -1,4 +1,4 @@
-module:
+modules:
   - name: lc709203f
     depends:
         - periph_gpio

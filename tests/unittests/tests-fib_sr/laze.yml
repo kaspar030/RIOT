@@ -1,8 +1,8 @@
-app:
+apps:
   - depends:
         - tests-fib_sr
 
-module:
+modules:
     - name: tests-fib_sr
       sources:
           - tests-fib_sr.c

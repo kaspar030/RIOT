@@ -1,4 +1,4 @@
-app:
+apps:
     - allowlist: host
       sources:
         - uhcpd.c

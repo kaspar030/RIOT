@@ -1,4 +1,4 @@
-module:
+modules:
   - name: universal_address
     uses:
         - fib

@@ -1,4 +1,4 @@
-module:
+modules:
   - name: nanocoap
     sources:
       - nanocoap.c

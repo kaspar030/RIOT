@@ -1,4 +1,4 @@
-module:
+modules:
   - name: ata8520e
     depends:
         - fmt

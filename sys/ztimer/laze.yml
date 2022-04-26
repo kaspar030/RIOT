@@ -1,4 +1,4 @@
-module:
+modules:
   - name: ztimer
     depends:
       - ?auto_init_ztimer
@@ -21,7 +21,7 @@ defaults:
       - ztimer
       - ztimer_extend
 
-module:
+modules:
   - name: auto_init_ztimer
     depends:
       - ?auto_init

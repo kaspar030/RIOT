@@ -1,4 +1,4 @@
-module:
+modules:
   - name: app_metadata
     depends:
       - riot_info

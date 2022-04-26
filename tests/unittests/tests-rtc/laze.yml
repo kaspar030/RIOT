@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - tests-rtc
     blocklist:
@@ -6,7 +6,7 @@ app:
     # in these tests
     - atmega_common
 
-module:
+modules:
     - name: tests-rtc
       sources: [tests-rtc.c]
       depends:

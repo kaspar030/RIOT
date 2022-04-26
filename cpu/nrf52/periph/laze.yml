@@ -2,7 +2,7 @@ defaults:
   module:
     context: nrf52
 
-module:
+modules:
   - name: periph_adc
     sources:
       - adc.c

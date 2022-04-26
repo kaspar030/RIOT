@@ -1,4 +1,4 @@
-module:
+modules:
   - name: gnrc_sock_ip
     depends:
         - gnrc_sock

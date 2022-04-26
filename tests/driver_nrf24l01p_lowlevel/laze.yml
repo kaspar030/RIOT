@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - nrf24l01p
         - ps

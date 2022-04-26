@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - isl29020
         - periph_i2c

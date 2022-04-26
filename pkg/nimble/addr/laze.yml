@@ -1,4 +1,4 @@
-module:
+modules:
     - name: nimble_addr
       depends:
           - bluetil_addr

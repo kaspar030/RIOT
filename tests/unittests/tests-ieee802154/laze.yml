@@ -1,8 +1,8 @@
-app:
+apps:
   - depends:
         - tests-ieee802154
 
-module:
+modules:
     - name: tests-ieee802154
       sources: [tests-ieee802154.c]
       depends:

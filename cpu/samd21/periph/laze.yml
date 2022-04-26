@@ -1,4 +1,4 @@
-module:
+modules:
   - name: periph_pm
     context: samd21
     sources:

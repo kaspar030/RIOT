@@ -1,4 +1,4 @@
-module:
+modules:
   - name: adt7310
     sources:
         - adt7310.c

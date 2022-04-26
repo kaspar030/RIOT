@@ -1,4 +1,4 @@
-module:
+modules:
   - name: mrf24j40
     depends:
         - div

@@ -1,4 +1,4 @@
-module:
+modules:
   - name: evtimer
     depends:
         - evtimer_on_ztimer

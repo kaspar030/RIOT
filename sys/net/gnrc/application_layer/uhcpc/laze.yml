@@ -1,4 +1,4 @@
-module:
+modules:
     - name: gnrc_uhcpc
       depends:
           - ?auto_init_gnrc_uhcp

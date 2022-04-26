@@ -1,4 +1,4 @@
-module:
+modules:
   - name: nrf24l01p
     sources:
         - nrf24l01p.c

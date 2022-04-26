@@ -1,4 +1,4 @@
-module:
+modules:
   - name: adcxx1c
     depends:
         - periph_gpio

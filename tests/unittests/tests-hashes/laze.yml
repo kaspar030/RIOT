@@ -1,11 +1,11 @@
-app:
+apps:
   - depends:
         - tests-hashes
     blocklist:
         # insufficient memory
         - atmega_common
 
-module:
+modules:
     - name: tests-hashes
       sources:
         - tests-hashes.c

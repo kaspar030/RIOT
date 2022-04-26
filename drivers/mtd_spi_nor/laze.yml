@@ -1,4 +1,4 @@
-module:
+modules:
   - name: mtd_spi_nor
     depends:
         - mtd

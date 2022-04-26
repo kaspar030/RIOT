@@ -1,4 +1,4 @@
-module:
+modules:
   - name: lpd8808
     depends:
         - color

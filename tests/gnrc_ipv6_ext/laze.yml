@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - gnrc_ipv6_ext
         - gnrc_ipv6_router_default

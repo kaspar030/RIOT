@@ -1,4 +1,4 @@
-module:
+modules:
   - name: backtrace
     context: cpu/native
     sources:

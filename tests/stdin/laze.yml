@@ -1,4 +1,4 @@
-app:
+apps:
 - depends:
     - stdin
     - -test_utils_interactive_sync

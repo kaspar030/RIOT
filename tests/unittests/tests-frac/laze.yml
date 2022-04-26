@@ -1,8 +1,8 @@
-app:
+apps:
   - depends:
         - tests-frac
 
-module:
+modules:
     - name: tests-frac
       sources:
           - tests-frac.c

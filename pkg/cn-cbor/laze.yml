@@ -1,4 +1,4 @@
-module:
+modules:
   - name: cn-cbor
     download:
       git: 

@@ -1,4 +1,4 @@
-context:
+contexts:
   - name: sam0
     parent: cortexm
     env:

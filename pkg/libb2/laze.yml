@@ -1,4 +1,4 @@
-module:
+modules:
   - name: libb2
     download:
       git:

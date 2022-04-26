@@ -1,4 +1,4 @@
-module:
+modules:
   - name: vfs
     depends:
         - posix_headers

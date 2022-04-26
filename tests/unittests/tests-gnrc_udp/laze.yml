@@ -1,11 +1,11 @@
-app:
+apps:
   - depends:
         - tests-gnrc_udp
     blocklist:
         # insufficient memory
         - atmega_common
 
-module:
+modules:
     - name: tests-gnrc_udp
       sources: [tests-gnrc_udp.c]
       depends:

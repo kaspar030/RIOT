@@ -1,8 +1,8 @@
-app:
+apps:
   - depends:
         - tests-clif
 
-module:
+modules:
     - name: tests-clif
       sources: [tests-clif.c]
       depends:

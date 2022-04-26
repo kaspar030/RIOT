@@ -1,4 +1,4 @@
-module:
+modules:
     - name: stdio_uart
       sources:
         - stdio_uart.c

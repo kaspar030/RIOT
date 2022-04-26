@@ -1,4 +1,4 @@
-module:
+modules:
     - name: gnrc_tcp
       depends:
           - ?auto_init_gnrc_tcp

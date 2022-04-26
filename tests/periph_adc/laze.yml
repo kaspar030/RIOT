@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - periph_adc
         - ztimer_msec

@@ -1,4 +1,4 @@
-module:
+modules:
   - name: gnrc_pktbuf_static
     uses:
         - gnrc_neterr

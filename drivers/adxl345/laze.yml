@@ -1,4 +1,4 @@
-module:
+modules:
   - name: adxl345
     depends:
         - periph_i2c

@@ -1,4 +1,4 @@
-module:
+modules:
     - name: nimble_scanlist
       depends:
           - nimble_addr

@@ -1,4 +1,4 @@
-module:
+modules:
   - name: netdev_test
     uses:
       - netdev_ieee802154

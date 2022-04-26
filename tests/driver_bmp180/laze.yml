@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - bmp180
         - printf_float

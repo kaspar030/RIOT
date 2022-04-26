@@ -1,4 +1,4 @@
-context:
+contexts:
   - name: cortexm
     parent: riot
     env:
@@ -33,7 +33,7 @@ defaults:
     module:
         context: cortexm
 
-module:
+modules:
     - name: cortexm
       sources:
        - cortexm_init.c

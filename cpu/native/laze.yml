@@ -1,4 +1,4 @@
-context:
+contexts:
   - name: cpu/native
     parent: riot
     tasks:
@@ -16,7 +16,7 @@ defaults:
     module:
         context: cpu/native
 
-module:
+modules:
     - name: cpu/native
       sources: [ async_read.c, irq_cpu.c, native_cpu.c, panic.c, startup.c, syscalls.c, tramp.S ]
       env:

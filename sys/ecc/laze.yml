@@ -1,4 +1,4 @@
-module:
+modules:
     - name: ecc_golay2412
       sources:
           - golay2412.c

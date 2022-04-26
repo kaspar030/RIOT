@@ -1,4 +1,4 @@
-module:
+modules:
   - name: ssp
     depends:
       - feature/stack_protector

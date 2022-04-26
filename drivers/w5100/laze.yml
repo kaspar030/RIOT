@@ -1,4 +1,4 @@
-module:
+modules:
   - name: w5100
     depends:
         - luid

@@ -1,4 +1,4 @@
-module:
+modules:
   - name: mag3110
     sources:
         - mag3110.c

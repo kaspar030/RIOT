@@ -1,4 +1,4 @@
-module:
+modules:
   - name: bmx055
     depends:
         - periph_i2c

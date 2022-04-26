@@ -1,4 +1,4 @@
-module:
+modules:
   - name: uri_parser
     sources:
       - uri_parser.c

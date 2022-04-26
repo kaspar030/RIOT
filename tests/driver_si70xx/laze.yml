@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - si7006
         - ztimer_msec

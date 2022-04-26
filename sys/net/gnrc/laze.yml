@@ -3,7 +3,7 @@ defaults:
     depends:
       - gnrc_core
 
-module:
+modules:
   - name: gnrc_default
     depends:
       - gnrc_netdev_default

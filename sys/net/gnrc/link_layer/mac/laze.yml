@@ -1,4 +1,4 @@
-module:
+modules:
   - name: gnrc_mac
     sources:
       - internal.c

@@ -1,4 +1,4 @@
-module:
+modules:
     - name: can
       sources:
           - device.c

@@ -1,7 +1,7 @@
 # Nimble on RIOT laze.yml
 # @author: Kaspar Schleiser <kaspar@schleiser.de>
 #
-module:
+modules:
   - name: nimble
     download:
       git:

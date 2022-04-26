@@ -1,8 +1,8 @@
-app:
+apps:
   - depends:
         - tests-bluetil
 
-module:
+modules:
     - name: tests-bluetil
       sources:
           - tests-bluetil.c

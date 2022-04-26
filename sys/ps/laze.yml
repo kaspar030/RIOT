@@ -1,4 +1,4 @@
-module:
+modules:
   - name: ps
     sources:
       - ps.c

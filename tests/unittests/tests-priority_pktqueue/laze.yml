@@ -1,11 +1,11 @@
-app:
+apps:
   - depends:
         - tests-priority_pktqueue
     blocklist:
         # insufficient memory
         - atmega_common
 
-module:
+modules:
     - name: tests-priority_pktqueue
       sources: [tests-priority_pktqueue.c]
       depends:

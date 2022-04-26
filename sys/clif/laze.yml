@@ -1,4 +1,4 @@
-module:
+modules:
     - name: clif
       sources:
           - clif.c

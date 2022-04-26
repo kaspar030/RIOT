@@ -1,4 +1,4 @@
-module:
+modules:
   - name: gnrc_ipv6_ext
     depends:
       - gnrc_nettype_ipv6_ext

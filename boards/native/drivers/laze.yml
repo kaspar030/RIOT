@@ -1,4 +1,4 @@
-module:
+modules:
   - name: "native-drivers"
     depends:
         - periph_qdec:

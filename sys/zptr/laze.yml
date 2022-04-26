@@ -1,4 +1,4 @@
-module:
+modules:
     - name: zptr
     # laze cannot yet set variables using arithmetic.
     # zptr uses RAM_LEN and RAM_START to set ZTPR_BASE in the build system.

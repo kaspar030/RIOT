@@ -1,4 +1,4 @@
-module:
+modules:
   - name: ethos
     depends:
         - netdev_eth

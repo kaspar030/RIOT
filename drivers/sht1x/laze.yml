@@ -1,4 +1,4 @@
-module:
+modules:
   - name: sht1x
     depends:
         - periph_gpio

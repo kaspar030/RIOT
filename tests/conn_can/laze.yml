@@ -1,4 +1,4 @@
-app:
+apps:
     - depends:
           - can_isotp
           - can_trx

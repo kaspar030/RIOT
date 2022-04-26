@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - bh1750fvi
         - xtimer

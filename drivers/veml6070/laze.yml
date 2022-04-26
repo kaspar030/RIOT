@@ -1,4 +1,4 @@
-module:
+modules:
   - name: veml6070
     depends:
         - periph_i2c

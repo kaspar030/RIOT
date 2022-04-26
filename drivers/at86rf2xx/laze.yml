@@ -1,4 +1,4 @@
-module:
+modules:
   - name: at86rf2xx
     sources:
       - at86rf2xx.c

@@ -1,8 +1,8 @@
-app:
+apps:
   - depends:
         - tests-luid
 
-module:
+modules:
     - name: tests-luid
       sources: [tests-luid.c]
       depends:

@@ -1,4 +1,4 @@
-module:
+modules:
     - name: rtt_rtc
       sources:
           - rtt_rtc.c

@@ -1,11 +1,11 @@
-builder:
+builders:
   - name: stm32f4discovery
     parent: stm32f407vg
     env:
         CFLAGS:
             - -I${relpath}/include
 
-module:
+modules:
     - name: board
       context: stm32f4discovery
       sources:

@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
     - auto_init_gnrc_netif
     - gnrc_ipv6_default

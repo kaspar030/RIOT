@@ -1,4 +1,4 @@
-module:
+modules:
   - name: srf08
     depends:
       - xtimer

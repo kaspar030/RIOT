@@ -1,4 +1,4 @@
-module:
+modules:
   - name: test_utils_result_output
     sources:
       - result_output.c

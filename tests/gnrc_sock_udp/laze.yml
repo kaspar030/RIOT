@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - gnrc_ipv6
         - gnrc_sock_check_reuse

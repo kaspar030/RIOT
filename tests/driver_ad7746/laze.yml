@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - ad7746
         - ztimer_msec

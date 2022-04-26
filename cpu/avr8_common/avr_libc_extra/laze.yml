@@ -1,4 +1,4 @@
-module:
+modules:
   - name: avr_libc_extra
     sources:
       - avr8_stdio.c

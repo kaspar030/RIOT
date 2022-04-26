@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - fatfs_diskio_mtd
         - shell
@@ -12,7 +12,7 @@ app:
     blocklist:
         - atmega_common
 
-module:
+modules:
     - name: tests/pkg_fatfs/settings
       context: cpu/native
       depends:

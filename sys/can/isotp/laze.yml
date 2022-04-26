@@ -1,4 +1,4 @@
-module:
+modules:
   - name: can_isotp
     sources:
         - isotp.c

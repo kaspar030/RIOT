@@ -1,4 +1,4 @@
-module:
+modules:
   - name: l3g4200d
     sources:
         - l3g4200d.c
