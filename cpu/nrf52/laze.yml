@@ -1,4 +1,4 @@
-context:
+contexts:
     - name: nrf52
       parent: nrf5x
       env:
@@ -32,7 +32,7 @@ context:
         SLOT1_LEN: "0x3f000"
         RAM_LEN: "0x10000"
 
-module:
+modules:
     - name: nrf52
       context: nrf52
       depends:

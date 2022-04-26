@@ -1,4 +1,4 @@
-module:
+modules:
   - name: slipdev
     depends:
         - periph_uart

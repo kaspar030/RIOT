@@ -1,8 +1,8 @@
-app:
+apps:
   - depends:
         - tests-checksum
 
-module:
+modules:
     - name: tests-checksum
       sources:
           - tests-checksum-crc8.c

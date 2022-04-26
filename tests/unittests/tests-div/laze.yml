@@ -1,8 +1,8 @@
-app:
+apps:
     - depends:
         - tests-div
 
-module:
+modules:
     - name: tests-div
       sources:
           - tests-div.c

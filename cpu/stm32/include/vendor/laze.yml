@@ -1,4 +1,4 @@
-module:
+modules:
   - name: stm32_cmsis
     context: stm32f4
     download:

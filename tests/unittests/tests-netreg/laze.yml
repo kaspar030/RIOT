@@ -1,8 +1,8 @@
-app:
+apps:
     - depends:
         - tests-netreg
 
-module:
+modules:
     - name: tests-netreg
       sources: [tests-netreg.c]
       depends:

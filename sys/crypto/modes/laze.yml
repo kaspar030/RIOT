@@ -1,4 +1,4 @@
-module:
+modules:
   - name: cipher_modes
     sources:
       - cbc.c

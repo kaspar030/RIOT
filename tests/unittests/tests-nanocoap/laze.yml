@@ -1,8 +1,8 @@
-app:
+apps:
     - depends:
         - tests-nanocoap
 
-module:
+modules:
     - name: tests-nanocoap
       sources: [tests-nanocoap.c]
       depends:

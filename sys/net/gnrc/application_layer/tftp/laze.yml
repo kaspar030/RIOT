@@ -1,4 +1,4 @@
-module:
+modules:
   - name: gnrc_tftp
     sources:
         - gnrc_tftp.c

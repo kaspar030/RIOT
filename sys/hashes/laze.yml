@@ -1,4 +1,4 @@
-module:
+modules:
     - name: hashes
       sources:
         - cmac.c

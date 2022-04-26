@@ -1,4 +1,4 @@
-module:
+modules:
     - name: base64
       sources:
         - base64.c

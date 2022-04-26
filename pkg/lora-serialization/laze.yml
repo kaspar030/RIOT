@@ -1,4 +1,4 @@
-module:
+modules:
     - name: lora-serialization
       download:
           git:

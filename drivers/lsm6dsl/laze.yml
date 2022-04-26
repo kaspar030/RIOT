@@ -1,4 +1,4 @@
-module:
+modules:
   - name: lsm6dsl
     depends:
         - periph_i2c

@@ -1,4 +1,4 @@
-module:
+modules:
     - name: micro-ecc
       download:
           git:

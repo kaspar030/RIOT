@@ -1,4 +1,4 @@
-module:
+modules:
   - name: mpu9x50
     depends:
         - periph_i2c

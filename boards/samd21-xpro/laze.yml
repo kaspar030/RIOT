@@ -1,11 +1,11 @@
-builder:
+builders:
   - name: samd21-xpro
     parent: samd21j18a
     env:
       includes:
         - ${relpath}/include
 
-module:
+modules:
   - name: board
     context: samd21-xpro
     sources:

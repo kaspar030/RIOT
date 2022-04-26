@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - netdev_eth
         - netdev_test

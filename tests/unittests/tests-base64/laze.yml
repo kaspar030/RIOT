@@ -1,8 +1,8 @@
-app:
+apps:
     - depends:
         - tests-base64
 
-module:
+modules:
     - name: tests-base64
       sources:
           - tests-base64.c

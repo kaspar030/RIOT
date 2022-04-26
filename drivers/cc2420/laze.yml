@@ -1,4 +1,4 @@
-module:
+modules:
   - name: cc2420
     depends:
         - div

@@ -1,4 +1,4 @@
-builder:
+builders:
     - name: arduino-mega2560
       parent: atmega2560
       env:
@@ -17,7 +17,7 @@ builder:
           cmd:
             - picocom --baud 9600 --quiet --imap lfcrlf ${PORT}
 
-module:
+modules:
     - name: board
       context: arduino-mega2560
       depends:

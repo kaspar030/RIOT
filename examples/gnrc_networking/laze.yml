@@ -1,4 +1,4 @@
-app:
+apps:
     - depends:
           - periph_gpio
           # this pulls in GNRC's default configuration

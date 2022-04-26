@@ -1,4 +1,4 @@
-module:
+modules:
   - name: pulse_counter
     depends:
         - periph_gpio

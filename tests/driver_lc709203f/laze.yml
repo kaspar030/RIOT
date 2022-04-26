@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - lc709203f
         - xtimer

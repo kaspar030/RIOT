@@ -1,4 +1,4 @@
-app:
+apps:
     - depends:
         - tests-uri_parser
 
@@ -6,7 +6,7 @@ app:
       # insufficient memory
         - atmega_common
 
-module:
+modules:
     - name: tests-uri_parser
       sources:
           - tests-uri_parser.c

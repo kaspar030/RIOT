@@ -5,7 +5,7 @@ defaults:
       - periph_common
       - board
 
-module:
+modules:
   - name: periph_adc
     sources: [adc.c]
   - name: periph_cpuid

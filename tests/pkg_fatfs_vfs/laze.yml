@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - fatfs_vfs
         - ?mtd_native

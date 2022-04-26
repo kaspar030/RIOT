@@ -1,4 +1,4 @@
-module:
+modules:
   - name: iolist
     sources:
         - iolist.c

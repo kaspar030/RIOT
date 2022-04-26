@@ -1,4 +1,4 @@
-module:
+modules:
   - name: pcd8544
     depends:
         - periph_gpio

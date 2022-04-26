@@ -1,4 +1,4 @@
-module:
+modules:
   - name: netdev_eth
     uses:
         - l2filter

@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - gnrc_mac
         - xtimer

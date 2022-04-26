@@ -4,7 +4,7 @@ defaults:
     depends:
       - core
 
-module:
+modules:
   - name: periph_cpuid
     sources:
       - cpuid.c

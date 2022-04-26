@@ -1,4 +1,4 @@
-module:
+modules:
   - name: srf04
     depends:
         - periph_gpio

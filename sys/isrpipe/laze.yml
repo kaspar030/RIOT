@@ -1,4 +1,4 @@
-module:
+modules:
   - name: isrpipe
     sources:
       - isrpipe.c

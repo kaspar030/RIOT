@@ -1,4 +1,4 @@
-module:
+modules:
   - sources:
         - sntp.c
     depends:

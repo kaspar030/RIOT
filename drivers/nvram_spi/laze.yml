@@ -1,4 +1,4 @@
-module:
+modules:
   - name: nvram_spi
     depends:
         - nvram

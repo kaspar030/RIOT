@@ -1,4 +1,4 @@
-module:
+modules:
     - name: littlefs
       license: Apache-2.0
       download:

@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - embunit
         - libcose_crypt_hacl

@@ -1,4 +1,4 @@
-module:
+modules:
   - name: hih6130
     depends:
         - div

@@ -1,4 +1,4 @@
-module:
+modules:
   - name: ads101x
     depends:
         - periph_gpio

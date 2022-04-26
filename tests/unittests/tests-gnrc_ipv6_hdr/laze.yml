@@ -1,8 +1,8 @@
-app:
+apps:
   - depends:
         - tests-gnrc_ipv6_hdr
 
-module:
+modules:
     - name: tests-gnrc_ipv6_hdr
       sources: [tests-gnrc_ipv6_hdr.c]
       depends:

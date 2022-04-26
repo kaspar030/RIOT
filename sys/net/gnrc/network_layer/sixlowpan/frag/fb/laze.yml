@@ -1,4 +1,4 @@
-module:
+modules:
     - name: gnrc_sixlowpan_frag_fb
       depends:
         - core_msg

@@ -1,8 +1,8 @@
-app:
+apps:
   - depends:
         - tests-mtd
 
-module:
+modules:
     - name: tests-mtd
       sources: [tests-mtd.c]
       depends:

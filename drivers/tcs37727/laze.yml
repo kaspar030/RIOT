@@ -1,4 +1,4 @@
-module:
+modules:
   - name: tcs37727
     sources:
         - tcs37727.c

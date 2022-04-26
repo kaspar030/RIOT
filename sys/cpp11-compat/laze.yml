@@ -1,4 +1,4 @@
-module:
+modules:
   - name: cpp11-compat
     sources:
         - condition_variable.cpp

@@ -1,4 +1,4 @@
-module:
+modules:
   - name: netdev_tap
     context: cpu/native
     sources:

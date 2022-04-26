@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - hih6130
         - periph_i2c

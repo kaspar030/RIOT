@@ -1,4 +1,4 @@
-module:
+modules:
   - name: inet_csum
     sources:
         - inet_csum.c

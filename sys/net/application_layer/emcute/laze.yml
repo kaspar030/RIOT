@@ -1,4 +1,4 @@
-module:
+modules:
   - sources:
         - emcute.c
         - emcute_str.c

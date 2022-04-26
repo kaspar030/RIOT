@@ -1,8 +1,8 @@
-app:
+apps:
     - depends:
         - tests-ut_process
 
-module:
+modules:
     - name: tests-ut_process
       sources:
           - tests-ut_process.c

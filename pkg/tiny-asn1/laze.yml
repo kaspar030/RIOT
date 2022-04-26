@@ -1,4 +1,4 @@
-module:
+modules:
   - name: tiny-asn1
     download:
       git:

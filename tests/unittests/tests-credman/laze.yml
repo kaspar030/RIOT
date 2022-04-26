@@ -1,8 +1,8 @@
-app:
+apps:
   - depends:
         - tests-credman
 
-module:
+modules:
     - name: tests-credman
       sources:
           - tests-credman.c

@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - io1_xplained
         - printf_float

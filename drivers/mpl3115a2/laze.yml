@@ -1,4 +1,4 @@
-module:
+modules:
   - name: mpl3115a2
     sources:
         - mpl3115a2.c

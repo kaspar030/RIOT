@@ -1,4 +1,4 @@
-module:
+modules:
   - name: jc42
     depends:
         - periph_i2c

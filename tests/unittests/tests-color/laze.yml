@@ -1,8 +1,8 @@
-app:
+apps:
   - depends:
         - tests-color
 
-module:
+modules:
     - name: tests-color
       sources:
           - tests-color.c

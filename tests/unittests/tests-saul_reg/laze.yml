@@ -1,8 +1,8 @@
-app:
+apps:
   - depends:
         - tests-saul_reg
 
-module:
+modules:
     - name: tests-saul_reg
       sources: [tests-saul_reg.c]
       depends:

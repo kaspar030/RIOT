@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - at86rf233
         - od

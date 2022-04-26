@@ -1,8 +1,8 @@
-app:
+apps:
     - depends:
         - tests-sixlowpan_sfr
 
-module:
+modules:
     - name: tests-sixlowpan_sfr
       sources: [tests-sixlowpan_sfr.c]
       depends:

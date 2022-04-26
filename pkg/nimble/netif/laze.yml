@@ -1,4 +1,4 @@
-module:
+modules:
     - name: nimble_netif
       depends:
           - l2addr

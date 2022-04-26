@@ -1,4 +1,4 @@
-module:
+modules:
   - name: isl29020
     sources:
         - isl29020.c

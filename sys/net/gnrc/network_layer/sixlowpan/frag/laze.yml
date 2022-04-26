@@ -1,4 +1,4 @@
-module:
+modules:
   - name: gnrc_sixlowpan_frag
     depends:
       - gnrc_sixlowpan

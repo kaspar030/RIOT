@@ -1,4 +1,4 @@
-app:
+apps:
   - sources:
       - common.c
     depends:

@@ -1,4 +1,4 @@
-module:
+modules:
   - name: stm32_clk
     context: stm32
     depends:

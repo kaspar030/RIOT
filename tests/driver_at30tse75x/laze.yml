@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - at30tse75x
         - periph_i2c

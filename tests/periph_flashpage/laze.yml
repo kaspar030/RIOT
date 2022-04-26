@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - periph_flashpage
         - ?periph_flashpage_pagewise

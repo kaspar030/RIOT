@@ -1,11 +1,11 @@
-app:
+apps:
   - depends:
         - tests-gcoap
     blocklist:
         # insufficient memory
         - atmega_common
 
-module:
+modules:
     - name: tests-gcoap
       sources: [tests-gcoap.c]
       depends:

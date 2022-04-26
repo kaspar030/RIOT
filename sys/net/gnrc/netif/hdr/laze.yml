@@ -1,4 +1,4 @@
-module:
+modules:
   - name: gnrc_netif_hdr
     sources:
         - gnrc_netif_hdr.c

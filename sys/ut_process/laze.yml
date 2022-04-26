@@ -1,4 +1,4 @@
-module:
+modules:
   - name: ut_process
     depends:
       - fmt

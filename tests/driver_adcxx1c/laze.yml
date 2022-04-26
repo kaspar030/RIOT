@@ -1,10 +1,10 @@
-app:
+apps:
   - depends:
         - adcxx1c_params
         - adc081c
         - xtimer
 
-module:
+modules:
     - name: adcxx1c_params
       env:
         export:

@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - lps331ap
         - xtimer

@@ -1,11 +1,11 @@
-builder:
+builders:
   - name: nucleo-f401re
     parent: stm32f401re
     env:
         CFLAGS:
             - -I${relpath}/include
 
-module:
+modules:
     - name: board
       context: nucleo-f401re
       depends:

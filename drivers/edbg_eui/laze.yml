@@ -1,4 +1,4 @@
-module:
+modules:
     - name: edbg_eui
       sources:
           - edbg_eui.c

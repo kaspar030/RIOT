@@ -1,8 +1,8 @@
-app:
+apps:
     - depends:
         - tests-tsrb
 
-module:
+modules:
     - name: tests-tsrb
       sources: [tests-tsrb.c]
       depends:

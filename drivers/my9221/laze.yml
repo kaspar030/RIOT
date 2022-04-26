@@ -1,4 +1,4 @@
-module:
+modules:
   - name: my9221
     depends:
         - periph_gpio

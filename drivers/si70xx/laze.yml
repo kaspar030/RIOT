@@ -1,4 +1,4 @@
-module:
+modules:
     - name: si70xx_base
       depends:
         - periph_i2c

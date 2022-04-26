@@ -1,13 +1,13 @@
-builder:
+builders:
   - name: nucleo-f411re
     parent: stm32f411re
     env:
         CFLAGS:
             - -I${relpath}/include
-    disable:
+    disables:
         - periph_adc
 
-module:
+modules:
     - name: board
       context: nucleo-f411re
       depends:

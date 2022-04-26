@@ -1,8 +1,8 @@
-app:
+apps:
     - depends:
         - tests-turo
 
-module:
+modules:
     - name: tests-turo
       sources:
           - tests-turo.c

@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - sds011
         - xtimer

@@ -1,8 +1,8 @@
-app:
+apps:
     - depends:
         - tests-printf_float
 
-module:
+modules:
     - name: tests-printf_float
       sources: [tests-printf_float.c]
       depends:

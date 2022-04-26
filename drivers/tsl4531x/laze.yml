@@ -1,4 +1,4 @@
-module:
+modules:
   - name: tsl4531x
     depends:
         - periph_i2c

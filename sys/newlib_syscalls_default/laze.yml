@@ -1,4 +1,4 @@
-module:
+modules:
   - name: newlib
     sources:
       - syscalls.c

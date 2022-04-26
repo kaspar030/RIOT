@@ -1,4 +1,4 @@
-module:
+modules:
   - name: motor_driver
     depends:
         - periph_gpio

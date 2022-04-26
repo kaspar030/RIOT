@@ -1,8 +1,8 @@
-app:
+apps:
   - depends:
         - tests-fmt
 
-module:
+modules:
     - name: tests-fmt
       sources:
           - tests-fmt.c

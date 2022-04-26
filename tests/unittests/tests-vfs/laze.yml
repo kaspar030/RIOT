@@ -1,8 +1,8 @@
-app:
+apps:
     - depends:
         - tests-vfs
 
-module:
+modules:
     - name: tests-vfs
       sources:
         - tests-vfs.c

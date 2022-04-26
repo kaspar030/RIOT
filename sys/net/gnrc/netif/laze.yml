@@ -1,4 +1,4 @@
-module:
+modules:
   - name: gnrc_netif
     depends:
       - fmt
@@ -94,7 +94,7 @@ defaults:
     depends:
       - gnrc_netif
 
-module:
+modules:
   - name: gnrc_netif_6lo
   - name: gnrc_netif_bus
   - name: gnrc_netif_dedup

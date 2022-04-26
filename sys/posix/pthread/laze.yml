@@ -1,4 +1,4 @@
-module:
+modules:
   - name: pthread
     depends:
         - posix_headers

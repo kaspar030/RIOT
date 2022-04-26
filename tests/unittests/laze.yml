@@ -1,8 +1,8 @@
 defaults:
     app:
-        disable:
+        disables:
             - auto_init
-app:
+apps:
   - name: tests/unittests
     depends:
         - tests-analog_util
@@ -68,7 +68,7 @@ app:
         - samd21-xpro
         - samr21-xpro
 
-module:
+modules:
     - name: unittests-base
       sources:
         - main.c

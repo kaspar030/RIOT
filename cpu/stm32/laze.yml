@@ -1,4 +1,4 @@
-context:
+contexts:
   - name: stm32
     parent: cortexm
     env:
@@ -28,7 +28,7 @@ context:
         - -Wl,--defsym=_rom_start_addr=0x08000000
         - -Wl,--defsym=_ram_start_addr=0x20000000
       ARM_MATH: -DARM_MATH_CM4
-    disable:
+    disables:
       #- periph_flashpage
       - periph_hwrng
       - periph_rtc
@@ -65,7 +65,7 @@ context:
       RAM_LEN: "192K"
       FLASHSIZE: "1048576"
 
-module:
+modules:
   - name: stm32
     context: stm32
     sources:

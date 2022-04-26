@@ -1,4 +1,4 @@
-module:
+modules:
     - name: event
       sources:
         - event.c

@@ -1,8 +1,8 @@
-app:
+apps:
     - depends:
         - tests-analog_util
 
-module:
+modules:
     - name: tests-analog_util
       sources:
           - tests-analog_util.c

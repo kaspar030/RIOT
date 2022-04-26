@@ -1,4 +1,4 @@
-module:
+modules:
   - name: dynamixel
     depends:
         - div

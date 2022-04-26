@@ -1,4 +1,4 @@
-context:
+contexts:
   - name: default
     env:
       bindir: "${build-dir}/bin/${builder}/${app}"
@@ -26,7 +26,7 @@ context:
         cmd:
           - "${SIZE} ${out}"
 
-    rule:
+    rules:
       - name: CC
         description: CC ${out}
         in: "c"
@@ -72,7 +72,7 @@ context:
 
   - name: riot
     parent: default
-    select:
+    selects:
       # All riot applications need a board.
       # This pulls in cpu, core, ...
       - board
@@ -125,7 +125,7 @@ context:
         cmd:
           - "PYTHONPATH=$$(pwd)/dist/pythonlibs/; cd ${relpath} && LAZE=1 tests/*"
 
-builder:
+builders:
   - name: host
     parent: default
     tools:
@@ -133,7 +133,7 @@ builder:
         cmd:
           - "${out}"
 
-module:
+modules:
   - name: riot_version
     env:
       export:

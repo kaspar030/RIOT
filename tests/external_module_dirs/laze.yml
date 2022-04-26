@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - external_module
         - random

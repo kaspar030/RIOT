@@ -1,4 +1,4 @@
-module:
+modules:
   - name: kw2xrf
     sources:
         - kw2xrf.c

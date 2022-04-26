@@ -1,4 +1,4 @@
-module:
+modules:
   - name: gnrc_icmpv6_echo
     depends:
         - gnrc_icmpv6

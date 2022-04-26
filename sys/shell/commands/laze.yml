@@ -1,4 +1,4 @@
-module:
+modules:
   - name: shell_commands
     options:
       use_optional_source_deps: True

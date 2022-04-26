@@ -1,4 +1,4 @@
-module:
+modules:
     - name: lpsxxx
       sources:
           - lpsxxx.c

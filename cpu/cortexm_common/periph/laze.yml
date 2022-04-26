@@ -1,4 +1,4 @@
-module:
+modules:
   - name: cortexm_common_periph
     context: cortexm
     sources:

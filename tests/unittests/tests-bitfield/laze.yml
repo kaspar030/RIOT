@@ -1,7 +1,7 @@
-app:
+apps:
     - depends:
         - tests-bitfield
-module:
+modules:
     - name: tests-bitfield
       sources:
         - tests-bitfield.c

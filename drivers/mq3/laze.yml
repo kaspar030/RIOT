@@ -1,4 +1,4 @@
-module:
+modules:
   - name: mq3
     sources:
         - mq3.c

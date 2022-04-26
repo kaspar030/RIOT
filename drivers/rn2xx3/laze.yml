@@ -1,4 +1,4 @@
-module:
+modules:
     - name: rn2xx3_base
       depends:
           - fmt

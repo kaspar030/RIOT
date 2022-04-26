@@ -1,4 +1,4 @@
-module:
+modules:
   - name: eui_provider
     depends:
       - ?edbg_eui

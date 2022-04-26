@@ -1,4 +1,4 @@
-module:
+modules:
   - name: relic
     license: LGPL-2.1
     download:

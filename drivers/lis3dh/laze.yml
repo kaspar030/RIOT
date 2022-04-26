@@ -1,4 +1,4 @@
-module:
+modules:
   - name: lis3dh
     depends:
         - periph_gpio

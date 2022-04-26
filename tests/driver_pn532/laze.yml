@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - pn532_i2c
           #- pn532_spi

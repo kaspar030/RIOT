@@ -1,8 +1,8 @@
-app:
+apps:
     - depends:
         - tests-bcd
 
-module:
+modules:
     - name: tests-bcd
       sources: [tests-bcd.c]
       depends:

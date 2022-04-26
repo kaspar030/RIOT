@@ -1,8 +1,8 @@
-app:
+apps:
     - depends:
         - tests-uuid
 
-module:
+modules:
     - name: tests-uuid
       sources: [tests-uuid.c]
       depends:

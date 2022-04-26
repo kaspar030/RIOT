@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - motor_driver
         - periph_qdec

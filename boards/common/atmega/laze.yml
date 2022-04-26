@@ -1,4 +1,4 @@
-module:
+modules:
     - name: boards_common_atmega
       sources:
           - board.c

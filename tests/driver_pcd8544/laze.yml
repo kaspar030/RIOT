@@ -1,4 +1,4 @@
-app:
+apps:
   - depends:
         - pcd8544
         - shell

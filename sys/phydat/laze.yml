@@ -1,4 +1,4 @@
-module:
+modules:
   - name: phydat
     depends:
         - fmt

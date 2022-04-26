@@ -1,4 +1,4 @@
-module:
+modules:
   - name: ds1307
     depends:
         - periph_i2c

@@ -1,8 +1,8 @@
-app:
+apps:
   - depends:
         - tests-core
 
-module:
+modules:
     - name: tests-core
       sources:
         - tests-core.c

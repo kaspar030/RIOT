@@ -1,4 +1,4 @@
-module:
+modules:
     - name: native_vfs
       context: cpu/native
       sources:

@@ -1,4 +1,4 @@
-module:
+modules:
   - name: sht2x
     depends:
         - periph_i2c

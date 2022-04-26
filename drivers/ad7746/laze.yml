@@ -1,4 +1,4 @@
-module:
+modules:
     - name: ad7746
       sources:
           - ad7746.c

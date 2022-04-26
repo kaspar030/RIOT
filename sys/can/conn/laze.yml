@@ -1,4 +1,4 @@
-module:
+modules:
     - name: conn_can
       sources:
           - isotp.c

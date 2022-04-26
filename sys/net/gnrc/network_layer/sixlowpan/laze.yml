@@ -1,4 +1,4 @@
-module:
+modules:
     - name: gnrc_sixlowpan
       depends:
           - ?auto_init_gnrc_sixlowpan

@@ -1,8 +1,8 @@
-app:
+apps:
   - depends:
         - tests-inet_csum
 
-module:
+modules:
     - name: tests-inet_csum
       sources: [tests-inet_csum.c]
       depends:

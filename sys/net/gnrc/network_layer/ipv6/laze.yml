@@ -1,4 +1,4 @@
-module:
+modules:
     - name: gnrc_ipv6
       sources:
           - gnrc_ipv6.c

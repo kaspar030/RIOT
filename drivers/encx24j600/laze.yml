@@ -1,4 +1,4 @@
-module:
+modules:
   - name: encx24j600
     depends:
         - div

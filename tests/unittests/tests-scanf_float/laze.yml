@@ -1,8 +1,8 @@
-app:
+apps:
  - depends:
         - tests-scanf_float
 
-module:
+modules:
     - name: tests-scanf_float
       sources: [tests-scanf_float.c]
       depends:

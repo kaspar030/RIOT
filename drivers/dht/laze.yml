@@ -1,4 +1,4 @@
-module:
+modules:
   - name: dht
     depends:
         - periph_gpio

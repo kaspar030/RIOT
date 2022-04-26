@@ -1,4 +1,4 @@
-module:
+modules:
   - name: uart_half_duplex
     depends:
         - div

@@ -1,8 +1,8 @@
-app:
+apps:
     - depends:
         - tests-pkt
 
-module:
+modules:
     - name: tests-pkt
       sources: [tests-pkt.c]
       depends:

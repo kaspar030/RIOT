@@ -1,4 +1,4 @@
-module:
+modules:
   - name: isl29125
     depends:
         - periph_gpio_irq

@@ -1,8 +1,8 @@
-app:
+apps:
   - depends:
         - tests-gnrc_sixlowpan_frag_vrb
 
-module:
+modules:
     - name: tests-gnrc_sixlowpan_frag_vrb
       sources: [tests-gnrc_sixlowpan_frag_vrb.c]
       depends:

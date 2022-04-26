@@ -1,4 +1,4 @@
-module:
+modules:
   - name: tja1042
     depends:
         - can_trx

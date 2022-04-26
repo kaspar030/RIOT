@@ -1,4 +1,4 @@
-module:
+modules:
   - name: mma7660
     depends:
         - periph_i2c

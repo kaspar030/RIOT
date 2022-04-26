@@ -1,4 +1,4 @@
-module:
+modules:
     - name: gnrc_rpl
       depends:
           - gnrc_ipv6_nib

@@ -1,4 +1,4 @@
-module:
+modules:
   - name: fmt
     sources:
         - fmt.c

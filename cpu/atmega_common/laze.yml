@@ -1,4 +1,4 @@
-context:
+contexts:
   - name: atmega_common
     parent: avr8_common
     env:
@@ -11,7 +11,7 @@ defaults:
   module:
     context: atmega_common
 
-module:
+modules:
   - name: atmega_common
     depends:
       - core

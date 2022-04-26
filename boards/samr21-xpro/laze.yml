@@ -1,4 +1,4 @@
-builder:
+builders:
   - name: samr21-xpro
     parent: samr21g18a
     env:
@@ -21,7 +21,7 @@ defaults:
   module:
     context: samr21-xpro
 
-module:
+modules:
   - name: board
     sources:
       - board.c

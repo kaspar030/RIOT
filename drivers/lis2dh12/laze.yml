@@ -1,4 +1,4 @@
-module:
+modules:
   - name: lis2dh12
     sources:
         - lis2dh12.c

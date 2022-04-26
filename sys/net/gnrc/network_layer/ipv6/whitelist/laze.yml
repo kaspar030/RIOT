@@ -1,4 +1,4 @@
-module:
+modules:
   - name: gnrc_ipv6_whitelist
     sources:
         - gnrc_ipv6_whitelist.c

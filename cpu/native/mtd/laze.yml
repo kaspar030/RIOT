@@ -1,4 +1,4 @@
-module:
+modules:
     - name: mtd_native
       context: cpu/native
       depends:

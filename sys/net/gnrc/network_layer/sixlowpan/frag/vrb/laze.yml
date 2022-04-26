@@ -1,4 +1,4 @@
-module:
+modules:
     - name: gnrc_sixlowpan_frag_vrb
       sources:
           - gnrc_sixlowpan_frag_vrb.c
