@@ -10,9 +10,8 @@ module:
     depends:
       - rtt_rtc
       - unittests-base
-    # TODO: implement "conflicts"/"disables" on regular modules
-    #disables:
-    #    - periph_rtt
+    conflicts:
+      - periph_rtt
     env:
       global:
         testsuites:
