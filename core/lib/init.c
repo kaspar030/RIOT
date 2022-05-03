@@ -23,6 +23,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "kernel_defines.h"
 #include "auto_init.h"
 #include "irq.h"
 #include "kernel_init.h"
