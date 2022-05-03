@@ -1,0 +1,5 @@
+FEATURES_REQUIRED += riot_libc
+USEMODULE += libc_stdio
+USEMODULE += libc_stdlib
+USEMODULE += libc_string
+USEMODULE += fmt

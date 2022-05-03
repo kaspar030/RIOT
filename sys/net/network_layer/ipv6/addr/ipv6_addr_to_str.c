@@ -28,6 +28,7 @@
 
 #include <inttypes.h>
 #include <string.h>
+#include <stddef.h>
 
 #include "byteorder.h"
 #include "net/ipv4/addr.h"

@@ -20,6 +20,7 @@
 #include <inttypes.h>
 #include <assert.h>
 
+#include "kernel_defines.h"
 #include "priority_queue.h"
 
 #define ENABLE_DEBUG 0

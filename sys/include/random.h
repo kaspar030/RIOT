@@ -29,8 +29,8 @@
 #ifndef RANDOM_H
 #define RANDOM_H
 
-#include <inttypes.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {

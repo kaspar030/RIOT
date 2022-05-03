@@ -10,7 +10,7 @@ STDIO_MODULES = \
   stdio_telnet \
   #
 
-ifneq (,$(filter newlib picolibc,$(USEMODULE)))
+ifneq (,$(filter newlib picolibc libc,$(USEMODULE)))
   ifeq (,$(filter $(STDIO_MODULES),$(USEMODULE)))
     USEMODULE += stdio_uart
   endif

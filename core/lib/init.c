@@ -23,6 +23,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "kernel_defines.h"
 #include "auto_init.h"
 #include "irq.h"
 #include "kernel_init.h"
@@ -46,6 +47,11 @@ static char idle_stack[THREAD_STACKSIZE_IDLE];
 static void *main_trampoline(void *arg)
 {
     (void)arg;
+
+    if (IS_USED(MODULE_LIBC)) {
+        void libc_init(void);
+        libc_init();
+    }
 
     if (IS_USED(MODULE_AUTO_INIT)) {
         auto_init();

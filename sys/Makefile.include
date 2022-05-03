@@ -123,8 +123,8 @@ ifneq (,$(filter ssp,$(USEMODULE)))
   include $(RIOTBASE)/sys/ssp/Makefile.include
 endif
 
-ifneq (native,$(BOARD))
-  INCLUDES += -I$(RIOTBASE)/sys/libc/include
+ifneq (,$(filter libc,$(USEMODULE)))
+  include $(RIOTBASE)/sys/libc/Makefile.include
 endif
 
 ifneq (,$(filter clif, $(USEMODULE)))
@@ -154,4 +154,8 @@ endif
 
 ifneq (,$(filter test_utils_netdev_eth_minimal,$(USEMODULE)))
   CFLAGS += -DCONFIG_NETDEV_REGISTER_SIGNAL
+endif
+
+ifneq (,$(filter newlib,$(USEMODULE)))
+  USEMODULE_INCLUDES += $(RIOTBASE)/sys/newlib-extra/include
 endif
