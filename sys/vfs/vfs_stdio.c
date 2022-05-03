@@ -57,6 +57,8 @@ static vfs_file_ops_t _stdio_ops = {
 
 void vfs_bind_stdio(void)
 {
+    extern void vfs_init(void);
+    vfs_init();
     int fd;
     fd = vfs_bind(STDIN_FILENO, O_RDONLY, &_stdio_ops, (void *)STDIN_FILENO);
     /* Is there a better way to handle errors on init? */
