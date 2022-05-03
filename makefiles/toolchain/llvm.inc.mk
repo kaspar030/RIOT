@@ -62,17 +62,19 @@ ifneq (,$(TARGET_ARCH))
   # We currently don't use LLVM for linking (see comment above).
   # LINKFLAGS  += -target $(TARGET_ARCH_LLVM)
 
-  # Clang on Linux uses GCC's C and C++ headers and libstdc++ (installed with GCC)
+  ifneq (,$(filter newlib picolibc, $(USEMODULE)))
+    # Clang on Linux uses GCC's C and C++ headers and libstdc++ (installed with GCC)
 
-  # Extract include directories from GCC
-  GCC_C_INCLUDE_DIRS   = $(call gcc_include_dirs,c)
-  GCC_CXX_INCLUDE_DIRS = $(call gcc_include_dirs,c++)
+    # Extract include directories from GCC
+    GCC_C_INCLUDE_DIRS   = $(call gcc_include_dirs,c)
+    GCC_CXX_INCLUDE_DIRS = $(call gcc_include_dirs,c++)
 
-  GCC_C_INCLUDES   = $(addprefix -isystem ,$(GCC_C_INCLUDE_DIRS))
-  GCC_CXX_INCLUDES = $(addprefix -isystem ,$(GCC_CXX_INCLUDE_DIRS))
+    GCC_C_INCLUDES   = $(addprefix -isystem ,$(GCC_C_INCLUDE_DIRS))
+    GCC_CXX_INCLUDES = $(addprefix -isystem ,$(GCC_CXX_INCLUDE_DIRS))
 
-  INCLUDES    += $(GCC_C_INCLUDES)
-  CXXINCLUDES += $(GCC_CXX_INCLUDES)
+    INCLUDES    += $(GCC_C_INCLUDES)
+    CXXINCLUDES += $(GCC_CXX_INCLUDES)
+  endif
 endif
 
 # For bare metal targets the performance penalty of atomic operations being

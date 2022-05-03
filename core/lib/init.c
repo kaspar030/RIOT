@@ -48,6 +48,11 @@ static void *main_trampoline(void *arg)
 {
     (void)arg;
 
+    if (IS_USED(MODULE_LIBC)) {
+        void libc_init(void);
+        libc_init();
+    }
+
     if (IS_USED(MODULE_AUTO_INIT)) {
         auto_init();
     }

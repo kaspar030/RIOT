@@ -35,6 +35,19 @@ ifeq ($(LTO),1)
   LINKFLAGS += -Wno-error
 endif
 
+
 OPTIONAL_CFLAGS_BLACKLIST += -Wformat-overflow
 OPTIONAL_CFLAGS_BLACKLIST += -Wformat-truncation
 OPTIONAL_CFLAGS_BLACKLIST += -gz
+
+ifeq (libc,$(RIOT_LIBC))
+  USEMODULE += libc
+  CFLAGS += -nostdinc
+  LINKFLAGS += -nodefaultlibs
+  export INCLUDES += -isystem $(RIOTCPU)/atmega_common/include/vendor
+else
+  # avr libc needs some RIOT-specific support code
+  USEMODULE += avr_libc_extra
+  export INCLUDES += -I$(RIOTCPU)/atmega_common/avr_libc_extra/include \
+                     -I$(RIOTCPU)/atmega_common/avr_libc_extra/include/vendor
+endif

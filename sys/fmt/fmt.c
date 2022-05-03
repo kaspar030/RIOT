@@ -190,6 +190,10 @@ size_t fmt_u64_hex(char *out, uint64_t val)
 
 size_t fmt_u64_dec(char *out, uint64_t val)
 {
+    if (!(val & 0xffffffff00000000)) {
+        return fmt_u32_dec(out, val);
+    }
+
     uint32_t d[5];
     uint32_t q;
     size_t len = 0;
