@@ -23,6 +23,7 @@
 
 #include <assert.h>
 
+#include "kernel_defines.h"
 #include "cpu.h"
 #include "periph_cpu.h"
 
