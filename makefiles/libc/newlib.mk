@@ -1,23 +1,31 @@
 ifneq (,$(filter newlib_nano,$(USEMODULE)))
-  # Test if nano.specs is available
-  ifeq ($(shell $(LINK) -specs=nano.specs -E - 2>/dev/null >/dev/null </dev/null ; echo $$?),0)
-    USE_NEWLIB_NANO = 1
-    ifeq ($(shell echo "int main(){} void _exit(int n) {(void)n;while(1);}" | LC_ALL=C $(CC) -xc - -o /dev/null -lc -specs=nano.specs -Wall -Wextra -pedantic 2>&1 | grep -q "use of wchar_t values across objects may fail" ; echo $$?),0)
-        CFLAGS += -fshort-wchar
-        LINKFLAGS += -Wl,--no-wchar-size-warning
-    endif
+  ifeq ($(shell echo "int main(){} void _exit(int n) {(void)n;while(1);}" | LC_ALL=C $(CC) -xc - -o /dev/null -lc -specs=nano.specs -Wall -Wextra -pedantic 2>&1 | grep -q "use of wchar_t values across objects may fail" ; echo $$?),0)
+    CFLAGS += -fshort-wchar
+    LINKFLAGS += $(LINKFLAGPREFIX)--no-wchar-size-warning
   endif
+
+  LINKFLAGS += -lc_nano
+  USE_NEWLIB_NANO = 1
+else
+  LINKFLAGS += -lc
 endif
 
 ifneq (,$(filter newlib_gnu_source,$(USEMODULE)))
   CFLAGS += -D_GNU_SOURCE=1
 endif
 
-ifeq (1,$(USE_NEWLIB_NANO))
-  LINKFLAGS += -specs=nano.specs
-endif
+ifeq (llvm, $(TOOLCHAIN))
+  # get newlib library path from cross gcc
+  GCC_SYSROOT = $(shell $(PREFIX)gcc -print-sysroot)
+  LINKFLAGS += -L$(GCC_SYSROOT)/lib
 
-LINKFLAGS += -lc
+  # get path of libgcc from cross gcc
+  GCC_LIBGCC = $(shell $(PREFIX)gcc -print-libgcc-file-name)
+  LINKFLAGS += -L$(dir $(GCC_LIBGCC))
+
+  # link libgcc (assuming newlib was compiled using gcc)
+  LINKFLAGS += -lgcc
+endif
 
 # Note on `realpath` vs `abspath`
 #
