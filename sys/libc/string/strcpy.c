@@ -1,4 +1,4 @@
-char *strcpy(void *dest, const void *src)
+char *strcpy(char *dest, const char *src)
 {
     char *d = dest;
     const char *s = src;
