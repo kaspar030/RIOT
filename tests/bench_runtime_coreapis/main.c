@@ -26,7 +26,7 @@
 #include "thread_flags.h"
 
 #ifndef BENCH_RUNS
-#define BENCH_RUNS          (1000UL * 1000UL)
+#define BENCH_RUNS          (1000UL * 100UL)
 #endif
 
 static mutex_t _lock;
