@@ -31,10 +31,15 @@ builders:
 modules:
   - name: board
     context: nrf52840dk
+    sources:
+      - mtd:
+        - mtd.c
     depends:
       - boards_common_nrf52xxxdk
       - nrf52840
       - periph_gpio
+      - mtd:
+        - mtd_spi_nor
 
     env:
       export:
