@@ -2,6 +2,7 @@ modules:
   - name: mtd_spi_nor
     depends:
         - mtd
+        - periph_spi
     uses:
         - xtimer
     sources:
