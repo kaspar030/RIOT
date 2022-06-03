@@ -20,6 +20,10 @@ contexts:
         - -Wl,--defsym=__TEXT_REGION_LENGTH__=${ROM_LEN}-${RAM_LEN}
         - -Wl,--defsym=__DATA_REGION_LENGTH__=${RAM_LEN}
         - -e reset_handler
+      CFLAGS_ARCH:
+        # this is required as workaround for avr-gcc 12.x.
+        # unfortunately it breaks avr-gcc < 11.3.
+        - --param=min-pagesize=0
       includes:
         - ${relpath}/include
 
