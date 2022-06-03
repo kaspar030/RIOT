@@ -32,6 +32,18 @@ contexts:
         SLOT1_LEN: "0x3f000"
         RAM_LEN: "0x10000"
 
+    - name: nrf52840
+      parent: nrf52
+      env:
+        CFLAGS_DEFINES:
+            - -DRIOT_MCU=\"nrf52840\"
+            - -DCPU_NRF52840
+            - -DCPU_MODEL_NRF52840XXAA
+        ROM_LEN: "0x100000"
+        SLOT0_LEN: "0x7f000"
+        SLOT1_LEN: "0x7f000"
+        RAM_LEN: "0x40000"
+
 modules:
     - name: nrf52
       context: nrf52
@@ -47,6 +59,13 @@ modules:
           - nrf52
       sources:
         - vectors/vectors_nrf52832xxaa.c
+
+    - name: nrf52840
+      context: nrf52840
+      depends:
+          - nrf52
+      sources:
+        - vectors/vectors_nrf52840xxaa.c
 
     - name: feature/ble_nimble
       context: nrf52

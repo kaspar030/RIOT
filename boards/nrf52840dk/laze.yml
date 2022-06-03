@@ -1,0 +1,42 @@
+builders:
+  - name: nrf52840dk
+    parent: nrf52840
+    env:
+      includes:
+        - ${relpath}/include
+      PORT: /dev/ttyACM0
+
+    tasks:
+      flash:
+        cmd:
+          - openocd
+            -c 'source [find interface/jlink.cfg]'
+            -c 'transport select swd'
+            -f ${root}/boards/common/nrf52/dist/openocd.cfg
+            -c 'tcl_port 0'
+            -c 'telnet_port 0'
+            -c 'gdb_port 0'
+            -c 'init'
+            -c 'targets'
+            -c 'reset halt'
+            -c 'flash write_image erase ${out}'
+            -c 'verify_image ${out}'
+            -c 'reset run'
+            -c 'shutdown'
+
+      term:
+        cmd:
+          - picocom --baud 115200 --quiet --imap lfcrlf ${PORT}
+
+modules:
+  - name: board
+    context: nrf52840dk
+    depends:
+      - boards_common_nrf52xxxdk
+      - nrf52840
+      - periph_gpio
+
+    env:
+      export:
+        includes:
+          - ${relpath}/include
