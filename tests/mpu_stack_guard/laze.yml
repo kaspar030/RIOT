@@ -1,3 +1,7 @@
 apps:
   - depends:
         - mpu_stack_guard
+    env:
+      local:
+        CFLAGS_WARN:
+          - -Wno-infinite-recursion
