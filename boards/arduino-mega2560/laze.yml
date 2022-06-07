@@ -7,7 +7,7 @@ builders:
           PORT:
               - /dev/ttyACM0
 
-      tools:
+      tasks:
         flash:
           cmd:
             - ${OBJCOPY} -O ihex ${out} ${out}.hex

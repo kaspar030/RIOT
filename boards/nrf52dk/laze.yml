@@ -6,7 +6,7 @@ builders:
         - ${relpath}/include
       PORT: /dev/ttyACM0
 
-    tools:
+    tasks:
       flash:
         cmd:
           - openocd
