@@ -17,10 +17,10 @@ all: | $(CLEAN)
 	laze build $(LAZE_ARGS) -b $(BOARD)
 
 clean:
-	@echo "clean unsupported"
+	@laze clean $(LAZE_ARGS)
 
 $(LAZE_TOOLS):
-	laze build $(LAZE_ARGS) -b $(BOARD) -t $@
+	laze task $(LAZE_ARGS) -b $(BOARD) $@
 
 buildtest: | $(CLEAN)
 	laze build $(LAZE_ARGS)
