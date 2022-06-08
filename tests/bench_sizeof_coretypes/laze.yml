@@ -1,1 +1,6 @@
 apps:
+  - uses:
+      - core_mbox
+      - core_msg
+      - core_thread_flags
+      - mpu_stack_guard
