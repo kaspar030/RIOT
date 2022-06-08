@@ -117,13 +117,16 @@ contexts:
         prefix: -I
       notify:
         prefix: -DMODULE_
-    tools:
-      size:
-        cmd:
-          - "${SIZE} ${out}"
+    tasks:
       test:
         cmd:
-          - "PYTHONPATH=$$(pwd)/dist/pythonlibs/; cd ${relpath} && LAZE=1 tests/*"
+          - >-
+            PYTHONPATH=$$(pwd)/dist/pythonlibs/
+             (cd ${appdir} && USEMODULE="${modules}" LAZE=1 tests/* )
+      info-modules:
+        build: false
+        cmd:
+          - echo ${modules} | tr [:space:] \\n
 
 builders:
   - name: host
