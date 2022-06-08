@@ -6,9 +6,15 @@ contexts:
             cmd:
              - "${out}"
         term:
+            build: false
+            cmd:
+             - "${out}"
+        cleanterm:
+            build: false
             cmd:
              - "${out}"
         reset:
+            build: false
             cmd:
              - "true"
 
