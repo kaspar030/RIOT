@@ -5,8 +5,6 @@ modules:
           - boards_common_nrf52
           - saul_default:
               - saul_gpio
-      sources:
-          - board.c
 
       env:
         global:

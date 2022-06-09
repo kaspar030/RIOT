@@ -8,8 +8,6 @@ builders:
 modules:
     - name: board
       context: stm32f4discovery
-      sources:
-          - board.c
       depends:
           - stm32f4
           - boards/common/stm32

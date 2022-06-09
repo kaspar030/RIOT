@@ -1,8 +1,6 @@
 modules:
   - name: nucleo
     context: stm32
-    sources:
-      - board_common_nucleo_init.c
     env:
       export:
         CFLAGS:
