@@ -1,0 +1,4 @@
+modules:
+    - name: rtc_utils
+      sources:
+          - rtc_utils.c

@@ -46,6 +46,7 @@ subdirs:
     - ps
     - random
     - riotboot
+    - rtc_utils
     - saul_reg
     - schedstatistics
     - sema
