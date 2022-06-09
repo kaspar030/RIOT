@@ -76,6 +76,7 @@ contexts:
       # All riot applications need a board.
       # This pulls in cpu, core, ...
       - board
+      - board_common_init
     env:
       CFLAGS_DEFINES:
         - ${notify}

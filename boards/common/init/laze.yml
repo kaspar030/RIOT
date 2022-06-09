@@ -1,0 +1,6 @@
+modules:
+    - name: board_common_init
+      uses:
+        - board
+      sources:
+          - board_common.c

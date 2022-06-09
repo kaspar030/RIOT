@@ -1,6 +1,7 @@
 subdirs:
     - arduino-atmega
     - atmega
+    - init
     - nrf52
     - nrf52xxxdk
     - nucleo

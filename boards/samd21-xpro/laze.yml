@@ -8,8 +8,6 @@ builders:
 modules:
   - name: board
     context: samd21-xpro
-    sources:
-      - board.c
     depends:
       - cpu/samd21
       - periph_gpio

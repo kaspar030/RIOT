@@ -1,7 +1,5 @@
 modules:
     - name: boards_common_arduino-atmega
-      sources:
-        - led_init.c
       depends:
         - boards_common_atmega
         - periph_gpio
