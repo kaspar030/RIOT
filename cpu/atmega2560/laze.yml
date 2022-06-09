@@ -9,16 +9,13 @@ contexts:
         - -DMCU_ATMEGA2560
       RAM_LEN: 8K
       ROM_LEN: 256K
+      includes:
+        - ${relpath}/include
+      LINKFLAGS:
+        - -I${relpath}/ldscripts_compat
 
 modules:
   - name: atmega2560
     context: atmega2560
     depends:
       - atmega_common
-    env:
-      export:
-        includes:
-          - ${relpath}/include
-
-      LINKFLAGS:
-        - -I${relpath}/ldscripts_compat
