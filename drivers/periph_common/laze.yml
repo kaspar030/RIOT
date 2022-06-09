@@ -28,10 +28,7 @@ modules:
 
     depends:
       - periph_common_init
-      - periph_rtc:
-          - periph_rtc_common
-      - rtt_rtc:
-          - periph_rtc_common
+
     uses:
       - board
       - periph_flashpage_pagewise
@@ -50,8 +47,3 @@ modules:
       - periph_usbdev
       - periph_wdt
 
-  # periph_rtc_common is an extra module as it needs to be individually
-  # selectable by tests/unittests/tests-rtc
-  - name: periph_rtc_common
-    sources:
-      - rtc.c
