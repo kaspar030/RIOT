@@ -44,7 +44,6 @@ subdirs:
     - pm_layered
     - posix
     - ps
-    - quad_math
     - random
     - riotboot
     - saul_reg
