@@ -13,12 +13,6 @@ modules:
       depends:
           - event
 
-    - name: event_timeout
-      sources:
-          - timeout.c
-      depends:
-          - event
-          - xtimer
     - name: event_timeout_ztimer
       sources:
           - timeout_ztimer.c
