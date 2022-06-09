@@ -4,6 +4,7 @@ modules:
           - rtt_rtc.c
       depends:
         - periph_common
+        - rtc_utils
       # TODO: implement "provides" in laze
       # provides:
       #   - periph_rtc
