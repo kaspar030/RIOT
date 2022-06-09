@@ -8,6 +8,10 @@ modules:
           # exported vars / includes. Should those be needed, add them here:
           - asymcute
           - gnrc_sock
+      env:
+        export:
+          includes:
+            - ${relpath}/include
 
 subdirs:
     - can
