@@ -1,0 +1,38 @@
+modules:
+  - name: core_lib
+    selects:
+      - core_lib_rmutex
+    sources:
+      - assert.c
+      - atomic_c11.c
+      - atomic_sync.c
+      - bitarithm.c
+      - clist.c
+      - priority_queue.c
+      - ringbuffer.c
+    env:
+      global:
+        includes:
+          - ${relpath}/include
+
+  - name: core_lib_rmutex
+    sources:
+      - rmutex.c
+    depends:
+      - core_lib
+      - core
+
+  - name: core_init
+    sources:
+      - init.c
+    depends:
+      - ?auto_init
+    uses:
+      - core
+
+  - name: core_panic
+    sources:
+      - panic.c
+    uses:
+      - core
+      - ps

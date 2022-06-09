@@ -1,26 +1,21 @@
 modules:
   - name: core
     sources:
-      - assert.c
-      - atomic_c11.c
-      - atomic_sync.c
-      - bitarithm.c
-      - clist.c
       - cond.c
       - mutex.c
-      - priority_queue.c
-      - ringbuffer.c
-      - rmutex.c
       - sched.c
       - thread.c
     depends:
       - board
+      - ?core_thread
+      - core_lib
       - ?core_msg
       - ?periph_pm
     selects:
       - ?core_init
       - ?core_panic
     uses:
+      - core_thread
       - core_idle_thread
       - core_msg
       - core_mbox
@@ -28,14 +23,8 @@ modules:
       - mpu_stack_guard
       - sched_cb
 
+  - name: core_thread
   - name: core_idle_thread
-  - name: core_init
-    sources:
-      - init.c
-    depends:
-      - ?auto_init
-    uses:
-      - core
 
   - name: core_msg
     sources:
@@ -49,13 +38,6 @@ modules:
     uses:
       - core
 
-  - name: core_panic
-    sources:
-      - panic.c
-    uses:
-      - core
-      - ps
-
   - name: core_thread_flags
     sources:
       - thread_flags.c
@@ -63,3 +45,6 @@ modules:
       - core
 
   - name: sched_cb
+
+subdirs:
+  - lib
