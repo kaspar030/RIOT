@@ -23,7 +23,6 @@
 #include <string.h>
 
 #include "byteorder.h"
-#include "kernel_types.h"
 #include "thread.h"
 #include "thread_flags.h"
 #include "xtimer.h"
