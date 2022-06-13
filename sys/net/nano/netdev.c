@@ -238,7 +238,7 @@ void nanonet_init_devices(void)
 {
     unsigned n = 0;
 #ifdef MODULE_NETDEV_TAP
-    netdev_tap_setup(&netdev_tap, &netdev_tap_params[0]);
+    netdev_tap_setup(&netdev_tap, &netdev_tap_params[0], 0);
     nanonet_init_netdev_eth(n++);
 #endif
 
