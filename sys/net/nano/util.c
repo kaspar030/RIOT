@@ -4,6 +4,7 @@
 
 #include "fmt.h"
 #include "iolist.h"
+#include "unaligned.h"
 
 #define ENABLE_DEBUG (0)
 #include "debug.h"
@@ -16,9 +17,9 @@ uint16_t nano_util_calcsum(uint32_t sum, const uint8_t *buffer, size_t len)
     /* add all even 16-bit words to the checksum */
     while (len > 1) {
         DEBUG("%s(): sum=0x%08" PRIx32 ", len=%zu, add=0x%04x\n", __func__, sum,
-              len, *(uint16_t *)buffer);
+              len, unaligned_get_u16(buffer));
         /* TODO: fix possibly unaligned access */
-        sum += *(uint16_t *)buffer;
+        sum += unaligned_get_u16(buffer);
         len -= 2;
         buffer += 2;
     }
@@ -27,8 +28,8 @@ uint16_t nano_util_calcsum(uint32_t sum, const uint8_t *buffer, size_t len)
     if (len) {
         uint8_t tmp[2] = { *buffer, 0 };
         DEBUG("%s(): sum=0x%08" PRIx32 ", len=%zu, add=0x%04x\n", __func__, sum,
-              len, *(uint16_t *)tmp);
-        sum += *(uint16_t *)tmp;
+              len, unaligned_get_u16(tmp));
+        sum += unaligned_get_u16(tmp);
     }
 
     /* Fold 32-bit sum to 16 bits */
@@ -59,8 +60,8 @@ uint16_t nano_util_calcsum_iolist(uint32_t sum, const iolist_t *iolist)
             /* if byte was odd, we got a pair. add to sum. */
             if (offset & 1) {
                 DEBUG("%s(): sum=0x%08" PRIx32 ", add=0x%04x, offset=%zu\n",
-                      __func__, sum, *(uint16_t *)tmp, offset);
-                sum += *(uint16_t *)tmp;
+                      __func__, sum, unaligned_get_u16(tmp), offset);
+                sum += unaligned_get_u16(tmp);
             }
         }
         iolist = iolist->iol_next;
@@ -70,8 +71,8 @@ uint16_t nano_util_calcsum_iolist(uint32_t sum, const iolist_t *iolist)
     if (!(offset & 1)) {
         tmp[1] = 0;
         DEBUG("%s(): sum=0x%08" PRIx32 ", add=0x%04x\n", __func__, sum,
-              *(uint16_t *)tmp);
-        sum += *(uint16_t *)tmp;
+              unaligned_get_u16(tmp));
+        sum += unaligned_get_u16(tmp);
     }
 
     /* Fold 32-bit sum to 16 bits */

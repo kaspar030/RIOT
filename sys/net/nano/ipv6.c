@@ -228,9 +228,8 @@ int ipv6_send(const iolist_t *iolist, uint8_t *dst_ip, int protocol, nano_dev_t 
 
 void ipv6_addr_print(const uint8_t *addr)
 {
-    const uint16_t* _addr = (const uint16_t*) addr;
     for (int i = 0; i < 8; i++) {
-        printf("%04x", (unsigned)ntohs(_addr[i]));
+        printf("%04x", (unsigned)ntohs(unaligned_get_u16(&addr[i*2])));
         if (i != 7) {
             printf(":");
         }
