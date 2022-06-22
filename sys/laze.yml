@@ -68,3 +68,4 @@ subdirs:
     - xtimer
     - zptr
     - ztimer
+    - ztimer64

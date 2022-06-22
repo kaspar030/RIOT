@@ -3,7 +3,7 @@ modules:
     depends:
         - checksum
         - periph_i2c
-        - xtimer
+        - ztimer_msec
     sources:
         - sht3x.c
         - saul:

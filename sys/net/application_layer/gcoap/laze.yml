@@ -7,6 +7,27 @@ modules:
         - gnrc_sock_udp
         - gnrc_sock_async
         - sock_async_event
+        - sock_aux_local
         - sock_util
         - event_timeout_ztimer
         - event_callback
+      uses:
+        - gcoap_dtls
+        - gcoap_forward_proxy
+        - nanocoap_cache
+
+    - name: gcoap_dtls
+      depends:
+        - gcoap
+
+    - name: gcoap_forward_proxy
+      sources:
+        - forward_proxy.c
+      depends:
+        - gcoap
+
+    - name: gcoap_fileserver
+      sources:
+        - fileserver.c
+      depends:
+        - gcoap

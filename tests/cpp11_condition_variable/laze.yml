@@ -1,3 +1,5 @@
 apps:
   - depends:
         - cpp11-compat
+        - timex
+        - xtimer

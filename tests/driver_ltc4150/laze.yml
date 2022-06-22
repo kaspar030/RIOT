@@ -2,3 +2,4 @@ apps:
   - depends:
         - fmt_table
         - ltc4150
+        - ztimer_usec

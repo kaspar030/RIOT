@@ -1,0 +1,34 @@
+modules:
+    - name: ztimer64
+      sources:
+          - overhead.c
+          - ztimer64.c
+      selects:
+          - ztimer64_util
+      uses:
+          - pm_layered
+          - ztimer64_msec
+          - ztimer64_usec
+          - ztimer64_sec
+
+    - name: ztimer64_util
+      sources:
+          - util.c
+      uses:
+          - core_msg
+          - core_thread_flags
+
+    - name: ztimer64_usec
+      depends:
+        - ztimer64
+        - ztimer_usec
+
+    - name: ztimer64_msec
+      depends:
+        - ztimer64
+        - ztimer_msec
+
+    - name: ztimer64_sec
+      depends:
+        - ztimer64
+        - ztimer_sec

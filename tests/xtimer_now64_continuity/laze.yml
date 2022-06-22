@@ -1,4 +1,4 @@
 apps:
   - depends:
         - fmt
-        - xtimer
+        - xtimer_legacy

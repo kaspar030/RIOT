@@ -21,6 +21,9 @@ modules:
   - name: periph_spi
     depends:
       - periph_gpio_irq
+    uses:
+      - periph_spi_gpio_mode
+      - periph_spi_reconfigure
     sources:
       - spi_nrf52_nrf9160.c
 

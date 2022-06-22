@@ -1,6 +1,7 @@
 modules:
     - name: gnrc_sock_udp
       depends:
+          - iolist
           - gnrc_sock
           - gnrc_udp
           - sock_udp

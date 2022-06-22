@@ -1,11 +1,13 @@
 modules:
   - name: core_lib
+    depends:
+      - board
     selects:
       - core_lib_rmutex
+      - core_lib_atomic_sync
     sources:
       - assert.c
       - atomic_c11.c
-      - atomic_sync.c
       - bitarithm.c
       - clist.c
       - priority_queue.c
@@ -21,6 +23,12 @@ modules:
     depends:
       - core_lib
       - core
+
+  - name: core_lib_atomic_sync
+    sources:
+      - atomic_sync.c
+    depends:
+      - board
 
   - name: core_init
     sources:

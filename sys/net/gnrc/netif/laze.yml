@@ -1,6 +1,7 @@
 modules:
   - name: gnrc_netif
     depends:
+      - event
       - fmt
       - netif
       - l2util

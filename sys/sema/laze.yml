@@ -1,6 +1,13 @@
 modules:
   - name: sema
     depends:
-        - xtimer
+        - ztimer
+    uses:
+      - sema_deprecated
     sources:
         - sema.c
+
+  - name: sema_deprecated
+    depends:
+      - sema
+      - xtimer

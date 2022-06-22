@@ -1,0 +1,8 @@
+apps:
+  - depends:
+    - ztimer_usec
+    uses:
+    # this test will use these if available, in sec/msec/usec order.
+    # select using `laze build ... --select ztimer_X`
+    - ztimer_sec
+    - ztimer_msec

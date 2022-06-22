@@ -11,4 +11,5 @@ modules:
     depends:
       - nanocoap
       - sock_udp
+      - sock_util
 
