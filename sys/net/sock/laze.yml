@@ -12,6 +12,11 @@ modules:
         - sock
       uses:
         - gnrc_sock_udp
+        - sock_aux_endpoint
+        - sock_aux_local
+        - sock_aux_rssi
+        - sock_aux_timestamp
+        - sock_aux_timestap
 
     - name: sock_util
       sources:
@@ -21,6 +26,9 @@ modules:
               - fmt
           - posix_inet
           - sock
+      uses:
+        - sock_dns
+        - sock_dns_mock
 
     - name: sock_async
       depends:
@@ -34,6 +42,12 @@ modules:
           CFLAGS:
             - -DSOCK_HAS_ASYNC
             - -DSOCK_HAS_ASYNC_CTX
+
+    - name: sock_aux_endpoint
+    - name: sock_aux_local
+    - name: sock_aux_rssi
+    - name: sock_aux_timestamp
+    - name: sock_aux_timestap
 
 subdirs:
     - async

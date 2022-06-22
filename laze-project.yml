@@ -86,7 +86,6 @@ contexts:
         - -fdata-sections
         - -ffunction-sections
         - -fdiagnostics-color
-        - -fno-common
         - -fno-delete-null-pointer-checks
         - -fshort-enums
           # RIOT master uses this. Causes issues (e.g., no reference to "fabs()" on avr).

@@ -1,5 +1,35 @@
 modules:
     - name: xtimer
+      depends:
+        - div
+        - xtimer_impl
+      uses:
+        - ztimer_xtimer_compat
+        - ztimer64_xtimer_compat
+        - xtimer_legacy
+
+    - name: ztimer64_xtimer_compat
+      provides:
+        - xtimer_impl
+      conflicts:
+        - xtimer_impl
+      depends:
+        - ztimer64_usec
+
+    - name: ztimer_xtimer_compat
+      provides:
+        - xtimer_impl
+      conflicts:
+        - xtimer_impl
+      depends:
+        - ztimer_usec
+
+    - name: xtimer_legacy
+      provides:
+        - xtimer_impl
+      conflicts:
+        - xtimer_impl
+
       sources:
           - xtimer.c
           - xtimer_core.c

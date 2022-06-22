@@ -9,7 +9,6 @@ contexts:
             - -mlittle-endian -mthumb
             - -mno-thumb-interwork
         CFLAGS_CODEGEN:
-            - -fno-common
             - -fno-delete-null-pointer-checks
         CFLAGS_DEFINES:
             - -DDONT_USE_CMSIS_INIT

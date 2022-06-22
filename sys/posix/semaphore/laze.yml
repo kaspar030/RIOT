@@ -2,6 +2,8 @@ modules:
   - name: posix_semaphore
     depends:
         - sema
+        - sema_deprecated
         - posix_headers
+        - ztimer64_usec
     sources:
         - posix_semaphore.c

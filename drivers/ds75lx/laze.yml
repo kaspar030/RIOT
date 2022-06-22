@@ -2,6 +2,7 @@ modules:
   - name: ds75lx
     depends:
         - periph_i2c
+        - xtimer
     sources:
         - ds75lx.c
         - saul:

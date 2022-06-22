@@ -1,6 +1,9 @@
 contexts:
     - name: nrf52
       parent: nrf5x
+      selects:
+        - periph_spi_gpio_mode
+        - periph_i2c_reconfigure
       env:
           LINKFLAGS:
             - -L${relpath}/ldscripts
@@ -72,6 +75,13 @@ modules:
 
     - name: feature/cortexm_mpu
       context: nrf52
+
+    - name: periph_spi_gpio_mode
+      context: nrf52
+
+    - name: periph_i2c_reconfigure
+      context: nrf52
+
 
 subdirs:
     - periph

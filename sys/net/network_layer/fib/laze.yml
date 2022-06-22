@@ -3,5 +3,6 @@ modules:
     depends:
       - posix_headers
       - universal_address
+      - xtimer
     sources:
       - fib.c

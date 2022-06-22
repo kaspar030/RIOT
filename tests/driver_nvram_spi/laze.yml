@@ -1,7 +1,7 @@
 apps:
   - depends:
         - nvram_spi
-        - xtimer
+        - ztimer_usec
     env:
       local:
         CFLAGS:

@@ -255,6 +255,8 @@ subdirs:
   - xtimer_reset
   - xtimer_usleep
   - xtimer_usleep_short
+  - ztimer_msg
+  - ztimer64_msg
 
 ---
 # C++ tests

@@ -5,6 +5,7 @@ modules:
     depends:
         - periph_gpio_irq
         - periph_spi
+        - ztimer_usec
     env:
       export:
         includes:

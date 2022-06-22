@@ -25,12 +25,16 @@ modules:
   - name: periph_rtc
     depends:
       - periph_rtc_rtt
+
   - name: periph_rtt
     depends:
       - periph_rtc_rtt
+    conflicts:
+      - periph_rtc
+      - ztimer_periph_rtt
+
   - name: periph_rtc_rtt
     sources: [rtc_rtt.c]
-    # TODO: periph_rtc and periph_rtt conflict!
 
   - name: periph_pwm
     sources:
