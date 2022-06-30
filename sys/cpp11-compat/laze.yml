@@ -9,6 +9,7 @@ modules:
         - cpp
         - timex
         - xtimer
+        - cpp_new_delete
     env:
       export:
         includes:

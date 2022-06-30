@@ -1,3 +1,4 @@
 apps:
   - depends:
         - cpp11-compat
+        - libc_gettimeofday

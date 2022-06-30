@@ -10,6 +10,9 @@ modules:
         - stdio_uart
     uses:
         - board
+        - libc_gettimeofday
         - lto
         - vfs
         - xtimer
+
+  - name: libc_gettimeofday
