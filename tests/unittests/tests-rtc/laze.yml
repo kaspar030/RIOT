@@ -11,6 +11,7 @@ modules:
       sources: [tests-rtc.c]
       depends:
           - periph_rtc_common
+          - rtc_utils
           - unittests-base
       env:
         global:
