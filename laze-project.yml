@@ -57,7 +57,7 @@ contexts:
         in: "o"
         options:
           combine: true
-        cmd: "${LINK} ${LINKFLAGS} ${CFLAGS_STD} ${CFLAGS_ARCH}
+        cmd: "${LINK} ${LINKFLAGS} ${CFLAGS_ARCH}
           ${CFLAGS_CODEGEN} ${CFLAGS}
           ${in} ${libs} -o ${out}"
 
@@ -88,6 +88,8 @@ contexts:
         - -fdiagnostics-color
         - -fno-delete-null-pointer-checks
         - -fshort-enums
+        - -fwrapv
+        - -fno-common
           # RIOT master uses this. Causes issues (e.g., no reference to "fabs()" on avr).
           # Why no builtins?
           #- -fno-builtin
@@ -101,7 +103,7 @@ contexts:
           #- -Wold-style-definition
           #- -Wstrict-prototypes
       CXXFLAGS_STD:
-        - -std=c++11
+        - -std=c++14
       LINKFLAGS:
         - -Wl,--gc-sections
         - -Wl,-Map=${out}.map
