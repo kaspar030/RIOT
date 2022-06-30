@@ -34,6 +34,8 @@ modules:
       - ztimer_periph_rtt
 
   - name: periph_rtc_rtt
+    depends:
+      - rtc_utils
     sources: [rtc_rtt.c]
 
   - name: periph_pwm
@@ -42,6 +44,11 @@ modules:
 
   - name: periph_spi
     sources: [spi.c]
+    depends:
+      - periph_spi_gpio_mode
+    uses:
+      - periph_dma
+      - periph_spi_on_qspi
   - name: periph_timer
     sources: [timer.c]
   - name: periph_gpio

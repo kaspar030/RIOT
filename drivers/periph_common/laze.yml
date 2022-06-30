@@ -31,6 +31,7 @@ modules:
 
     uses:
       - board
+      - periph_flashpage
       - periph_flashpage_pagewise
 
   - name: periph_common_init
@@ -46,4 +47,6 @@ modules:
       - periph_spi
       - periph_usbdev
       - periph_wdt
+
+  - name: periph_spi_gpio_mode
 
