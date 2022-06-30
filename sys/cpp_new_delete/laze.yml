@@ -1,0 +1,5 @@
+modules:
+    - name: cpp_new_delete
+      sources:
+          - cppsupport.cpp
+          - new_delete.cpp
