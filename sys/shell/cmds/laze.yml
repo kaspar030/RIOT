@@ -47,7 +47,6 @@ modules:
       - saul_reg:
           - sc_saul_reg.c
       - sc_sys.c
-      - shell_commands.c
       - sht1x:
           - sc_sht1x.c
       - sntp:
