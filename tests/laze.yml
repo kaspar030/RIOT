@@ -12,6 +12,7 @@ defaults:
             - ?develhelp
 
 subdirs:
+  - backtrace
   - bench_msg_pingpong
   - bench_mutex_pingpong
   - bench_runtime_coreapis
