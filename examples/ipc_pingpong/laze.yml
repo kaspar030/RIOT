@@ -1,5 +1,5 @@
-pp:
-    - env:
-        global:
-          CFLAGS:
-            - -DDEVELHELP
+apps:
+  - env:
+      global:
+        CFLAGS:
+          - -DDEVELHELP
