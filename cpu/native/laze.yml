@@ -30,6 +30,9 @@ modules:
           CFLAGS_DEFINES:
               - -DNATIVE_INCLUDES
               - -DCPU_NATIVE
+          LINKFLAGS:
+              - -T${root}/cpu/native/ldscripts/xfa.ld
+              - -fpic
           includes:
               - ${relpath}/include
       depends:
