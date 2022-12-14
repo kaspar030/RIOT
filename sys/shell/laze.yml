@@ -6,7 +6,7 @@ modules:
         - stdin
     uses:
         - newlib
-        - shell_commands
+        - shell_cmds
 
 subdirs:
-    - commands
+    - cmds

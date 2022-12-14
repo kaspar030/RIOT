@@ -1,88 +1,333 @@
 modules:
+  - name: shell_cmds
   - name: shell_commands
-    options:
-      use_optional_source_deps: True
     depends:
-      - gnrc_icmpv6_echo:
-          - netutils
-    sources:
-      - app_metadata:
-          - sc_app_metadata.c
-      - at30tse75x:
-          - sc_at30tse75x.c
-      - ccn-lite-utils:
-          - sc_ccnl.c
-      - cpu/x86:
-          - sc_x86_lspci.c
-      - fib:
-          - sc_fib.c
-      - gnrc_icmpv6_echo:
-          - sc_gnrc_icmpv6_echo.c
-      - gnrc_ipv6_blacklist:
-          - sc_blacklist.c
-      - gnrc_ipv6_nib:
-          - sc_gnrc_ipv6_nib.c
-      - gnrc_ipv6_whitelist:
-          - sc_whitelist.c
-      - gnrc_netif:
-          - sc_gnrc_netif.c
-      - gnrc_pktbuf_cmd:
-          - sc_gnrc_pktbuf.c
-      - gnrc_rpl:
-          - sc_gnrc_rpl.c
-      - gnrc_sixlowpan_ctx:
-          - sc_gnrc_6ctx.c
-      - lpc2387:
-          - sc_heap.c
-      - mci:
-          - sc_disk.c
-      - periph_rtc:
-          - sc_rtc.c
-      - periph_pm:
-          - sc_pm.c
-      - ps:
-          - sc_ps.c
-      - random:
-          - sc_random.c
-      - saul_reg:
-          - sc_saul_reg.c
-      - sc_sys.c
-      - sht1x:
-          - sc_sht1x.c
-      - sntp:
-          - sc_sntp.c
-      - vfs:
-          - sc_vfs.c
+      - shell_cmds_default
 
-    uses:
+  - name: shell_cmds_default
+    depends:
+      - app_metadata:
+        - shell_cmd_app_metadata
+      - at30tse75x:
+        - shell_cmd_at30tse75x
+      - benchmark_udp:
+         - shell_cmd_benchmark_udp
+      - ccn-lite-utils:
+         - shell_cmd_ccn-lite-utils
+      - conn_can:
+         - shell_cmd_conn_can
+      - cord_ep:
+         - shell_cmd_cord_ep
+      - cryptoauthlib:
+         - shell_cmd_cryptoauthlib
+      - dfplayer:
+        - shell_cmd_dfplayer
+      - fib:
+        - shell_cmd_fib
+      - gnrc_ipv6_ext_frag_stats:
+        - shell_cmd_gnrc_ipv6_frag_stats
+      - gnrc_ipv6_nib:
+        - shell_cmd_gnrc_ipv6_nib
+      - gnrc_ipv6_whitelist:
+        - shell_cmd_whitelist
+      - gnrc_ipv6_blacklist:
+        - shell_cmd_blacklist
+      - gnrc_icmpv6_echo:
+        - shell_cmd_gnrc_icmpv6_echo
+      - gnrc_netif:
+        - shell_cmd_gnrc_netif
+      - gnrc_netif_lorawan:
+        - shell_cmd_gnrc_netif_lorawan
+      - gnrc_pktbuf_cmd:
+        - shell_cmd_gnrc_pktbuf
+      - gnrc_rpl:
+        - shell_cmd_gnrc_rpl
+      - gnrc_sixlowpan_ctx:
+        - shell_cmd_gnrc_sixlowpan_ctx
+      - gnrc_sixlowpan_frag_stats:
+        - shell_cmd_gnrc_sixlowpan_frag_stats
+      - gnrc_udp_cmd:
+        - shell_cmd_gnrc_udp
+      - heap_cmd:
+        - shell_cmd_heap
+      - i2c_scan:
+        - shell_cmd_i2c_scan
+      - lpc2387:
+        - shell_cmd_heap
+      - lwip_netif:
+        - shell_cmd_lwip_netif
+      - mci:
+        - shell_cmd_mci
+      - nanocoap_vfs:
+        - shell_cmd_nanocoap_vfs
+      - netstats_neighbor:
+        - shell_cmd_netstats_neighbor
+      - nice:
+        - shell_cmd_nice
+      - nimble_netif:
+        - shell_cmd_nimble_netif
+      - nimble_statconn:
+        - shell_cmd_nimble_statconn
+      - openwsn:
+        - shell_cmd_openwsn
+      - periph_pm:
+        - shell_cmd_pm
+      - periph_rtc:
+        - shell_cmd_rtc
+      - ps:
+        - shell_cmd_ps
+      - saul_reg:
+        - shell_cmd_saul_reg
+      - semtech-loramac:
+        - shell_cmd_semtech-loramac
+      - sntp:
+        - shell_cmd_sntp
+      - sht1x:
+        - shell_cmd_sht1x
+      - suit_transport_worker:
+        - shell_cmd_suit
+      - vfs:
+        - shell_cmd_vfs
+  - name: shell_cmd_app_metadata
+    sources:
+      - app_metadata.c
+    depends:
+      - app_metadata
+  - name: shell_cmd_at30tse75x
+    sources:
+      - at30tse75x.c
+    depends:
       - at30tse75x
+  - name: shell_cmd_benchmark_udp
+    sources:
+      - benchmark_udp.c
+  - name: shell_cmd_conn_can
+    sources:
+      - conn_can.c
+    depends:
+      - conn_can
+  - name: shell_cmd_ccn-lite-utils
+    sources:
+      - ccnl.c
+    depends:
       - ccn-lite-utils
-      - cpu/x86
+  - name: shell_cmd_cord_ep
+    sources:
+      - cord_ep.c
+    depends:
+      - cord_ep
+      - sock_util
+      - uri_parser
+  - name: shell_cmd_cryptoauthlib
+    sources:
+      - cryptoauthlib
+    depends:
+      - cryptoauthlib
+  - name: shell_cmd_dfplayer
+    sources:
+      - dfplayer.c
+    depends:
+      - auto_init_multimedia
+      - dfplayer
+      - fmt
+  - name: shell_cmd_fib
+    sources:
+      - fib.c
+    depends:
       - fib
+      - posix_inet
+  - name: shell_cmd_gnrc_icmpv6_echo
+    sources:
+      - gnrc_icmpv6_echo.c
+    depends:
       - gnrc_icmpv6_echo
+      - netutils
+      - ztimer_usec
+  - name: shell_cmd_gnrc_ipv6_blacklist
+    sources:
+      - blacklist.c
+    depends:
       - gnrc_ipv6_blacklist
-      - gnrc_ipv6_nc
+  - name: shell_cmd_gnrc_ipv6_ext_frag_stats
+    sources:
+      - gnrc_ipv6_ext_frag_stats.c
+    depends:
+      - gnrc_ipv6_frag_stats
+  - name: shell_cmd_gnrc_ipv6_nib
+    sources:
+      - gnrc_ipv6_nib.c
+    depends:
+      - gnrc_ipv6_nib
+  - name: shell_cmd_gnrc_ipv6_whitelist
+    sources:
+      - whitelist.c
+    depends:
       - gnrc_ipv6_whitelist
+  - name: shell_cmd_gnrc_netif
+    sources:
+      - gnrc_netif.c
+    depends:
       - gnrc_netif
-      - gnrc_pktbuf_cmd
+  - name: shell_cmd_gnrc_netif_lorawan
+    sources:
+      - gnrc_netif_lorawan.c
+    depends:
+      - gnrc_netif_lorawan
+      - shell_cmd_gnrc_netif
+  - name: nice
+    sources:
+      - nice.c
+  - name: shell_cmd_gnrc_pktbuf
+    sources:
+      - gnrc_pktbuf.c
+    depends:
+      - gnrc_pktbuf
+  - name: shell_cmd_gnrc_rpl
+    sources:
+      - gnrc_rpl.c
+    depends:
       - gnrc_rpl
+  - name: shell_cmd_gnrc_sixlowpan_ctx
+    sources:
+      - gnrc_sixlowpan_ctx.c
+    depends:
       - gnrc_sixlowpan_ctx
-      - gnrc_sixlowpan_nd_border_router
-      - gnrc_txtsnd
-      - ipv6_addr
-      - l2filter
-      - lpc2387
+
+  - name: shell_cmd_gnrc_sixlowpan_frag_stats
+    sources:
+      - gnrc_sixlowpan_frag_stats.c
+    depends:
+      - gnrc_sixlowpan_frag_stats
+
+  - name: shell_cmd_gnrc_udp
+    sources:
+      - gnrc_udp.c
+    depends:
+      - gnrc_udp
+      - gnrc_pktdump
+      - netutils
+  - name: shell_cmd_heap
+    sources:
+      - heap.c
+  - name: shell_cmd_i2c_scan
+    sources:
+      - i2c_scan.c
+    depends:
+      - features/periph_i2c
+  - name: shell_cmd_lwip_netif
+    sources:
+      - lwip_netif.c
+    depends:
+      - lwip_netif
+
+  - name: shell_cmd_mci
+    sources:
+      - mci.c
+    depends:
       - mci
-      - netstats
-      - netstats_l2
-      - netstats_ipv6
-      - netstats_rpl
-      - periph_rtc
+  - name: shell_cmd_md5sum
+    sources:
+      - md5sum.c
+    depends:
+      - shell_cmd_vfs
+  - name: shell_cmd_nanocoap_vfs
+    sources:
+      - nanocoap_vfs.c
+    depends:
+      - nanocoap_vfs
+      - vfs_util
+  - name: shell_cmd_netstats_neighbor
+    sources:
+      - netstats_neighbor.c
+    depends:
+      - netstats_neighbor
+  - name: shell_cmd_nimble_netif
+    sources:
+      - nimble_netif
+    depends:
+      - fmt
+      - nimble_netif
+      - nimble_scanlist
+      - nimble_scanner
+  - name: shell_cmd_nimble_statconn
+    sources:
+      - nimble_statconn.c
+    depends:
+      - nimble_statconn
+  - name: shell_cmd_openwsn
+    sources:
+      - openwsn.c
+    depends:
+      - ipv6_addr
+      - l2util
+      - netif
+      - openwsn
+  - name: shell_cmd_pm
+    sources:
+      - pm.c
+    depends:
       - periph_pm
-      - pm_layered
+  - name: shell_cmd_ps
+    sources:
+      - ps.c
+    depends:
       - ps
+  - name: shell_cmd_random
+    sources:
+      - random.c
+    depends:
       - random
+  - name: shell_cmd_rtc
+    sources:
+      - rtc.c
+    depends:
+      - periph_rtc
+  - name: shell_cmd_rtt
+    sources:
+      - rtt.c
+    depends:
+      - periph_rtt
+  - name: shell_cmd_saul_reg
+    sources:
+      - saul_reg.c
+    depends:
       - saul_reg
+  - name: shell_cmd_semtech-loramac
+    sources:
+      - semtech-loramac.c
+    depends:
+      - semtech-loramac
+  - name: shell_cmd_sha1sum
+    sources:
+      - sha1sum
+    depends:
+      - shell_cmd_vfs
+  - name: shell_cmd_sha256sum
+    sources:
+      - sha256sum
+    depends:
+      - shell_cmd_vfs
+  - name: shell_cmd_sht1x
+    sources:
+      - sht1x.c
+    depends:
       - sht1x
+  - name: shell_cmd_sntp
+    sources:
+      - sntp.c
+    depends:
       - sntp
+  - name: shell_cmd_suit
+    sources:
+      - suit.c
+    depends:
+      - suit_transport_worker
+  - name: shell_cmd_sys
+    sources:
+      - sys.c
+  - name: shell_cmd_vfs
+    sources:
+      - vfs.c
+    depends:
       - vfs
+      - tiny_strerror
