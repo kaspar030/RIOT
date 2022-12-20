@@ -245,6 +245,7 @@ subdirs:
   - trace
   - trickle
   - warn_conflict
+  - xfa
   - xtimer_drift
   - xtimer_hang
   - xtimer_longterm
