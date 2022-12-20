@@ -2,6 +2,9 @@ modules:
   - name: test_utils_interactive_sync
     depends:
       - stdin
+      - shell:
+         - test_utils_interactive_sync_shell
     sources:
       - interactive_sync.c
 
+  - name: test_utils_interactive_sync_shell
