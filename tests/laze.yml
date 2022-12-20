@@ -243,6 +243,7 @@ subdirs:
   - thread_msg_seq
   - thread_priority_inversion
   - thread_race
+  - thread_stack_alignment
   - trace
   - trickle
   - warn_conflict
