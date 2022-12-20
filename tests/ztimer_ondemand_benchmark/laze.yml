@@ -1,0 +1,21 @@
+apps:
+  - depends:
+     - ztimer
+     - ztimer_ondemand
+     - ztimer_ondemand_timer
+     - ztimer_ondemand_rtt
+     - ztimer_ondemand_rtc
+     # Select clock to benchmark:
+     - ztimer_usec
+     # - ztimer_msec
+     # - ztimer_sec
+
+    env:
+      local:
+         #CFLAGS:
+         #   -
+         # You may sepcify the compare timer device
+         #   - '-DCOMPARE_TIMER_DEV=TIMER_DEV(2)'
+         # You may sepcify the compare timer frequency
+         #   '-DCOMPARE_TIMER_FREQ=9750000'
+

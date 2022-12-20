@@ -1,0 +1,6 @@
+apps:
+  - depends:
+      - riot_info
+      - ztimer_auto_adjust
+      - ztimer_overhead
+      - ztimer_usec

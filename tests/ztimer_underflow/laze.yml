@@ -1,0 +1,24 @@
+apps:
+  - name: tests/ztimer_underflow_msec
+    depends:
+      - ztimer_msec
+    env:
+      local:
+        CFLAGS:
+          - -DTEST_ZTIMER_CLOCK=ZTIMER_MSEC
+
+  - name: tests/ztimer_underflow_usec
+    depends:
+      - ztimer_usec
+    env:
+      local:
+        CFLAGS:
+          - -DTEST_ZTIMER_CLOCK=ZTIMER_USEC
+
+  - name: tests/ztimer_underflow_sec
+    depends:
+      - ztimer_sec
+    env:
+      local:
+        CFLAGS:
+          - -DTEST_ZTIMER_CLOCK=ZTIMER_SEC

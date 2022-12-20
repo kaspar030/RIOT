@@ -1,0 +1,4 @@
+apps:
+  - depends:
+      - ztimer_usec
+      - shell

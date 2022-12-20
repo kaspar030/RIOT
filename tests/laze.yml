@@ -258,6 +258,13 @@ subdirs:
   - xtimer_usleep
   - xtimer_usleep_short
   - ztimer_msg
+  - ztimer_mutex_lock_timeout
+  - ztimer_ondemand_benchmark
+  - ztimer_overhead
+  - ztimer_periodic
+  - ztimer_rmutex_lock_timeout
+  - ztimer_underflow
+  - ztimer_xsec
   - ztimer64_msg
 
 ---

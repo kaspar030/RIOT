@@ -1,0 +1,5 @@
+apps:
+  - depends:
+      - fmt
+      - ztimer_msec
+      - ztimer_usec
