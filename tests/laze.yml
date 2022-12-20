@@ -140,6 +140,7 @@ subdirs:
   - gnrc_sock_udp
   - gnrc_tcp
   - gnrc_udp
+  - heap_cmd
   - irq
   - isr_yield_higher
   - leds

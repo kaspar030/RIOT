@@ -209,6 +209,11 @@ modules:
   - name: shell_cmd_heap
     sources:
       - heap.c
+    env:
+      local:
+        CFLAGS:
+          # TODO: add RIOT_CPU laze support
+          - -DRIOT_CPU=RIOT_MCU
   - name: shell_cmd_i2c_scan
     sources:
       - i2c_scan.c

@@ -1,0 +1,5 @@
+apps:
+  - depends:
+    - shell
+    - shell_cmd_heap
+    - shell_cmds_default
