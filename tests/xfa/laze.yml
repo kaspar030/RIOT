@@ -1,1 +1,4 @@
 apps:
+  - sources:
+      - xfatest1.c
+      - xfatest2.c
