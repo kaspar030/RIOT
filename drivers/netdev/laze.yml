@@ -4,6 +4,7 @@ defaults:
       - eui_provider
 
 modules:
+  - name: netdev
   - name: netdev_eth
     sources:
       - eth.c
