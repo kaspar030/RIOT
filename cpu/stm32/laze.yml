@@ -10,6 +10,7 @@ contexts:
       CFLAGS_DEFINES:
         - -DCPU_LINE_${stm32_cpu_line}
         - -D${stm32_cpu_line}
+        - -DMCU_STM32
 
   - name: stm32f4
     parent: stm32
