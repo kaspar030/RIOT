@@ -1,8 +1,23 @@
 modules:
   - name: vfs
+    help: "Virtual File System (VFS)"
     depends:
-        - posix_headers
-        - ?native_vfs
+      - posix_headers
+      - ?native_vfs
     sources:
-        - vfs.c
-        - vfs_stdio.c
+      - vfs.c
+      - vfs_stdio.c
+
+  - name: vfs_default
+    help: "Use default (board specific) file systems and mount points"
+    selects:
+      - vfs
+      - vfs_auto_mount
+
+  - name: vfs_auto_mount
+    help: "Automatically mount configured file systems"
+    selects:
+      - vfs
+
+  - name: vfs_auto_format
+    help: "Automatically format configured file systems if mount fails"
