@@ -12,6 +12,7 @@ modules:
         - tests-core-cib.c
         - tests-core-clist.c
         - tests-core-list.c
+        - tests-core-macros.c
         - tests-core-priority-queue.c
         - tests-core-ringbuffer.c
         - tests-core-xfa.c

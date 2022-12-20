@@ -6,7 +6,11 @@ modules:
     - name: tests-checksum
       sources:
           - tests-checksum-crc8.c
-          - tests-checksum-crc16-ccitt.c
+          - tests-checksum-crc16-ccitt-aug.c
+          - tests-checksum-crc16-ccitt-false.c
+          - tests-checksum-crc16-ccitt-kermit.c
+          - tests-checksum-crc16-ccitt-mcrf4xx.c
+          - tests-checksum-crc32.c
           - tests-checksum-fletcher16.c
           - tests-checksum-fletcher32.c
           - tests-checksum-ucrc16.c

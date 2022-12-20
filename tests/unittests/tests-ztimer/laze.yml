@@ -8,10 +8,12 @@ modules:
           - tests-ztimer.c
           - tests-ztimer-mock.c
           - tests-ztimer-convert-muldiv64.c
+          - tests-ztimer-ondemand.c
       depends:
           - ztimer_core
           - ztimer_mock
           - ztimer_convert_muldiv64
+          - ztimer_ondemand
           - unittests-base
       env:
         global:

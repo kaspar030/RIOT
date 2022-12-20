@@ -9,7 +9,7 @@ modules:
     - name: tests-hashes
       sources:
         - tests-hashes.c
-        - tests-hashes-cmac.c
+        - tests-hashes-aes128_cmac.c
         - tests-hashes-md5.c
         - tests-hashes-sha1.c
         - tests-hashes-sha224.c
