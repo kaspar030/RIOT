@@ -246,6 +246,9 @@ subdirs:
   - thread_stack_alignment
   - trace
   - trickle
+  - vfs_default
+  - vfs_iterate_mount
+  - vfs_plus_stdio
   - warn_conflict
   - xfa
   - xtimer_drift

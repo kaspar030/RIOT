@@ -1,0 +1,13 @@
+apps:
+  - depends:
+     - vfs_default
+     - vfs_auto_format
+
+     - ps
+     - shell
+     - shell_cmds_default
+
+# TODO:
+# avr8_common
+# the main thread stack on AVR is too small for the vfs shell command
+#  CFLAGS += -DTHREAD_STACKSIZE_MAIN=THREAD_STACKSIZE_LARGE
