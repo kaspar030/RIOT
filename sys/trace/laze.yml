@@ -1,0 +1,7 @@
+modules:
+    - name: trace
+      sources:
+          - trace.c
+      depends:
+          - ztimer
+          - ztimer_usec

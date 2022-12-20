@@ -59,6 +59,7 @@ subdirs:
     - test_utils
     - timex
     - tiny_strerror
+    - trace
     - trickle
     - tsrb
     - ubjson
