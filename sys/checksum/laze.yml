@@ -3,6 +3,7 @@ modules:
     sources:
         - crc8.c
         - crc16_ccitt.c
+        - crc32.c
         - fletcher16.c
         - fletcher32.c
         - ucrc16.c
