@@ -19,12 +19,14 @@ modules:
       - core_idle_thread
       - core_msg
       - core_mbox
+      - core_mutex_priority_inheritance
       - core_thread_flags
       - mpu_stack_guard
       - sched_cb
 
   - name: core_thread
   - name: core_idle_thread
+  - name: core_mutex_priority_inheritance
 
   - name: core_msg
     sources:
