@@ -1,13 +1,13 @@
 apps:
   - depends:
-        - at86rf233
-        - od
-        - periph_gpio
-        - periph_spi
-        - ps
-        - shell
-        - shell_commands
-    sources:
-        - addr.c
-        - cmd.c
-        - recv.c
+      - test_utils_netdev_ieee802154_minimal
+      - at86rf233
+        # TODO: per board
+        #- at86rf231
+        #- at86rf212b
+    env:
+      global:
+        includes:
+          - ${relpath}
+        CFLAGS:
+          - -DEVENT_THREAD_STACKSIZE_DEFAULT=1024
