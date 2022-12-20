@@ -9,6 +9,8 @@ modules:
       - pm_layered
       - ztimer_extend
       - ztimer_now64
+      - ztimer_ondemand
+      - ztimer_ondemand_strict
     sources:
       - core.c
       - util.c
@@ -29,6 +31,7 @@ modules:
 
   - name: ztimer_now64
   - name: ztimer_extend
+  - name: ztimer_ondemand
 
   - name: ztimer_usec
   - name: ztimer_msec
@@ -78,6 +81,8 @@ modules:
       - convert_shift.c
 
   - name: ztimer_mock
+    uses:
+      - ztimer_ondemand
     sources:
       - mock.c
 
@@ -90,6 +95,8 @@ modules:
       - ztimer_msec_backend
     depends:
       - periph_rtt
+    uses:
+      - ztimer_ondemand_rtt
     sources:
       - periph_rtt.c
 
@@ -98,6 +105,8 @@ modules:
       - ztimer_msec_backend
     depends:
       - periph_timer
+    uses:
+      - ztimer_ondemand_timer
     sources:
       - periph_timer.c
 
@@ -105,6 +114,8 @@ modules:
   - name: ztimer_periph_rtc
     depends:
       - periph_rtc
+    uses:
+      - ztimer_ondemand_rtc
     sources:
       - periph_rtc.c
 
@@ -113,3 +124,13 @@ modules:
       - periph_ptp
     sources:
       - periph_ptp.c
+---
+defaults:
+  module:
+    selects:
+      - ztimer_ondemand
+modules:
+  - name: ztimer_ondemand_rtt
+  - name: ztimer_ondemand_rtc
+  - name: ztimer_ondemand_strict
+  - name: ztimer_ondemand_timer
