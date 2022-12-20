@@ -1,0 +1,18 @@
+modules:
+  - name: tiny_strerror
+    sources:
+      - tiny_strerror.c
+    uses:
+      - tiny_strerror_minimal
+      - tiny_strerror_as_strerror
+  - name: tiny_strerror_minimal
+    depends:
+      - tiny_strerror
+  - name: tiny_strerror_as_strerror
+    # use the wrapper functions for strerror
+    selects:
+      - tiny_strerror
+    env:
+      global:
+        LINKFLAGS:
+          - -Wl,-wrap=strerror

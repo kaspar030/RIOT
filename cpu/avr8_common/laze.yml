@@ -11,6 +11,9 @@ contexts:
       - avr8_common
       - avr_libc_extra
       - core_idle_thread
+      # The AVR-libc provides no strerror, so we provide it via tiny_strerror
+      - tiny_strerror_as_strerror
+
     disables:
       # causes internal compiler error on gcc 11.2.0
       - lto

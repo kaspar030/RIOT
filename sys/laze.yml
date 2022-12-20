@@ -58,6 +58,7 @@ subdirs:
     - stdio_uart
     - test_utils
     - timex
+    - tiny_strerror
     - trickle
     - tsrb
     - ubjson
