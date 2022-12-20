@@ -47,6 +47,7 @@ modules:
     uses:
       - auto_init_ztimer
       - pm_layered
+      - ztimer_auto_adjust
       - ztimer_msec
       - ztimer_periph_rtc
       - ztimer_periph_rtt
@@ -56,6 +57,8 @@ modules:
 
     sources:
       - init.c
+
+  - name: ztimer_auto_adjust
 
   - name: ztimer_convert
     sources:
@@ -86,7 +89,7 @@ modules:
     sources:
       - mock.c
 
-  - name: overhead
+  - name: ztimer_overhead
     sources:
       - overhead.c
 
