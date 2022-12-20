@@ -1,0 +1,15 @@
+modules:
+  - name: test_utils_netdev_ieee802154_minimal
+    sources:
+      - netdev_ieee802154_minimal.c
+      - shell_commands.c
+    depends:
+      - event
+      - event_thread
+      - l2util
+      - od
+      - od_string
+      - shell
+      - netdev
+      # needed so test applications can provide init_dev.h
+      - ?at86rf2xx
