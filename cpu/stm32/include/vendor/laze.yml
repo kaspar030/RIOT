@@ -9,7 +9,7 @@ modules:
         - patches/f4/0001-stm32f4xx-remove-ErrorStatus.patch
       dldir: stm32_cmsis_f4
     env:
-      export:
+      global:
         includes:
           - ${srcdir}/Include
         stm32_cmsis_srcdir: ${srcdir}
