@@ -213,7 +213,7 @@ modules:
     sources:
       - i2c_scan.c
     depends:
-      - features/periph_i2c
+      - feature/periph_i2c
   - name: shell_cmd_lwip_netif
     sources:
       - lwip_netif.c
