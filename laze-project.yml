@@ -64,7 +64,7 @@ contexts:
         #- name: GIT_DOWNLOAD
         #cmd: 'D=$$(dirname ${out}); rm -rf $$D && git clone ${URL} $$D -n && git -C $$D reset --hard ${COMMIT} && touch ${out}'
       - name: GIT_DOWNLOAD
-        description: GIT_DOWNLOAD ${URL}@${COMMIT}
+        description: GIT_DOWNLOAD ${url}@${commit}
         cmd: "D=$$(dirname ${out}); rm -rf $$D && git-cache clone ${url} ${commit} $$D && echo ${commit} > ${out}"
 
       - name: GIT_PATCH
