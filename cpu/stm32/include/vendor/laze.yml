@@ -1,6 +1,7 @@
 modules:
   - name: stm32_cmsis
     context: stm32f4
+    is_global_build_dep: true
     download:
       git:
         url: https://github.com/STMicroelectronics/cmsis_device_f4
