@@ -19,6 +19,11 @@ modules:
       depends:
           - event
 
+    - name: event_periodic_callback
+      depends:
+        - event_periodic
+        - event_callback
+
     - name: event_thread
       sources:
         - thread.c
