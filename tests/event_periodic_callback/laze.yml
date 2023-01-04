@@ -1,0 +1,5 @@
+apps:
+  - depends:
+    - event_periodic_callback
+    - event_thread
+    - ztimer_msec

@@ -117,6 +117,7 @@ subdirs:
   - driver_xbee
   - eepreg
   - embunit
+  - event_periodic_callback
   - events
   - evtimer_msg
   - evtimer_underflow
