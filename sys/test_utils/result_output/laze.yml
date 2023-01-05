@@ -1,13 +1,17 @@
 modules:
   - name: test_utils_result_output
+    depends:
+      - ?test_utils_result_output_json
+      - ?test_utils_result_output_txt
+      - ?test_utils_result_output_check
     sources:
       - result_output.c
-    uses:
-      - test_utils_result_output_check
-      - test_utils_result_output_json
-      - test_utils_result_output_txt
 
   - name: test_utils_result_output_check
+    provides:
+      - test_utils_result_output_backend
+    conflicts:
+      - test_utils_result_output_backend
     sources:
       - check/result_output_check.c
     depends:
@@ -18,20 +22,30 @@ modules:
           - ${relpath}/check
 
   - name: test_utils_result_output_json
+    provides:
+      - test_utils_result_output_backend
+    conflicts:
+      - test_utils_result_output_backend
     sources:
       - json/result_output_json.c
     depends:
       - test_utils_result_output
+      - fmt
     env:
       export:
         includes:
           - ${relpath}/json
 
   - name: test_utils_result_output_txt
+    provides:
+      - test_utils_result_output_backend
+    conflicts:
+      - test_utils_result_output_backend
     sources:
       - txt/result_output_txt.c
     depends:
       - test_utils_result_output
+      - fmt
     env:
       export:
         includes:
