@@ -34,6 +34,12 @@ modules:
     uses:
       - core
 
+  - name: core_msg_bus
+    sources:
+      - msg_bus.c
+    uses:
+      - core
+
   - name: core_mbox
     sources:
       - mbox.c
