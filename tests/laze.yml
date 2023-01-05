@@ -249,6 +249,7 @@ subdirs:
   - thread_stack_alignment
   - trace
   - trickle
+  - turo
   - vfs_default
   - vfs_iterate_mount
   - vfs_plus_stdio
