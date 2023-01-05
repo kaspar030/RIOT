@@ -1,0 +1,40 @@
+modules:
+  - name: littlefs2
+    download:
+      git:
+        url: https://github.com/ARMmbed/littlefs.git
+        # v2.5.1
+        commit: 6a53d76e90af33f0656333c1db09bd337fa75d23
+    license: Apache-2.0
+    depends:
+      - ?littlefs2_fs
+    sources:
+      - lfs.c
+      - lfs_util.c
+
+    env:
+      local:
+        CFLAGS:
+          - -Wno-format
+          # Disable debug printing
+          # TODO: ifneq ($(DEVELHELP),1)
+          - -DLFS_NO_DEBUG
+          - -DLFS_NO_WARN
+          - -DLFS_NO_ERROR
+          #endif
+      export:
+        includes:
+          - ${srcdir}
+        CFLAGS:
+          # Reduce LFS_NAME_MAX to 31 (as VFS_NAME_MAX default)
+          - -DLFS_NAME_MAX=31
+          # avoid compilation errors when NDEBUG is defined
+          - -DLFS_NO_ASSERT
+
+  - name: littlefs2_fs
+    depends:
+      - littlefs2
+      - vfs
+      - mtd
+    sources:
+      - fs/littlefs2_fs.c

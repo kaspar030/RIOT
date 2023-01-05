@@ -7,6 +7,7 @@ subdirs:
   - jsmn
   - libb2
   - libhydrogen
+  - littlefs2
   - tiny-asn1
 
   # http
