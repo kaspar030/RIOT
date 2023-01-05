@@ -243,6 +243,7 @@ subdirs:
   - thread_msg
   - thread_msg_block_wo_queue
   - thread_msg_block_w_queue
+  - thread_msg_bus
   - thread_msg_seq
   - thread_priority_inversion
   - thread_race
