@@ -1,4 +1,6 @@
 apps:
-    - allowlist: host
-      sources:
-        - ethos.c
+  - name: ethos
+    context:
+      - host
+    sources:
+      - ethos.c

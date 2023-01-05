@@ -1,3 +1,4 @@
 subdirs:
     - ethos
     - uhcpd
+    - nrf52_resetpin_cfg

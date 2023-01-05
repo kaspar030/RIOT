@@ -1,10 +1,14 @@
 apps:
-    - allowlist: host
-      sources:
-        - uhcpd.c
-      depends:
-        - uhcp_base
-      env:
-        global:
-          CFLAGS:
-              - -I${root}/sys/include
+  - name: uhcpd
+    context:
+      - host
+    sources:
+      - uhcpd.c
+    depends:
+      - uhcp_base
+    env:
+      global:
+        # "includes" is not available in "host" context (it's defined in "riot")
+        CFLAGS:
+          - -I${root}/sys/include
+          - -I${relpath}

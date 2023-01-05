@@ -1,0 +1,31 @@
+apps:
+  - name: nrf52_resetpin_cfg
+    depends:
+      # This application uses getchar and thus expects input from stdio
+      - stdin
+      # this pulls in per-board pin configuration
+      - nrf52_resetpin_cfg_pin
+    sources:
+      - main.c
+
+modules:
+  - name: nrf52_resetpin_cfg_pin
+    context: nrf52dk
+    env:
+      export:
+        CFLAGS:
+          - -DRESET_PIN=21
+
+  - name: nrf52_resetpin_cfg_pin
+    context: nrf52840dk
+    env:
+      export:
+        CFLAGS:
+          - -DRESET_PIN=18
+# TODO:
+#  - name: nrf52_resetpin_cfg_pin
+#    context: dwm1001
+#    env:
+#      export:
+#        CFLAGS:
+#          - -DRESET_PIN=21
