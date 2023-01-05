@@ -1,0 +1,38 @@
+modules:
+  - name: tinyvcdiff
+    download:
+      git:
+        url: https://github.com/jue89/tiny-vcdiff.git
+        commit: e1a679f36d0212f2b84057a70c72f6e9deda45b3
+    licence: MIT
+    depends:
+     - feature/arch_32bit
+     - mtd:
+       - tinyvcdiff_mtd
+     - vfs:
+       - tinyvcdiff_vfs
+    sources:
+      - src/vcdiff_addrcache.c
+      - src/vcdiff.c
+      - src/vcdiff_codetable.c
+      - src/vcdiff_read.c
+      - src/vcdiff_state.c
+    env:
+      export:
+        includes:
+          - ${srcdir}/include
+          - ${relpath}/include
+
+  - name: tinyvcdiff_mtd
+    depends:
+      - tinyvcdiff
+      - mtd
+    sources:
+      - contrib/tinyvcdiff_mtd/mtd.c
+
+  - name: tinyvcdiff_vfs
+    depends:
+      - tinyvcdiff
+      - vfs
+    sources:
+      - contrib/tinyvcdiff_vfs/vfs.c

@@ -9,6 +9,7 @@ subdirs:
   - libhydrogen
   - littlefs2
   - tiny-asn1
+  - tinyvcdiff
 
   # http
   # #    - c25519
