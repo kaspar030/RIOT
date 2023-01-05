@@ -32,6 +32,8 @@ modules:
         - cpu/native
         - core
         - periph_common
+        - mtd:
+          - mtd_native
     uses:
         - mtd
         - motor_driver
