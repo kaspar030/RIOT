@@ -17,6 +17,7 @@ contexts:
             - -mfloat-abi=hard
             - -mfpu=fpv4-sp-d16
           CFLAGS_DEFINES:
+            - -DCPU_NRF52
             - -DCPU_FAM_NRF52
             - -DCPU_CORE_CORTEX_M4F
 
