@@ -204,6 +204,7 @@ subdirs:
   #- pkg_semtech-loramac
   #- pkg_tinycbor
   - pkg_tinycrypt
+  - pkg_tinyvcdiff
   #- pkg_tweetnacl
   #- pkg_ucglib
   #- pkg_umorse

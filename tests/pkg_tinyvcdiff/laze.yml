@@ -1,0 +1,10 @@
+apps:
+  - depends:
+    - embunit
+    - tinyvcdiff
+    - mtd
+    - vfs
+    - littlefs2
+    - laze_blob_support
+    sources:
+    - fakemtd.c
