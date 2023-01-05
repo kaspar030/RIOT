@@ -1,0 +1,4 @@
+apps:
+  - depends:
+    - embunit
+    - littlefs2
