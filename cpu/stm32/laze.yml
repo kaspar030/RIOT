@@ -92,7 +92,7 @@ modules:
       - dist/irqs/gen_irqs.py
     depends:
       - stm32_cmsis
-    is_build_dep: true
+    is_global_build_dep: true
     build:
       cmd:
         - ${relpath}/dist/irqs/gen_irqs.py
@@ -102,7 +102,7 @@ modules:
       out:
         - ${stm32_irqs_dir}/irqs/${stm32_cpu_fam}/irqs.h
     env:
-      export:
+      global:
         stm32_irqs_dir: ${build-dir}/generated/stm32
         includes:
           - ${stm32_irqs_dir}
