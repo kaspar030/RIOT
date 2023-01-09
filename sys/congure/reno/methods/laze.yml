@@ -1,0 +1,6 @@
+modules:
+  - name: congure_reno_methods
+    sources:
+      - congure_reno_methods.c
+    depends:
+      - seq

@@ -18,6 +18,7 @@ subdirs:
     - checksum
     - clif
     - color
+    - congure
     - cpp_new_delete
     - cpp11-compat
     - crypto

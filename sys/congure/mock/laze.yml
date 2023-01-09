@@ -1,0 +1,6 @@
+modules:
+  - name: congure_mock
+    sources:
+      - congure_mock.c
+    depends:
+      - congure

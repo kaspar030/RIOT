@@ -28,6 +28,9 @@ subdirs:
   - can_trx
   - cb_mux
   - cb_mux_bench
+  - congure_abe
+  - congure_reno
+  - congure_test
   - conn_can
   - cortexm_common_ldscript
   - cpu_efm32_features

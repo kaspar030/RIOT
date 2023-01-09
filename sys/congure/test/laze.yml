@@ -1,0 +1,7 @@
+modules:
+  - name: congure_test
+    sources:
+      - congure_test.c
+    depends:
+      - congure
+      - fmt

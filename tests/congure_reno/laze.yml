@@ -1,0 +1,24 @@
+apps:
+  - depends:
+    - congure_reno
+    - congure_test
+    - fmt
+    - shell
+    sources:
+    - congure_impl.c
+    env:
+      global:
+        includes:
+          - ${relpath}
+        CFLAGS:
+          # Adapt to SHELL_BUFSIZE in app
+          - -DSTDIO_UART_RX_BUFSIZE=512
+
+# TODO:
+#ifndef CONFIG_SHELL_NO_ECHO
+#  CFLAGS += -DCONFIG_SHELL_NO_ECHO=1
+#endif
+#
+#ifndef CONFIG_CONGURE_TEST_LOST_MSG_POOL_SIZE
+#  CFLAGS += -DCONFIG_CONGURE_TEST_LOST_MSG_POOL_SIZE=6
+#endif

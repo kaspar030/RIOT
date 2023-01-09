@@ -1,0 +1,7 @@
+modules:
+  - name: congure_quick
+    sources:
+      - congure_quic.c
+    depends:
+      - congure
+      - ztimer_msec
