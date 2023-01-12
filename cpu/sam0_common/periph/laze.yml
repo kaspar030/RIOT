@@ -65,5 +65,12 @@ modules:
       - periph_uart_modecfg
       - periph_uart_nonblocking
       - sam0_periph_uart_hw_fc
+  - name: periph_usbdev
+    sources:
+      - usbdev.c
+    provides_unique:
+      - usbdev
+    uses:
+      - pm_layered
 
   - name: sam0_periph_uart_hw_fc
