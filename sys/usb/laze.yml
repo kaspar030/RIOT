@@ -1,0 +1,29 @@
+modules:
+  - name: usb_ids_testing
+    depends:
+      - usb_ids_defines
+    provides:
+      - usb_ids
+    conflicts:
+      - usb_ids
+    env:
+      # TODO: fix import of provided module exports
+      export:
+        USB_VID: "0x1209"
+        USB_PID: "0x7D01"
+
+  - name: usb_ids_defines
+    # this module just sets the defines from USB_xID.
+    # the usb_ids_providers could do that themselves,
+    # but then we'd not DRY the define names ...
+    # TODO: use laze native config when done
+    depends:
+      - usb_ids
+    env:
+      export:
+        CFLAGS:
+          - -DCONFIG_USB_VID=${USB_VID}
+          - -DCONFIG_USB_PID=${USB_PID}
+
+subdirs:
+  - usbus

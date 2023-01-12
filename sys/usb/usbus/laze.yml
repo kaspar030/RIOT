@@ -1,0 +1,14 @@
+modules:
+  - name: usbus
+    depends:
+      - fmt
+      - core_thread_flags
+      - event
+      - luid
+      - usb_ids
+      - riot_info
+    sources:
+      - usbus.c
+      - usbus_control.c
+      - usbus_control_slicer.c
+      - usbus_fmt.c

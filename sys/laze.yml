@@ -66,6 +66,7 @@ subdirs:
     - ubjson
     - universal_address
     - uri_parser
+    - usb
     - ut_process
     - uuid
     - vfs
