@@ -29,6 +29,7 @@ subdirs:
   - cb_mux
   - cb_mux_bench
   - congure_abe
+  - congure_quic
   - congure_reno
   - congure_test
   - conn_can
