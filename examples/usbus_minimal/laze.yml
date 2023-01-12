@@ -1,0 +1,5 @@
+apps:
+- name: usbus_minimal
+  depends:
+    - usbus
+    - auto_init_usbus

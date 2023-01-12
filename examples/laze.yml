@@ -12,3 +12,4 @@ subdirs:
     - ipc_pingpong
     - nimble_gatt
     - saul
+    - usbus_minimal
