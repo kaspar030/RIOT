@@ -12,5 +12,8 @@ modules:
   - name: periph_usbdev
     provides_unique:
       - usbdev
+    conflicts:
+      # no USB peripheral on nrf52832
+      - nrf52832
     sources:
       - usbdev.c
