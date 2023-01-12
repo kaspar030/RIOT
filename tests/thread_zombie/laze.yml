@@ -1,0 +1,4 @@
+apps:
+# For better testing use ps
+#  - depends:
+#    - ps

@@ -251,6 +251,7 @@ subdirs:
   - thread_priority_inversion
   - thread_race
   - thread_stack_alignment
+  - thread_zombie
   - trace
   - trickle
   - turo
