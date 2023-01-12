@@ -10,5 +10,7 @@ modules:
     sources:
       - pwm.c
   - name: periph_usbdev
+    provides_unique:
+      - usbdev
     sources:
       - usbdev.c
