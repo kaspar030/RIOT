@@ -1,0 +1,12 @@
+modules:
+  - name: auto_init_usbus
+    sources:
+      - auto_init_usb.c
+    depends:
+      - ?auto_init
+      - usbus
+    uses:
+      - stdio_cdc_acm
+      - usbus_cdc_acm
+      - usbus_cdc_ecm
+      - usbus_dfu
