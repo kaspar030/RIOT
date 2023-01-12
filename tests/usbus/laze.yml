@@ -1,0 +1,8 @@
+apps:
+  - depends:
+      - embunit
+      - usbus
+      - usbdev_mock
+
+    disables:
+      - auto_init_usbus

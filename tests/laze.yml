@@ -255,6 +255,7 @@ subdirs:
   - trickle
   - turo
   - turo_txt
+  - usbus
   - vfs_default
   - vfs_iterate_mount
   - vfs_plus_stdio
