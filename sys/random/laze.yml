@@ -1,82 +1,68 @@
 modules:
-    - name: random
-      sources:
-        - random.c
-      depends:
-          - ?auto_init_random
-          # this optional dependency fails if the default prng fails, which happens
-          # if any of the other random_impl was previously selected.
-          # in that case, the random_impl dependency below will succeed.
-          - ?random_prng_default
-          - random_impl
-      uses:
-          - puf_sram
-          - periph_cpuid
-          - periph_hwrng
+  - name: random
+    sources:
+      - random.c
+    depends:
+      - ?auto_init_random
+      # this optional dependency fails if the default prng fails, which happens
+      # if any of the other random_impl was previously selected.
+      # in that case, the random_impl dependency below will succeed.
+      - ?random_prng_default
+      - random_impl
+    uses:
+      - puf_sram
+      - periph_cpuid
+      - periph_hwrng
 
-    - name: auto_init_random
-      depends:
-          - auto_init
+  - name: auto_init_random
+    depends:
+      - auto_init
 
-    # THIS SETS THE DEFAULT PRNG
-    - name: random_prng_default
-      depends:
-          - random_prng_musl_lcg
+  # THIS SETS THE DEFAULT PRNG
+  - name: random_prng_default
+    depends:
+      - random_prng_musl_lcg
 
-    - name: random_prng_mersenne
-      provides:
-        - random_impl
-      conflicts:
-        - random_impl
-      sources:
-        - mersenne.c
-      depends:
-        - random
+  - name: random_prng_mersenne
+    provides_unique:
+      - random_impl
+    sources:
+      - mersenne.c
+    depends:
+      - random
 
-    - name: random_prng_minstd
-      provides:
-        - random_impl
-      conflicts:
-        - random_impl
-      sources:
-        - minstd.c
-      depends:
-        - random
+  - name: random_prng_minstd
+    provides_unique:
+      - random_impl
+    sources:
+      - minstd.c
+    depends:
+      - random
 
-    - name: random_prng_musl_lcg
-      provides:
-        - random_impl
-      conflicts:
-        - random_impl
-      sources:
-        - musl_lcg.c
-      depends:
-        - random
+  - name: random_prng_musl_lcg
+    provides_unique:
+      - random_impl
+    sources:
+      - musl_lcg.c
+    depends:
+      - random
 
-    - name: random_prng_tinymt32
-      provides:
-        - random_impl
-      conflicts:
-        - random_impl
-      sources:
-        - tinymt32.c
-      depends:
-        - random
-        - tinymt32
+  - name: random_prng_tinymt32
+    provides_unique:
+      - random_impl
+    sources:
+      - tinymt32.c
+    depends:
+      - random
+      - tinymt32
 
-    - name: random_prng_xorshift
-      provides:
-        - random_impl
-      conflicts:
-        - random_impl
-      sources:
-        - xorshift.c
-      depends:
-        - random
-
-    - name: sys/random
-      depends:
-        - random
+  - name: random_prng_xorshift
+    provides_unique:
+      - random_impl
+    sources:
+      - xorshift.c
+    depends:
+      - random
 
 subdirs:
-    - tinymt32
+  - tinymt32

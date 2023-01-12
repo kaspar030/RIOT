@@ -2,5 +2,5 @@ apps:
   - depends:
       - fmt
       - sys/bloom
-      - sys/random
+      - random
       - xtimer
