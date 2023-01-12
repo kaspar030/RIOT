@@ -1,6 +1,6 @@
 modules:
   - name: usbdev_mock
-    provides:
+    provides_unique:
       - usbdev
     depends:
       - usb_ids
