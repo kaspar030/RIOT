@@ -1,0 +1,8 @@
+modules:
+  - name: usbdev_mock
+    provides:
+      - usbdev
+    depends:
+      - usb_ids
+    sources:
+      - usbdev_mock.c

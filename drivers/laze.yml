@@ -103,6 +103,7 @@ subdirs:
     - tsl2561
     - tsl4531x
     - uart_half_duplex
+    - usbdev_mock
     - vcnl40x0
     - veml6070
     - w5100
