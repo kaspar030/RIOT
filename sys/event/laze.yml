@@ -1,41 +1,48 @@
 modules:
-    - name: event
-      sources:
-        - event.c
-      depends:
-        - core_thread_flags
-      uses:
-        - xtimer
+  - name: event
+    sources:
+      - event.c
+    depends:
+      - core_thread_flags
+    uses:
+      - xtimer
 
-    - name: event_callback
-      sources:
-          - callback.c
-      depends:
-          - event
+  - name: event_callback
+    sources:
+      - callback.c
+    depends:
+      - event
 
-    - name: event_periodic
-      sources:
-          - periodic.c
-      depends:
-          - event
+  - name: event_periodic
+    sources:
+      - periodic.c
+    depends:
+      - event
 
-    - name: event_periodic_callback
-      depends:
-        - event_periodic
-        - event_callback
+  - name: event_periodic_callback
+    depends:
+      - event_periodic
+      - event_callback
 
-    - name: event_thread
-      sources:
-        - thread.c
-      depends:
-        - event
-      uses:
-        - event_thread_highest
-        - event_thread_medium
+  - name: event_thread
+    sources:
+      - thread.c
+    depends:
+      - event
+    uses:
+      - event_thread_highest
+      - event_thread_medium
 
-    - name: event_timeout_ztimer
-      sources:
-          - timeout_ztimer.c
-      depends:
-          - event
-          - ztimer_usec
+  - name: event_timeout_ztimer
+    sources:
+      - timeout_ztimer.c
+    uses:
+      - event_timeout
+    depends:
+      - event
+      - ztimer
+
+  - name: event_timeout
+    depends:
+      - event_timeout_ztimer
+      - ztimer_usec
