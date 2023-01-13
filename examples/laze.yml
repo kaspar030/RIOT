@@ -5,6 +5,7 @@ defaults:
 
 subdirs:
     - asymcute_mqttsn
+    - blinky
     - default
     - hello-world
     - gnrc_minimal
