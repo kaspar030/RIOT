@@ -1,0 +1,14 @@
+apps:
+  - depends:
+      # Modules to include:
+      - shell
+      - shell_cmds_default
+      - ps
+
+      # Use the default file system
+      - vfs_default
+      - constfs
+      # - devfs
+
+      # Enable to automatically format if mount fails
+      # - vfs_auto_format
