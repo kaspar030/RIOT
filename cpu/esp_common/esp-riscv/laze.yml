@@ -1,0 +1,6 @@
+modules:
+  - name: esp_riscv
+    sources:
+      - exceptions.c
+      - irq_arch.c
+      - thread_arch.c

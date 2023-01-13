@@ -1,0 +1,21 @@
+modules:
+    - name: esp_common
+      uses:
+        - esp_eth
+        - esp_wifi_any
+        - esp_idf_heap
+        - pthread
+
+      sources:
+        - esp_events.c
+        - irq_arch.c
+        - lib_printf.c
+        - syscalls.c
+        - thread_arch.c
+        - tools.c
+
+subdirs:
+    - esp-now
+    - esp-wifi
+    - esp-xtensa
+    - freertos

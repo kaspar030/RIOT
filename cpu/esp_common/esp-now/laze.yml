@@ -1,0 +1,12 @@
+modules:
+  - name: esp_now
+    uses:
+      - gnrc_sixlowpan
+      - l2filter
+      - esp_wifi
+      - gnrc
+      - netstats_l2
+      - od
+    sources:
+      - esp_now_gnrc.c
+      - esp_now_netdev.c

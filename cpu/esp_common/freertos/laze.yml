@@ -1,0 +1,15 @@
+modules:
+  - name: esp_freertos_common
+    depends:
+      - esp_freertos
+    uses:
+      - ztimer_msec
+      - ztimer_usec
+    sources:
+      - event_groups.c
+      - portable.c
+      - queue.c
+      - ringbuf.c
+      - semphr.c
+      - task.c
+      - timers.c

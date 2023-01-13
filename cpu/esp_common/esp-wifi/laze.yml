@@ -1,0 +1,27 @@
+modules:
+  - name: esp_wifi
+    uses:
+      - esp_now
+      - esp_wifi_ap
+      - esp_wifi_enterprise
+      - gnrc_netif_ethernet
+      - od
+
+    sources:
+      - esp_wifi_gnrc.c
+      - esp_wifi_netdev.c
+
+  - name: esp_wifi_ap
+    depends:
+      - esp_wifi
+
+  - name: esp_wifi_enterprise
+    depends:
+      - esp_wifi
+
+# TODO:
+#ifeq (esp8266,$(CPU))
+#  # we have to do it in that way to avoid that pkg/lwip is found first
+#  CFLAGS += -I$(ESP8266_RTOS_SDK_DIR)/components/lwip/lwip/src/include
+#  CFLAGS += -I$(ESP8266_RTOS_SDK_DIR)/components/lwip/port/esp8266/include/
+#endif
