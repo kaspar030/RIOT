@@ -18,6 +18,9 @@ contexts:
         - -Os
         - -g
         - -gz
+        # this is necessary so ccache is able to cache compilations made in
+        # differing project roots
+        - -fdebug-prefix-map=${project-root}=.
     tasks:
       info:
         cmd:
