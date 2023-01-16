@@ -13,6 +13,7 @@ modules:
           - posix_headers
           - sock_util
           - unittests-base
+          - sock_ipv4
       env:
         global:
           testsuites:
