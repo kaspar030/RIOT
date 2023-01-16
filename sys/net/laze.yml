@@ -1,13 +1,17 @@
+modules:
+  - name: ipv4
+  - name: ipv6
+
 subdirs:
-        - application_layer
-        - ble
-        - credman
-        - crosslayer
-        - gnrc
-        - link_layer
-        - netdev_test
-        - netif
-        - netutils
-        - network_layer
-        - sock
-        - transport_layer
+  - application_layer
+  - ble
+  - credman
+  - crosslayer
+  - gnrc
+  - link_layer
+  - netdev_test
+  - netif
+  - netutils
+  - network_layer
+  - sock
+  - transport_layer

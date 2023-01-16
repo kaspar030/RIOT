@@ -1,53 +1,77 @@
 modules:
-    - name: sock
-      uses:
-        - gnrc_sock
-        - sock_async
-        - sock_udp
-        - sock_tcp
-        - sock_dtls
+  - name: sock
+    depends:
+      - ipv4:
+          - sock_ipv4
+      - ipv6:
+          - sock_ipv6
 
-    - name: sock_udp
-      depends:
-        - sock
-      uses:
-        - gnrc_sock_udp
-        - sock_aux_endpoint
-        - sock_aux_local
-        - sock_aux_rssi
-        - sock_aux_timestamp
-        - sock_aux_timestap
+    uses:
+      - gnrc_sock
+      - sock_async
+      - sock_udp
+      - sock_tcp
+      - sock_dtls
 
-    - name: sock_util
-      sources:
-        - sock_util.c
-      depends:
-          - board:
-              - fmt
-          - posix_inet
-          - sock
-      uses:
-        - sock_dns
-        - sock_dns_mock
+  - name: sock_ipv4
+    depends:
+      - sock
+    env:
+      export:
+        CFLAGS_DEFINES:
+          - -DSOCK_HAS_IPV4
 
-    - name: sock_async
-      depends:
-          - sock
-          - gnrc:
-            - gnrc_sock_async
-      uses:
-          - sock_async_event
-      env:
-        export:
-          CFLAGS:
-            - -DSOCK_HAS_ASYNC
-            - -DSOCK_HAS_ASYNC_CTX
+  - name: sock_ipv6
+    depends:
+      - sock
+    env:
+      export:
+        CFLAGS_DEFINES:
+          - -DSOCK_HAS_IPV6
 
-    - name: sock_aux_endpoint
-    - name: sock_aux_local
-    - name: sock_aux_rssi
-    - name: sock_aux_timestamp
-    - name: sock_aux_timestap
+  - name: sock_udp
+    depends:
+      - sock
+    uses:
+      - gnrc_sock_udp
+      - sock_aux_endpoint
+      - sock_aux_local
+      - sock_aux_rssi
+      - sock_aux_timestamp
+      - sock_aux_timestap
+
+  - name: sock_util
+    sources:
+      - sock_util.c
+    depends:
+      - board:
+          - fmt
+      - posix_inet
+      - sock
+    uses:
+      - sock_ipv4
+      - sock_ipv6
+      - sock_dns
+      - sock_dns_mock
+
+  - name: sock_async
+    depends:
+      - sock
+      - gnrc:
+          - gnrc_sock_async
+    uses:
+      - sock_async_event
+    env:
+      export:
+        CFLAGS:
+          - -DSOCK_HAS_ASYNC
+          - -DSOCK_HAS_ASYNC_CTX
+
+  - name: sock_aux_endpoint
+  - name: sock_aux_local
+  - name: sock_aux_rssi
+  - name: sock_aux_timestamp
+  - name: sock_aux_timestap
 
 subdirs:
-    - async
+  - async

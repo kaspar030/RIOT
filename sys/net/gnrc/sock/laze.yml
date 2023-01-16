@@ -4,7 +4,7 @@ modules:
          - gnrc_core
          - gnrc_netapi_mbox
          - core_mbox
-         - sock
+         - sock_ipv6
      uses:
          - gnrc_neterr
          - gnrc_sock_async
@@ -13,8 +13,6 @@ modules:
          - gnrc_sock.c
      env:
         export:
-         CFLAGS:
-             - -DSOCK_HAS_IPV6
          includes:
              - ${relpath}/include
 
