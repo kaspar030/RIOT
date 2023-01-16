@@ -1,21 +1,21 @@
 apps:
   - depends:
-        - tests-rtc
+      - tests-rtc
     blocklist:
-    # AVR/ATmega uses `int8_t` for `struct tm` which leads to integer overflows
-    # in these tests
-    - atmega_common
+      # AVR/ATmega uses `int8_t` for `struct tm` which leads to integer overflows
+      # in these tests
+      - atmega_common
 
 modules:
-    - name: tests-rtc
-      sources: [tests-rtc.c]
-      depends:
-          - periph_rtc_common
-          - rtc_utils
-          - unittests-base
-      env:
-        global:
-          CFLAGS:
-              - -DRTC_NORMALIZE_COMPAT=1
-          testsuites:
-              - rtc
+  - name: tests-rtc
+    sources: [tests-rtc.c]
+    depends:
+      - periph_rtc_common
+      - rtc_utils
+      - unittests-base
+    env:
+      global:
+        CFLAGS:
+          - -DRTC_NORMALIZE_COMPAT=1
+        testsuites:
+          - rtc
