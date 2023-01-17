@@ -5,11 +5,17 @@ modules:
           - ztimer64.c
       selects:
           - ztimer64_util
+          - ?auto_init_ztimer64
       uses:
           - pm_layered
           - ztimer64_msec
           - ztimer64_usec
           - ztimer64_sec
+
+    - name: auto_init_ztimer64
+      selects:
+        - auto_init
+        - ztimer64
 
     - name: ztimer64_util
       sources:
