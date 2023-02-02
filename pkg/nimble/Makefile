@@ -10,7 +10,7 @@ PDIR = $(PKG_SOURCE_DIR)
 
 # NimBLE is not optimized for building with all (extra) warnings enabled. So for
 # now, we disable a number of selected compiler warnings when building NimBLE.
-CFLAGS += -Wno-extra -Wno-cast-align
+CFLAGS += -Wno-extra -Wno-cast-align -Wno-unused-but-set-variable
 ifeq (llvm,$(TOOLCHAIN))
 # the static function `ble_ll_adv_active_chanset_is_sec()` in
 # `nimble/controller/src/ble_ll_adv.c` isn't used in our compilation path, so
@@ -19,8 +19,6 @@ ifeq (llvm,$(TOOLCHAIN))
 # Workaround, until https://github.com/apache/mynewt-nimble/pull/566 is merged
 # upstream and the NimBLE version in RIOT is updated.
   CFLAGS += -Wno-sometimes-uninitialized
-else
-  CFLAGS += -Wno-unused-but-set-variable
 endif
 
 IGNORE := nimble_autoconn_% nimble_phy_% nimble_%_ext nimble_autoadv%
