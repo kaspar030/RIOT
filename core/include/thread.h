@@ -180,7 +180,8 @@ struct _thread {
     clist_node_t rq_entry;          /**< run queue entry                */
 
 #if defined(MODULE_CORE_MSG) || defined(MODULE_CORE_THREAD_FLAGS) \
-    || defined(MODULE_CORE_MBOX) || defined(DOXYGEN)
+    || defined(MODULE_CORE_MBOX) || defined(MODULE_CORE_MBOX_SYNC) || \
+    defined(DOXYGEN)
     void *wait_data;                /**< used by msg, mbox and thread
                                          flags                          */
 #endif
