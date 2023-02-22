@@ -51,7 +51,7 @@ void mbox_sync_recv(mbox_sync_t *mbox, msg_t *msg)
     }
 }
 
-int _mbox_sync_try_send(mbox_sync_t *mbox, const msg_t *msg) {
+int _mbox_sync_try_send(mbox_sync_t *mbox, msg_t *msg) {
     thread_t *waiter;
     if ((waiter = mbox->waiter)) {
         *((msg_t *)waiter->wait_data) = *msg;
@@ -64,8 +64,9 @@ int _mbox_sync_try_send(mbox_sync_t *mbox, const msg_t *msg) {
     }
 }
 
-int mbox_sync_try_send(mbox_sync_t *mbox, const msg_t *msg)
+int mbox_sync_try_send(mbox_sync_t *mbox, msg_t *msg)
 {
+    msg->sender_pid = thread_getpid();
     int res = 0;
     unsigned state = irq_disable();
 
@@ -76,8 +77,9 @@ int mbox_sync_try_send(mbox_sync_t *mbox, const msg_t *msg)
     return res;
 }
 
-void mbox_sync_send(mbox_sync_t *mbox, const msg_t *msg)
+void mbox_sync_send(mbox_sync_t *mbox, msg_t *msg)
 {
+    msg->sender_pid = thread_getpid();
     unsigned state = irq_disable();
     if (_mbox_sync_try_send(mbox, msg)) {
         irq_restore(state);
