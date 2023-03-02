@@ -125,6 +125,7 @@
 #include "cpu_conf.h"
 #include "sched.h"
 #include "thread_config.h"
+#include "thread_events.h"
 
 #ifdef MODULE_CORE_THREAD_FLAGS
 #include "thread_flags.h"
@@ -177,6 +178,7 @@ struct _thread {
     thread_flags_t flags;           /**< currently set flags            */
 #endif
 
+    clist_node_t thread_events;     /**< thread events list head */
     clist_node_t rq_entry;          /**< run queue entry                */
 
 #if defined(MODULE_CORE_MSG) || defined(MODULE_CORE_THREAD_FLAGS) \
