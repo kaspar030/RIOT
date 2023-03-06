@@ -496,6 +496,45 @@ static inline bool clist_more_than_one(clist_node_t *list)
     return !clist_is_empty(list) && (list->next != list->next->next);
 }
 
+/**
+ * @brief   Concatenate two clists
+ *
+ * This adds all elements from `other` to `list`, removing them from `other`.
+ *
+ * E.g, if `list` contains `[A, B]` and `other` contains `[C, D]`,
+ * `clist_concat(list, other)` will turn `list` into `[A, B, C, D]` and `other`
+ * will be empty.
+ *
+ * @note    Complexity: O(1)
+ *
+ * @param[inout]   target    Pointer to the clist to append to
+ * @param[inout]   source    Pointer to the clist to take elements from
+ */
+static inline void clist_concat(clist_node_t *list, clist_node_t *other)
+{
+    if (clist_is_empty(other)) {
+        return;
+    }
+
+    if (clist_is_empty(list)) {
+        list->next = other->next;
+        other->next = NULL;
+        return;
+    }
+
+    clist_node_t *list_tail = list->next;
+    clist_node_t *list_head = list_tail->next;
+
+    clist_node_t *other_tail = other->next;
+    clist_node_t *other_head = other_tail->next;
+
+    other_tail->next = list_head;
+    list_tail->next = other_head;
+
+    list->next = other_tail;
+    other->next = NULL;
+}
+
 #ifdef __cplusplus
 }
 #endif

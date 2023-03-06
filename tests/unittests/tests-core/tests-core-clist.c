@@ -8,6 +8,7 @@
 
 #include <string.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #include "embUnit.h"
 
@@ -19,6 +20,19 @@
 
 static list_node_t tests_clist_buf[TEST_CLIST_LEN];
 static list_node_t test_clist;
+
+/* debug helper, usually unused */
+int tests_clist_buf_ptr2idx(list_node_t *element)
+{
+    if (element < &tests_clist_buf[0] ||
+        element >= &tests_clist_buf[TEST_CLIST_LEN]) {
+        return -1;
+    }
+
+    uintptr_t _element = (uintptr_t)element - (uintptr_t)(&tests_clist_buf[0]);
+
+    return (_element / sizeof(list_node_t));
+}
 
 static void set_up(void)
 {
@@ -387,6 +401,84 @@ static void test_clist_special_cardinality(void)
     TEST_ASSERT(!clist_more_than_one(&test_clist));
 }
 
+static void test_clist_concat_0_0(void)
+{
+    set_up();
+    clist_node_t list = {.next = NULL};
+    clist_node_t other = {.next = NULL};
+
+    clist_concat(&list, &other);
+
+    TEST_ASSERT(clist_is_empty(&list));
+    TEST_ASSERT(clist_is_empty(&other));
+
+}
+
+static void test_clist_concat_0_1(void)
+{
+    set_up();
+    clist_node_t list = {.next = NULL};
+    clist_node_t other = {.next = NULL};
+
+    clist_rpush(&other, &(tests_clist_buf[0]));
+
+    clist_concat(&list, &other);
+
+    TEST_ASSERT(clist_is_empty(&other));
+
+    TEST_ASSERT_NOT_NULL(list.next);
+
+    TEST_ASSERT(list.next == &(tests_clist_buf[0]));
+    TEST_ASSERT(list.next->next == &(tests_clist_buf[0]));
+    TEST_ASSERT(list.next->next->next == &(tests_clist_buf[0]));
+}
+
+static void test_clist_concat_1_1(void)
+{
+    set_up();
+    clist_node_t list = {.next = NULL};
+    clist_node_t other = {.next = NULL};
+
+    clist_rpush(&list, &(tests_clist_buf[0]));
+    clist_rpush(&other, &(tests_clist_buf[1]));
+
+    clist_concat(&list, &other);
+
+    TEST_ASSERT(clist_is_empty(&other));
+
+    TEST_ASSERT_NOT_NULL(list.next);
+
+    TEST_ASSERT(list.next == &(tests_clist_buf[1]));
+    TEST_ASSERT(list.next->next == &(tests_clist_buf[0]));
+    TEST_ASSERT(list.next->next->next == &(tests_clist_buf[1]));
+}
+static void test_clist_concat_2_2(void)
+{
+    set_up();
+    clist_node_t list = {.next = NULL};
+    clist_node_t other = {.next = NULL};
+
+    for (int i = 0; i < 2; i++) {
+        clist_rpush(&list, &(tests_clist_buf[i]));
+    }
+
+    for (int i = 0; i < 2; i++) {
+        clist_rpush(&other, &(tests_clist_buf[i+2]));
+    }
+
+    clist_concat(&list, &other);
+
+    TEST_ASSERT(clist_is_empty(&other));
+
+    TEST_ASSERT_NOT_NULL(list.next);
+
+    TEST_ASSERT(list.next == &(tests_clist_buf[3]));
+    TEST_ASSERT(list.next->next == &(tests_clist_buf[0]));
+    TEST_ASSERT(list.next->next->next == &(tests_clist_buf[1]));
+    TEST_ASSERT(list.next->next->next->next == &(tests_clist_buf[2]));
+    TEST_ASSERT(list.next->next->next->next->next == &(tests_clist_buf[3]));
+}
+
 Test *tests_core_clist_tests(void)
 {
     EMB_UNIT_TESTFIXTURES(fixtures) {
@@ -407,6 +499,10 @@ Test *tests_core_clist_tests(void)
         new_TestFixture(test_clist_count),
         new_TestFixture(test_clist_is_empty),
         new_TestFixture(test_clist_special_cardinality),
+        new_TestFixture(test_clist_concat_0_0),
+        new_TestFixture(test_clist_concat_0_1),
+        new_TestFixture(test_clist_concat_1_1),
+        new_TestFixture(test_clist_concat_2_2),
     };
 
     EMB_UNIT_TESTCALLER(core_clist_tests, set_up, NULL,
