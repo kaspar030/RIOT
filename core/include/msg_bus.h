@@ -100,10 +100,10 @@ void msg_bus_init(msg_bus_t *bus);
 static inline uint16_t msg_bus_get_type(const msg_t *msg)
 {
     if (msg->sender_pid & MSB_BUS_PID_FLAG) {
-        return msg->type & 0x1F;
+        return msg->content.type & 0x1F;
     }
     else {
-        return msg->type;
+        return msg->content.type;
     }
 }
 
@@ -140,7 +140,7 @@ static inline kernel_pid_t msg_bus_get_sender_pid(const msg_t *msg)
  */
 static inline bool msg_is_from_bus(const msg_bus_t *bus, const msg_t *msg)
 {
-    if (bus != NULL && (bus->id != (msg->type >> 5))) {
+    if (bus != NULL && (bus->id != (msg->content.type >> 5))) {
         return false;
     }
 
@@ -253,7 +253,7 @@ static inline int msg_bus_post(msg_bus_t *bus, uint8_t type, const void *arg)
     assert(type < 32);
 
     msg_t m = {
-        .type = type | ((bus->id) << 5),
+        .content.type = type | ((bus->id) << 5),
         .content.ptr = (void *)arg,
     };
 

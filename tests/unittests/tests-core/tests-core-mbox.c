@@ -24,26 +24,26 @@ static void test_mbox_put_get(void)
 {
     mbox_t mbox;
     msg_t queue[QUEUE_SIZE];
-    msg_t msg = { .type = 0 };
+    msg_t msg = { .content.type = 0 };
     mbox_init(&mbox, queue, ARRAY_SIZE(queue));
     TEST_ASSERT_EQUAL_INT(0, mbox_avail(&mbox));
 
     /* Filling the queue up to capacity one item at a time. This should
      * succeed every single time. */
     for (unsigned i = 0; i < ARRAY_SIZE(queue); i++) {
-        msg.type = i;
+        msg.content.type = i;
         msg.content.value = gen_val(i);
         TEST_ASSERT_EQUAL_INT(1, mbox_try_put(&mbox, &msg));
     }
 
     /* Adding one item over capacity must fail. */
-    msg.type = 4242;
+    msg.content.type = 4242;
     msg.content.value = 4242;
     TEST_ASSERT_EQUAL_INT(0, mbox_try_put(&mbox, &msg));
 
     /* The queue must contain the items we filled in and in that order. */
     for (unsigned i = 0; i < ARRAY_SIZE(queue); i++) {
-        TEST_ASSERT_EQUAL_INT(i, queue[i].type);
+        TEST_ASSERT_EQUAL_INT(i, queue[i].content.type);
         TEST_ASSERT_EQUAL_INT(gen_val(i), queue[i].content.value);
     }
 
@@ -51,7 +51,7 @@ static void test_mbox_put_get(void)
      * items we filled in and in that order. */
     for (unsigned i = 0; i < ARRAY_SIZE(queue); i++) {
         TEST_ASSERT_EQUAL_INT(1, mbox_try_get(&mbox, &msg));
-        TEST_ASSERT_EQUAL_INT(i, msg.type);
+        TEST_ASSERT_EQUAL_INT(i, msg.content.type);
         TEST_ASSERT_EQUAL_INT(gen_val(i), msg.content.value);
     }
 

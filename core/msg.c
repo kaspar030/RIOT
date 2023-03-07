@@ -242,7 +242,7 @@ int msg_send_int(msg_t *m, kernel_pid_t target_pid)
 int msg_send_bus(msg_t *m, msg_bus_t *bus)
 {
     const bool in_irq = irq_is_in();
-    const uint32_t event_mask = (1UL << (m->type & 0x1F));
+    const uint32_t event_mask = (1UL << (m->content.type & 0x1F));
     int count = 0;
 
     m->sender_pid = (in_irq ? KERNEL_PID_ISR : thread_getpid())
@@ -506,7 +506,7 @@ void msg_queue_print(void)
     for (unsigned i = 0; i < msg_counter; i++) {
         msg_t *m = &msg_array[(first_msg + i) & msg_queue->mask];
         printf("    * %u: sender: %" PRIkernel_pid ", type: 0x%04" PRIu16
-               ", content: %" PRIu32 " (%p)\n", i, m->sender_pid, m->type,
+               ", content: %" PRIu32 " (%p)\n", i, m->sender_pid, m->content.type,
                m->content.value, m->content.ptr);
     }
     irq_restore(state);

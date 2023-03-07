@@ -111,13 +111,13 @@ int ztimer_msg_receive_timeout(ztimer_clock_t *clock, msg_t *msg,
     }
 
     ztimer_t t = { .base = { .next = NULL } };
-    msg_t m = { .type = MSG_ZTIMER, .content.ptr = &m };
+    msg_t m = { .content.type = MSG_ZTIMER, .content.ptr = &m };
 
     ztimer_set_msg(clock, &t, timeout, &m, thread_getpid());
 
     msg_receive(msg);
     ztimer_remove(clock, &t);
-    if (msg->type == MSG_ZTIMER && msg->content.ptr == &m) {
+    if (msg->content.type == MSG_ZTIMER && msg->content.ptr == &m) {
         /* we hit the timeout */
         return -ETIME;
     }
