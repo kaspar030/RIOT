@@ -94,6 +94,12 @@
 #include <stddef.h>
 #include "list.h"
 
+#define CLIST_ASSERTS (0)
+
+#if CLIST_ASSERTS
+#include "assert.h"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -131,6 +137,9 @@ static inline bool clist_is_empty(const clist_node_t *list)
  */
 static inline void clist_rpush(clist_node_t *list, clist_node_t *new_node)
 {
+#if CLIST_ASSERTS
+    assert(new_node->next == NULL);
+#endif
     if (list->next) {
         new_node->next = list->next->next;
         list->next->next = new_node;
@@ -152,6 +161,9 @@ static inline void clist_rpush(clist_node_t *list, clist_node_t *new_node)
  */
 static inline void clist_lpush(clist_node_t *list, clist_node_t *new_node)
 {
+#if CLIST_ASSERTS
+    assert(new_node->next == NULL);
+#endif
     if (list->next) {
         new_node->next = list->next->next;
         list->next->next = new_node;
@@ -180,6 +192,9 @@ static inline clist_node_t *clist_lpop(clist_node_t *list)
         else {
             list->next->next = first->next;
         }
+#if CLIST_ASSERTS
+        first->next = NULL;
+#endif
         return first;
     }
     else {
