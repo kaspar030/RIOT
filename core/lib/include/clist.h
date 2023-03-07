@@ -535,6 +535,27 @@ static inline void clist_concat(clist_node_t *list, clist_node_t *other)
     other->next = NULL;
 }
 
+/**
+ * @brief   Swap two clist's contents
+ *
+ * After calling `clist_swap(a, b)`, `a` will have the elements previously in `b`
+ * and `b` will have the elements previously in `a`.
+ *
+ * E.g, if `list` contains `[A, B]` and `other` contains `[C, D]`,
+ * `clist_swap(list, other)` will turn `list` into `[C, D]` and `other`
+ * into `[A, B]`.
+ *
+ * @note    Complexity: O(1)
+ *
+ * @param[inout]   list    Pointer to first list
+ * @param[inout]   other   Pointer to second list
+ */
+static inline void clist_swap(clist_node_t *list, clist_node_t *other) {
+    clist_node_t tmp = *other;
+    other->next = list->next;
+    list->next = tmp.next;
+}
+
 #ifdef __cplusplus
 }
 #endif
