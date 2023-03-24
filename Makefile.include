@@ -1082,6 +1082,7 @@ endif
 endif
 
 include $(RIOTMAKE)/cargo-targets.inc.mk
+include $(RIOTMAKE)/utvm.inc.mk
 
 # include RIOT_MAKEFILES_GLOBAL_POST configuration files
 # allows setting user specific system wide configuration parsed after the body

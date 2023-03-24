@@ -140,3 +140,52 @@ target used.
 
 **Testrunner:** when using the `make generate-test`, you can also automatically
 add a testrunner Python script. Just answer 'y' when prompted.
+
+# Creating an out of tree application structure
+
+Applications written for RIOT do not have to reside in the RIOT tree. Out of
+tree applications, modules and boards are supported.
+
+For a full application with custom board and modules, the following directory
+tree can be used:
+
+```
+├── apps
+│   └── my_app
+│       └── Makefile
+├── boards
+│   └── my_board
+├── modules
+│   └── my_module
+│       ├── include
+│       │   └── my_module.h
+│       ├── Makefile
+│       ├── Makefile.include
+│       └── my_module.c
+└── RIOT
+```
+
+In this example tree, the `apps` directory contains a collection of applications
+for the project. The modules directory could contain extra modules for the
+applications. 
+
+The make file inside the application needs at least the following as bare minimum:
+
+```
+APPLICATION = my_app
+RIOTBASE ?= $(CURDIR)/../RIOT
+include $(RIOTBASE)/Makefile.include
+```
+
+The `RIOTBASE` variable tells the build system where to find the RIOT source
+tree and to need to point to the RIOT source tree used for the application for
+the application to work.
+
+The RIOT directory contains the sources of RIOT here. This can be either a
+direct checkout of the sources or a git submodule, whichever has your
+preference.
+
+If your project has separate modules or separate boards, these can be contained
+inside a modules os boards directory. The RIOT build system has both
+`EXTERNAL_MODULE_DIRS` and `EXTERNAL_BOARD_DIRS` variables to specify
+directories that contain extra modules and extra boards.
