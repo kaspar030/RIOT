@@ -30,13 +30,13 @@ int main(void)
     (void) puts("uTVM test application");
     char input[TVMGEN_DEFAULT_SERVING_DEFAULT_INPUT_0_SIZE];
     char output[TVMGEN_DEFAULT_PARTITIONEDCALL_0_SIZE];
-    tvmgen_default_inputs default_inputs = {
+    struct tvmgen_default_inputs default_inputs = {
         .serving_default_input_0 = input
     };
-    tvmgen_default_outputs default_outputs = {
-        .PartitionedCall_0 = output;
+    struct tvmgen_default_outputs default_outputs = {
+        .PartitionedCall_0 = output
     };
     int ret_val = tvmgen_default_run(&default_inputs, &default_outputs);
-
+    printf("ret_vat: %d \n", ret_val);
     return 0;
 }
