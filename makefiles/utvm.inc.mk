@@ -5,6 +5,9 @@ UTVM_MODEL_DIR = $(UTVM_DIR_BASE)/$(UTVM_NAME)
 UTVM_METADATA_JSON := $(UTVM_TAR:%.tar=$(UTVM_DIR_BASE)/%/metadata.json)
 UTVM_BIN = $(UTVM_NAME:%=$(BINDIR)/%/%.o)
 
+CFLAGS += -I$(UTVM_MODEL_DIR)/runtime/include
+CFLAGS += -I$(UTVM_MODEL_DIR)/codegen/host/include
+
 .PRECIOUS: $(UTVM_MODEL_DIR)/.
 
 $(UTVM_MODEL_DIR)/.:
