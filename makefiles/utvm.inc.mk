@@ -20,5 +20,5 @@ $(UTVM_BIN): $(UTVM_METADATA_JSON)
 	$(QQ)"$(MAKE)" -C $(UTVM_MODEL_DIR)/codegen/host/src -f $(RIOTBASE)/makefiles/utvm/Makefile.utvm UTVM_MODULE_NAME=$(UTVM_NAME) UTVM_MODEL_DIR=$(UTVM_MODEL_DIR)
 
 $(OBJC) $(OBJCXX): $(UTVM_BIN)
-
+$(BASELIBS): | $(UTVM_METADATA_JSON)
 all: $(UTVM_BIN)
