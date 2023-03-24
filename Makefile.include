@@ -227,6 +227,7 @@ ifeq (,$(TOOLCHAIN))
 endif
 
 include $(RIOTMAKE)/cargo-settings.inc.mk
+include $(RIOTMAKE)/utvm.inc.mk
 
 GLOBAL_GOALS += buildtest \
                 buildtest-indocker \
