@@ -1,5 +1,8 @@
 include ../Makefile.tests_common
+
 BOARD=nrf52840dk
 
-UTVM_TAR = model.tar
+EXTERNAL_PKG_DIRS += models
+USEPKG += default
+
 include $(RIOTBASE)/Makefile.include
