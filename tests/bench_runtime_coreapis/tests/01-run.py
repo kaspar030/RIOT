@@ -12,7 +12,7 @@ from testrunner import run
 
 # The default timeout is not enough for this test on some of the slower boards
 TIMEOUT = 30
-BENCHMARK_REGEXP = r"\s+{func}:\s+\d+us\s+---\s+\d*\.*\d+us per call\s+---\s+\d+ calls per sec"
+BENCHMARK_REGEXP = r'{{ "{func}": {{ "total_us": \d+, "runs": \d+, "ticks": \d+ }}}}'
 
 
 def testfunc(child):
