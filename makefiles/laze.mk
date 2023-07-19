@@ -20,7 +20,7 @@ clean:
 	@laze clean $(LAZE_ARGS)
 
 $(LAZE_TOOLS):
-	laze task $(LAZE_ARGS) -b $(BOARD) $@
+	laze build $(LAZE_ARGS) -b $(BOARD) $@
 
 buildtest: | $(CLEAN)
 	laze build $(LAZE_ARGS)
