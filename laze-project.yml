@@ -29,6 +29,9 @@ contexts:
       size:
         cmd:
           - "${SIZE} ${out}"
+      list:
+        cmd:
+          - "echo ${builder}"
 
     rules:
       - name: CC
