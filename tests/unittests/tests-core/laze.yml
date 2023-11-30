@@ -1,26 +1,28 @@
 apps:
   - depends:
-        - tests-core
+      - tests-core
 
 modules:
-    - name: tests-core
-      sources:
-        - tests-core.c
-        - tests-core-atomic.c
-        - tests-core-bitarithm.c
-        - tests-core-byteorder.c
-        - tests-core-cib.c
-        - tests-core-clist.c
-        - tests-core-list.c
-        - tests-core-macros.c
-        - tests-core-priority-queue.c
-        - tests-core-ringbuffer.c
-        - tests-core-xfa.c
-        - tests-core-xfa-data1.c
-        - tests-core-xfa-data2.c
-      depends:
-          - unittests-base
-      env:
-        global:
-          testsuites:
-              - core
+  - name: tests-core
+    sources:
+      - tests-core.c
+      - tests-core-atomic.c
+      - tests-core-bitarithm.c
+      - tests-core-byteorder.c
+      - tests-core-cib.c
+      - tests-core-clist.c
+      - tests-core-list.c
+      - tests-core-macros.c
+      - tests-core-mbox.c
+      - tests-core-priority-queue.c
+      - tests-core-ringbuffer.c
+      - tests-core-xfa.c
+      - tests-core-xfa-data1.c
+      - tests-core-xfa-data2.c
+    depends:
+      - core_mbox
+      - unittests-base
+    env:
+      global:
+        testsuites:
+          - core
