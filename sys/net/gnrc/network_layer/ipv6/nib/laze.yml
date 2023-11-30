@@ -28,6 +28,12 @@ modules:
           - nib_nc.c
           - nib_pl.c
 
+      env:
+          local:
+              CFLAGS:
+                  # LAZE TODO: works around native compile warning
+                  - -Wno-array-bounds
+
     - name: auto_init_gnrc_ipv6_nib
       depends:
           - auto_init
