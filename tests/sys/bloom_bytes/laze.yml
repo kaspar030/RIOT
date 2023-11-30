@@ -1,6 +1,6 @@
 apps:
   - depends:
       - fmt
-      - sys/bloom
+      - bloom
       - random
       - xtimer
