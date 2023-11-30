@@ -1,0 +1,4 @@
+modules:
+  - name: mtd_emulated
+    sources:
+      - mtd_emulated.c

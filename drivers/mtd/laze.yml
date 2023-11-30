@@ -6,3 +6,4 @@ modules:
         - mtd.c
     uses:
       - vfs
+      - mtd_emulated

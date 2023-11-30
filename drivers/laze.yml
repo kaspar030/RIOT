@@ -66,6 +66,7 @@ subdirs:
     - mq3
     - mrf24j40
     - mtd
+    - mtd_emulated
     - mtd_sdcard
     - mtd_spi_nor
     - my9221
