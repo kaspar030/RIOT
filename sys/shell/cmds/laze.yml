@@ -287,6 +287,7 @@ modules:
       - rtc.c
     depends:
       - periph_rtc
+      - rtc_utils
   - name: shell_cmd_rtt
     sources:
       - rtt.c
