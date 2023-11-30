@@ -1,3 +1,4 @@
 apps:
   - depends:
-        - trickle
+      - trickle
+      - ztimer_msec
