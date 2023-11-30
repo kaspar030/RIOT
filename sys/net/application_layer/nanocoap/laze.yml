@@ -3,6 +3,7 @@ modules:
     sources:
       - nanocoap.c
     uses:
+      - nanocoap_resources
       - gcoap
 
   - name: nanocoap_sock
@@ -13,3 +14,6 @@ modules:
       - sock_udp
       - sock_util
 
+  - name: nanocoap_resources
+    depends:
+      - nanocoap
