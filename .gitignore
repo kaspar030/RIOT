@@ -98,3 +98,7 @@ keys/
 
 # laze / ninja files
 build/
+
+# Environments
+.venv
+venv/

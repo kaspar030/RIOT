@@ -74,8 +74,11 @@ config RDP2
     bool "RDP2"
 endchoice
 
+rsource "periph/Kconfig.fmc"
+
 if TEST_KCONFIG
 
+rsource "lcd_fmc/Kconfig"
 rsource "periph/Kconfig"
 rsource "stmclk/Kconfig"
 rsource "vectors/Kconfig"

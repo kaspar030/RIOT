@@ -67,7 +67,7 @@ endif
 # Check if linker supports `-z noexecstack`. Handle BUILD_IN_DOCKER separately,
 # as this is run in the host environment rather than inside the container. We
 # just hardcode this in the BUILD_IN_DOCKER case for now.
-LINKER_SUPPORTS_NOEXECSTACK ?= $(shell echo "int main(){} void _exit(int n) {(void)n;while(1);}" | LC_ALL=C $(LINK) -xc - -o /dev/null -lc -Wall -Wextra -pedantic -z noexecstack 2> /dev/null && echo 1 || echo 0)
+LINKER_SUPPORTS_NOEXECSTACK ?= $(shell LC_ALL=C $(LINK) $(RIOTTOOLS)/testprogs/minimal_linkable.c -o /dev/null -lc -Wall -Wextra -pedantic -z noexecstack 2> /dev/null && echo 1 || echo 0)
 
 # As we do not use nested functions or other stuff requiring trampoline code,
 # we can safely mark the stack as not executable. This avoids warnings on newer
@@ -119,3 +119,11 @@ CFLAGS += $(filter-out $(OPTIONAL_CFLAGS_BLACKLIST),$(OPTIONAL_CFLAGS))
 # accept good C practises within `extern "C" { ... }` while enforcing good C++
 # practises elsewhere. But in absence of this, we disable the warning for now.
 CXXEXFLAGS += -Wno-missing-field-initializers
+
+# Reformat the RAM region for usage within code and expose them
+ifneq (,$(RAM_START_ADDR))
+  CFLAGS += -DCPU_RAM_BASE=$(RAM_START_ADDR)
+endif
+ifneq (,$(RAM_LEN))
+  CFLAGS += -DCPU_RAM_SIZE=$(shell printf "0x%x" $$(($(RAM_LEN:%K=%*1024))))
+endif

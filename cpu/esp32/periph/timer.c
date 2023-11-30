@@ -26,6 +26,7 @@
  */
 #include "periph/timer.h"
 
+#include "driver/periph_ctrl.h"
 #include "esp/common_macros.h"
 #include "hal/interrupt_controller_types.h"
 #include "hal/interrupt_controller_ll.h"
@@ -39,8 +40,6 @@
 #include "xtensa/hal.h"
 #include "xtensa/xtensa_api.h"
 #endif
-
-#include "esp_idf_api/periph_ctrl.h"
 
 #include "esp_common.h"
 #include "irq_arch.h"
@@ -244,7 +243,7 @@ int timer_init(tim_t dev, uint32_t freq, timer_cb_t cb, void *arg)
     intr_cntrl_ll_enable_interrupts(BIT(CPU_INUM_TIMER));
 
     /* enable TMG module */
-    esp_idf_periph_module_enable(_timers_desc[dev].module);
+    periph_module_enable(_timers_desc[dev].module);
 
     /* hardware timer configuration */
     timer_hal_init(&_timers[dev].hw, _timers_desc[dev].group, _timers_desc[dev].index);
@@ -370,6 +369,8 @@ void IRAM_ATTR timer_stop(tim_t dev)
 
 #else /* MODULE_ESP_HW_COUNTER */
 
+#include "xtensa/config/core-isa.h"
+
 /* hardware counter used as timer */
 
 /**
@@ -483,7 +484,7 @@ void IRAM hw_timer_handler(void* arg)
 
 int timer_init (tim_t dev, uint32_t freq, timer_cb_t cb, void *arg)
 {
-    DEBUG("%s dev=%u freq=%u cb=%p arg=%p\n", __func__, dev, freq, cb, arg);
+    DEBUG("%s dev=%u freq=%"PRIu32" cb=%p arg=%p\n", __func__, dev, freq, cb, arg);
 
     assert(dev  <  HW_TIMER_NUMOF);
     assert(freq == HW_TIMER_FREQUENCY);
@@ -569,7 +570,7 @@ unsigned int IRAM timer_read(tim_t dev)
 
 void IRAM timer_start(tim_t dev)
 {
-    DEBUG("%s dev=%u @%u\n", __func__, dev, system_get_time());
+    DEBUG("%s dev=%u @%"PRIu32"\n", __func__, dev, system_get_time());
 
     assert(dev < HW_TIMER_NUMOF);
     assert(!_timers[dev].started);
@@ -620,7 +621,7 @@ static void IRAM __timer_channel_start (struct _hw_timer_t* timer, struct hw_cha
     channel->cycles     = channel->delta_time >> HW_TIMER_DELTA_RSHIFT;
     channel->remainder  = channel->delta_time &  HW_TIMER_DELTA_MASK;
 
-    DEBUG("%s cycles=%u remainder=%u @%u\n",
+    DEBUG("%s cycles=%"PRIu32" remainder=%"PRIu32" @%"PRIu32"\n",
           __func__, channel->cycles, channel->remainder, system_get_time());
 
     /* start timer either with full cycles, remaining or minimum time */

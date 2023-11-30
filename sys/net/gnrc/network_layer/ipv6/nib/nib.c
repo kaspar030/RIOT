@@ -90,6 +90,15 @@ static void _handle_rdnss_timeout(sock_udp_ep_t *dns_server);
 #endif
 /** @} */
 
+static inline bool _should_search_rtr(const gnrc_netif_t *netif)
+{
+    /* 6LBR interface does not send RS.
+       A non-advertising router sends RS or a 6LN that is advertising or not
+       has to refetch router information */
+    return !gnrc_netif_is_6lbr(netif) &&
+           (!gnrc_netif_is_rtr_adv(netif) || gnrc_netif_is_6ln(netif));
+}
+
 void gnrc_ipv6_nib_init(void)
 {
     evtimer_event_t *tmp;
@@ -132,13 +141,10 @@ void gnrc_ipv6_nib_iface_up(gnrc_netif_t *netif)
     gnrc_netif_acquire(netif);
 
     _init_iface_arsm(netif);
-#if IS_ACTIVE(CONFIG_GNRC_IPV6_NIB_6LN)
     netif->ipv6.rs_sent = 0;
-#endif  /* CONFIG_GNRC_IPV6_NIB_6LN */
     netif->ipv6.na_sent = 0;
     _auto_configure_addr(netif, &ipv6_addr_link_local_prefix, 64U);
-    if (!(gnrc_netif_is_rtr_adv(netif)) ||
-        (gnrc_netif_is_6ln(netif) && !gnrc_netif_is_6lbr(netif))) {
+    if (_should_search_rtr(netif)) {
         uint32_t next_rs_time = random_uint32_range(0, NDP_MAX_RS_MS_DELAY);
 
         _evtimer_add(netif, GNRC_IPV6_NIB_SEARCH_RTR, &netif->ipv6.search_rtr,
@@ -160,8 +166,7 @@ void gnrc_ipv6_nib_iface_down(gnrc_netif_t *netif, bool send_final_ra)
     gnrc_netif_acquire(netif);
 
     _deinit_iface_arsm(netif);
-    if (!(gnrc_netif_is_rtr_adv(netif)) ||
-        (gnrc_netif_is_6ln(netif) && !gnrc_netif_is_6lbr(netif))) {
+    if (_should_search_rtr(netif)) {
         _evtimer_del(&netif->ipv6.search_rtr);
     }
 #if IS_ACTIVE(CONFIG_GNRC_IPV6_NIB_ROUTER)
@@ -482,8 +487,10 @@ void gnrc_ipv6_nib_change_rtr_adv_iface(gnrc_netif_t *netif, bool enable)
         netif->flags &= ~GNRC_NETIF_FLAGS_IPV6_RTR_ADV;
         /* send final router advertisements */
         _handle_snd_mc_ra(netif);
-        _evtimer_add(netif, GNRC_IPV6_NIB_SEARCH_RTR, &netif->ipv6.search_rtr,
-                     next_rs_time);
+        if (!gnrc_netif_is_6lbr(netif)) {
+            _evtimer_add(netif, GNRC_IPV6_NIB_SEARCH_RTR,
+                         &netif->ipv6.search_rtr, next_rs_time);
+        }
     }
     gnrc_netif_release(netif);
 }
@@ -858,7 +865,9 @@ static void _handle_rtr_adv(gnrc_netif_t *netif, const ipv6_hdr_t *ipv6,
 
     /* stop sending router solicitations
      * see https://tools.ietf.org/html/rfc4861#section-6.3.7 */
-    evtimer_del(&_nib_evtimer, &netif->ipv6.search_rtr.event);
+    if (!gnrc_netif_is_6lbr(netif)) {
+        evtimer_del(&_nib_evtimer, &netif->ipv6.search_rtr.event);
+    }
 #if IS_ACTIVE(CONFIG_GNRC_IPV6_NIB_6LN)
     if (gnrc_netif_is_6ln(netif) && !gnrc_netif_is_6lbr(netif)) {
         if (IS_ACTIVE(CONFIG_GNRC_IPV6_NIB_MULTIHOP_P6C)) {
@@ -1251,25 +1260,88 @@ static void _handle_nbr_adv(gnrc_netif_t *netif, const ipv6_hdr_t *ipv6,
     }
 }
 
-#if IS_ACTIVE(CONFIG_GNRC_IPV6_NIB_QUEUE_PKT)
 static gnrc_pktqueue_t *_alloc_queue_entry(gnrc_pktsnip_t *pkt)
 {
+#if IS_ACTIVE(CONFIG_GNRC_IPV6_NIB_QUEUE_PKT)
     for (int i = 0; i < CONFIG_GNRC_IPV6_NIB_NUMOF; i++) {
         if (_queue_pool[i].pkt == NULL) {
             _queue_pool[i].pkt = pkt;
             return &_queue_pool[i];
         }
     }
+#else
+    (void)pkt;
+#endif  /* CONFIG_GNRC_IPV6_NIB_QUEUE_PKT */
     return NULL;
 }
-#endif  /* CONFIG_GNRC_IPV6_NIB_QUEUE_PKT */
+
+static bool _resolve_addr_from_nc(_nib_onl_entry_t *entry, gnrc_netif_t *netif,
+                                  gnrc_ipv6_nib_nc_t *nce)
+{
+    if (entry == NULL) {
+        return false;
+    }
+
+    if (IS_ACTIVE(CONFIG_GNRC_IPV6_NIB_ARSM)) {
+        if (!_is_reachable(entry)) {
+            return false;
+        }
+
+        if (_get_nud_state(entry) == GNRC_IPV6_NIB_NC_INFO_NUD_STATE_STALE) {
+            _set_nud_state(netif, entry, GNRC_IPV6_NIB_NC_INFO_NUD_STATE_DELAY);
+            _evtimer_add(entry, GNRC_IPV6_NIB_DELAY_TIMEOUT,
+                         &entry->nud_timeout, NDP_DELAY_FIRST_PROBE_MS);
+        }
+    }
+
+    _nib_nc_get(entry, nce);
+    return true;
+}
+
+static bool _enqueue_for_resolve(gnrc_netif_t *netif, gnrc_pktsnip_t *pkt,
+                                 _nib_onl_entry_t *entry)
+{
+    if (!IS_ACTIVE(CONFIG_GNRC_IPV6_NIB_QUEUE_PKT) ||
+        _get_nud_state(entry) != GNRC_IPV6_NIB_NC_INFO_NUD_STATE_INCOMPLETE) {
+        gnrc_icmpv6_error_dst_unr_send(ICMPV6_ERROR_DST_UNR_ADDR, pkt);
+        gnrc_pktbuf_release_error(pkt, EHOSTUNREACH);
+        return true;
+    }
+
+    gnrc_pktqueue_t *queue_entry = _alloc_queue_entry(pkt);
+
+    if (queue_entry == NULL) {
+        DEBUG("nib: can't allocate entry for packet queue "
+              "dropping packet\n");
+        gnrc_pktbuf_release(pkt);
+        return false;
+    }
+
+    if (netif != NULL) {
+        gnrc_pktsnip_t *netif_hdr = gnrc_netif_hdr_build(NULL, 0, NULL, 0);
+
+        if (netif_hdr == NULL) {
+            DEBUG("nib: can't allocate netif header for queue\n");
+            gnrc_pktbuf_release(pkt);
+            queue_entry->pkt = NULL;
+            return false;
+        }
+        gnrc_netif_hdr_set_netif(netif_hdr->data, netif);
+        queue_entry->pkt = gnrc_pkt_prepend(queue_entry->pkt, netif_hdr);
+    }
+
+#if IS_ACTIVE(CONFIG_GNRC_IPV6_NIB_QUEUE_PKT)
+    gnrc_pktqueue_add(&entry->pktqueue, queue_entry);
+#else
+    (void)entry;
+#endif
+    return true;
+}
 
 static bool _resolve_addr(const ipv6_addr_t *dst, gnrc_netif_t *netif,
                           gnrc_pktsnip_t *pkt, gnrc_ipv6_nib_nc_t *nce,
                           _nib_onl_entry_t *entry)
 {
-    bool res = false;
-
     if ((netif != NULL) && (netif->device_type == NETDEV_TYPE_SLIP)) {
         /* XXX: Linux doesn't do neighbor discovery for SLIP so no use sending
          * NS and since SLIP doesn't have link-layer addresses anyway, we can
@@ -1279,107 +1351,58 @@ static bool _resolve_addr(const ipv6_addr_t *dst, gnrc_netif_t *netif,
         nce->l2addr_len = 0;
         return true;
     }
-#if IS_ACTIVE(CONFIG_GNRC_IPV6_NIB_ARSM)
-    if ((entry != NULL) && _is_reachable(entry)) {
-        if (_get_nud_state(entry) == GNRC_IPV6_NIB_NC_INFO_NUD_STATE_STALE) {
-            _set_nud_state(netif, entry, GNRC_IPV6_NIB_NC_INFO_NUD_STATE_DELAY);
-            _evtimer_add(entry, GNRC_IPV6_NIB_DELAY_TIMEOUT,
-                         &entry->nud_timeout, NDP_DELAY_FIRST_PROBE_MS);
-        }
-        DEBUG("nib: resolve address %s%%%u from neighbor cache\n",
-              ipv6_addr_to_str(addr_str, &entry->ipv6, sizeof(addr_str)),
-              _nib_onl_get_if(entry));
-        _nib_nc_get(entry, nce);
-        res = true;
-    }
-#else   /* CONFIG_GNRC_IPV6_NIB_ARSM */
-    if (entry != NULL) {
-        DEBUG("nib: resolve address %s%%%u from neighbor cache\n",
-              ipv6_addr_to_str(addr_str, &entry->ipv6, sizeof(addr_str)),
-              _nib_onl_get_if(entry));
-        _nib_nc_get(entry, nce);
-        res = true;
-    }
-#endif  /* CONFIG_GNRC_IPV6_NIB_ARSM */
-    else if (!(res = _resolve_addr_from_ipv6(dst, netif, nce))) {
-#if IS_ACTIVE(CONFIG_GNRC_IPV6_NIB_ARSM)
-        bool reset = false;
-#endif  /* CONFIG_GNRC_IPV6_NIB_ARSM */
 
-        DEBUG("nib: resolve address %s by probing neighbors\n",
-              ipv6_addr_to_str(addr_str, dst, sizeof(addr_str)));
+    /* first check if address is cached */
+    if (_resolve_addr_from_nc(entry, netif, nce)) {
+        DEBUG("nib: resolve address %s%%%u from neighbor cache\n",
+              ipv6_addr_to_str(addr_str, &entry->ipv6, sizeof(addr_str)),
+              _nib_onl_get_if(entry));
+        return true;
+    }
+
+    /* directly resolve address if it uses 6lo addressing mode */
+    if (_resolve_addr_from_ipv6(dst, netif, nce)) {
+        DEBUG("nib: resolve l2 address from IPv6 address\n");
+        return true;
+    }
+
+    bool reset = false;
+    DEBUG("nib: resolve address %s by probing neighbors\n",
+          ipv6_addr_to_str(addr_str, dst, sizeof(addr_str)));
+    if (entry == NULL) {
+        entry = _nib_nc_add(dst, netif ? netif->pid : 0,
+                            GNRC_IPV6_NIB_NC_INFO_NUD_STATE_INCOMPLETE);
         if (entry == NULL) {
-            entry = _nib_nc_add(dst, (netif != NULL) ? netif->pid : 0,
-                                GNRC_IPV6_NIB_NC_INFO_NUD_STATE_INCOMPLETE);
-            if (entry == NULL) {
-                DEBUG("nib: can't resolve address, neighbor cache full\n");
-                gnrc_pktbuf_release(pkt);
-                return false;
-            }
-#if IS_ACTIVE(CONFIG_GNRC_IPV6_NIB_ROUTER)
-            if (netif != NULL) {
-                _call_route_info_cb(netif,
-                                    GNRC_IPV6_NIB_ROUTE_INFO_TYPE_NSC,
-                                    dst,
-                                    (void *)GNRC_IPV6_NIB_NC_INFO_NUD_STATE_INCOMPLETE);
-            }
-#endif  /* CONFIG_GNRC_IPV6_NIB_ROUTER */
-#if IS_ACTIVE(CONFIG_GNRC_IPV6_NIB_ARSM)
-            reset = true;
-#endif  /* CONFIG_GNRC_IPV6_NIB_ARSM */
+            DEBUG("nib: can't resolve address, neighbor cache full\n");
+            gnrc_pktbuf_release(pkt);
+            return false;
         }
-#if IS_ACTIVE(CONFIG_GNRC_IPV6_NIB_ARSM)
-        else if (_get_nud_state(entry) == GNRC_IPV6_NIB_NC_INFO_NUD_STATE_UNREACHABLE) {
-            /* reduce back-off to possibly resolve neighbor sooner again */
-            entry->ns_sent = 3;
+        if (IS_ACTIVE(CONFIG_GNRC_IPV6_NIB_ROUTER) && netif != NULL) {
+            _call_route_info_cb(netif,
+                                GNRC_IPV6_NIB_ROUTE_INFO_TYPE_NSC,
+                                dst,
+                                (void *)GNRC_IPV6_NIB_NC_INFO_NUD_STATE_INCOMPLETE);
         }
-#endif  /* CONFIG_GNRC_IPV6_NIB_ARSM */
-        if (pkt != NULL) {
-#if IS_ACTIVE(CONFIG_GNRC_IPV6_NIB_QUEUE_PKT)
-            if (_get_nud_state(entry) == GNRC_IPV6_NIB_NC_INFO_NUD_STATE_INCOMPLETE) {
-                gnrc_pktqueue_t *queue_entry = _alloc_queue_entry(pkt);
-
-                if (queue_entry != NULL) {
-                    if (netif != NULL) {
-                        gnrc_pktsnip_t *netif_hdr = gnrc_netif_hdr_build(
-                                NULL, 0, NULL, 0
-                            );
-                        if (netif_hdr == NULL) {
-                            DEBUG("nib: can't allocate netif header for queue\n");
-                            gnrc_pktbuf_release(pkt);
-                            queue_entry->pkt = NULL;
-                            return false;
-                        }
-                        gnrc_netif_hdr_set_netif(netif_hdr->data, netif);
-                        queue_entry->pkt = gnrc_pkt_prepend(queue_entry->pkt,
-                                                            netif_hdr);
-                    }
-                    gnrc_pktqueue_add(&entry->pktqueue, queue_entry);
-                }
-                else {
-                    DEBUG("nib: can't allocate entry for packet queue "
-                          "dropping packet\n");
-                    gnrc_pktbuf_release(pkt);
-                    return false;
-                }
-            }
-            /* pkt != NULL already checked above */
-            else {
-                gnrc_icmpv6_error_dst_unr_send(ICMPV6_ERROR_DST_UNR_ADDR,
-                                               pkt);
-                gnrc_pktbuf_release_error(pkt, EHOSTUNREACH);
-            }
-#else   /* CONFIG_GNRC_IPV6_NIB_QUEUE_PKT */
-            gnrc_icmpv6_error_dst_unr_send(ICMPV6_ERROR_DST_UNR_ADDR,
-                                           pkt);
-            gnrc_pktbuf_release_error(pkt, EHOSTUNREACH);
-#endif  /* CONFIG_GNRC_IPV6_NIB_QUEUE_PKT */
-        }
-#if IS_ACTIVE(CONFIG_GNRC_IPV6_NIB_ARSM)
-        _probe_nbr(entry, reset);
-#endif  /* CONFIG_GNRC_IPV6_NIB_ARSM */
+        reset = true;
     }
-    return res;
+#if IS_ACTIVE(CONFIG_GNRC_IPV6_NIB_ARSM)
+    else if (_get_nud_state(entry) == GNRC_IPV6_NIB_NC_INFO_NUD_STATE_UNREACHABLE) {
+        /* reduce back-off to possibly resolve neighbor sooner again */
+        entry->ns_sent = 3;
+    }
+#endif
+
+    /* queue packet as we have to do address resolution first */
+    if (pkt != NULL && !_enqueue_for_resolve(netif, pkt, entry)) {
+        return false;
+    }
+
+    /* don't do multicast address resolution on 6lo */
+    if (!gnrc_netif_is_6ln(netif)) {
+        _probe_nbr(entry, reset);
+    }
+
+    return false;
 }
 
 static void _handle_snd_na(gnrc_pktsnip_t *pkt)
@@ -1400,6 +1423,10 @@ static void _handle_snd_na(gnrc_pktsnip_t *pkt)
 static void _handle_pfx_timeout(_nib_offl_entry_t *pfx)
 {
     gnrc_netif_t *netif = gnrc_netif_get_by_pid(_nib_onl_get_if(pfx->next_hop));
+    if (netif == NULL) {
+        return;
+    }
+
     uint32_t now = evtimer_now_msec();
 
     gnrc_netif_acquire(netif);
@@ -1448,7 +1475,7 @@ void _handle_search_rtr(gnrc_netif_t *netif)
 {
 #if !IS_ACTIVE(CONFIG_GNRC_IPV6_NIB_NO_RTR_SOL)
     gnrc_netif_acquire(netif);
-    if (!(gnrc_netif_is_rtr_adv(netif)) || gnrc_netif_is_6ln(netif)) {
+    if (_should_search_rtr(netif)) {
         uint32_t next_rs = _evtimer_lookup(netif, GNRC_IPV6_NIB_SEARCH_RTR);
         uint32_t interval = _get_next_rs_interval(netif);
 

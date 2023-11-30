@@ -27,15 +27,71 @@ config HAS_ARCH_ARM
     help
         Indicates that the current architecture is ARM.
 
-config HAS_ARDUINO
+config HAS_ARDUINO_ANALOG
     bool
     help
-        Indicates that Arduino pins compatibility is supported.
+        Indicates that Arduino analog pins mappings are provided.
+
+config HAS_ARDUINO_DAC
+    bool
+    help
+        Indicates that Arduino DAC pins mappings are provided.
+
+config HAS_ARDUINO_I2C
+    bool
+    help
+        Indicates that Arduino I²C bus mappings are provided.
+
+config HAS_ARDUINO_PINS
+    bool
+    help
+        Indicates that Arduino digital pins mappings are provided.
 
 config HAS_ARDUINO_PWM
     bool
     help
-        Indicates that Arduino PWM compatibility is supported.
+        Indicates that Arduino digital pin to PWM mappings are provided.
+
+config HAS_ARDUINO_SHIELD_ISP
+    bool
+    help
+        Indicates that the board is electrically and mechanically compatible
+        with shields that mate with the ISP header for SPI connectivity.
+
+config HAS_ARDUINO_SHIELD_MEGA
+    bool
+    # The Arduino Mega 2560 is backward compatible with Arduino UNO shields. So
+    # any board compatible with Mega shields will automatically be compatible
+    # with UNO shields.
+    select HAS_ARDUINO_SHIELD_UNO
+    help
+        Indicates that the board is mechanically and electrically compatible
+        with shields developed for the Arduino Mega 2560. (Note: Not including
+        the ISP header, that requires HAS_ARDUINO_SHIELD_ISP in addition.)
+
+config HAS_ARDUINO_SHIELD_NANO
+    bool
+    help
+        Indicates that the board is mechanically and electrically compatible
+        with shields developed for the Arduino Nano. (Note: Not including
+        the ISP header, that requires HAS_ARDUINO_SHIELD_ISP in addition.)
+
+config HAS_ARDUINO_SHIELD_UNO
+    bool
+    help
+        Indicates that the board is mechanically and electrically compatible
+        with shields developed for the Arduino Nano. (Note: Not including
+        the ISP header, that requires HAS_ARDUINO_SHIELD_ISP in addition.)
+
+config HAS_ARDUINO_SPI
+    bool
+    help
+        Indicates that Arduino SPI bus mappings are provided.
+
+config HAS_ARDUINO_UART
+    bool
+    help
+        Indicates that Arduino UART device mappings are provided.
 
 config HAS_BACKUP_RAM
     bool
@@ -77,6 +133,11 @@ config HAS_CPU_CHECK_ADDRESS
     bool
     help
         Indicates that address validity check is supported.
+
+config HAS_PERIPH_CRYPTOCELL_310
+    bool
+    help
+        Indicates that a cryptocell peripheral is present.
 
 config HAS_DBGPIN
     bool
@@ -127,10 +188,20 @@ config HAS_PERIPH_ADC
     help
         Indicates that an ADC peripheral is present.
 
+config HAS_PERIPH_ADC_CONTINUOUS
+    bool
+    help
+        Indicates that an ADC peripheral can be left on between measurements.
+
 config HAS_PERIPH_CAN
     bool
     help
         Indicates that a CAN peripheral is present.
+
+config HAS_PERIPH_CIPHER_AES_128_CBC
+    bool
+    help
+        Indicates that there is AES 128 CBC hardware acceleration present
 
 config HAS_PERIPH_CORETIMER
     bool
@@ -151,6 +222,21 @@ config HAS_PERIPH_DMA
     bool
     help
         Indicates that a DMA peripheral is present.
+
+config HAS_PERIPH_ECC_P192R1
+    bool
+    help
+        Indicates that there is ECC P192R1 hardware acceleration peripheral present.
+
+config HAS_PERIPH_ECC_P256R1
+    bool
+    help
+        Indicates that there is ECC P256R1 hardware acceleration peripheral present.
+
+config HAS_PERIPH_ECC_ED25519
+    bool
+    help
+        Indicates that there is ECC Edwards25519 hardware acceleration peripheral present.
 
 config HAS_PERIPH_EEPROM
     bool
@@ -177,6 +263,11 @@ config HAS_PERIPH_FLASHPAGE_RWEE
     help
         Indicates that the Flashpage peripheral is of the Read While Write.
 
+config HAS_PERIPH_FREQM
+    bool
+    help
+        Indicates that a Frequency Meter peripheral is present.
+
 config HAS_PERIPH_GPIO
     bool
     help
@@ -191,9 +282,9 @@ config HAS_PERIPH_GPIO_IRQ
 config HAS_PERIPH_GPIO_FAST_READ
     bool
     help
-	Indicates that the GPIO peripheral supports a mode in which pin read
-	operations are faster, usually with a tradeoff against a different
-	property.
+        Indicates that the GPIO peripheral supports a mode in which pin read
+        operations are faster, usually with a tradeoff against a different
+        property.
 
 config HAS_PERIPH_GPIO_TAMPER_WAKE
     bool
@@ -228,6 +319,36 @@ config HAS_PERIPH_GPIO_LL_IRQ_UNMASK
     help
         Indicates that the GPIO peripheral supports unmasking interrupts without
         clearing pending IRQs that came in while masked.
+
+config HAS_PERIPH_HASH_MD5
+    bool
+    help
+        Indicates that there is MD5 hardware acceleration present.
+
+config HAS_PERIPH_HASH_SHA_1
+    bool
+    help
+        Indicates that there is SHA-1 hardware acceleration present.
+
+config HAS_PERIPH_HASH_SHA_224
+    bool
+    help
+        Indicates that there is SHA-224 hardware acceleration present.
+
+config HAS_PERIPH_HASH_SHA_256
+    bool
+    help
+        Indicates that there is SHA-256 hardware acceleration present.
+
+config HAS_PERIPH_HASH_SHA_512
+    bool
+    help
+        Indicates that there is SHA-512 hardware acceleration present.
+
+config HAS_PERIPH_HMAC_SHA_256
+    bool
+    help
+        Indicates that there is HMAC SHA-256 hardware acceleration present.
 
 config HAS_PERIPH_HWRNG
     bool
@@ -277,10 +398,21 @@ config HAS_PERIPH_CLIC
     help
         Indicates that a RISC-V Core-local Interrupt Controller (CLIC) peripheral is present.
 
+config HAS_PERIPH_PIO
+    bool
+    help
+        Indicates that Programmable IO (PIO) is supported by the CPU
+
+
 config HAS_PERIPH_PLIC
     bool
     help
         Indicates that a RISC-V Platform-local Interrupt Controller (PLIC) peripheral is present.
+
+config HAS_PERIPH_PMP
+    bool
+    help
+        Indicates that a RISC-V physical memory protection (PMP) peripheral is present.
 
 config HAS_PERIPH_PM
     bool
@@ -347,6 +479,62 @@ config HAS_PERIPH_RTT_OVERFLOW
     bool
     help
         Indicates that the RTT provides an overflow callback.
+
+config HAS_PERIPH_SDMMC
+    bool
+    help
+        Indicates that an SDIO/SD/MMC peripheral is present and used by the
+        board. This feature shall be provided by the board configuration,
+        if available.
+
+config HAS_PERIPH_SDMMC_8BIT
+    bool
+    help
+        Indicates that the SDIO/SD/MMC peripheral supports the 8-bit bus width
+        and at least one component of the board is connected with 8 data lines.
+        This feature shall be provided by the board configuration, if available.
+
+config HAS_PERIPH_SDMMC_AUTO_CLK
+    bool
+    help
+        Indicates that the SDIO/SD/MMC peripheral supports the Auto-CLK
+        feature, i.e. the automatic activation and deactivation of the SD CLK
+        signal when required. This feature shall be provided by the MCU
+        if supported.
+
+config HAS_PERIPH_SDMMC_AUTO_CMD12
+    bool
+    help
+        Indicates that the SDIO/SD/MMC peripheral supports the Auto-CMD12
+        feature, i.e. CMD12 is sent automatically to stop the transmission in
+        multiple block operations. This feature shall be provided by the MCU
+        if supported.
+
+config HAS_PERIPH_SDMMC_CLK
+    bool
+    help
+        Indicates that the SDIO/SD/MMC peripheral has special clock
+        functionality used by the peripheral driver.
+
+config HAS_PERIPH_SDMMC_HS
+    bool
+    help
+        Indicates that the SDIO/SD/MMC peripheral supports the high speed
+        access, that is 50 MHz for SD and 52 MHz for MMC. This feature shall be
+        provided by the MCU.
+
+config HAS_PERIPH_SDMMC_MMC
+    bool
+    help
+        Indicates that the SDIO/SD/MMC peripheral supports MMC/eMMCs. This
+        feature shall be provided by the MCU.
+
+config HAS_PERIPH_SDMMC_SDHC
+    bool
+    help
+        Indicates that the SDIO/SD/MMC peripheral is compliant with the
+        SD Host Controller Specification. This feature shall
+        be provided by the MCU.
 
 config HAS_PERIPH_SPI
     bool
@@ -424,6 +612,11 @@ config HAS_PERIPH_USBDEV
     help
         Indicates that an USBDEV peripheral is present.
 
+config HAS_PERIPH_USBDEV_HS
+    bool
+    help
+        Indicates that the USBDEV peripheral supports High-Speed.
+
 config HAS_PERIPH_USBDEV_HS_UTMI
     bool
     help
@@ -453,6 +646,11 @@ config HAS_PICOLIBC
     bool
     help
         Indicates that the picolibc C library is available for the platform.
+
+config HAS_PIO_I2C
+    bool
+    help
+        Indicates that there is a PIO program to provide emulated I2C
 
 config HAS_NEWLIB
     bool

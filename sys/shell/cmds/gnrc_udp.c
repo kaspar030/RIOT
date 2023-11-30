@@ -52,13 +52,13 @@ static void _send(const char *addr_str, const char *port_str,
 
     /* parse destination address */
     if (netutils_get_ipv6(&addr, &netif, addr_str) < 0) {
-        puts("Error: unable to parse destination address");
+        printf("Error: unable to parse destination address\n");
         return;
     }
     /* parse port */
     port = atoi(port_str);
     if (port == 0) {
-        puts("Error: unable to parse destination port");
+        printf("Error: unable to parse destination port\n");
         return;
     }
 
@@ -68,7 +68,7 @@ static void _send(const char *addr_str, const char *port_str,
         /* allocate payload */
         payload = gnrc_pktbuf_add(NULL, data, strlen(data), GNRC_NETTYPE_UNDEF);
         if (payload == NULL) {
-            puts("Error: unable to copy data to packet buffer");
+            printf("Error: unable to copy data to packet buffer\n");
             return;
         }
         /* store size for output */
@@ -76,21 +76,25 @@ static void _send(const char *addr_str, const char *port_str,
         /* allocate UDP header, set source port := destination port */
         udp = gnrc_udp_hdr_build(payload, port, port);
         if (udp == NULL) {
-            puts("Error: unable to allocate UDP header");
+            printf("Error: unable to allocate UDP header\n");
             gnrc_pktbuf_release(payload);
             return;
         }
         /* allocate IPv6 header */
         ip = gnrc_ipv6_hdr_build(udp, NULL, &addr);
         if (ip == NULL) {
-            puts("Error: unable to allocate IPv6 header");
+            printf("Error: unable to allocate IPv6 header\n");
             gnrc_pktbuf_release(udp);
             return;
         }
         /* add netif header, if interface was given */
         if (netif != NULL) {
             gnrc_pktsnip_t *netif_hdr = gnrc_netif_hdr_build(NULL, 0, NULL, 0);
-
+            if (netif_hdr == NULL) {
+                printf("Error: unable to allocate netif header\n");
+                gnrc_pktbuf_release(ip);
+                return;
+            }
             gnrc_netif_hdr_set_netif(netif_hdr->data,
                                      container_of(netif, gnrc_netif_t, netif));
             ip = gnrc_pkt_prepend(ip, netif_hdr);
@@ -98,7 +102,7 @@ static void _send(const char *addr_str, const char *port_str,
         /* send packet */
         if (!gnrc_netapi_dispatch_send(GNRC_NETTYPE_UDP,
                                        GNRC_NETREG_DEMUX_CTX_ALL, ip)) {
-            puts("Error: unable to locate UDP thread");
+            printf("Error: unable to locate UDP thread\n");
             gnrc_pktbuf_release(ip);
             return;
         }
@@ -132,7 +136,7 @@ static void _start_server(const char *port_str)
     /* parse port */
     port = atoi(port_str);
     if (port == 0) {
-        puts("Error: invalid port specified");
+        printf("Error: invalid port specified\n");
         return;
     }
     /* start server (which means registering pktdump for the chosen port) */
@@ -152,7 +156,7 @@ static void _stop_server(void)
     /* stop server */
     gnrc_netreg_unregister(GNRC_NETTYPE_UDP, &server);
     server.target.pid = KERNEL_PID_UNDEF;
-    puts("Success: stopped UDP server");
+    printf("Success: stopped UDP server\n");
 }
 
 static int _gnrc_udp_cmd(int argc, char **argv)
@@ -196,11 +200,11 @@ static int _gnrc_udp_cmd(int argc, char **argv)
             _stop_server();
         }
         else {
-            puts("error: invalid command");
+            printf("error: invalid command\n");
         }
     }
     else {
-        puts("error: invalid command");
+        printf("error: invalid command\n");
     }
     return 0;
 }

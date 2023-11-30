@@ -25,7 +25,9 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "container.h"
 #include "periph/rtc.h"
+#include "rtc_utils.h"
 #include "shell.h"
 
 static void _alarm_handler(void *arg)
@@ -35,15 +37,16 @@ static void _alarm_handler(void *arg)
     puts("The alarm rang");
 }
 
-static int dow(int year, int month, int day)
-{
-    /* calculate the day of week using Tøndering's algorithm */
-    static int t[] = {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4};
-    year -= month < 3;
-    return (year + year/4 - year/100 + year/400 + t[month-1] + day) % 7;
-}
-
-static int _parse_time(char **argv, struct tm *time)
+/** Read a ["YYYY-MM-DD", "hh:mm:ss"] formatted value from a string array.
+ *
+ * This performs no validation on the entered time -- that'd be trivial on some
+ * fields (month), but excessive on others (day of month -- we don't do leap
+ * year calculation otherwise) and need information we don't have (leap
+ * seconds) on yet others.
+ *
+ * Invalid inputs merely lead to out-of-range values inside the time struct.
+ */
+static void _parse_time(char **argv, struct tm *time)
 {
     short i;
     char *end;
@@ -66,10 +69,9 @@ static int _parse_time(char **argv, struct tm *time)
     i = strtol(end + 1, &end, 10);
     time->tm_sec = i;
 
-    time->tm_wday = dow(time->tm_year + 1900, time->tm_mon + 1, time->tm_mday);
     time->tm_isdst = -1; /* undefined */
 
-    return 0;
+    rtc_tm_normalize(time);
 }
 
 static int _print_time(struct tm *time)
@@ -98,14 +100,14 @@ static int _rtc_setalarm(char **argv)
 {
     struct tm now;
 
-    if (_parse_time(argv, &now) == 0) {
-        if (rtc_set_alarm(&now, _alarm_handler, NULL) == -1) {
-            puts("rtc: error setting alarm");
-            return 1;
-        }
-        return 0;
+    _parse_time(argv, &now);
+
+    if (rtc_set_alarm(&now, _alarm_handler, NULL) < 0) {
+        puts("rtc: error setting alarm");
+        return 1;
     }
-    return 1;
+
+    return 0;
 }
 
 static int _rtc_gettime(void)
@@ -125,14 +127,14 @@ static int _rtc_settime(char **argv)
 {
     struct tm now;
 
-    if (_parse_time(argv, &now) == 0) {
-        if (rtc_set_time(&now) == -1) {
-            puts("rtc: error setting time");
-            return 1;
-        }
-        return 0;
+    _parse_time(argv, &now);
+
+    if (rtc_set_time(&now) < 0) {
+        puts("rtc: error setting time");
+        return 1;
     }
-    return 1;
+
+    return 0;
 }
 
 static int _rtc_usage(void)

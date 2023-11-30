@@ -196,8 +196,8 @@ JTAG. Also JTAG requires more signal lines to be connected compared to SWD and
 some internal programmers only have the SWD signal lines connected, so that
 JTAG will not be possible.
 
-`stm32flash` Configuration                  {#flashing-configuration-stm32flash}
---------------------------
+stm32flash Configuration                  {#flashing-configuration-stm32flash}
+------------------------
 
 It is possible to automatically boot the STM32 board into the in-ROM bootloader
 that `stm32flash` communicates with for flashing by connecting the RST pin to
@@ -216,6 +216,31 @@ inverted, by setting it to `0` non-inverted signals will be generated. As of
 now, `STM32FLASH_RESET_INVERT` is by default `1`. This may change if it
 becomes evident that non-inverted TTL adapters are in fact more common than
 inverted adapters.
+
+MSPDEBUG Configuration                         {#flashing-configuration-mspdebug}
+----------------------
+
+All options can be passed as environment variables or as make arguments.
+All options except for `DEBUGSERVER_PORT` apply to both debugging and flashing
+alike.
+
+`MSPDEBUG_PROGRAMMER` is used to set the hardware programmer/debugger to use
+for programming and debugging. See `mspdebug --help` or `man mspdebug` for a
+list of programmers.
+
+`MSPDEBUG_PROTOCOL` is used to specify the debugger protocol. It is typically
+set by the board used. Only JTAG and Spi-Bi-Wire are supported.
+
+`MSPDEBUG_TTY` is used to connect via TTY interface instead of directly via
+USB to the debugger. Usually, this is not required.
+
+`DEBUG_ADAPTER_ID` is used to select the debugger/programmer by its serial. If
+not set, `mspdebug` will select the first device with matching vendor and
+product ID. Unless multiple debuggers of the same type are connected, this
+options is typically not needed.
+
+`DEBUGSERVER_PORT` is used to specify the TCP port to listen for GDB to
+connect to. It defaults to 2000.
 
 Handling Multiple Boards With UDEV-Rules                {#multiple-boards-udev}
 ========================================
@@ -478,20 +503,20 @@ In most cases, just adding a simple `TTY_BOARD_FILTER` is sufficient. If we
 however have wildly different flavors of the same board (e.g. genuine Arduino
 Mega 2560 with an ATmega16U2 and clones with a cheap USB to UART bridge) that we
 all want to support, we have to instead provide a `TTY_SELECT_CMD` that prints
-the path to the TTY and exists with `0` if a TTY was found, or that exists with
-`1` and prints nothing when no TTY was found. We can still use the `ttys.py`
-script to detect all Arduino Mega 2560 versions: We first try to detect a
-genuine Arduino Mega and fall back to selecting cheap USB UART bridges when that
-fails using the `||` shell operator:
+the path to and the serial of the TTY (separated by a space) and exists with
+`0` if a TTY was found, or that exists with `1` and prints nothing when no TTY
+was found. We can still use the `ttys.py` script to detect all Arduino Mega
+2560 versions: We first try to detect a genuine Arduino Mega and fall back to
+selecting cheap USB UART bridges when that fails using the `||` shell operator:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   TTY_SELECT_CMD := $(RIOTTOOLS)/usb-serial/ttys.py \
                     --most-recent \
-                    --format path \
+                    --format path serial \
                     --vendor 'Arduino' \
                     --model-db 'Mega 2560|Mega ADK' || \
                     $(RIOTTOOLS)/usb-serial/ttys.py \
                     --most-recent \
-                    --format path \
+                    --format path serial \
                     --driver 'cp210x'
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

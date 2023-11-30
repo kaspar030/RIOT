@@ -8,7 +8,7 @@
  */
 
 /**
- * @defgroup    net_gcoap  Gcoap
+ * @defgroup    net_gcoap  GCoAP
  * @ingroup     net
  * @brief       High-level interface to CoAP messaging
  *
@@ -341,15 +341,15 @@
  *
  * ## DTLS as transport security ##
  *
- * Gcoap allows to use DTLS for transport security by using the @ref net_sock_dtls
- * "DTLS sock API". Using the module gcoap_dtls enables the support. Gcoap
+ * GCoAP allows to use DTLS for transport security by using the @ref net_sock_dtls
+ * "DTLS sock API". Using the module gcoap_dtls enables the support. GCoAP
  * listens for requests on CONFIG_GCOAPS_PORT, 5684 by default when DTLS is enabled.
  *
  * Credentials have to been configured before use. See @ref net_credman "Credman"
  * and @ref net_sock_dtls_creds "DTLS sock credentials API" for credential managing.
  * Access to the DTLS socket is provided by gcoap_get_sock_dtls().
  *
- * Gcoap includes a DTLS session management component that stores active sessions.
+ * GCoAP includes a DTLS session management component that stores active sessions.
  * By default, it tries to have CONFIG_GCOAP_DTLS_MINIMUM_AVAILABLE_SESSIONS
  * session slots available to keep the server responsive. If not enough sessions
  * are available the server destroys the session that has not been used for the
@@ -413,7 +413,7 @@ extern "C" {
 #endif
 
 /**
- * @defgroup net_gcoap_conf    Gcoap compile configurations
+ * @defgroup net_gcoap_conf    GCoAP compile configurations
  * @ingroup  net_gcoap
  * @ingroup  config
  * @{
@@ -600,11 +600,11 @@ extern "C" {
  * @brief   See CONFIG_GCOAP_OBS_VALUE_WIDTH
  */
 #if (CONFIG_GCOAP_OBS_VALUE_WIDTH == 3)
-#define GCOAP_OBS_TICK_EXPONENT (5)
+#define GCOAP_OBS_TICK_EXPONENT (0)
 #elif (CONFIG_GCOAP_OBS_VALUE_WIDTH == 2)
-#define GCOAP_OBS_TICK_EXPONENT (16)
+#define GCOAP_OBS_TICK_EXPONENT (6)
 #elif (CONFIG_GCOAP_OBS_VALUE_WIDTH == 1)
-#define GCOAP_OBS_TICK_EXPONENT (24)
+#define GCOAP_OBS_TICK_EXPONENT (14)
 #endif
 
 /**
@@ -1087,9 +1087,6 @@ uint8_t gcoap_op_state(void);
  * @brief   Get the resource list, currently only `CoRE Link Format`
  *          (COAP_FORMAT_LINK) supported
  *
- * @deprecated Will be an alias for @ref gcoap_get_resource_list after the
- *             2022.01 release. Will be removed after the 2022.04 release.
- *
  * If @p buf := NULL, nothing will be written but the size of the resulting
  * resource list is computed and returned.
  *
@@ -1103,37 +1100,13 @@ uint8_t gcoap_op_state(void);
  *                      (i.e. usage of modules no `gcoap_dtls`, ...) this will
  *                      be ignored and @ref GCOAP_SOCKET_TYPE_UDP assumed.
  *
- * @todo    add support for `JSON CoRE Link Format`
- * @todo    add support for 'CBOR CoRE Link Format`
+ * @todo    add support for CoRAL once it is done
  *
  * @return  the number of bytes written to @p buf
  * @return  -1 on error
  */
-int gcoap_get_resource_list_tl(void *buf, size_t maxlen, uint8_t cf,
+int gcoap_get_resource_list(void *buf, size_t maxlen, uint8_t cf,
                                gcoap_socket_type_t tl_type);
-
-/**
- * @brief   Get the resource list for all transports,
- *          currently only `CoRE Link Format` (COAP_FORMAT_LINK) supported
- *
- * If @p buf := NULL, nothing will be written but the size of the resulting
- * resource list is computed and returned.
- *
- * @param[out] buf      output buffer to write resource list into, my be NULL
- * @param[in]  maxlen   length of @p buf, ignored if @p buf is NULL
- * @param[in]  cf       content format to use for the resource list, currently
- *                      only COAP_FORMAT_LINK supported
- *
- * @todo    add support for `JSON CoRE Link Format`
- * @todo    add support for 'CBOR CoRE Link Format`
- *
- * @return  the number of bytes written to @p buf
- * @return  -1 on error
- */
-static inline int gcoap_get_resource_list(void *buf, size_t maxlen, uint8_t cf)
-{
-    return gcoap_get_resource_list_tl(buf, maxlen, cf, GCOAP_SOCKET_TYPE_UNDEF);
-}
 
 /**
  * @brief   Writes a resource in CoRE Link Format to a provided buffer.

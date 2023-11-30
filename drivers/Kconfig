@@ -30,8 +30,9 @@ rsource "dsp0401/Kconfig"
 rsource "hd44780/Kconfig"
 rsource "ili9341/Kconfig"
 rsource "lcd/Kconfig"
-rsource "st7735/Kconfig"
+rsource "st77xx/Kconfig"
 rsource "touch_dev/Kconfig"
+rsource "touch_dev_gestures/Kconfig"
 endmenu # Display Device Drivers
 
 menu "Miscellaneous Device Drivers"
@@ -110,6 +111,7 @@ rsource "lsm303agr/Kconfig"
 rsource "ltc4150/Kconfig"
 rsource "mag3110/Kconfig"
 rsource "matrix_keypad/Kconfig"
+rsource "mfrc522/Kconfig"
 rsource "mhz19/Kconfig"
 rsource "mma8x5x/Kconfig"
 rsource "mma7660/Kconfig"
@@ -148,6 +150,7 @@ rsource "tsl2561/Kconfig"
 rsource "tsl4531x/Kconfig"
 rsource "vcnl40x0/Kconfig"
 rsource "veml6070/Kconfig"
+rsource "vl6180x/Kconfig"
 endmenu # Sensor Device Drivers
 
 menu "Storage Device Drivers"
@@ -159,6 +162,7 @@ rsource "mtd_sdcard/Kconfig"
 rsource "nvram/Kconfig"
 rsource "nvram_spi/Kconfig"
 rsource "sdcard_spi/Kconfig"
+rsource "sdmmc/Kconfig"
 endmenu # Storage Device Drivers
 
 endmenu # Drivers

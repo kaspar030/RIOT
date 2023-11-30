@@ -5,7 +5,21 @@
 # and / or
 #export APPS="examples/hello-world tests/unittests"
 
-QUICKBUILD_BOARDS="nrf52840dk samr21-xpro esp32-wroom-32 native"
+QUICKBUILD_BOARDS="
+adafruit-itsybitsy-m4
+atmega256rfr2-xpro
+esp32-wroom-32
+esp32s3-devkit
+frdm-k64f
+hifive1b
+msb-430
+msba2
+native
+nrf52840dk
+qn9080dk
+samr21-xpro
+stk3200
+stm32f429i-disc1"
 
 # this configures boards that are available via pifleet
 case "${CI_MURDOCK_PROJECT}" in
@@ -24,8 +38,7 @@ esac
 
 # temporarily disabling llvm builds until https://github.com/RIOT-OS/RIOT/pull/15595
 # is in
-#: ${TEST_BOARDS_LLVM_COMPILE:="iotlab-m3 native nrf52dk mulle nucleo-f401re samr21-xpro slstk3402a"}
-: ${TEST_BOARDS_LLVM_COMPILE:=""}
+: ${TEST_BOARDS_LLVM_COMPILE:="iotlab-m3 native nrf52dk mulle nucleo-f401re samr21-xpro slstk3402a"}
 
 : ${TEST_KCONFIG_BOARDS_AVAILABLE:="
 adafruit-itsybitsy-m4
@@ -82,6 +95,7 @@ pba-d-01-kw2x
 p-nucleo-wb55
 qn9080dk
 remote-revb
+rpi-pico
 same54-xpro
 samr21-xpro
 seeedstudio-gd32
@@ -97,33 +111,33 @@ z1
 "}
 
 : ${TEST_KCONFIG_ENFORCE_APP_GROUPS:="
-tests/cb_mux*
-tests/congure_*
-tests/driver_b*
-tests/driver_f*
-tests/driver_g*
-tests/driver_h*
-tests/driver_i*
-tests/driver_j*
-tests/driver_l*
-tests/driver_o*
-tests/driver_p*
-tests/driver_q*
-tests/driver_r*
-tests/driver_s*
-tests/driver_t*
-tests/driver_u*
-tests/driver_v*
-tests/external_board_dirs
-tests/periph_*
-tests/pkg_elk
-tests/pkg_uzlib
-tests/prng_*
-tests/trace
-tests/xtimer_*
-tests/ztimer_*
 examples/hello-world
-tests/ieee802154_hal
+tests/build_system/external_board_dirs
+tests/drivers/b*
+tests/drivers/f*
+tests/drivers/g*
+tests/drivers/h*
+tests/drivers/i*
+tests/drivers/j*
+tests/drivers/l*
+tests/drivers/o*
+tests/drivers/p*
+tests/drivers/q*
+tests/drivers/r*
+tests/drivers/s*
+tests/drivers/t*
+tests/drivers/u*
+tests/drivers/v*
+tests/net/ieee802154_hal
+tests/periph/*
+tests/pkg/elk
+tests/pkg/uzlib
+tests/sys/cb_mux*
+tests/sys/congure_*
+tests/sys/prng_*
+tests/sys/trace
+tests/sys/xtimer_*
+tests/sys/ztimer_*
 "}
 
 # This list prevents boards from being tested by the TEST_KCONFIG_TEST_ALLOWLIST
@@ -141,11 +155,11 @@ tests/ieee802154_hal
 # the kconfig implementations.
 : ${TEST_KCONFIG_TEST_ALLOWLIST:="
 examples/hello-world
-tests/saul
-tests/mtd_mapper
+tests/drivers/saul
+tests/drivers/mtd_mapper
 "}
 
-: ${TEST_WITH_CONFIG_SUPPORTED:="examples/suit_update tests/driver_at86rf2xx_aes"}
+: ${TEST_WITH_CONFIG_SUPPORTED:="examples/suit_update tests/drivers/at86rf2xx_aes"}
 
 export RIOT_CI_BUILD=1
 export CC_NOCOLOR=1
@@ -164,6 +178,19 @@ check_label() {
     return $?
 }
 
+# true if "$2" starts with "$1", false otherwise
+startswith() {
+  case "${2}" in
+    ${1}*) true ;;
+    *) false ;;
+  esac
+}
+
+# this function returns 0 when this build is building a merge queue branch.
+is_merge_queue_build() {
+    startswith "gh-readonly-queue/" "${CI_BUILD_BRANCH}"
+}
+
 # fullbuild logic
 # non-full-builds are those where can_fast_ci_run might reduce the build
 # automatically
@@ -179,13 +206,14 @@ if [ -z "${FULL_BUILD}" ]; then
     export FULL_BUILD
 fi
 
+
 # quickbuild logic
 # a "quickbuild" is only building a representative subset of all build
 # configurations.
 if [ -z "${QUICK_BUILD}" ]; then
     export QUICK_BUILD=0
-    if [ "${CI_BUILD_BRANCH}" = "staging" ]; then
-        # always do full build for bors' integration branch
+    if is_merge_queue_build; then
+        # always do full build for merge queue' branches
         true
     elif [ ${FULL_BUILD} -eq 1 ]; then
         # full build if building nightly or full build requested by label
@@ -289,14 +317,6 @@ fi
 error() {
     echo "$@"
     exit 1
-}
-
-# true if "$2" starts with "$1", false otherwise
-startswith() {
-  case "${2}" in
-    ${1}*) true ;;
-    *) false ;;
-  esac
 }
 
 # if MURDOCK_HOOK is set, this function will execute it and pass on all it's
@@ -505,6 +525,11 @@ compile() {
     # sanity checks
     [ $# -ne 2 ] && error "$0: compile: invalid parameters (expected \$appdir \$board:\$toolchain)"
     [ ! -d "$appdir" ] && error "$0: compile: error: application directory \"$appdir\" doesn't exist"
+
+    # use our checkout as ccache temporary folder.
+    # On CI, this is a tmpfs, so using that instead of the `/cache/.ccache` volume
+    # reduces disk IO.
+    export CCACHE_TEMPDIR="$(pwd)/.ccache/tmp"
 
     # We compile a first time with Kconfig based dependency
     # resolution for regression purposes. $TEST_KCONFIG contains a

@@ -11,9 +11,14 @@ USEMODULE += $(PERIPH_FEATURES)
 
 # Add all USED periph_% init modules unless they are blacklisted
 PERIPH_IGNORE_MODULES := \
+  periph_cipher_aes_128_cbc \
   periph_clic \
   periph_common \
   periph_coretimer \
+  periph_cryptocell_310 \
+  periph_ecc_p192r1 \
+  periph_ecc_p256r1 \
+  periph_ecc_ed25519 \
   periph_eth \
   periph_eth_common \
   periph_flash \
@@ -25,6 +30,11 @@ PERIPH_IGNORE_MODULES := \
   periph_gpio_ll_irq_level_triggered_low \
   periph_gpio_ll_irq_unmask \
   periph_gpio_mux \
+  periph_hash_sha_1 \
+  periph_hash_sha_224 \
+  periph_hash_sha_256 \
+  periph_hash_sha_512 \
+  periph_hmac_sha_256 \
   periph_i2c_hw \
   periph_i2c_sw \
   periph_init% \
@@ -40,6 +50,7 @@ PERIPH_IGNORE_MODULES := \
   periph_uart_collision \
   periph_uart_rxstart_irq \
   periph_wdog \
+  periph_wdt_auto_start \
   #
 PERIPH_MODULES := $(filter-out $(PERIPH_IGNORE_MODULES),\
                                $(filter periph_%,$(USEMODULE)))
@@ -97,3 +108,11 @@ USEMODULE += $(filter vdd_lc_filter_%,$(FEATURES_USED))
 
 # select arduino_pwm pseudomodule if the corresponding feature is used
 USEMODULE += $(filter arduino_pwm, $(FEATURES_USED))
+
+# always register a peripheral driver as a required feature when the corresponding
+# module is requested
+PERIPH_IGNORE_MODULES += periph_usbdev_clk periph_gpio_mock periph_gpio_linux periph_spidev_linux
+
+ifneq (,$(filter periph_%,$(DEFAULT_MODULE)))
+  FEATURES_REQUIRED += $(filter-out $(PERIPH_IGNORE_MODULES),$(filter periph_%,$(USEMODULE)))
+endif

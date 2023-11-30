@@ -22,6 +22,8 @@
 #ifndef ASSERT_H
 #define ASSERT_H
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -42,6 +44,23 @@ extern "C" {
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 #define DEBUG_ASSERT_VERBOSE
+
+/**
+ * @brief   Activate breakpoints for @ref assert() when defined
+ *
+ * Without this macro defined the @ref assert() macro will just print some
+ * information about the failed assertion, see @ref assert and
+ * @ref DEBUG_ASSERT_VERBOSE.
+ * If @ref DEBUG_ASSERT_BREAKPOINT is defined, the execution will stop on a
+ * failed assertion instead of producing the output. If the architecture
+ * defines the macro @ref DEBUG_BREAKPOINT, a breakpoint is inserted and the
+ * execution is stopped directly in the debugger. Otherwise the execution stops
+ * in an endless while loop.
+ */
+#define DEBUG_ASSERT_BREAKPOINT
+#else
+/* we should not include custom headers in standard headers */
+#define _likely(x)      __builtin_expect((uintptr_t)(x), 1)
 #endif
 
 /**
@@ -104,12 +123,21 @@ __NORETURN void _assert_failure(const char *file, unsigned line);
  * or `gdb` (with the command `info line *(0x89abcdef)`) to identify the line
  * the assertion failed in.
  *
+ * If the `backtrace` module is enabled (and implemented for architecture in use)
+ * a backtrace will be printed in addition to the location of the failed assertion.
+ *
+ * If @ref DEBUG_ASSERT_BREAKPOINT is defined, the execution will stop on a
+ * failed assertion instead of producing the above output. If the architecture
+ * defines the macro @ref DEBUG_BREAKPOINT, a breakpoint is inserted and the
+ * execution is stopped directly in the debugger. Otherwise the execution stops
+ * in an endless while loop.
+ *
  * @see http://pubs.opengroup.org/onlinepubs/9699919799/functions/assert.html
  */
-#define assert(cond) ((cond) ? (void)0 :  _assert_failure(__FILE__, __LINE__))
+#define assert(cond) (_likely(cond) ? (void)0 :  _assert_failure(__FILE__, __LINE__))
 #else /* DEBUG_ASSERT_VERBOSE */
 __NORETURN void _assert_panic(void);
-#define assert(cond) ((cond) ? (void)0 : _assert_panic())
+#define assert(cond) (_likely(cond) ? (void)0 : _assert_panic())
 #endif /* DEBUG_ASSERT_VERBOSE */
 
 #if !defined __cplusplus

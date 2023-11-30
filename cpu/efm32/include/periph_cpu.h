@@ -23,6 +23,7 @@
 #include "kernel_defines.h"
 #include "mutex.h"
 
+#include "cpu.h"
 #include "cpu_conf.h"
 
 #if defined(_SILICON_LABS_32B_SERIES_2)
@@ -39,6 +40,8 @@
 #include "em_rtc.h"
 #if defined(_SILICON_LABS_32B_SERIES_0)
 #include "em_dac.h"
+#elif defined (_SILICON_LABS_32B_SERIES_1) || defined(_SILICON_LABS_32B_SERIES_2)
+#include "em_vdac.h"
 #endif
 
 #ifdef __cplusplus
@@ -78,6 +81,7 @@ typedef struct {
  */
 typedef struct {
     DAC_TypeDef *dev;       /**< DAC device used */
+    DAC_Ref_TypeDef ref;    /**< DAC voltage reference */
     CMU_Clock_TypeDef cmu;  /**< the device CMU channel */
 } dac_conf_t;
 
@@ -87,7 +91,24 @@ typedef struct {
 typedef struct {
     uint8_t dev;            /**< device index */
     uint8_t index;          /**< channel index */
-    DAC_Ref_TypeDef ref;    /**< channel voltage reference */
+} dac_chan_conf_t;
+
+#elif defined(VDAC_COUNT) && VDAC_COUNT > 0
+/**
+ * @brief   DAC device configuration (VDAC configuration of EFM32 Series 1)
+ */
+typedef struct {
+    VDAC_TypeDef *dev;      /**< DAC device used */
+    VDAC_Ref_TypeDef ref;   /**< DAC voltage reference */
+    CMU_Clock_TypeDef cmu;  /**< the device CMU channel */
+} dac_conf_t;
+
+/**
+ * @brief   DAC channel configuration (VDAC configuration of EFM32 Series 1)
+ */
+typedef struct {
+    uint8_t dev;            /**< device index */
+    uint8_t index;          /**< channel index */
 } dac_chan_conf_t;
 #endif
 
@@ -643,6 +664,11 @@ typedef struct {
 /**
  * @brief   CPU provides own pm_off() function
  */
+#define PROVIDES_PM_OFF
+
+/**
+ * @brief   CPU provides own pm_off() function
+ */
 #define PROVIDES_PM_LAYERED_OFF
 
 /**
@@ -674,6 +700,13 @@ typedef struct {
 #endif
 
 #define WDT_HAS_STOP            (1U)
+/** @} */
+
+/**
+ * @name    USB device definitions
+ * @{
+ */
+#define USBDEV_NUM_ENDPOINTS    7   /**< Number of USB OTG FS endpoints including EP0 */
 /** @} */
 
 /* GPIO_LL's overrides */

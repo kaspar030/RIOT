@@ -1,17 +1,11 @@
-ifneq (,$(filter shell_cmd_%,$(USEMODULE)))
-  # each and every command is a submodule of shell_cmds
-  USEMODULE += shell_cmds
-endif
-
-ifneq (,$(filter shell_commands,$(USEMODULE)))
-  # shell_commands has been renamed to shell_cmds_default, but let's keep this
-  # for backward compatibility
-  USEMODULE += shell_cmds_default
-endif
+USEMODULE += stdin
 
 ifneq (,$(filter shell_cmds_default,$(USEMODULE)))
   USEMODULE += shell_cmd_sys
 
+  ifneq (,$(filter netif,$(USEMODULE)))
+    USEMODULE += l2util
+  endif
   ifneq (,$(filter app_metadata,$(USEMODULE)))
     USEMODULE += shell_cmd_app_metadata
   endif
@@ -56,6 +50,12 @@ ifneq (,$(filter shell_cmds_default,$(USEMODULE)))
   endif
   ifneq (,$(filter gnrc_netif,$(USEMODULE)))
     USEMODULE += shell_cmd_gnrc_netif
+    ifneq (,$(filter lora,$(USEMODULE)))
+      USEMODULE += shell_cmd_gnrc_netif_lora
+    endif
+  endif
+  ifneq (,$(filter gnrc_txtsnd,$(USEMODULE)))
+    USEMODULE += shell_cmd_gnrc_txtsnd
   endif
   ifneq (,$(filter gnrc_netif_lorawan,$(USEMODULE)))
     USEMODULE += shell_cmd_gnrc_netif_lorawan
@@ -105,6 +105,9 @@ ifneq (,$(filter shell_cmds_default,$(USEMODULE)))
   ifneq (,$(filter nimble_statconn,$(USEMODULE)))
     USEMODULE += shell_cmd_nimble_statconn
   endif
+  ifneq (,$(filter opendsme,$(USEPKG)))
+    USEMODULE += shell_cmd_opendsme
+  endif
   ifneq (,$(filter openwsn,$(USEPKG)))
     USEMODULE += shell_cmd_openwsn
   endif
@@ -128,9 +131,6 @@ ifneq (,$(filter shell_cmds_default,$(USEMODULE)))
   endif
   ifneq (,$(filter sht1x,$(USEMODULE)))
     USEMODULE += shell_cmd_sht1x
-  endif
-  ifneq (,$(filter suit_transport_worker,$(USEMODULE)))
-    USEMODULE += shell_cmd_suit
   endif
   ifneq (,$(filter vfs,$(USEMODULE)))
     USEMODULE += shell_cmd_vfs
@@ -191,6 +191,7 @@ ifneq (,$(filter shell_cmd_gnrc_netif,$(USEMODULE)))
 endif
 ifneq (,$(filter shell_cmd_gnrc_netif_lorawan,$(USEMODULE)))
   USEMODULE += gnrc_netif_lorawan
+  USEMODULE += shell_cmd_gnrc_netif_lora
   USEMODULE += shell_cmd_gnrc_netif
 endif
 ifneq (,$(filter shell_cmd_gnrc_pktbuf,$(USEMODULE)))
@@ -213,6 +214,9 @@ endif
 ifneq (,$(filter shell_cmd_i2c_scan,$(USEMODULE)))
   FEATURES_REQUIRED += periph_i2c
 endif
+ifneq (,$(filter shell_cmd_iw,$(USEMODULE)))
+  USEMODULE += ztimer_sec
+endif
 ifneq (,$(filter shell_cmd_lwip_netif,$(USEMODULE)))
   USEMODULE += lwip_netif
 endif
@@ -225,6 +229,7 @@ endif
 ifneq (,$(filter shell_cmd_nanocoap_vfs,$(USEMODULE)))
   USEMODULE += nanocoap_vfs
   USEMODULE += vfs_util
+  USEMODULE += nanocoap_link_format
 endif
 ifneq (,$(filter shell_cmd_netstats_neighbor,$(USEMODULE)))
   USEMODULE += netstats_neighbor

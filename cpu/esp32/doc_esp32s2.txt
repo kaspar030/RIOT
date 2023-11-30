@@ -91,8 +91,8 @@ GPIO13 | In/Out | X   | X    | X       | -                | -
 GPIO14 | In/Out | X   | X    | X       | -                | -
 GPIO15 | In/Out | X   | X    | X       | XTAL_32K_P       | External 32k crystal
 GPIO16 | In/Out | X   | X    | X       | XTAL_32K_N       | External 32k crystal
-GPIO17 | In/Out | X   | X    | X       | -                | -
-GPIO18 | In/Out | X   | X    | X       | -                | -
+GPIO17 | In/Out | X   | X    | X       | DAC1             | -
+GPIO18 | In/Out | X   | X    | X       | DAC2             | -
 GPIO19 | In/Out | X   | X    | X       | USB D-           | USB 2.0 OTG / USB-JTAG bridge
 GPIO20 | In/Out | X   | X    | X       | USB D+           | USB 2.0 OTG / USB-JTAG bridge
 GPIO21 | In/Out | -   | X    | X       | -                | -
@@ -174,6 +174,10 @@ total:
   that is at GPIO11 ... GPIO20.
 - GPIO3 is a strapping pin und shouldn't be used as ADC channel
 
+## DAC Channels {#esp32_dac_channels_esp32s2}
+
+ESP32 SoC supports 2 DAC lines at GPIO17 and GPIO18.
+
 ## I2C Interfaces {#esp32_i2c_interfaces_esp32s2}
 
 ESP32-S2 has two built-in I2C interfaces.
@@ -219,22 +223,22 @@ though it **can vary** from board to board.
 
 Device                  | Signal | Pin    | Symbol      | Remarks
 :-----------------------|:------:|:-------|:-----------:|:---------------------------
-`SPI_HOST0`/`SPI_HOST1` | SPICS0 | GPIO29 | - | reserved for flash and PSRAM
-`SPI_HOST0`/`SPI_HOST1` | SPICS1 | GPIO26 | - | reserved for flash and PSRAM
-`SPI_HOST0`/`SPI_HOST1` | SPICLK | GPIO30 | - | reserved for flash and PSRAM
-`SPI_HOST0`/`SPI_HOST1` | SPID   | GPIO32 | - | reserved for flash and PSRAM
-`SPI_HOST0`/`SPI_HOST1` | SPIQ   | GPIO31 | - | reserved for flash and PSRAM
-`SPI_HOST0`/`SPI_HOST1` | SPIHD  | GPIO27 | - | reserved for flash and PSRAM (only in `qio` or `qout` mode)
-`SPI_HOST0`/`SPI_HOST1` | SPIWP  | GPIO28 | - | reserved for flash and PSRAM (only in `qio` or `qout` mode)
-`SPI_HOST0`/`SPI_HOST1` | SPIIO4 | GPIO33 | - | reserved for Flash and PSRAM (only in octal mode)
-`SPI_HOST0`/`SPI_HOST1` | SPIIO5 | GPIO34 | - | reserved for Flash and PSRAM (only in octal mode)
-`SPI_HOST0`/`SPI_HOST1` | SPIIO6 | GPIO35 | - | reserved for Flash and PSRAM (only in octal mode)
-`SPI_HOST0`/`SPI_HOST1` | SPIIO7 | GPIO36 | - | reserved for Flash and PSRAM (only in octal mode)
-`SPI_HOST0`/`SPI_HOST1` | SPIDQA | GPIO37 | - | reserved for Flash and PSRAM (only in octal mode)
-`SPI_HOST2` (`FSPI`)    | SCK    | GPIO12 |`#SPI0_SCK`  | can be used
-`SPI_HOST2` (`FSPI`)    | MOSI   | GPIO11 |`#SPI0_MOSI` | can be used
-`SPI_HOST2` (`FSPI`)    | MISO   | GPIO13 |`#SPI0_MISO` | can be used
-`SPI_HOST2` (`FSPI`)    | CS0    | GPIO10 |`#SPI0_CS0`  | can be used
+`SPI0_HOST`/`SPI1_HOST` | SPICS0 | GPIO29 | - | reserved for flash and PSRAM
+`SPI0_HOST`/`SPI1_HOST` | SPICS1 | GPIO26 | - | reserved for flash and PSRAM
+`SPI0_HOST`/`SPI1_HOST` | SPICLK | GPIO30 | - | reserved for flash and PSRAM
+`SPI0_HOST`/`SPI1_HOST` | SPID   | GPIO32 | - | reserved for flash and PSRAM
+`SPI0_HOST`/`SPI1_HOST` | SPIQ   | GPIO31 | - | reserved for flash and PSRAM
+`SPI0_HOST`/`SPI1_HOST` | SPIHD  | GPIO27 | - | reserved for flash and PSRAM (only in `qio` or `qout` mode)
+`SPI0_HOST`/`SPI1_HOST` | SPIWP  | GPIO28 | - | reserved for flash and PSRAM (only in `qio` or `qout` mode)
+`SPI0_HOST`/`SPI1_HOST` | SPIIO4 | GPIO33 | - | reserved for Flash and PSRAM (only in octal mode)
+`SPI0_HOST`/`SPI1_HOST` | SPIIO5 | GPIO34 | - | reserved for Flash and PSRAM (only in octal mode)
+`SPI0_HOST`/`SPI1_HOST` | SPIIO6 | GPIO35 | - | reserved for Flash and PSRAM (only in octal mode)
+`SPI0_HOST`/`SPI1_HOST` | SPIIO7 | GPIO36 | - | reserved for Flash and PSRAM (only in octal mode)
+`SPI0_HOST`/`SPI1_HOST` | SPIDQA | GPIO37 | - | reserved for Flash and PSRAM (only in octal mode)
+`SPI2_HOST` (`FSPI`)    | SCK    | GPIO12 |`#SPI0_SCK`  | can be used
+`SPI2_HOST` (`FSPI`)    | MOSI   | GPIO11 |`#SPI0_MOSI` | can be used
+`SPI2_HOST` (`FSPI`)    | MISO   | GPIO13 |`#SPI0_MISO` | can be used
+`SPI2_HOST` (`FSPI`)    | CS0    | GPIO10 |`#SPI0_CS0`  | can be used
 
 </center><br>
 

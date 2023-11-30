@@ -1,4 +1,0 @@
-apps:
-  - name: test_backtrace
-    depends:
-      - backtrace

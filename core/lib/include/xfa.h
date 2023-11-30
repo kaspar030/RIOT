@@ -26,6 +26,7 @@
 #define XFA_H
 
 #include <inttypes.h>
+#include "compiler_hints.h"
 
 /*
  * Unfortunately, current gcc trips over accessing XFA's because of their
@@ -42,16 +43,18 @@ _Pragma("GCC diagnostic ignored \"-Warray-bounds\"")
  *
  * @internal
  */
-#define _XFA(name, prio) __attribute__((used, section(".xfa." #name "." #prio)))
+#define _XFA(name, prio) \
+    NO_SANITIZE_ARRAY \
+    __attribute__((used, section(".xfa." #name "." #prio)))
 
 /**
  * @brief helper macro for other XFA_* macros
  *
  * @internal
  */
-#define _XFA_CONST(name, \
-                   prio) __attribute__((used, \
-                                        section(".roxfa." #name "." #prio)))
+#define _XFA_CONST(name, prio) \
+    NO_SANITIZE_ARRAY \
+    __attribute__((used, section(".roxfa." #name "." #prio)))
 
 /**
  * @brief Define a read-only cross-file array
@@ -70,8 +73,8 @@ _Pragma("GCC diagnostic ignored \"-Warray-bounds\"")
 #define XFA_INIT_CONST(type, name) \
     _Pragma("GCC diagnostic push") \
     _Pragma("GCC diagnostic ignored \"-Wpedantic\"") \
-    _XFA_CONST(name, 0_) const volatile type name [0] = {}; \
-    _XFA_CONST(name, 9_) const volatile type name ## _end [0] = {}; \
+    _XFA_CONST(name, 0_) type name [0] = {}; \
+    _XFA_CONST(name, 9_) type name ## _end [0] = {}; \
     _Pragma("GCC diagnostic pop") \
     extern const unsigned __xfa_dummy
 
@@ -109,8 +112,7 @@ _Pragma("GCC diagnostic ignored \"-Warray-bounds\"")
  * @param[in]   name    name of the cross-file array
  */
 #define XFA_USE_CONST(type, name) \
-    extern const type name []; \
-    extern const type name ## _end []
+    XFA_USE(type, name)
 
 /**
  * @brief Declare an external writable cross-file array
@@ -173,7 +175,7 @@ _Pragma("GCC diagnostic ignored \"-Warray-bounds\"")
  */
 #define XFA_ADD_PTR(xfa_name, prio, name, entry) \
     _XFA_CONST(xfa_name, 5_ ## prio) \
-    const __typeof__(entry) xfa_name ## _ ## prio ## _ ## name = entry
+    __typeof__(entry) xfa_name ## _ ## prio ## _ ## name = entry
 
 /**
  * @brief Calculate number of entries in cross-file array

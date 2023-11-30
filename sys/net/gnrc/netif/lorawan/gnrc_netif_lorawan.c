@@ -506,10 +506,6 @@ static int _set(gnrc_netif_t *netif, const gnrc_netapi_opt_t *opt)
         }
         netif->lorawan.datarate = *((uint8_t *)opt->data);
         break;
-    case NETOPT_LORAWAN_TX_PORT:
-        assert(opt->data_len == sizeof(uint8_t));
-        netif->lorawan.port = *((uint8_t *)opt->data);
-        break;
     case NETOPT_ACK_REQ:
         assert(opt->data_len == sizeof(netopt_enable_t));
         netif->lorawan.ack_req = *((netopt_enable_t *)opt->data);
@@ -559,7 +555,7 @@ static int _set(gnrc_netif_t *netif, const gnrc_netapi_opt_t *opt)
     case NETOPT_LORAWAN_SNWKSINTKEY:
     case NETOPT_LORAWAN_NWKSENCKEY:
         assert(opt->data_len == LORAMAC_FNWKSINTKEY_LEN);
-        _memcpy_reversed(netif->lorawan.fnwksintkey, opt->data,
+        memcpy(netif->lorawan.fnwksintkey, opt->data,
                          LORAMAC_FNWKSINTKEY_LEN);
         break;
 #endif

@@ -23,6 +23,7 @@
 #include "periph/gpio.h"
 #include "periph/adc.h"
 #include "periph_conf.h"
+#include "macros/utils.h"
 #include "mutex.h"
 
 #define ENABLE_DEBUG 0
@@ -47,16 +48,6 @@ static void _setup_calibration(Adc *dev);
 static int _adc_configure(Adc *dev, adc_res_t res);
 
 static mutex_t _lock = MUTEX_INIT;
-
-static inline void _prep(void)
-{
-    mutex_lock(&_lock);
-}
-
-static inline void _done(void)
-{
-    mutex_unlock(&_lock);
-}
 
 static inline void _wait_syncbusy(Adc *dev)
 {
@@ -181,11 +172,7 @@ static void _setup_calibration(Adc *dev)
 
 static int _adc_configure(Adc *dev, adc_res_t res)
 {
-    /* Individual comparison necessary because ADC Resolution Bits are not
-     * numerically in order and 16Bit (averaging - not currently supported)
-     * falls between 12bit and 10bit.  See datasheet for details */
-    if (!((res == ADC_RES_8BIT) || (res == ADC_RES_10BIT) ||
-          (res == ADC_RES_12BIT))){
+    if ((res == ADC_RES_6BIT) || (res == ADC_RES_14BIT)) {
         return -1;
     }
 
@@ -203,12 +190,10 @@ static int _adc_configure(Adc *dev, adc_res_t res)
     /* Set ADC resolution */
 #ifdef ADC_CTRLC_RESSEL
     /* Reset resolution bits in CTRLC */
-    dev->CTRLC.reg &= ~ADC_CTRLC_RESSEL_Msk;
-    dev->CTRLC.reg |= res;
+    dev->CTRLC.bit.RESSEL = res & 0x3;
 #else
     /* Reset resolution bits in CTRLB */
-    dev->CTRLB.reg &= ~ADC_CTRLB_RESSEL_Msk;
-    dev->CTRLB.reg |= res;
+    dev->CTRLB.bit.RESSEL = res & 0x3;
 #endif
 
     /* Set Voltage Reference */
@@ -243,6 +228,12 @@ static int _adc_configure(Adc *dev, adc_res_t res)
     }
 #endif
 
+    if ((res & 0x3) == 1) {
+        dev->AVGCTRL.reg = ADC_AVGCTRL_SAMPLENUM(res >> 2);
+    } else {
+        dev->AVGCTRL.reg = 0;
+    }
+
     /*  Enable ADC Module */
     dev->CTRLA.reg |= ADC_CTRLA_ENABLE;
     _wait_syncbusy(dev);
@@ -262,7 +253,7 @@ int adc_init(adc_t line)
     const uint8_t adc = 0;
 #endif
 
-    _prep();
+    mutex_lock(&_lock);
 
     uint8_t muxpos = (adc_channels[line].inputctrl & ADC_INPUTCTRL_MUXPOS_Msk)
                    >> ADC_INPUTCTRL_MUXPOS_Pos;
@@ -283,9 +274,144 @@ int adc_init(adc_t line)
         gpio_init_mux(sam0_adc_pins[adc][muxneg], GPIO_MUX_B);
     }
 
-    _done();
+     mutex_unlock(&_lock);
 
     return 0;
+}
+
+static Adc *_dev(adc_t line)
+{
+    /* The SAMD5x/SAME5x family has two ADCs: ADC0 and ADC1. */
+#ifdef ADC0
+    return adc_channels[line].dev;
+#else
+    (void)line;
+    return ADC;
+#endif
+}
+
+static Adc *_adc(uint8_t dev)
+{
+    /* The SAMD5x/SAME5x family has two ADCs: ADC0 and ADC1. */
+#ifdef ADC0
+    switch (dev) {
+    case 0:
+        return ADC0;
+    case 1:
+        return ADC1;
+    default:
+        return NULL;
+    }
+#else
+    (void)dev;
+    return ADC;
+#endif
+}
+
+static int32_t _sample(adc_t line)
+{
+    Adc *dev = _dev(line);
+    bool diffmode = adc_channels[line].inputctrl & ADC_INPUTCTRL_DIFFMODE;
+
+    dev->INPUTCTRL.reg = ADC_GAIN_FACTOR_DEFAULT
+                       | adc_channels[line].inputctrl
+                       | (diffmode ? 0 : ADC_NEG_INPUT);
+#ifdef ADC_CTRLB_DIFFMODE
+    dev->CTRLB.bit.DIFFMODE = diffmode;
+#endif
+    _wait_syncbusy(dev);
+
+    /* Start the conversion */
+    dev->SWTRIG.reg = ADC_SWTRIG_START;
+
+    /* Wait for the result */
+    while (!(dev->INTFLAG.reg & ADC_INTFLAG_RESRDY)) {}
+
+    uint16_t sample = dev->RESULT.reg;
+    int result;
+
+    /* in differential mode we lose one bit for the sign */
+    if (diffmode) {
+        result = 2 * (int16_t)sample;
+    } else {
+        result = sample;
+    }
+
+    return result;
+}
+
+static uint8_t _shift_from_res(adc_res_t res)
+{
+    /* 16 bit mode is implemented as oversampling */
+    if ((res & 0x3) == 1) {
+        /* ADC does automatic right shifts beyond 16 samples */
+        return 4 - MIN(4, res >> 2);
+    }
+    return 0;
+}
+
+static void _get_adcs(bool *adc0, bool *adc1)
+{
+#ifndef ADC1
+    *adc0 = true;
+    *adc1 = false;
+    return;
+#else
+    *adc0 = false;
+    *adc1 = false;
+    for (unsigned i = 0; i < ADC_NUMOF; ++i) {
+        if (adc_channels[i].dev == ADC0) {
+            *adc0 = true;
+        } else if (adc_channels[i].dev == ADC1) {
+            *adc1 = true;
+        }
+    }
+#endif
+}
+
+static uint8_t _shift;
+void adc_continuous_begin(adc_res_t res)
+{
+    bool adc0, adc1;
+    _get_adcs(&adc0, &adc1);
+
+    mutex_lock(&_lock);
+
+    if (adc0) {
+        _adc_configure(_adc(0), res);
+    }
+    if (adc1) {
+        _adc_configure(_adc(1), res);
+    }
+
+    _shift = _shift_from_res(res);
+}
+
+int32_t adc_continuous_sample(adc_t line)
+{
+    int val;
+    assert(line < ADC_NUMOF);
+
+    mutex_lock(&_lock);
+    val = _sample(line) << _shift;
+    mutex_unlock(&_lock);
+
+    return val;
+}
+
+void adc_continuous_stop(void)
+{
+    bool adc0, adc1;
+    _get_adcs(&adc0, &adc1);
+
+    if (adc0) {
+        _adc_poweroff(_adc(0));
+    }
+    if (adc1) {
+        _adc_poweroff(_adc(1));
+    }
+
+    mutex_unlock(&_lock);
 }
 
 int32_t adc_sample(adc_t line, adc_res_t res)
@@ -295,47 +421,20 @@ int32_t adc_sample(adc_t line, adc_res_t res)
         return -1;
     }
 
-    /* The SAMD5x/SAME5x family has two ADCs: ADC0 and ADC1. */
-#ifdef ADC0
-    Adc *dev = adc_channels[line].dev;
-#else
-    Adc *dev = ADC;
-#endif
+    mutex_lock(&_lock);
 
-    bool diffmode = adc_channels[line].inputctrl & ADC_INPUTCTRL_DIFFMODE;
-
-    _prep();
+    Adc *dev = _dev(line);
 
     if (_adc_configure(dev, res) != 0) {
-        _done();
         DEBUG("adc: configuration failed\n");
+        mutex_unlock(&_lock);
         return -1;
     }
 
-    dev->INPUTCTRL.reg = ADC_GAIN_FACTOR_DEFAULT
-                       | adc_channels[line].inputctrl
-                       | (diffmode ? 0 : ADC_NEG_INPUT);
-#ifdef ADC_CTRLB_DIFFMODE
-    dev->CTRLB.bit.DIFFMODE = diffmode;
-#endif
-
-    _wait_syncbusy(dev);
-
-    /* Start the conversion */
-    dev->SWTRIG.reg = ADC_SWTRIG_START;
-
-    /* Wait for the result */
-    while (!(dev->INTFLAG.reg & ADC_INTFLAG_RESRDY)) {}
-
-    int16_t result = dev->RESULT.reg;
+    int val = _sample(line) << _shift_from_res(res);
 
     _adc_poweroff(dev);
-    _done();
+    mutex_unlock(&_lock);
 
-    /* in differential mode we lose one bit for the sign */
-    if (diffmode) {
-        result *= 2;
-    }
-
-    return result;
+    return val;
 }

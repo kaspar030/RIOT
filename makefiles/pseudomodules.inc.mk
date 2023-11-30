@@ -33,6 +33,8 @@ PSEUDOMODULES += base64url
 ## be advertised in any other capacity, e.g. through @ref sys_auto_init_saul).
 PSEUDOMODULES += board_software_reset
 
+PSEUDOMODULES += arduino_pwm
+PSEUDOMODULES += arduino_serial_stdio
 PSEUDOMODULES += can_mbox
 PSEUDOMODULES += can_pm
 PSEUDOMODULES += can_raw
@@ -61,21 +63,14 @@ PSEUDOMODULES += dns_msg
 PSEUDOMODULES += ecc_%
 PSEUDOMODULES += ethos_stdio
 PSEUDOMODULES += event_%
-## @defgroup sys_event_thread_lowest event_thread_lowest
-## @ingroup sys_event
-## @{
-## @deprecated  Use module `event_thread` instead (see @ref event/thread.h);
-##              Will be removed after 2021.10 release.
-PSEUDOMODULES += event_thread_lowest
-## @}
 PSEUDOMODULES += event_timeout
 PSEUDOMODULES += event_timeout_ztimer
 PSEUDOMODULES += evtimer_mbox
-PSEUDOMODULES += evtimer_on_ztimer
 PSEUDOMODULES += fatfs_vfs_format
 PSEUDOMODULES += fmt_%
 PSEUDOMODULES += gcoap_forward_proxy
 PSEUDOMODULES += gcoap_fileserver
+PSEUDOMODULES += gcoap_fileserver_callback
 PSEUDOMODULES += gcoap_fileserver_delete
 PSEUDOMODULES += gcoap_fileserver_put
 PSEUDOMODULES += gcoap_dtls
@@ -235,6 +230,30 @@ PSEUDOMODULES += gnrc_sixlowpan_frag_sfr_stats
 ## @{
 ##
 PSEUDOMODULES += gnrc_sixlowpan_frag_sfr_congure
+## @defgroup net_gnrc_sixlowpan_frag_sfr_congure_abe gnrc_sixlowpan_frag_sfr_congure_abe: TCP Reno with ABE
+## @brief  Congestion control for SFR using the [TCP Reno congestion control algorithm with ABE](@ref sys_congure_abe)
+##
+## Provides an Alternative Backoff with Explicit Content Notification (ABE) to TCP-Reno-based congestion
+## control
+## @{
+PSEUDOMODULES += gnrc_sixlowpan_frag_sfr_congure_abe
+## @}
+## @defgroup net_gnrc_sixlowpan_frag_sfr_congure_reno gnrc_sixlowpan_frag_sfr_congure_reno: TCP Reno
+## @brief  Congestion control for SFR using the [TCP Reno congestion control algorithm](@ref sys_congure_reno)
+## @{
+PSEUDOMODULES += gnrc_sixlowpan_frag_sfr_congure_reno
+## @}
+## @defgroup net_gnrc_sixlowpan_frag_sfr_congure_quic gnrc_sixlowpan_frag_sfr_congure_quic: QUIC CC
+## @brief  Congestion control for SFR using the [congestion control algorithm of QUIC](@ref sys_congure_quic)
+## @{
+PSEUDOMODULES += gnrc_sixlowpan_frag_sfr_congure_quic
+## @}
+## @defgroup net_gnrc_sixlowpan_frag_sfr_congure_sfr gnrc_sixlowpan_frag_sfr_congure_sfr: Appendix C
+## @brief  Basic congestion control for 6LoWPAN SFR as proposed in Appendix C of RFC 8931
+## @see    [RFC 8931, Appendix C](https://tools.ietf.org/html/rfc8931#section-appendix.c)
+## @{
+PSEUDOMODULES += gnrc_sixlowpan_frag_sfr_congure_sfr
+## @}
 ## @}
 PSEUDOMODULES += gnrc_sixlowpan_iphc_nhc
 PSEUDOMODULES += gnrc_sixlowpan_nd_border_router
@@ -272,6 +291,11 @@ PSEUDOMODULES += l2filter_whitelist
 PSEUDOMODULES += libstdcpp
 PSEUDOMODULES += log
 PSEUDOMODULES += lora
+PSEUDOMODULES += lwext4_no_gpl
+PSEUDOMODULES += lwext2_vfs
+PSEUDOMODULES += lwext3_vfs
+PSEUDOMODULES += lwext4_vfs
+PSEUDOMODULES += lwext4_vfs_format
 ## @defgroup pseudomodule_libc_gettimeofday libc_gettimeofday
 ## @brief Includes implementation of gettimeofday()
 ##
@@ -296,6 +320,15 @@ PSEUDOMODULES += mpu_stack_guard
 ## Mark the RAM non executable.
 ## This is a protection mechanism which makes exploitation of buffer overflows significantly harder.
 PSEUDOMODULES += mpu_noexec_ram
+## @}
+
+## @defgroup pseudomodule_pmp_noexec_ram pmp_noexec_ram
+## @{
+## @brief Mark RAM as non-executable using the PMP
+##
+## Mark the RAM non executable.
+## This is a protection mechanism which makes exploitation of buffer overflows significantly harder.
+PSEUDOMODULES += pmp_noexec_ram
 ## @}
 
 ## @defgroup pseudomodule_md5sum md5sum
@@ -346,6 +379,7 @@ PSEUDOMODULES += newlib_nano
 PSEUDOMODULES += nice
 ## @}
 PSEUDOMODULES += nrf24l01p_ng_diagnostics
+PSEUDOMODULES += opendsme
 PSEUDOMODULES += openthread
 PSEUDOMODULES += picolibc
 PSEUDOMODULES += picolibc_stdout_buffered
@@ -354,6 +388,16 @@ PSEUDOMODULES += posix_headers
 PSEUDOMODULES += printf_float
 PSEUDOMODULES += prng
 PSEUDOMODULES += prng_%
+PSEUDOMODULES += psa_riot_cipher_aes_common
+PSEUDOMODULES += psa_riot_cipher_aes_128_ecb
+PSEUDOMODULES += psa_riot_cipher_aes_128_cbc
+PSEUDOMODULES += psa_riot_cipher_aes_192_cbc
+PSEUDOMODULES += psa_riot_cipher_aes_256_cbc
+PSEUDOMODULES += psa_riot_hashes_md5
+PSEUDOMODULES += psa_riot_hashes_sha_1
+PSEUDOMODULES += psa_riot_hashes_sha_224
+PSEUDOMODULES += psa_riot_hashes_sha_256
+PSEUDOMODULES += psa_riot_hashes_hmac_sha256
 PSEUDOMODULES += fortuna_reseed
 ## @defgroup pseudomodule_random_cmd random_cmd
 ## @ingroup sys_shell_commands
@@ -383,6 +427,21 @@ PSEUDOMODULES += semtech_loramac_rx
 PSEUDOMODULES += senml_cbor
 PSEUDOMODULES += senml_phydat
 PSEUDOMODULES += senml_saul
+## @defgroup drivers_servo_pwm PWM based servo driver
+## @ingroup drivers_servo
+## @{
+PSEUDOMODULES += servo_pwm
+## @}
+## @defgroup drivers_servo_timer periph_timer_periodic based servo driver
+## @ingroup drivers_servo
+## @{
+PSEUDOMODULES += servo_timer
+## @}
+## @defgroup drivers_servo_saul SAUL integration of the servo driver
+## @ingroup drivers_servo
+## @{
+PSEUDOMODULES += servo_saul
+## @}
 ## @defgroup pseudomodule_sha1sum sha1sum
 ## @ingroup sys_shell_commands
 ## @{
@@ -403,23 +462,28 @@ PSEUDOMODULES += shell_cmd_benchmark_udp
 PSEUDOMODULES += shell_cmd_ccn-lite-utils
 PSEUDOMODULES += shell_cmd_conn_can
 PSEUDOMODULES += shell_cmd_cord_ep
+PSEUDOMODULES += shell_cmd_coreclk
 PSEUDOMODULES += shell_cmd_cryptoauthlib
 PSEUDOMODULES += shell_cmd_dfplayer
 PSEUDOMODULES += shell_cmd_fib
+PSEUDOMODULES += shell_cmd_genfile
 PSEUDOMODULES += shell_cmd_gnrc_icmpv6_echo
 PSEUDOMODULES += shell_cmd_gnrc_ipv6_blacklist
 PSEUDOMODULES += shell_cmd_gnrc_ipv6_frag_stats
 PSEUDOMODULES += shell_cmd_gnrc_ipv6_nib
 PSEUDOMODULES += shell_cmd_gnrc_ipv6_whitelist
 PSEUDOMODULES += shell_cmd_gnrc_netif
+PSEUDOMODULES += shell_cmd_gnrc_netif_lora
 PSEUDOMODULES += shell_cmd_gnrc_netif_lorawan
 PSEUDOMODULES += shell_cmd_gnrc_pktbuf
 PSEUDOMODULES += shell_cmd_gnrc_rpl
 PSEUDOMODULES += shell_cmd_gnrc_sixlowpan_ctx
 PSEUDOMODULES += shell_cmd_gnrc_sixlowpan_frag_stats
+PSEUDOMODULES += shell_cmd_gnrc_txtsnd
 PSEUDOMODULES += shell_cmd_gnrc_udp
 PSEUDOMODULES += shell_cmd_heap
 PSEUDOMODULES += shell_cmd_i2c_scan
+PSEUDOMODULES += shell_cmd_iw
 PSEUDOMODULES += shell_cmd_lwip_netif
 PSEUDOMODULES += shell_cmd_mci
 PSEUDOMODULES += shell_cmd_md5sum
@@ -428,6 +492,7 @@ PSEUDOMODULES += shell_cmd_netstats_neighbor
 PSEUDOMODULES += shell_cmd_nice
 PSEUDOMODULES += shell_cmd_nimble_netif
 PSEUDOMODULES += shell_cmd_nimble_statconn
+PSEUDOMODULES += shell_cmd_opendsme
 PSEUDOMODULES += shell_cmd_openwsn
 PSEUDOMODULES += shell_cmd_pm
 PSEUDOMODULES += shell_cmd_ps
@@ -452,6 +517,7 @@ PSEUDOMODULES += shell_commands
 ## @}
 PSEUDOMODULES += shell_hooks
 PSEUDOMODULES += shell_lock_auto_locking
+PSEUDOMODULES += shield_w5100
 PSEUDOMODULES += slipdev_stdio
 PSEUDOMODULES += slipdev_l2addr
 PSEUDOMODULES += sock
@@ -459,6 +525,7 @@ PSEUDOMODULES += sock_async
 PSEUDOMODULES += sock_aux_local
 PSEUDOMODULES += sock_aux_rssi
 PSEUDOMODULES += sock_aux_timestamp
+PSEUDOMODULES += sock_aux_ttl
 PSEUDOMODULES += sock_dtls
 PSEUDOMODULES += sock_ip
 PSEUDOMODULES += sock_tcp
@@ -489,6 +556,7 @@ PSEUDOMODULES += suit_storage_%
 PSEUDOMODULES += sys_bus_%
 PSEUDOMODULES += tiny_strerror_as_strerror
 PSEUDOMODULES += tiny_strerror_minimal
+PSEUDOMODULES += usbus_urb
 PSEUDOMODULES += vdd_lc_filter_%
 ## @defgroup pseudomodule_vfs_auto_format vfs_auto_format
 ## @brief Format mount points at startup unless they can be mounted
@@ -524,6 +592,7 @@ PSEUDOMODULES += vfs_auto_mount
 PSEUDOMODULES += vfs_default
 
 PSEUDOMODULES += wakaama_objects_%
+PSEUDOMODULES += wifi_scan_list
 PSEUDOMODULES += wifi_enterprise
 PSEUDOMODULES += xtimer_on_ztimer
 PSEUDOMODULES += xtimer_no_ztimer_default
@@ -543,7 +612,7 @@ PSEUDOMODULES += ztimer64_%
 ## a configurable @ref CONFIG_ZTIMER_AUTO_ADJUST_SETTLE value can be set for this.
 ##
 ## Alternatively CONFIG_ZTIMER_USEC_ADJUST_% values can be set in the BOARDs
-## configuration header board.h. These can be found out by running tests/ztimer_overhead
+## configuration header board.h. These can be found out by running tests/sys/ztimer_overhead
 PSEUDOMODULES += ztimer_auto_adjust
 
 # core_lib is not a submodule
@@ -566,6 +635,9 @@ PSEUDOMODULES += stm32_periph_%
 PSEUDOMODULES += periph_%
 NO_PSEUDOMODULES += periph_common
 
+# Modules to automatically start PIO programs
+PSEUDOMODULES += pio_autostart_%
+
 # Submodules provided by Skald
 PSEUDOMODULES += skald_ibeacon
 PSEUDOMODULES += skald_eddystone
@@ -580,6 +652,7 @@ PSEUDOMODULES += crypto_aes_unroll
 
 # declare shell version of test_utils_interactive_sync
 PSEUDOMODULES += test_utils_interactive_sync_shell
+PSEUDOMODULES += test_utils_main_exit_cb
 
 # All auto_init modules are pseudomodules
 PSEUDOMODULES += auto_init_%
@@ -589,6 +662,8 @@ NO_PSEUDOMODULES += auto_init_multimedia
 NO_PSEUDOMODULES += auto_init_security
 NO_PSEUDOMODULES += auto_init_usbus
 NO_PSEUDOMODULES += auto_init_screen
+NO_PSEUDOMODULES += auto_init_wdt_event
+NO_PSEUDOMODULES += auto_init_wdt_thread
 
 # Packages and drivers may also add modules to PSEUDOMODULES in their `Makefile.include`.
 

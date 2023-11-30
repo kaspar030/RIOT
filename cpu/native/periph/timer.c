@@ -18,7 +18,7 @@
  * Uses POSIX realtime clock and POSIX itimer to mimic hardware.
  *
  * This is based on native's hwtimer implementation by Ludwig Knüpfer.
- * I removed the multiplexing, as xtimer does the same. (kaspar)
+ * I removed the multiplexing, as ztimer does the same. (kaspar)
  *
  * @author      Ludwig Knüpfer <ludwig.knuepfer@fu-berlin.de>
  * @author      Kaspar Schleiser <kaspar@schleiser.de>
@@ -26,18 +26,19 @@
  * @}
  */
 
-#include <time.h>
-#include <sys/time.h>
+#include <err.h>
 #include <signal.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <err.h>
+#include <sys/time.h>
+#include <time.h>
 
 #include "cpu.h"
 #include "cpu_conf.h"
 #include "native_internal.h"
 #include "periph/timer.h"
+#include "time_units.h"
 
 #define ENABLE_DEBUG 0
 #include "debug.h"
@@ -49,7 +50,9 @@ static unsigned long time_null;
 static timer_cb_t _callback;
 static void *_cb_arg;
 
-static struct itimerval itv;
+static struct itimerspec its;
+
+static timer_t itimer_monotonic;
 
 /**
  * returns ticks for give timespec
@@ -89,8 +92,15 @@ int timer_init(tim_t dev, uint32_t freq, timer_cb_t cb, void *arg)
 
     _callback = cb;
     _cb_arg = arg;
+
+    if (timer_create(CLOCK_MONOTONIC, NULL, &itimer_monotonic) != 0) {
+        DEBUG_PUTS("Failed to create a monotonic itimer");
+        return -1;
+    }
+
     if (register_interrupt(SIGALRM, native_isr_timer) != 0) {
-        DEBUG("darn!\n\n");
+        DEBUG_PUTS("Failed to register SIGALRM handler");
+        return -1;
     }
 
     return 0;
@@ -104,14 +114,14 @@ static void do_timer_set(unsigned int offset, bool periodic)
         offset = NATIVE_TIMER_MIN_RES;
     }
 
-    memset(&itv, 0, sizeof(itv));
-    itv.it_value.tv_sec = (offset / 1000000);
-    itv.it_value.tv_usec = offset % 1000000;
+    memset(&its, 0, sizeof(its));
+    its.it_value.tv_sec = offset / NATIVE_TIMER_SPEED;
+    its.it_value.tv_nsec = (offset % NATIVE_TIMER_SPEED) * (NS_PER_SEC / NATIVE_TIMER_SPEED);
     if (periodic) {
-        itv.it_interval = itv.it_value;
+        its.it_interval = its.it_value;
     }
 
-    DEBUG("timer_set(): setting %lu.%06lu\n", itv.it_value.tv_sec, itv.it_value.tv_usec);
+    DEBUG("timer_set(): setting %lu.%09lu\n", (unsigned long)its.it_value.tv_sec, its.it_value.tv_nsec);
 }
 
 int timer_set(tim_t dev, int channel, unsigned int offset)
@@ -171,8 +181,8 @@ void timer_start(tim_t dev)
     DEBUG("%s\n", __func__);
 
     _native_syscall_enter();
-    if (real_setitimer(ITIMER_REAL, &itv, NULL) == -1) {
-        err(EXIT_FAILURE, "timer_arm: setitimer");
+    if (timer_settime(itimer_monotonic, 0, &its, NULL) == -1) {
+        err(EXIT_FAILURE, "timer_start: timer_settime");
     }
     _native_syscall_leave();
 }
@@ -183,13 +193,13 @@ void timer_stop(tim_t dev)
     DEBUG("%s\n", __func__);
 
     _native_syscall_enter();
-    struct itimerval zero = {0};
-    if (real_setitimer(ITIMER_REAL, &zero, &itv) == -1) {
-        err(EXIT_FAILURE, "timer_arm: setitimer");
+    struct itimerspec zero = {0};
+    if (timer_settime(itimer_monotonic, 0, &zero, &its) == -1) {
+        err(EXIT_FAILURE, "timer_stop: timer_settime");
     }
     _native_syscall_leave();
 
-    DEBUG("time left: %lu.%06lu\n", itv.it_value.tv_sec, itv.it_value.tv_usec);
+    DEBUG("time left: %lu.%09lu\n", (unsigned long)its.it_value.tv_sec, its.it_value.tv_nsec);
 }
 
 unsigned int timer_read(tim_t dev)
@@ -203,21 +213,11 @@ unsigned int timer_read(tim_t dev)
     DEBUG("timer_read()\n");
 
     _native_syscall_enter();
-#ifdef __MACH__
-    clock_serv_t cclock;
-    mach_timespec_t mts;
-    host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &cclock);
-    clock_get_time(cclock, &mts);
-    mach_port_deallocate(mach_task_self(), cclock);
-    t.tv_sec = mts.tv_sec;
-    t.tv_nsec = mts.tv_nsec;
-#else
 
-    if (real_clock_gettime(CLOCK_MONOTONIC, &t) == -1) {
+    if (clock_gettime(CLOCK_MONOTONIC, &t) == -1) {
         err(EXIT_FAILURE, "timer_read: clock_gettime");
     }
 
-#endif
     _native_syscall_leave();
 
     return ts2ticks(&t) - time_null;

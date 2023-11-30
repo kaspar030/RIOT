@@ -1,0 +1,4 @@
+apps:
+  - name: test_native_backtrace
+    depends:
+      - backtrace

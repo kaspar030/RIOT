@@ -41,6 +41,12 @@ extern "C" {
  */
 #define AUTO_INIT_PRIO_MOD_XTIMER                       1030
 #endif
+#ifndef AUTO_INIT_PRIO_WDT_THREAD
+/**
+ * @brief   WDT priority
+ */
+#define AUTO_INIT_PRIO_WDT_THREAD                       1035
+#endif
 #ifndef AUTO_INIT_PRIO_MOD_RANDOM
 /**
  * @brief   RNG priority
@@ -70,6 +76,12 @@ extern "C" {
  * @brief   event thread priority
  */
 #define AUTO_INIT_PRIO_MOD_EVENT_THREAD                 1080
+#endif
+#ifndef AUTO_INIT_PRIO_WDT_EVENT
+/**
+ * @brief   WDT event priority
+ */
+#define AUTO_INIT_PRIO_WDT_EVENT                        1085
 #endif
 #ifndef AUTO_INIT_PRIO_MOD_SYS_BUS
 /**
@@ -160,6 +172,12 @@ extern "C" {
  * @brief   UWB priority
  */
 #define AUTO_INIT_PRIO_MOD_UWB_CORE                     1230
+#endif
+#ifndef AUTO_INIT_PRIO_MOD_GCOAP
+/**
+ * @brief   nanoCoAP server priority
+ */
+#define AUTO_INIT_PRIO_MOD_NANOCOAP                     1235
 #endif
 #ifndef AUTO_INIT_PRIO_MOD_GCOAP
 /**
@@ -299,11 +317,11 @@ extern "C" {
  */
 #define AUTO_INIT_PRIO_MOD_MBEDTLS                      1440
 #endif
-#ifndef AUTO_INIT_PRIO_MOD_CRYPTOAUTHLIB
+#ifndef AUTO_INIT_PRIO_MOD_SECURITY
 /**
  * @brief   CryptoAuthLib priority
  */
-#define AUTO_INIT_PRIO_MOD_CRYPTOAUTHLIB                1450
+#define AUTO_INIT_PRIO_MOD_SECURITY                1450
 #endif
 #ifndef AUTO_INIT_PRIO_MOD_TEST_UTILS_INTERACTIVE_SYNC
 /**
@@ -364,6 +382,18 @@ extern "C" {
  * @brief   DNS socket priority
  */
 #define AUTO_INIT_PRIO_MOD_DOCK_DNS                     1550
+#endif
+#ifndef AUTO_INIT_PRIO_MOD_GNRC_IPV6_STATIC_ADDR
+/**
+ * @brief   Static network configuration priority
+ */
+#define AUTO_INIT_PRIO_MOD_GNRC_IPV6_STATIC_ADDR        1560
+#endif
+#ifndef AUTO_INIT_PRIO_MOD_DRIVER_CRYPTOCELL_310
+/**
+ * @brief CryptoCell Driver Priority
+ */
+#define AUTO_INIT_PRIO_MOD_DRIVER_CRYPTOCELL_310            1570
 #endif
 
 #ifdef __cplusplus

@@ -66,6 +66,8 @@ extern "C" {
 #define BIT7  0x00000080 /**< Bit 7 set define */
 #define BIT8  0x00000100 /**< Bit 8 set define */
 #define BIT9  0x00000200 /**< Bit 9 set define */
+#endif
+#ifndef BIT10
 #define BIT10 0x00000400 /**< Bit 10 set define */
 #define BIT11 0x00000800 /**< Bit 11 set define */
 #define BIT12 0x00001000 /**< Bit 12 set define */
@@ -160,6 +162,30 @@ static inline unsigned bitarithm_msb(unsigned v)
         ++r;
     }
     return r;
+#endif
+}
+
+/**
+ * @brief   Returns the number of leading 0-bits in @p x, starting at the most
+ *          significant bit position.
+ *          If x is 0, the result is undefined.
+ *
+ * @param[in]   x   Input value
+ * @return          Number of leading zero bits
+ */
+static inline uint8_t bitarithm_clzb(uint8_t x)
+{
+#if defined(BITARITHM_HAS_CLZ)
+    /* clz operates on `unsigned int`, so `x` will be promoted to the size
+       of an `unsigned int` */
+    return __builtin_clz(x) - 8 * (sizeof(unsigned) - 1);
+#else
+    uint8_t l = 0;
+    while (!(x & 0x80)) {
+        ++l;
+        x <<= 1;
+    }
+    return l;
 #endif
 }
 

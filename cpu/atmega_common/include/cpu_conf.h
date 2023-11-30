@@ -31,7 +31,9 @@
 extern "C" {
 #endif
 
+#ifndef THREAD_EXTRA_STACKSIZE_PRINTF
 #define THREAD_EXTRA_STACKSIZE_PRINTF    (128)
+#endif
 
 /**
  * @name           Kernel configuration
@@ -76,6 +78,10 @@ extern "C" {
  * @brief   This arch uses the inlined IRQ API.
  */
 #define IRQ_API_INLINED     (1)
+
+#ifndef DOXYGEN
+#define HAS_FLASH_UTILS_ARCH    1
+#endif
 
 #ifdef __cplusplus
 }

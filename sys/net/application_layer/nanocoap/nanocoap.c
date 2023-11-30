@@ -13,7 +13,7 @@
  * @{
  *
  * @file
- * @brief       Nanocoap implementation
+ * @brief       nanoCoAP implementation
  *
  * @author      Kaspar Schleiser <kaspar@schleiser.de>
  * @author      Hauke Petersen <hauke.petersen@fu-berlin.de>
@@ -40,6 +40,24 @@
 #define COAP_RESP               (2)
 #define COAP_RST                (3)
 /** @} */
+
+#ifdef MODULE_NANOCOAP_RESOURCES
+/**
+ * @brief   CoAP resources XFA
+ */
+XFA_INIT_CONST(coap_resource_t, coap_resources_xfa);
+
+/**
+ * @brief   Add well-known .core handler
+ */
+#if CONFIG_NANOCOAP_SERVER_WELL_KNOWN_CORE
+NANOCOAP_RESOURCE(well_known_core) COAP_WELL_KNOWN_CORE_DEFAULT_HANDLER;
+#endif
+
+/* re-define coap_resources for compatibility with non-XFA version */
+#define coap_resources ((const coap_resource_t *)coap_resources_xfa)
+#define coap_resources_numof XFA_LEN(coap_resource_t, coap_resources_xfa)
+#endif
 
 static int _decode_value(unsigned val, uint8_t **pkt_pos_ptr, uint8_t *pkt_end);
 static uint32_t _decode_uint(uint8_t *pkt_pos, unsigned nbytes);
@@ -80,7 +98,13 @@ int coap_parse(coap_pkt_t *pkt, uint8_t *buf, size_t len)
         return -EBADMSG;
     }
 
-    if (coap_get_token_len(pkt) > COAP_TOKEN_LENGTH_MAX) {
+    if (IS_USED(MODULE_NANOCOAP_TOKEN_EXT)) {
+        if ((pkt->hdr->ver_t_tkl & 0xf) == 15) {
+            DEBUG("nanocoap: token length is reserved value 15,"
+                  "invalid for extended token length field.\n");
+            return -EBADMSG;
+        }
+    } else if (coap_get_token_len(pkt) > COAP_TOKEN_LENGTH_MAX) {
         DEBUG("nanocoap: token length invalid\n");
         return -EBADMSG;
     }
@@ -263,19 +287,27 @@ int coap_opt_get_uint(coap_pkt_t *pkt, uint16_t opt_num, uint32_t *target)
     return -ENOENT;
 }
 
-uint8_t *coap_iterate_option(coap_pkt_t *pkt, uint8_t **optpos,
-                             int *opt_len, int first)
+uint8_t *coap_iterate_option(coap_pkt_t *pkt, unsigned optnum,
+                             uint8_t **opt_pos, int *opt_len)
 {
     uint8_t *data_start;
 
+    bool first = false;
+    if (*opt_pos == NULL) {
+        *opt_pos = coap_find_option(pkt, optnum);
+        first = true;
+        if (*opt_pos == NULL) {
+            return NULL;
+        }
+    }
+
     uint16_t delta = 0;
-    data_start = _parse_option(pkt, *optpos, &delta, opt_len);
+    data_start = _parse_option(pkt, *opt_pos, &delta, opt_len);
     if (data_start && (first || !delta)) {
-        *optpos = data_start + *opt_len;
+        *opt_pos = data_start + *opt_len;
         return data_start;
     }
     else {
-        *optpos = NULL;
         return NULL;
     }
 }
@@ -341,31 +373,35 @@ ssize_t coap_opt_get_string(coap_pkt_t *pkt, uint16_t optnum,
 {
     assert(pkt && target && (max_len > 1));
 
-    uint8_t *opt_pos = coap_find_option(pkt, optnum);
-    if (!opt_pos) {
+    uint8_t *opt_pos = NULL;
+    int opt_len;
+    unsigned left = max_len;
+
+    while (1) {
+        uint8_t *part_start = coap_iterate_option(pkt, optnum, &opt_pos, &opt_len);
+
+        if (part_start == NULL) {
+            /* if option was not found still return separator */
+            if (opt_pos == NULL) {
+                *target++ = (uint8_t)separator;
+                --left;
+            }
+            break;
+        }
+
+        /* separator and terminating \0 have to fit */
+        if (left < (unsigned)(opt_len + 2)) {
+            return -ENOSPC;
+        }
+
         *target++ = (uint8_t)separator;
-        *target = '\0';
-        return 2;
+        memcpy(target, part_start, opt_len);
+        target += opt_len;
+        left -= opt_len + 1;
     }
 
-    unsigned left = max_len - 1;
-    uint8_t *part_start = NULL;
-    do {
-        int opt_len;
-        part_start = coap_iterate_option(pkt, &opt_pos, &opt_len,
-                                         (part_start == NULL));
-        if (part_start) {
-            if (left < (unsigned)(opt_len + 1)) {
-                return -ENOSPC;
-            }
-            *target++ = (uint8_t)separator;
-            memcpy(target, part_start, opt_len);
-            target += opt_len;
-            left -= (opt_len + 1);
-        }
-    } while (opt_pos);
-
     *target = '\0';
+    left--;
 
     return (int)(max_len - left);
 }
@@ -552,21 +588,43 @@ ssize_t coap_build_reply(coap_pkt_t *pkt, unsigned code,
     return len;
 }
 
-ssize_t coap_build_hdr(coap_hdr_t *hdr, unsigned type, uint8_t *token, size_t token_len, unsigned code, uint16_t id)
+ssize_t coap_build_hdr(coap_hdr_t *hdr, unsigned type, uint8_t *token,
+                       size_t token_len, unsigned code, uint16_t id)
 {
     assert(!(type & ~0x3));
-    assert(!(token_len & ~0x1f));
+
+    uint16_t tkl_ext;
+    uint8_t tkl_ext_len, tkl;
+
+    if (token_len > 268 && IS_USED(MODULE_NANOCOAP_TOKEN_EXT)) {
+        tkl_ext_len = 2;
+        tkl_ext = htons(token_len - 269); /* 269 = 255 + 14 */
+        tkl = 14;
+    }
+    else if (token_len > 12 && IS_USED(MODULE_NANOCOAP_TOKEN_EXT)) {
+        tkl_ext_len = 1;
+        tkl_ext = token_len - 13;
+        tkl = 13;
+    }
+    else {
+        tkl = token_len;
+        tkl_ext_len = 0;
+    }
 
     memset(hdr, 0, sizeof(coap_hdr_t));
-    hdr->ver_t_tkl = (COAP_V1 << 6) | (type << 4) | token_len;
+    hdr->ver_t_tkl = (COAP_V1 << 6) | (type << 4) | tkl;
     hdr->code = code;
     hdr->id = htons(id);
+
+    if (tkl_ext_len) {
+        memcpy(hdr + 1, &tkl_ext, tkl_ext_len);
+    }
 
     if (token_len) {
         memcpy(coap_hdr_data_ptr(hdr), token, token_len);
     }
 
-    return sizeof(coap_hdr_t) + token_len;
+    return sizeof(coap_hdr_t) + token_len + tkl_ext_len;
 }
 
 void coap_pkt_init(coap_pkt_t *pkt, uint8_t *buf, size_t len, size_t header_len)
@@ -658,7 +716,7 @@ static size_t _encode_uint(uint32_t *val)
 
     /* count number of used bytes */
     uint32_t tmp = *val;
-    while(tmp) {
+    while (tmp) {
         size++;
         tmp >>= 8;
     }
@@ -844,8 +902,15 @@ size_t coap_opt_put_string_with_len(uint8_t *buf, uint16_t lastonum, uint16_t op
 
 size_t coap_opt_put_uri_pathquery(uint8_t *buf, uint16_t *lastonum, const char *uri)
 {
+    size_t len;
     const char *query = strchr(uri, '?');
-    size_t len = query ? (size_t)(query - uri - 1) : strlen(uri);
+
+    if (query) {
+        len = (query == uri) ? 0 : (query - uri - 1);
+    } else {
+        len = strlen(uri);
+    }
+
     size_t bytes_out = coap_opt_put_string_with_len(buf, *lastonum,
                                                     COAP_OPT_URI_PATH,
                                                     uri, len, '/');

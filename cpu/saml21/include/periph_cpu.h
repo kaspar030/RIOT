@@ -74,18 +74,6 @@ enum {
 };
 /** @} */
 
-#ifndef DOXYGEN
-#define HAVE_ADC_RES_T
-typedef enum {
-    ADC_RES_6BIT  = 0xff,                       /**< not supported */
-    ADC_RES_8BIT  = ADC_CTRLC_RESSEL_8BIT,      /**< ADC resolution: 8 bit */
-    ADC_RES_10BIT = ADC_CTRLC_RESSEL_10BIT,     /**< ADC resolution: 10 bit */
-    ADC_RES_12BIT = ADC_CTRLC_RESSEL_12BIT,     /**< ADC resolution: 12 bit */
-    ADC_RES_14BIT = 0xfe,                       /**< not supported */
-    ADC_RES_16BIT = 0xfd                        /**< not supported */
-} adc_res_t;
-#endif /* ndef DOXYGEN */
-
 /**
  * @brief   Pins that can be used for ADC input
  */
@@ -152,7 +140,7 @@ static const gpio_t sam0_adc_pins[1][20] = {
 #define RTT_CLOCK_FREQUENCY (32768U)                      /* in Hz */
 #define RTT_MIN_FREQUENCY   (RTT_CLOCK_FREQUENCY / 512U)  /* in Hz */
 #define RTT_MAX_FREQUENCY   (RTT_CLOCK_FREQUENCY)         /* in Hz */
-/* determined by tests/ztimer_underflow */
+/* determined by tests/sys/ztimer_underflow */
 #define RTT_MIN_OFFSET      (8U)
 /** @} */
 

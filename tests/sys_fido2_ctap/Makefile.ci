@@ -1,6 +1,0 @@
-BOARD_INSUFFICIENT_MEMORY := \
-    blackpill \
-    blackpill-128kib \
-    bluepill \
-    bluepill-128kib \
-    #

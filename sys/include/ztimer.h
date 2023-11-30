@@ -430,7 +430,7 @@ bool ztimer_acquire(ztimer_clock_t *clock);
 #else
 static inline bool ztimer_acquire(ztimer_clock_t *clock)
 {
-    (void) clock;
+    (void)clock;
     return false;
 }
 #endif
@@ -450,7 +450,7 @@ bool ztimer_release(ztimer_clock_t *clock);
 #else
 static inline bool ztimer_release(ztimer_clock_t *clock)
 {
-    (void) clock;
+    (void)clock;
     return false;
 }
 #endif
@@ -487,7 +487,7 @@ unsigned ztimer_is_set(const ztimer_clock_t *clock, const ztimer_t *timer);
 /**
  * @brief   Remove a timer from a clock
  *
- * This will place @p timer in the timer targets queue for @p clock.
+ * This will remove @p timer from the timer targets queue for @p clock.
  *
  * This function does nothing if @p timer is not found in the timer queue of
  * @p clock.
@@ -775,6 +775,19 @@ void ztimer_set_wakeup(ztimer_clock_t *clock, ztimer_t *timer, uint32_t offset,
  */
 void ztimer_set_timeout_flag(ztimer_clock_t *clock, ztimer_t *timer,
                              uint32_t timeout);
+
+/**
+ * @brief    Unlock mutex after @p timeout
+ *
+ * This function will unlock the given mutex after the timeout has passed.
+ *
+ * @param[in]   clock           ztimer clock to operate on
+ * @param[in]   timer           timer struct to use
+ * @param[in]   timeout         timeout in ztimer_clock's ticks
+ * @param[in]   mutex           mutex to unlock after timeout
+ */
+void ztimer_mutex_unlock(ztimer_clock_t *clock, ztimer_t *timer,
+                         uint32_t timeout, mutex_t *mutex);
 
 /**
  * @brief   Try to lock the given mutex, but give up after @p timeout

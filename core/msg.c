@@ -216,7 +216,7 @@ static int _msg_send_oneway(msg_t *m, kernel_pid_t target_pid)
 
         sched_set_status(target, STATUS_PENDING);
 
-        /* Interrupts are disabled here, we can set / re-use
+        /* Interrupts are disabled here, we can set / reuse
            sched_context_switch_request. */
         sched_context_switch_request = 1;
 
@@ -280,7 +280,7 @@ int msg_send_receive(msg_t *m, msg_t *reply, kernel_pid_t target_pid)
     sched_set_status(me, STATUS_REPLY_BLOCKED);
     me->wait_data = reply;
 
-    /* we re-use (abuse) reply for sending, because wait_data might be
+    /* we reuse (abuse) reply for sending, because wait_data might be
      * overwritten if the target is not in RECEIVE_BLOCKED */
     *reply = *m;
     /* msg_send blocks until reply received */
@@ -321,6 +321,9 @@ int msg_reply(msg_t *m, msg_t *reply)
 int msg_reply_int(msg_t *m, msg_t *reply)
 {
     thread_t *target = thread_get_unchecked(m->sender_pid);
+
+    /* msg_reply_int() can only be used to reply to existing threads */
+    assert(target != NULL);
 
     if (target->status != STATUS_REPLY_BLOCKED) {
         DEBUG("msg_reply_int(): %" PRIkernel_pid ": Target \"%" PRIkernel_pid
@@ -466,6 +469,9 @@ unsigned msg_queue_capacity(kernel_pid_t pid)
           pid);
 
     thread_t *thread = thread_get(pid);
+
+    assert(thread != NULL);
+
     int queue_cap = 0;
 
     if (thread_has_msg_queue(thread)) {

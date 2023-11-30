@@ -6,7 +6,7 @@
         check-toolchain-supported \
         info-programmers-supported \
         info-rust \
-        create-Makefile.ci \
+        generate-Makefile.ci \
         #
 
 info-objsize:
@@ -118,6 +118,9 @@ info-build:
 	@echo ''
 	@echo 'DEBUGSERVER:       $(DEBUGSERVER)'
 	@echo 'DEBUGSERVER_FLAGS: $(DEBUGSERVER_FLAGS)'
+	@echo ''
+	@echo 'DEBUGCLIENT:       $(DEBUGCLIENT)'
+	@echo 'DEBUGCLIENT_FLAGS: $(DEBUGCLIENT_FLAGS)'
 	@echo ''
 	@echo 'RESET:       $(RESET)'
 	@echo 'RESET_FLAGS: $(RESET_FLAGS)'

@@ -2,7 +2,7 @@
 # (listed in same order as in the repo's branch protection settings)
 pr_status = [
  "python-tests",
- "tools-build",
+ "tools-build-success",
  "check-labels",
  "static-tests",
  "check-commits (commit-msg)",
@@ -15,8 +15,10 @@ pr_status = [
 status = [
   "Murdock",
   "static-tests",
-  "tools-build",
+  "tools-build-success",
   ]
+
+block_labels = [ "Process: missing approvals" ]
 
 # Number of project members who must approve the PR (using GitHub Reviews)
 # before it is pushed to master.

@@ -10,7 +10,7 @@ include $(RIOTBASE)/pkg/pkg.mk
 
 CMAKE_MINIMAL_VERSION = 3.6.0
 
-CFLAGS += $(INCLUDES)
+CFLAGS += $(INCLUDES) # for some reason this is needed by llvm, but not for gcc
 CFLAGS += -DATCA_HAL_I2C
 CFLAGS += -Wno-cast-align
 CFLAGS += -Wno-char-subscripts
@@ -22,7 +22,6 @@ CFLAGS += -Wno-type-limits
 CFLAGS += -Wno-unused-function
 CFLAGS += -Wno-unused-parameter
 CFLAGS += -Wno-unused-variable
-CFLAGS += -Wno-format-nonliteral
 CFLAGS += -Wno-maybe-uninitialized
 
 TOOLCHAIN_FILE=$(PKG_SOURCE_DIR)/xcompile-toolchain.cmake

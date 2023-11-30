@@ -77,39 +77,27 @@ static inline void _print_password_prompt(void)
  * which could give away information about the first n correct characters of
  * the password. The length of the loop is only dependent on the input string.
  * Don't optimize this function by a compiler. */
-static bool __attribute__((optimize("O0"))) _safe_strcmp(const char* input, const char* pwd)
+static bool _safe_strcmp(const char* input, const char* pwd)
 {
-    bool the_same = true;
-
-    int input_len = strlen(input);
-    int pwd_len = strlen(pwd);
+    volatile bool the_same = true;
 
     int input_index = 0;
     int pwd_index = 0;
 
     do {
-        if (input[input_index] != pwd[pwd_index]) {
-            the_same &= false;
-        }
-        else {
-            the_same &= true;
-        }
+        the_same &= input[input_index] == pwd[pwd_index];
 
         /* keep indices at last index of respective string */
-        if (input_index < input_len) {
-            input_index++;
-        }
+        input_index += input[input_index] != '\0';
+        pwd_index += pwd[pwd_index] != '\0';
 
-        if (pwd_index < pwd_len) {
-            pwd_index++;
-        }
+    } while (input[input_index] != '\0' );
 
-    } while (input[input_index] != '\0');
+    /* ensure last char is the same */
+    the_same &= input[input_index] == pwd[pwd_index];
 
-    if (input_len != pwd_len) {
-        /* substring of the password doesn't count */
-        return false;
-    }
+    /* ensure last index is the same */
+    the_same &= input_index == pwd_index;
 
     return the_same;
 }
@@ -155,9 +143,14 @@ static void _login_barrier(char *line_buf, size_t buf_size)
 #ifdef MODULE_STDIO_TELNET
 void telnet_cb_disconneced(void)
 {
-    _shell_is_locked = true;
+    shell_lock_do_lock();
 }
 #endif
+
+void shell_lock_do_lock(void)
+{
+    _shell_is_locked = true;
+}
 
 #ifdef MODULE_SHELL_LOCK_AUTO_LOCKING
 static void _shell_auto_lock_ztimer_callback(void *arg)

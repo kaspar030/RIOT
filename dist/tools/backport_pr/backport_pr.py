@@ -211,7 +211,7 @@ def main():
         release_fullname = args.release_branch
         release_shortname = _branch_name_strip(args.release_branch)
     else:
-        status, branches = github_api.repos[ORG][REPO].branches.get()
+        status, branches = github_api.repos[ORG][REPO].branches.get(per_page=100)
         if status != 200:
             print(
                 f"Could not retrieve branches for {ORG}/{REPO}: "
@@ -269,10 +269,10 @@ def main():
         # the worktree was deleted
         repo.delete_head(new_branch)
         raise exc
-    else:
-        # Delete worktree
-        print(f"Pruning temporary workdir at {worktree_dir}")
-        _delete_worktree(repo, worktree_dir)
+
+    # Delete worktree
+    print(f"Pruning temporary workdir at {worktree_dir}")
+    _delete_worktree(repo, worktree_dir)
 
     labels = _get_labels(pulldata)
     merger = pulldata["merged_by"]["login"]

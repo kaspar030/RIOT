@@ -10,7 +10,7 @@
  */
 
 /**
- * @defgroup    net_nanocoap Nanocoap small CoAP library
+ * @defgroup    net_nanocoap nanoCoAP small CoAP library
  * @ingroup     net
  * @brief       CoAP library optimized for minimal resource usage
  *
@@ -90,7 +90,9 @@
 #include "bitfield.h"
 #include "byteorder.h"
 #include "iolist.h"
+#include "macros/utils.h"
 #include "net/coap.h"
+#include "modules.h"
 #else
 #include "coap.h"
 #include <arpa/inet.h>
@@ -102,12 +104,16 @@
 typedef void sock_udp_ep_t;
 #endif
 
+#if defined(MODULE_NANOCOAP_RESOURCES)
+#include "xfa.h"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /**
- * @name    Nanocoap specific CoAP method flags used in coap_handlers array
+ * @name    nanoCoAP specific CoAP method flags used in coap_handlers array
  * @anchor  nanocoap_method_flags
  * @{
  */
@@ -125,12 +131,12 @@ extern "C" {
 /** @} */
 
 /**
- * @brief   Nanocoap-specific value to indicate no format specified
+ * @brief   nanoCoAP-specific value to indicate no format specified
  */
 #define COAP_FORMAT_NONE        (UINT16_MAX)
 
 /**
- * @defgroup net_nanocoap_conf    Nanocoap compile configurations
+ * @defgroup net_nanocoap_conf    nanoCoAP compile configurations
  * @ingroup  net_nanocoap
  * @ingroup  config
  * @{
@@ -281,7 +287,7 @@ typedef ssize_t (*coap_handler_t)(coap_pkt_t *pkt, uint8_t *buf, size_t len,
 typedef int (*coap_blockwise_cb_t)(void *arg, size_t offset, uint8_t *buf, size_t len, int more);
 
 /**
- * @brief   Coap equest callback descriptor
+ * @brief   Coap request callback descriptor
  *
  * @param[in] arg      Pointer to be passed as arguments to the callback
  * @param[in] pkt      The received CoAP response.
@@ -402,15 +408,29 @@ typedef struct {
     uint8_t *opt;                   /**< Pointer to the placed option       */
 } coap_block_slicer_t;
 
+#if defined(MODULE_NANOCOAP_RESOURCES) || DOXYGEN
+/**
+ * @brief   CoAP XFA resource entry
+ *
+ * @param name  internal name of the resource entry, must be unique
+ */
+#define NANOCOAP_RESOURCE(name) \
+    XFA_CONST(coap_resources_xfa, 0) coap_resource_t CONCAT(coap_resource_, name) =
+#else
 /**
  * @brief   Global CoAP resource list
+ * @deprecated Use @ref NANOCOAP_RESOURCE instead.
+ *             The function will be removed after the 2024.01 release.
  */
 extern const coap_resource_t coap_resources[];
 
 /**
  * @brief   Number of entries in global CoAP resource list
+ * @deprecated Use @ref NANOCOAP_RESOURCE instead.
+ *             The function will be removed after the 2024.01 release.
  */
 extern const unsigned coap_resources_numof;
+#endif
 
 /**
  * @name    Functions -- Header Read/Write
@@ -462,7 +482,7 @@ static inline unsigned coap_get_code_detail(const coap_pkt_t *pkt)
  *
  * @returns     message code in decimal format
  */
-static inline unsigned coap_get_code(const coap_pkt_t *pkt)
+static inline unsigned coap_get_code_decimal(const coap_pkt_t *pkt)
 {
     return (coap_get_code_class(pkt) * 100) + coap_get_code_detail(pkt);
 }
@@ -494,14 +514,36 @@ static inline unsigned coap_get_id(const coap_pkt_t *pkt)
 /**
  * @brief   Get a message's token length [in byte]
  *
+ * If the `nanocoap_token_ext` module is enabled, this will include
+ * the extended token length.
+ *
  * @param[in]   pkt   CoAP packet
  *
  * @returns     length of token in the given message (0-8 byte)
  */
 static inline unsigned coap_get_token_len(const coap_pkt_t *pkt)
 {
-    return (pkt->hdr->ver_t_tkl & 0xf);
+    uint8_t tkl = pkt->hdr->ver_t_tkl & 0xf;
+
+    if (!IS_USED(MODULE_NANOCOAP_TOKEN_EXT)) {
+        return tkl;
+    }
+
+    void *ext = pkt->hdr + 1;
+    switch (tkl) {
+    case 13:
+        return tkl + *(uint8_t *)ext;
+    case 14:
+        return tkl + 255 + byteorder_bebuftohs(ext);
+    case 15:
+        assert(0);
+        /* fall-through */
+    default:
+        return tkl;
+    }
 }
+
+static inline uint8_t *coap_hdr_data_ptr(const coap_hdr_t *hdr);
 
 /**
  * @brief   Get pointer to a message's token
@@ -512,7 +554,7 @@ static inline unsigned coap_get_token_len(const coap_pkt_t *pkt)
  */
 static inline void *coap_get_token(const coap_pkt_t *pkt)
 {
-    return (uint8_t*)pkt->hdr + sizeof(coap_hdr_t);
+    return coap_hdr_data_ptr(pkt->hdr);
 }
 
 /**
@@ -569,6 +611,35 @@ static inline unsigned coap_get_ver(const coap_pkt_t *pkt)
 }
 
 /**
+ * @brief   Get the size of the extended Token length field
+ *          (RFC 8974)
+ *
+ * @note    This requires the `nanocoap_token_ext` module to be enabled
+ *
+ * @param[in]   hdr   CoAP header
+ *
+ * @returns     number of bytes used for extended token length
+ */
+static inline uint8_t coap_hdr_tkl_ext_len(const coap_hdr_t *hdr)
+{
+    if (!IS_USED(MODULE_NANOCOAP_TOKEN_EXT)) {
+        return 0;
+    }
+
+    switch (hdr->ver_t_tkl & 0xf) {
+    case 13:
+        return 1;
+    case 14:
+        return 2;
+    case 15:
+        assert(0);
+        /* fall-through */
+    default:
+        return 0;
+    }
+}
+
+/**
  * @brief   Get the start of data after the header
  *
  * @param[in]   hdr   Header of CoAP packet in contiguous memory
@@ -577,7 +648,7 @@ static inline unsigned coap_get_ver(const coap_pkt_t *pkt)
  */
 static inline uint8_t *coap_hdr_data_ptr(const coap_hdr_t *hdr)
 {
-    return ((uint8_t *)hdr) + sizeof(coap_hdr_t);
+    return ((uint8_t *)hdr) + sizeof(coap_hdr_t) + coap_hdr_tkl_ext_len(hdr);
 }
 
 /**
@@ -636,6 +707,21 @@ static inline void coap_hdr_set_type(coap_hdr_t *hdr, unsigned type)
  *              NULL if option number was not found
  */
 uint8_t *coap_find_option(coap_pkt_t *pkt, unsigned opt_num);
+
+/**
+ * @brief   Get pointer to an option field, can be called in a loop
+ *          if there are multiple options with the same number
+ *
+ * @param[in]   pkt     packet to work on
+ * @param[in]   opt_num the option number to search for
+ * @param[out]  opt_pos opaque, must be set to `NULL` on first call
+ * @param[out]  opt_len size of the current option data
+ *
+ * @returns     pointer to the option data
+ *              NULL if option number was not found
+ */
+uint8_t *coap_iterate_option(coap_pkt_t *pkt, unsigned opt_num,
+                             uint8_t **opt_pos, int *opt_len);
 
 /**
  * @brief   Get content type from packet
@@ -1069,10 +1155,7 @@ bool coap_has_unprocessed_critical_options(const coap_pkt_t *pkt);
  *
  * @returns     SZX value decoded to bytes
  */
-static inline unsigned coap_szx2size(unsigned szx)
-{
-    return (1 << (szx + 4));
-}
+#define coap_szx2size(szx) (1U << ((szx) + 4))
 
 /**
  * @brief   Helper to encode byte size into next equal or smaller SZX value
@@ -2050,6 +2133,13 @@ extern ssize_t coap_well_known_core_default_handler(coap_pkt_t *pkt, \
                                                     uint8_t *buf, size_t len,
                                                     coap_request_ctx_t *context);
 /**@}*/
+
+/**
+ * @brief   Respond to `/.well-known/core` to list all resources on the server
+ */
+#ifndef CONFIG_NANOCOAP_SERVER_WELL_KNOWN_CORE
+#define CONFIG_NANOCOAP_SERVER_WELL_KNOWN_CORE !IS_USED(MODULE_GCOAP)
+#endif
 
 /**
  * @brief   Checks if a CoAP resource path matches a given URI
