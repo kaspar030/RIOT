@@ -1,6 +1,21 @@
 modules:
-  - name: servo
+  - name: servo_timer
     sources:
-        - servo.c
+        - timer.c
+    depends:
+        - periph_timer_periodic
+        - periph_gpio
+
+  - name: servo_pwm
+    sources:
+        - pwm.c
     depends:
         - periph_pwm
+
+  - name: servo_saul
+    provides:
+      - saul_support
+    sources:
+        - saul.c
+    depends:
+        - saul
