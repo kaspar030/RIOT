@@ -2,3 +2,4 @@ apps:
   - depends:
     - embunit
     - littlefs2
+    - mtd_emulated
