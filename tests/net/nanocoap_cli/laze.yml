@@ -2,6 +2,7 @@ apps:
   - depends:
         - gnrc_default
         - gnrc_sock_udp
+        - nanocoap_resources
         - nanocoap_sock
         - od
         - shell
