@@ -49,3 +49,20 @@ modules:
     context: nrf5x
   - name: periph_cpuid
     context: nrf5x
+
+  - name: periph_pwm
+    # Select the specific implementation for `periph_pwm`
+    # nRF51 has its own PWM driver variant in its periph driver folder
+    # TODO LAZE: this needs to be `[ nrf52, nrf53, nrf9160 ]`
+    context: nrf52
+    sources:
+      - pwm_nrfxx.c
+
+  - name: periph_usbdev
+    provides_unique:
+      - usbdev
+    conflicts:
+      # no USB peripheral on nrf52832
+      - nrf52832
+    sources:
+      - usbdev.c
