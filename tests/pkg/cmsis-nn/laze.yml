@@ -1,0 +1,4 @@
+apps:
+  - depends:
+      - cmsis-nn
+      - laze_blob_support

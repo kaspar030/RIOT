@@ -1,6 +1,6 @@
 subdirs:
   - cayenne-lpp
-  - cmsis-dsp
+  - cmsis
   - cn-cbor
   - hacl
   - heatshrink

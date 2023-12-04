@@ -1,6 +1,8 @@
 contexts:
   - name: cortexm
     parent: riot
+    selects:
+      - cmsis
     env:
         PREFIX: arm-none-eabi-
         CFLAGS_STD:
@@ -20,7 +22,6 @@ contexts:
             - -Wl,--defsym=_ram_length=${RAM_LEN}
         includes:
             - ${relpath}/include
-            - ${relpath}/include/vendor
             - ${root}/sys/libc/include
         libs:
             - -lm
