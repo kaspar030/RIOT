@@ -22,11 +22,17 @@ contexts:
       LINKFLAGS:
         - -Wl,--defsym=__TEXT_REGION_LENGTH__=${ROM_LEN}-${RAM_LEN}
         - -Wl,--defsym=__DATA_REGION_LENGTH__=${RAM_LEN}
+        # Add aliases for flash_printf, flash_fprintf, flash_snprintf:
+        - -Wl,--defsym=flash_printf=printf_P
+        - -Wl,--defsym=flash_fprintf=fprintf_P
+        - -Wl,--defsym=flash_snprintf=snprintf_P
         - -e reset_handler
       CFLAGS_ARCH:
         # this is required as workaround for avr-gcc 12.x.
         # unfortunately it breaks avr-gcc < 11.3.
         - --param=min-pagesize=0
+        - -fno-builtin
+      CFLAGS_STD: -std=gnu11
       includes:
         - ${relpath}/include
 
