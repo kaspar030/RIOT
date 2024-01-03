@@ -7,6 +7,7 @@ modules:
       sources: [tests-mtd.c]
       depends:
           - mtd
+          - mtd_emulated
           - unittests-base
           - cpu/native:
               - mtd_native
