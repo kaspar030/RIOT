@@ -184,6 +184,7 @@ subdirs:
   - sys/pipe
   - pkg/cayenne-lpp
   - pkg/cmsis-dsp
+  - pkg/cmsis-nn
   - pkg/cn-cbor
   - pkg/fatfs
   - pkg/fatfs_vfs
