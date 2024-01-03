@@ -1,5 +1,6 @@
 apps:
   - depends:
-        - io1_xplained
-        - printf_float
-        - ztimer_msec
+      - fmt
+      - io1_xplained
+      - printf_float
+      - ztimer_msec
