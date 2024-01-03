@@ -1,6 +1,8 @@
 apps:
   - depends:
+        - checksum
         - periph_i2c
         - printf_float
         - sht2x
-        - xtimer
+        - ztimer_msec
+        - ztimer_sec
