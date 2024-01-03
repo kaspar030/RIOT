@@ -10,6 +10,7 @@ modules:
       patches:
         - patches/0001-arm_math-add-clang-branch-for-optimization.patch
     license: Apache-2.0
+    is_global_build_dep: true
     env:
       global:
         includes:
