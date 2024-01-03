@@ -76,9 +76,10 @@ modules:
       - cortexm
       - pm_layered
       - stm32_cmsis
-      - stm32_vectors
       - stm32_irqs
       - stm32_clk
+    selects:
+      - stm32_vectors
 
   - name: stm32f4
     context: stm32f4
