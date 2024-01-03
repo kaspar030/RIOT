@@ -1,8 +1,9 @@
 apps:
   - depends:
+        - fmt
         - hih6130
         - periph_i2c
-        - xtimer
+        - ztimer_msec
     env:
       local:
         CFLAGS:
