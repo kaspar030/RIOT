@@ -4,7 +4,7 @@ modules:
       git:
         url: https://github.com/jue89/tiny-vcdiff.git
         commit: e1a679f36d0212f2b84057a70c72f6e9deda45b3
-    licence: MIT
+    license: MIT
     depends:
      - feature/arch_32bit
      - mtd:

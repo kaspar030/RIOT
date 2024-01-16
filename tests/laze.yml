@@ -294,10 +294,6 @@ defaults:
           - main.cpp
         depends:
             - ?develhelp
-        tasks:
-            test:
-                cmd:
-                    - '${relpath}/tests/*'
 
 subdirs:
   - sys/cpp11_condition_variable

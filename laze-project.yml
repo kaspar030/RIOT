@@ -140,7 +140,7 @@ contexts:
 builders:
   - name: host
     parent: default
-    tools:
+    tasks:
       run:
         cmd:
           - "${out}"

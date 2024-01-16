@@ -16,5 +16,6 @@ modules:
         - sock_udp
         - xtimer
       env:
+        export:
           CFLAGS:
               - -DUHCP_CLIENT
