@@ -5,7 +5,7 @@
 # and / or
 #export APPS="examples/hello-world tests/unittests"
 
-export PARTITIONS="${PARTITIONS:-32}"
+export PARTITIONS="${PARTITIONS:-128}"
 
 QUICKBUILD_BOARDS="
 adafruit-itsybitsy-m4
