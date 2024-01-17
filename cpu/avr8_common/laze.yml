@@ -6,6 +6,7 @@ contexts:
   - name: avr8_common
     parent: riot
     selects:
+      - DISABLED_ci_compiler_too_old
       - arch_8bit
       - arch_avr8
       - avr8_common
