@@ -201,9 +201,7 @@ _greplist() {
 get_compile_jobs() {
     check_label "CI: skip compile test" && return
 
-    local partitions=32
-
-    for i in $(seq 1 ${partitions}); do
+    for i in $(seq 1 ${PARTITIONS}); do
         echo "${i}"
     done | dwqc ${DWQ_ENV} --queue default-first -s \
         ${DWQ_JOBID:+--subjob} \
