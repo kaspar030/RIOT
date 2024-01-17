@@ -245,8 +245,9 @@ compile() {
     local toolchain=$(echo $2 | cut -f 2 -d':')
 
     export BUILD=$(pwd)/build
+    export LAZE_JOBS=${JOBS:-8}
 
-    laze build --global --generate-only --partition "hash:${partition}/${PARTITIONS}"
+    laze build --global --partition "hash:${partition}/${PARTITIONS}"
 
     # log some build stats
     if [ -d ${BUILD} ]
