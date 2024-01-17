@@ -249,11 +249,13 @@ compile() {
     export LAZE_JOBS=${JOBS:-8}
 
     laze build --global --partition "hash:${partition}/${PARTITIONS}"
+    RES=$?
 
     # log some build stats
     if [ -d ${BUILD} ]
     then
         echo "{\"build/\": $(du -s ${BUILD} | cut -f1)}"
+        rm -Rf ${BUILD}
     fi
 
     return $RES
