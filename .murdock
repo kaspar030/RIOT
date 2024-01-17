@@ -5,6 +5,8 @@
 # and / or
 #export APPS="examples/hello-world tests/unittests"
 
+export PARTITIONS="${PARTITIONS:-32}"
+
 QUICKBUILD_BOARDS="
 adafruit-itsybitsy-m4
 atmega256rfr2-xpro
@@ -205,7 +207,6 @@ get_compile_jobs() {
         echo "${i}"
     done | dwqc ${DWQ_ENV} --queue default-first -s \
         ${DWQ_JOBID:+--subjob} \
-        -EPARTITIONS=${partitions} \
         "echo $0 compile group \${1}:gnu"
 }
 
