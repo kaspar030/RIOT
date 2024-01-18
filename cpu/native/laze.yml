@@ -31,6 +31,8 @@ modules:
               - -DNATIVE_INCLUDES
               - -DCPU_NATIVE
           LINKFLAGS:
+              # prevents "/usr/bin/ld: warning: foo.elf has a LOAD segment with RWX permissions"
+              - -Wl,--no-warn-rwx-segments
               - -T${root}/cpu/native/ldscripts/xfa.ld
               - -fpic
           includes:
