@@ -3,7 +3,7 @@ modules:
     license: MIT
     download:
       git:
-        url: https://github.com/benpicco/hacl-c_archived
+        url: https://github.com/RIOT-OS-pkgmirror/hacl-c_archived
         commit: aac05f5094fc92569169d5a2af54c12387160634
       patches:
         - patches/0001-RIOT-Use-RIOT-random_bytes-function-instead-of-rando.patch
