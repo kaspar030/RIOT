@@ -1,5 +1,6 @@
 modules:
   - name: core
+    help: "RIOT's core module"
     sources:
       - cond.c
       - mutex.c
@@ -25,22 +26,28 @@ modules:
       - sched_cb
 
   - name: core_thread
+    help: "Support for Threads"
   - name: core_idle_thread
+    help: "Use Idle thread"
   - name: core_mutex_priority_inheritance
+    help: "Use priority inheritance to mitigate priority inversion for mutexes"
 
   - name: core_msg
+    help: "Kernel messaging module"
     sources:
       - msg.c
     uses:
       - core
 
   - name: core_msg_bus
+    help: "Messaging Bus module"
     sources:
       - msg_bus.c
     uses:
       - core
 
   - name: core_mbox
+    help: "Kernel message box module"
     sources:
       - mbox.c
     uses:
@@ -53,6 +60,7 @@ modules:
       - core
 
   - name: sched_cb
+    help: "Callback support on the scheduler"
 
 subdirs:
   - lib
