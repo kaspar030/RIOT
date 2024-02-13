@@ -1,6 +1,7 @@
 modules:
   - name: heatshrink
-    license: ISC
+    meta:
+      license: ISC
     download:
       git:
         url: https://github.com/atomicobject/heatshrink.git

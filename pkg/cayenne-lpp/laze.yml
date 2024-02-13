@@ -1,6 +1,7 @@
 modules:
   - name: cayenne-lpp
-    license: LGPLv2.1
+    meta:
+      license: LGPLv2.1
     download:
       git:
         url: https://github.com/aabadie/cayenne-lpp

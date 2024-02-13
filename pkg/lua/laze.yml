@@ -4,7 +4,8 @@ modules:
         git:
             url: https://github.com/lua/lua.git
             commit: e354c6355e7f48e087678ec49e340ca0696725b1 # tag: v5-3-4
-      license: MIT
+      meta:
+        license: MIT
       depends:
           - lua-contrib
       sources:

@@ -12,7 +12,8 @@ modules:
               - patches/0005-fix-uninitialized-variable.patch
               - patches/0006-Removed-unnecessary-library.json.patch
 
-      license: MIT
+      meta:
+          license: MIT
       sources:
           - coap.c
       export_vars:

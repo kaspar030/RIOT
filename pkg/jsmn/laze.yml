@@ -1,6 +1,7 @@
 modules:
   - name: jsmn
-    license: MIT
+    meta:
+      license: MIT
     download:
       git:
         url: https://github.com/zserge/jsmn

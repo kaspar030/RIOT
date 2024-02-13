@@ -1,6 +1,7 @@
 modules:
   - name: hacl
-    license: MIT
+    meta:
+      license: MIT
     download:
       git:
         url: https://github.com/RIOT-OS-pkgmirror/hacl-c_archived

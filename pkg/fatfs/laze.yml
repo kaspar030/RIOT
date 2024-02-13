@@ -1,6 +1,7 @@
 modules:
   - name: fatfs
-    license: BSD-1-Clause
+    meta:
+      license: BSD-1-Clause
     download:
       git:
         url: https://github.com/RIOT-OS/FatFS

@@ -7,7 +7,8 @@ modules:
       git:
         url: https://github.com/apache/mynewt-nimble.git
         commit: 37245d0c3f239c35c0c734a337c7b6301fcfd70b
-    license: Apache-2.0
+    meta:
+      license: Apache-2.0
     depends:
       - posix_semaphore
       - event

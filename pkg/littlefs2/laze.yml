@@ -5,7 +5,8 @@ modules:
         url: https://github.com/ARMmbed/littlefs.git
         # v2.5.1
         commit: 6a53d76e90af33f0656333c1db09bd337fa75d23
-    license: Apache-2.0
+    meta:
+        license: Apache-2.0
     depends:
       - ?littlefs2_fs
     sources:
