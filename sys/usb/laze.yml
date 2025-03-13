@@ -2,9 +2,7 @@ modules:
   - name: usb_ids_testing
     depends:
       - usb_ids_defines
-    provides:
-      - usb_ids
-    conflicts:
+    provides_unique:
       - usb_ids
     env:
       # TODO: fix import of provided module exports
@@ -24,6 +22,12 @@ modules:
         CFLAGS:
           - -DCONFIG_USB_VID=${USB_VID}
           - -DCONFIG_USB_PID=${USB_PID}
+
+  - name: usbdev
+    must_provide: true
+
+  - name: usb_ids
+    must_provide: true
 
 subdirs:
   - usbus

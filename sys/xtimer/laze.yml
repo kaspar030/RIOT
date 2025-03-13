@@ -9,25 +9,19 @@ modules:
         - xtimer_legacy
 
     - name: ztimer64_xtimer_compat
-      provides:
-        - xtimer_impl
-      conflicts:
+      provides_unique:
         - xtimer_impl
       depends:
         - ztimer64_usec
 
     - name: ztimer_xtimer_compat
-      provides:
-        - xtimer_impl
-      conflicts:
+      provides_unique:
         - xtimer_impl
       depends:
         - ztimer_usec
 
     - name: xtimer_legacy
-      provides:
-        - xtimer_impl
-      conflicts:
+      provides_unique:
         - xtimer_impl
 
       sources:
@@ -44,3 +38,6 @@ modules:
     - name: auto_init_xtimer
       depends:
           - xtimer
+
+    - name: xtimer_impl
+      must_provide: true

@@ -64,5 +64,8 @@ modules:
     depends:
       - random
 
+  - name: random_impl
+    must_provide: true
+
 subdirs:
   - tinymt32

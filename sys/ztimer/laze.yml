@@ -16,6 +16,9 @@ modules:
       - util.c
       - periodic.c
 
+  - name: ztimer_msec_backend
+    must_provide: true
+
 ---
 defaults:
   module:

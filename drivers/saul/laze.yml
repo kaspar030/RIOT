@@ -29,5 +29,8 @@ modules:
           - ?saul_init_devs
           - ?saul_board
 
+    - name: saul_support
+      must_provide: true
+
 subdirs:
     - init_devs

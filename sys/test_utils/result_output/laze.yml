@@ -8,9 +8,7 @@ modules:
       - result_output.c
 
   - name: test_utils_result_output_check
-    provides:
-      - test_utils_result_output_backend
-    conflicts:
+    provides_unique:
       - test_utils_result_output_backend
     sources:
       - check/result_output_check.c
@@ -22,9 +20,7 @@ modules:
           - ${relpath}/check
 
   - name: test_utils_result_output_json
-    provides:
-      - test_utils_result_output_backend
-    conflicts:
+    provides_unique:
       - test_utils_result_output_backend
     sources:
       - json/result_output_json.c
@@ -37,9 +33,7 @@ modules:
           - ${relpath}/json
 
   - name: test_utils_result_output_txt
-    provides:
-      - test_utils_result_output_backend
-    conflicts:
+    provides_unique:
       - test_utils_result_output_backend
     sources:
       - txt/result_output_txt.c
@@ -50,3 +44,6 @@ modules:
       export:
         includes:
           - ${relpath}/txt
+
+  - name: test_utils_result_output_backend
+    must_provide: true
